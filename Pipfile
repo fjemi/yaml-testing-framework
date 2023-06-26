@@ -4,8 +4,16 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
+pyyaml = "*"
+pytest = "*"
+dacite = "*"
 
 [dev-packages]
+ruff = "*"
+yapf = "*"
+pre-commit = "*"
+pytest-cov = "*"
+pytest-yaml = {editable = true, path = "."}
 
 [requires]
 python_version = "3.11"
