@@ -3,3 +3,80 @@ requires = ['setuptools', 'wheel']
 build-backend = 'setuptools.build_meta:__legacy__'
 
 
+[tool.ruff]
+target-version = 'py37'
+
+src = ['.']
+
+respect-gitignore  = true
+# Include file path's with matching patterns
+extend-exclude = [
+  '*/test_resources/*.py',
+  '*ignore*/*.py',
+  '*_ignore*.py',
+]
+
+# Enable codes
+select = [
+  'E',    # flake8
+  'F',    # flake8
+  'W',    # flake8
+  "ARG",  # flake8-unused-arguments
+  'PL',   # pylint
+  'RUF',  # ruff
+  'I',    # isort
+]
+
+# Allow autofix for all enabled rules 
+fixable = [
+  'I',  # isort
+]
+
+# Decrease the maximum line length 
+# Max number of characters per line
+line-length = 80
+tab-size = 2
+
+
+[tool.ruff.pylint]
+max-args = 7
+
+
+[tool.ruff.mccabe]
+max-complexity = 5
+
+
+[tool.yapf]
+based_on_style = 'google'
+indent_width = 2
+continuation_indent_width = 2
+spaces_before_comment = 4
+split_before_logical_operator = true
+
+
+[tool.yapfignore]
+ignore_patterns  = [
+  '.venv/*',
+  '.eggs/*',
+  'build',
+]
+
+
+[tool.coverage.run]
+omit = [
+  '*/test_resources/*',
+  '*/ignore/*',
+  '*_ignore*',
+]
+branch = true
+
+
+[tool.coverage.html]
+directory = 'htmlcov'
+
+
+[tool.coverage.report]
+exclude_lines = [
+  "if __name__ == '__main__':",
+  'def example()',
+]
