@@ -11,7 +11,7 @@ src = ['.']
 respect-gitignore  = true
 # Include file path's with matching patterns
 extend-exclude = [
-  '*/test_resources/*.py',
+  '*test_resources/*.py',
   '*ignore*/*.py',
   '*_ignore*.py',
 ]

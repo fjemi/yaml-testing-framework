@@ -31,9 +31,9 @@ def get_file_contents(data: Data) -> Data:
 
     content = None
     with open(
-        file=path,
-        mode="r",
-        encoding="utf-8",
+      file=path,
+      mode="r",
+      encoding="utf-8",
     ) as file:
       content = file.read()
       content = yaml.safe_load(content)
