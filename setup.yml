@@ -18,7 +18,7 @@ name: pytest-yaml
 packages: 
   include:
   - app
-url: null
+url: https://github.com/fjemi/pytest-yaml
 version: '0.1'
 zip_safe: True
 install_requires: null

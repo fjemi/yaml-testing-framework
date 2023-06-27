@@ -19,7 +19,7 @@ The plugin can be installed from github or pypi using `pip`
 
 #### From GitHub
 ```bash
-pip install git+
+pip install git+https://github.com/fjemi/pytest-yaml
 ```
 
 #### From PyPi
