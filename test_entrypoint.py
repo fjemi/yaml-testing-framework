@@ -4,6 +4,7 @@ import os
 import sys
 
 import pytest
+import yaml
 
 import app.main as pytest_yaml
 
@@ -31,6 +32,13 @@ def format_ids(test: pytest_yaml.Test | None) -> str:
 def test_case(test: pytest_yaml.Test) -> None:
   n = len(test.assertions)
   for i in range(n):
+
+    try:
+      test.assertions[i] = yaml.dump(test.assertions[i])
+      test.result[i] = yaml.dump(test.result[i])
+    except TypeError:
+      pass
+
     if test.assertions[i] != test.result[i]:
       print(test.exception)
     assert test.assertions[i] == test.result[i]
