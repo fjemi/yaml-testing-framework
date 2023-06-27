@@ -1,0 +1,47 @@
+functions:
+- name: format_ids
+  description: Formats IDs for parameterized tests
+  tests:
+  - description: Test 0
+    patch:
+    - object: pytest.project_path
+      value: project_path
+    - object: pytest.yml_tests
+      value: []
+    arguments: 
+      test:
+        module: project_path/module_0
+        function: function_0
+        description: description_0
+    cast_arguments:
+      test: test_resources.app.Test
+    assertions:
+    - equals: module_0.function_0 - description_0
+    - type: str
+  - description: Test 1
+    patch:
+    - object: pytest.project_path
+      value: project_path
+    - object: pytest.yml_tests
+      value: []
+    arguments: 
+      test:
+        module: project_path/module_1
+        function: function_1
+        description: description_1
+    cast_arguments:
+      test: test_resources.app.Test
+    assertions:
+    - equals: module_1.function_1 - description_1
+    - type: str
+  - description: Test 2
+    patch:
+    - object: pytest.project_path
+      value: project_path
+    - object: pytest.yml_tests
+      value: []
+    arguments: null
+    cast_arguments:
+    assertions:
+    - equals: null
+    - type: NoneType
