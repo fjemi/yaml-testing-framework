@@ -1,12 +1,11 @@
 #!/usr/bin/env python3
-# encoding: utf-8
 
 import dataclasses as dc
 import os
 from typing import List
 
 import yaml
-from setuptools import find_packages, setup
+from setuptools import setup
 
 ROOT_DIRECTORY = os.path.dirname(__file__)
 
@@ -59,7 +58,7 @@ def get_file_contents(data: Data) -> Data:
   return data
 
 
-def get_install_requires(pipfile_lock: dict) -> List[str]:
+def get_setup_requires(pipfile_lock: dict) -> List[str]:
   default = pipfile_lock.get('default')
   exclude_keys = [
     'coverage',
@@ -104,7 +103,7 @@ def get_python_requires(pipfile_lock: dict) -> str:
 
 def add_pip_lock_fields_to_setup_yml(data: Data) -> Data:
   fields = {
-    'install_requires': get_install_requires(pipfile_lock=data.pipfile_lock),
+    'setup_requires': get_setup_requires(pipfile_lock=data.pipfile_lock),
     'python_requires': get_python_requires(pipfile_lock=data.pipfile_lock),
     'long_description': data.long_description,
   }
@@ -113,14 +112,13 @@ def add_pip_lock_fields_to_setup_yml(data: Data) -> Data:
   return data
 
 
-def main(directory: str | None) -> Data:
+def main(directory: str | None = None) -> Data:
   data = Data()
   if directory:
     data.directory = directory
 
   data = get_file_contents(data=data)
   data = add_pip_lock_fields_to_setup_yml(data=data)
-  data.setup_yml['packages'] = find_packages(**data.setup_yml['packages'])
   return data.setup_yml
 
 
