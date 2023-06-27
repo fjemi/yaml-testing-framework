@@ -14,6 +14,7 @@ yapf = "*"
 pre-commit = "*"
 pytest-cov = "*"
 pytest-yaml = {editable = true, path = "."}
+build = "*"
 
 [requires]
 python_version = "3.11"
