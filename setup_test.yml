@@ -15,6 +15,7 @@ functions:
       data: Data
     assertions:
     - has_attributes:
+        long_description: '# README.md'
         setup_yml: 
           author: author
           author_email: author_email
@@ -108,6 +109,7 @@ functions:
       data: Data
     assertions:
     - has_attributes:
+        long_description: null
         pipfile_lock: null
         setup_yml: null
 - name: get_install_requires
@@ -195,10 +197,11 @@ functions:
           - package_0==version_0
           - package_1>=version_1
           - package_2<=version_2
+          long_description: null
           python_requires: '>=3.7'
 - name: get_setup_yml
 - name: main
-  description: Orchestrates the execution of the other functions within the module and returns the data needed for `setup.py` to work.
+  description: Returns the data used to package an app by executing the other functions within the module.
   tests:
   - description: Test 0
     arguments: 
@@ -208,7 +211,7 @@ functions:
         author: author
         author_email: author_email
         description: description
-        long_description: long_description
+        long_description: '# README.md'
         classifiers: 
         - classifiers_0
         - classifiers_1
