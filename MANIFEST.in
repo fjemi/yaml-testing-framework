@@ -6,3 +6,5 @@ include LICENSE
 
 global-exclude __pycache__ *.py[cod]
 global-exclude *.so *.dylib
+global-exclude *_test.yml
+global-exclude *test_resources/*

@@ -1,0 +1,18 @@
+todo:
+- description: |
+    add support for user defined assertions. Grab assertion 
+    dictionary from python file with custom assertions and update the main
+    assertion dictionary to make the custom assertion available 
+    throughout the tests
+  notes: |
+    ```
+    # custom_assertions.py
+
+    def assert_custom_assertion(result):
+      # process result
+      return result
+
+    assertions = {
+      custom_assertion: assert_custom_assertion
+    }
+    ```

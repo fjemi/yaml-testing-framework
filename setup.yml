@@ -1,0 +1,28 @@
+author: Olufemi Jemilohun
+author_email: olufemi.jemilohun@gmail.com
+description: A pytest plugin used to run tests in defined in YAML files
+long_description: null
+classifiers:
+- 'Framework :: Pytest'
+- 'Programming Language :: Python'
+- 'Topic :: Software Development :: Testing'
+- 'Programming Language :: Python :: 3.7'
+license: MIT license
+include_package_data: True
+keywords:
+- pytest
+- data
+- yaml
+- testing
+name: pytest-yaml
+packages: 
+  include:
+  - app
+url: null
+version: '0.1'
+zip_safe: True
+install_requires: null
+python_requires: null
+entry_points:
+  pytest11:
+  - 'pytest-yaml = app.plugin'
