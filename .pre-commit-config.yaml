@@ -1,17 +1,9 @@
-repos: []
-# - repo: https://github.com/astral-sh/ruff-pre-commit
-#   # Ruff version.
-#   rev: v0.0.275
-#   hooks:
-#   - id: ruff
-#     args: [--fix, --exit-non-zero-on-fix]
+repos:
 - repo: local
   hooks:
-  - id: pytest-check
-    name: pytest-check
-    stages: [commit]
-    types: [python]
-    entry: pipenv run pytest --project_path .
-    language: system
+  - id: pre-commit
+    name: pre-commit
+    entry: ./pre-commit.sh
+    language: script
     pass_filenames: false
-    always_run: true
+    verbose: true
