@@ -18,7 +18,13 @@ Supports:
 The plugin can be installed from github <!-- or pypi using `pip` -->
 
 #### From GitHub
-```bash
+With `pipenv`:
+```console
+pipenv install git+https://github.com/fjemi/pytest-yaml#egg=pytest-yaml
+```
+
+With `pip`: 
+```console
 pip install git+https://github.com/fjemi/pytest-yaml
 ```
 
