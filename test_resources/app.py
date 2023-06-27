@@ -2,10 +2,5 @@
 
 import pytest
 
+# ruff: noqa: F401
 from app.main import Test
-
-_ = Test
-
-
-def pytest_configure(config) -> None:
-  pytest.yml_tests = []
