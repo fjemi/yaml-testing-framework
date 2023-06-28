@@ -15,17 +15,23 @@ Supports:
 
 ### Install
 
-The plugin can be installed from github or pypi using `pip`
+The plugin can be installed from github <!-- or pypi using `pip` -->
 
 #### From GitHub
-```bash
-pip install git+
+With `pipenv`:
+```console
+pipenv install git+https://github.com/fjemi/pytest-yaml#egg=pytest-yaml
 ```
 
-#### From PyPi
+With `pip`: 
+```console
+pip install git+https://github.com/fjemi/pytest-yaml
+```
+
+<!-- #### From PyPi
 ```bash
 pip install pytest-yaml
-```
+``` -->
 
 ### Create Entrypoint File
 

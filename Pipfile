@@ -13,6 +13,7 @@ ruff = "*"
 yapf = "*"
 pre-commit = "*"
 pytest-cov = "*"
+build = "*"
 pytest-yaml = {editable = true, path = "."}
 
 [requires]

@@ -15,13 +15,13 @@ keywords:
 - yaml
 - testing
 name: pytest-yaml
-packages: 
-  include:
-  - app
-url: null
+packages: ['app']
+url: https://github.com/fjemi/pytest-yaml
 version: '0.1'
 zip_safe: True
-install_requires: null
+setup_requires: null
+extra_require: 
+  dev: null
 python_requires: null
 entry_points:
   pytest11:
