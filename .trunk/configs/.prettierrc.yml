@@ -1,0 +1,11 @@
+tabWidth: 2
+useTabs: false
+singleQoute: true
+maxLineLength: 80
+indentStyle: spaces
+endOfLine: lf
+charSet: utf-8
+insertFinalNewline: true
+bracketSpacing: false
+bracketSameLine: true
+singleAttributePerLine: true
