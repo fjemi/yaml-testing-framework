@@ -4,7 +4,7 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-pyyaml = "*"
+pyyaml = "==6.0"
 pytest = "*"
 dacite = "*"
 nest-asyncio = "*"
@@ -14,7 +14,6 @@ ruff = "*"
 yapf = "*"
 pre-commit = "*"
 pytest-cov = "*"
-build = "*"
 pytest-yaml = {editable = true, path = "."}
 
 [requires]
