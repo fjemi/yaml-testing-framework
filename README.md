@@ -1,29 +1,30 @@
-# Pytest YAML
+<!-- markdownlint-disable MD024 -->
+# YAML Testing Framework
 
-Pytest-YAML is a Pytest plugin for creating and running tests defined in YAML files. The plugin aims provide a zero-low code framework that simplifies testing code in Python. 
+A testing framework and `pytest` plugin that collects and executes tests and configurations defined in YAML files. The framework aims provide a zero to low code solution for simplifying testing in Python.
 
 Supports:
-- Data-driven testing
+
+- YAML/Data driven testing
 - Functional programming
 - Patching objects
-- Casting function arguments and results
+- Casting function arguments and output
 - Multithreaded test executions
-
--------------
 
 ## Setup
 
 ### Install
 
-The plugin can be installed from github <!-- or pypi using `pip` -->
+#### From GitHub using
 
-#### From GitHub
-With `pipenv`:
+`pipenv`
+
 ```console
 pipenv install git+https://github.com/fjemi/pytest-yaml#egg=pytest-yaml
 ```
 
-With `pip`: 
+`pip`
+
 ```console
 pip install git+https://github.com/fjemi/pytest-yaml
 ```
@@ -33,64 +34,152 @@ pip install git+https://github.com/fjemi/pytest-yaml
 pip install pytest-yaml
 ``` -->
 
-### Create Entrypoint File
+### Add Entrypoint for Tests
 
-Create the file, `test_entrypoint.py`, with the content below and place it in the project's root directory. It is used to collect and execute tests defined in YAML files.
+Create the file `test_entrypoint.py` with the content below and place it in the project's root directory. It is used to collect and execute tests defined in YAML files.
 
 This file is needed to:
+
 - invoke `pytest`
-- use the `pytest-yaml` plugin in order to collect and execute YAML defined tests
-- pass collected tests as arguments to a parameterized test function.
+- allow the plugin to collect and execute tests defined in YAML files
+- pass collected tests as arguments to a parameterized test function within `test_entrypoint.py`.
 
 ```python
 # test_entrypoint.py
 
+
+import asyncio
 import sys
+import time
+from typing import Any
+
 import pytest
+import yaml
+from error_handler.app import main as error_handler
+from get_value.app import main as get_value
+from logger.app import main as logger
+
+
+COUNT = 0
+
+
+class Store:
+  pass
+
+
+@error_handler()
+async def get_ids(test: Any | None) -> str:
+  if isinstance(test, list):
+    test = test[0]
+
+  id_ = get_value(
+    test,
+    'id_short',
+    id_callaback(),)
+
+  if isinstance(id_, list):
+    for item in id_:
+      if item:
+        return item
+
+  return id_
+
+
+@error_handler()
+async def id_callaback(
+  data: None = None,
+) -> str:
+  global COUNT
+
+  COUNT += 1
+  return f'test_{COUNT}'
+
+
+asyncio.run(logger(
+  data='\n\n',
+  standard_output=True, ))
+time.sleep(.01)
 
 
 @pytest.mark.parametrize(
   argnames='test',
-  argvalues=pytest.yml_tests,
-  ids=lambda test: format_ids(test=test), )
-def test_case(test: 'app.main.Test') -> None:
-  if test.exception and test.assertions != test.result:
-    print(test.exception.args)
-  assert test.assertions == test.result
+  ids=lambda test: get_ids(test=test),
+  argvalues=pytest.yaml_tests, )
+def test_(test: Any) -> None:
+  if isinstance(test, list):
+    test = test[0]
+  if test is None:
+    return
+
+  for assertion in test.assertions:
+    data = {
+      'module': test.module,
+      'function': test.function,
+      'yaml': test.yaml, }
+    if assertion.exception:
+      data.update({'exception': assertion.exception,})
+    asyncio.run(logger(
+      data=data,
+      standard_output=False, ))
+
+    actual = assertion.actual
+    expected = assertion.expected
+
+    try:
+      actual = yaml.dump(actual)
+      expected = yaml.dump(expected)
+    except Exception as e:  # noqa: F841
+      pass
+
+    assert expected == actual
+
+
+if __name__ == '__main__':
+  args = [
+    '-s',
+    '-vvv',
+    '--project-directory=.main', ],
+  sys.exit(pytest.main(args))
+
 ```
 
-### Configure Pytest-YAML
-  
+### Configure Plugin
+
 The plugin can be configured within the pytest settings of a configuration file, such as a `pytest.ini`, or in the console when invoking pytest. The configurations are
-- `project-path` - Absolute path to the directory containing the python files or to a python file.
-- `exclude-match` - A list of string. If a python file has one of the strings in it's path, it will be excluded from being collected for testing.
+
+- `project-directory` - Absolute path of a module or a directory containing modules to tests.
+- `exclude-files` - A list of patterns. Modules that have loations that match one of the patterns are excluded from testsing.
+- `resources` - A list containing the location of modules to use or import during tests.
 
 #### Configure in pytest.ini
 
-```
+```ini
 ; pytest.ini
 
 [pytest]
-project-path = project_folder/
-exclude_match =
+project-directory = project_folder
+exclude_files =
   matching
-  files
+  patterns
   to
   exclude
+resournces =
+  resource_location_a
+  resource_location_b
 ```
 
 #### Configure in Console
 
-```console
-$ pytest --project-path=project_folder/ --exclude_match matching files to exclude
+```shell
+pytest --project-directory=project_folder/ --exclude_files matching patterns to exclude  --resources resource_location_a resource_location_b
 ```
 
 ## A Quick Example
 
 In this example we create two files:
+
 - `add.py` - Contains a simple function to add two numbers. This is the function we will test.
 - `add_test.yml` - Contains the data for two tests, **Add two integers** and **Add two floats**, that we will use to test the function. For both tests we define arguments, `a` and `b`, to pass to the `add` function; and assert that the result from the function equals an expected value and is of an expected type
-
 
 ```python
 # add.py
@@ -102,8 +191,8 @@ def add(a, b):
 ```yaml
 # add_test.yml
 
-functions:
-- name: add
+tests:
+- function: add
   description: Returns the result of adding two numbers
   tests:
   - description: Add two integers
@@ -111,118 +200,125 @@ functions:
       a: 1
       b: 2
     assertions:
-    - equals: 3
-    - type: 
-      - int
+    - method: equals
+      expected: 3
+    - method: type
+      expected:
+        - int
   - description: Add two floats
     arguments:
       a: 1.5
       b: 2.5
     assertions:
-    - equals: 4
-    - type: 
-      - float
+    - method: equals
+      expected: 4
+    - method: type
+      expected:
+        - float
 ```
 
 Then execute the following command in the console to collect and run the tests:
 
 ```console
-pytest --project-path=/home/olufemij/example --exclude-match test_app.py -vvv
+pytest --project-directory=./add.py -s -vvv
 ```
 
 Here we see the results of the tests. Two tests were collected, **Add two integers** and **Add two floats**, and both passed.
 
 ![Alt text](./static/example_result.png?raw=true "Title")
 
-
 ## Creating Test Files
 
 ### Schema
 
 ```yaml
-functions:
-- name: 
+globals: ...
+
+tests:
+- function:
     type: string
     description: The name of the function
     example: add
-  description: 
+  description:
     type: string
     description: A description of the function
     example: add two numbers
     nullable: True
-  patch: 
+  patch:
     type: array[Patch]
     description: A list of objects and values to patch
     nullable: True
-  cast_arguments: 
-    description: Cast keyword arguments before passing them to the function 
+  cast_arguments:
+    description: >
+      Cast keyword arguments before passing
+      them to the function
     type: object
     examples:
-      'Cast argument `a` to an integer':
+      "Cast argument `a` to an integer":
         value:
           a: int
-      'Cast argument `a` to an float':
+      "Cast argument `a` to an float":
         value:
           b: float
     nullable: True
-  cast_result: string
+  cast_output:
+  - caster: string
+    field: string
+    unpack: bool
   assertions: Array[Assertion]
   tests: array[Test]
-
-
 ```
 
 ```yaml
-functions:
-- name: string
+tests:
+- function: string
+  environment: object
   description: string
-  patch: array[Patch]
-  cast_arguments: object
-  cast_result: string
-  assertions: Array[Assertion]
-  tests: array[Test]
+  patches: array[object]
+  cast_arguments: array[object]
+  cast_output: array[object]
+  assertions: array[object]
+  tests: array[object]
 ```
-
-#### Test
 
 ### Test Resources
 
-We can create a folder name `test_resources` in the same directory as a test file and add additional resources needed to run a test. 
+We can create a `test_resources` folder in the same directory as the module to test, and add any files needed to run the tests to the folder. Modules placed in the `test_resources` will automatically be imported into the module to test, and the objects with module resources can be accessed in the YAML test file as `test_resources.[module_name].[object_name]`.
 
-#### Python Files
-
-Python modules placed in `test_resources` will automatically be imported into the module being tested, and we can access the objects within module in the YAML test files: `test_resources.module_name.object_name`.
-
-##### Example
+#### Example
 
 In this example we create module `app.py` as a test resource, and use the dataclass in the module to cast arguments we will pass to the function when testing.
 
 ```python
-# ./example/test_resources/app.py
+# ./test_resources/app.py
 
 import dataclasses as dc
 
 
 @dc.dataclass
-class Data
+class Data_Class
   a: int
   b: int
 ```
 
 ```yaml
-# ./example/app_test.yml
+# ./app_test.yml
 
-functions:
+tests:
 - ...
   arguments:
     data:
       a: 0
       b: 0
-  cast_arguments: 
-    data: test_resources.app.Data
+  cast_arguments:
+  - caster: test_resources.app.Data_Class
+    field: Data
+    unpack: true
 ```
 
-### Patch
+This casts the `data` key of the `arguments` as the dataclass defined in resources module `test_resources.app`
+
+### Patches
 
 We can patch objects within a function's module prior to running tests. Patches can be defined for all of the tests associated with a function or an individual tests, and we can have different patches of the same object for individual tests with interference
 
@@ -254,11 +350,11 @@ function:
   - object: os.return_value
     return_value: return_value
   - object: os.side_effect_list
-    side_effect_list: 
+    side_effect_list:
     - side_effect_1
     - side_effect_2
   - object: os.side_effect_dict
-    side_effect_dict: 
+    side_effect_dict:
       key_1: side_effect_1
       key_2: side_effect_2
   tests:
@@ -298,7 +394,7 @@ value = os.value
 print(value)
 # prints `function_level_value`
 
-values = 
+values =
   [os.side_effect_dict('key_1'),
   os.side_effect_dict('key_2'), ]
 print(values)
@@ -308,6 +404,7 @@ prints `[side_effect_2, side_effect_1]`
 ### Casting
 
 We can cast arguments before passing them to a function or cast the result of executing the function. Similar to patching, casting can be set at the function and individual test levels.
+
 
 #### Example
 
@@ -321,29 +418,37 @@ def add(a, b):
 ```yaml
 # ./example/add_test.py
 
-functions:
-- name: add
+tests:
+- function: add
   cast_arguments:
-    a: str
-    b: str
-  cast_result: int
+  - field: a
+    caster: __builtins__.str
+  - field: b
+    caster: __builtins__.str
+  cast_output:
+  - caster: __builtins__.int
   tests:
   - description: override function level casting
     cast_arguments:
-      a: int
-      b: int
+    - field: a
+      caster: __builtins__.int
+    - field: b
+      caster: __builtins__.int
     arguments:
       a: 0
       b: 1
-    cast_result: str
+    cast_output:
+    - caster: __builtins__.str
     assertions:
-      equals: '01'
+    - method: equals
+      expected: "01"
   - description: use function level casting
-    arguments: 
+    arguments:
       a: 1
       b: 2
     assertions:
-      equals: 12
+    - method: equals
+      expected: 12
 ```
 
 ### Assertions
@@ -361,15 +466,15 @@ Assertions:
 In this example we define two functions: one for adding two numbers and the other for adding two numbers in a dataclass. We use all of the assertions listed above in one or more of the tests.
 
 ```python
-# add.py
+# ./add.py
 
 import dataclasses as dc
 
 
 @dc.dataclass
-class Data:
-  a: int
-  b: int
+class Data_Class:
+  a: int | None = None
+  b: int | None = None
   result: int | None = None
 
 
@@ -383,10 +488,10 @@ def add_numbers_in_dataclass(data):
 ```
 
 ```yaml
-# add_test.yml
+# ./add_test.yml
 
-functions:
-- name: add_numbers
+tests:
+- function: add_numbers
   description: Returns the result of adding two numbers
   tests:
   - description: Result of adding two numbers
@@ -394,16 +499,19 @@ functions:
       a: 1
       b: 2
     assertions:
-    - equals: 3
-    - type: 
-      - int
+    - method: equals
+      expected: 3
+    - method: type
+      expected:
+        - int
   - description: Result should be an type error
     arguments:
       a: 1
       b: string
     assertions:
-    - equals: TypeError
-- name: add_numbers_in_dataclass
+    - method: equals
+      expected: TypeError
+- function: add_numbers_in_dataclass
   description: Returns a dataclass with the result of adding two numbers
   tests:
   - description: Result should have the correct attribute/value and type
@@ -412,63 +520,32 @@ functions:
         a: 1
         b: 2
     cast_arguments:
-      data: 
-      - Data
+    - field: data
+      unpack: true
+      caster: Data_Class
     assertions:
-    - has_attributes:
-        result: 3
-    - type: 
-      - Data
+    - method: equals
+      expected: 3
+      field: result
+    - method: type
+      expected: Data_Class
   - description: Result should have the correct key/value and type
     arguments:
       data:
         a: 1
         b: 2
     cast_arguments:
-      data: 
-      - Data
-    cast_result: dict
+    - field: data
+      unpack: true
+      caster: Data_Class
+    cast_output:
+    - caster: dc.asdict
     assertions:
-    - has_keys:
-        result: 3
-    - type: 
-      - dict
+    - method: equals
+      field: result
+      expected: 3
+    - method: type
+      expected: dict
 ```
 
-
-
-```yaml
-# add_test.yml
-
-functions:
-- name: add_numbers
-  ...
-  tests:
-  - description: Result of adding two numbers
-    ...
-    result:
-    - equals: 3
-    - type: 
-      - int
-  - description: Result should be an type error
-    ...
-    results:
-    - equals: TypeError
-- name: add_numbers_in_dataclass
-  ...
-  tests:
-  - description: Result should have the correct attribute/value and type
-    ...
-    results:
-    - has_attributes:
-        result: 3
-    - type: 
-      - Data
-  - description: Result should have the correct key/value and type
-    ...
-    results:
-    - has_keys:
-        result: 3
-    - type: 
-      - dict
-```
+<!-- markdownlint-disable MD024 -->
