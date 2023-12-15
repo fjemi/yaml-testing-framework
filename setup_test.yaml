@@ -1,44 +1,45 @@
 todo:
 - revisit get_python_requires function
-functions:
-- name: get_file_contents
-  description: Returns the a dataclass containing the contents of the 
-    `Pipfile.lock` and  the `setup.yml` files in the project's root directory.
+- if project directory is a file only run tests for that file. If directory run the tests for all modules in the directory
+
+
+globals:
+  resources:
+  - ${ROOT_DIR}/assertions/app.py
+
+
+tests:
+- function: get_content_from_file
+  description: Returns the contents of an existing file
   tests:
-  - description: Returns a dataclass with fields `pipfile_lock` and `setup_yml` 
-     set to the contents of the `Pipfile.lock` and  the `setup.yml` in the test
-     resources directory
-    arguments:
-      data:
-        directory: TEST_RESOURCES
-    cast_arguments:
-      data: Data
+  - arguments:
+      location: null
     assertions:
-    - has_attributes:
+    - method: equals
+      expected: null
+  - arguments:
+      location: ${ROOT_DIR}/test_resources/setup/hello_world.yml
+    assertions:
+    - method: equals
+      expected: >
+        hello: world
+- function: get_contents
+  description: Returns the contents of an existing file
+  tests:
+  - arguments:
+      directory: null
+    assertions:
+    - method: equals
+      expected:
+        directory: null
+  - arguments:
+      directory: ${ROOT_DIR}/test_resources/setup
+    assertions:
+    - method: equals
+      expected:
+        directory: ${ROOT_DIR}/test_resources/setup
         long_description: '# README.md'
-        setup_yml: 
-          author: author
-          author_email: author_email
-          description: description
-          long_description: long_description
-          classifiers:
-          - classifiers_0
-          - classifiers_1
-          license: license
-          include_package_data: True
-          keywords:
-          - keywords_0
-          - keywords_1
-          name: name
-          packages: 
-            include:
-            - app
-          url: http://www.example.com
-          version: '0.1'
-          zip_safe: True
-          install_requires: null
-          python_requires: null
-        pipfile_lock: 
+        pipfile_lock:
           _meta:
             hash:
               sha256: 7aa63f316afc9dbce5e110ddfdc5c79d15d78d35b567591ee4691ea24ce0e749
@@ -55,64 +56,72 @@ functions:
               - sha256:2d91e135bf72d31a410b17c16da610a82cb55f6b0477d1a902134b24a455b8b3
               - sha256:b6a85871a79d2e3b22d2d1b94ac2824226a63c6b741c88f7ae975f18b6778374
               markers: python_version >= '3.7'
-              version: "==2.0.0"
+              version: ==2.0.0
             packaging:
               hashes:
               - sha256:994793af429502c4ea2ebf6bf664629d07c1a9fe974af92966e4b8d2df7edc61
               - sha256:a392980d2b6cffa644431898be54b0045151319d1e7ec34f0cfed48767dd334f
               markers: python_version >= '3.7'
-              version: "==23.1"
+              version: ==23.1
             pluggy:
               hashes:
               - sha256:c2fd55a7d7a3863cba1a013e4e2414658b1d07b6bc57b3919e0c63c9abb99849
               - sha256:d12f0c4b579b15f5e054301bb226ee85eeeba08ffec228092f8defbaa3a4c4b3
               markers: python_version >= '3.7'
-              version: "==1.2.0"
+              version: ==1.2.0
             pytest:
               hashes:
               - sha256:78bf16451a2eb8c7a2ea98e32dc119fd2aa758f1d5d66dbf0a59d69a3969df32
               - sha256:b4bf8c45bd59934ed84001ad51e11b4ee40d40a1229d2c79f9c592b0a3f6bd8a
               index: pypi
-              version: "==7.4.0"
+              version: ==7.4.0
           develop:
             iniconfig:
               hashes:
               - sha256:2d91e135bf72d31a410b17c16da610a82cb55f6b0477d1a902134b24a455b8b3
               - sha256:b6a85871a79d2e3b22d2d1b94ac2824226a63c6b741c88f7ae975f18b6778374
               markers: python_version >= '3.7'
-              version: "==2.0.0"
+              version: ==2.0.0
             packaging:
               hashes:
               - sha256:994793af429502c4ea2ebf6bf664629d07c1a9fe974af92966e4b8d2df7edc61
               - sha256:a392980d2b6cffa644431898be54b0045151319d1e7ec34f0cfed48767dd334f
               markers: python_version >= '3.7'
-              version: "==23.1"
+              version: ==23.1
             pluggy:
               hashes:
               - sha256:c2fd55a7d7a3863cba1a013e4e2414658b1d07b6bc57b3919e0c63c9abb99849
               - sha256:d12f0c4b579b15f5e054301bb226ee85eeeba08ffec228092f8defbaa3a4c4b3
               markers: python_version >= '3.7'
-              version: "==1.2.0"
+              version: ==1.2.0
             pytest:
               hashes:
               - sha256:78bf16451a2eb8c7a2ea98e32dc119fd2aa758f1d5d66dbf0a59d69a3969df32
               - sha256:b4bf8c45bd59934ed84001ad51e11b4ee40d40a1229d2c79f9c592b0a3f6bd8a
               index: pypi
-              version: "==7.4.0"
-  - description: Returns a dataclass with fields `pipfile_lock` and `setup_yml` 
-     set to null when the `Pipfile.lock` and  the `setup.yml` do not exist in
-     a directory
-    arguments:
-      data:
-        directory: DIRECTORY_DOES_NOT_EXIST
-    cast_arguments:
-      data: Data
-    assertions:
-    - has_attributes:
-        long_description: null
-        pipfile_lock: null
-        setup_yml: null
-- name: get_install_requires
+              version: ==7.4.0
+        setup_yaml:
+          author: author
+          author_email: author_email
+          description: description
+          long_description: long_description
+          classifiers:
+          - classifiers_0
+          - classifiers_1
+          license: license
+          include_package_data: True
+          keywords:
+          - keywords_0
+          - keywords_1
+          name: name
+          packages:
+          - app
+          url: http://www.example.com
+          version: '0.1'
+          zip_safe: True
+          setup_requires: null
+          python_requires: null
+- function: get_setup_requires
   description: Returns a list of packages or install requirements from
     the contents of the `Pipfile.lock`
   tests:
@@ -121,109 +130,116 @@ functions:
       pipfile_lock:
         default: {}
     assertions:
-    - type: list
-    - equals: []
+    - method: type
+      expected: list
+    - method: equals
+      expected: []
   - description: One package
-    arguments:
-      pipfile_lock:
-        default: 
-          package_0: 
-            version: ==version_0
-    assertions:
-    - type: list
-    - equals: 
-      - package_0==version_0
-    - length: 1
-  - description: Three packages
-    arguments:
-      pipfile_lock:
-        default: 
-          package_0: 
-            version: ==version_0
-          package_1: 
-            version: '>=version_1'
-          package_2: 
-            version: <=version_2
-    assertions:
-    - type: list
-    - equals: 
-      - package_0==version_0
-      - package_1>=version_1
-      - package_2<=version_2
-    - length: 3
-- name: get_python_requires
-  description: Returns the minimum python version associated supported by the packages in the `Pipfile.lock` 
-  tests: 
-  - description: 
     arguments:
       pipfile_lock:
         default:
           package_0:
-            markers: "python_version >= '3.7'"
-          package_1:
-            markers: "python_version >= '3.7.*'"
-          package_2:
-            markers: "python_version >= '3.11'"
+            version: ==version_0
     assertions:
-    - equals: '>=3.7'
-    - type: str
-- name: add_pip_lock_fields_to_setup_yml
+    - method: type
+      expected: list
+    - method: equals
+      expected:
+      - package_0==version_0
+    - method: length
+      expected: 1
+  - description: Three packages
+    arguments:
+      pipfile_lock:
+        default:
+          package_0:
+            version: ==version_0
+          package_1:
+            version: '>=version_1'
+          package_2:
+            version: <=version_2
+    assertions:
+    - method: type
+      expected: list
+    - method: equals
+      expected:
+      - package_0==version_0
+      - package_1>=version_1
+      - package_2<=version_2
+    - method: length
+      expected: 3
+- function: get_python_requires
+  description: Returns the minimum python version associated supported by the packages in the `Pipfile.lock` 
+  tests:
+  - arguments:
+      pipfile_lock:
+        default:
+          package_0:
+            markers: python_version >= '3.7'
+          package_1:
+            markers: python_version >= '3.7.*'
+          package_2:
+            markers: python_version >= '3.11'
+    assertions:
+    - method: equals
+      expected: '>=3.7'
+    - method: type
+      expected: str
+- function: merge_pip_lock_and_setup_yaml
   description: Returns a dataclass with installation requirements and python version added the `setup_yml` field.
   tests:
-  - description:
-    arguments:
-      data: 
-        pipfile_lock:
-          default: 
-            package_0: 
-              version: ==version_0
-              markers: "python_version >= '3.7'"
-            package_1: 
-              version: '>=version_1'
-              markers: "python_version >= '3.7.*'"
-            package_2: 
-              version: <=version_2
-              markers: "python_version >= '3.11'"
-        setup_yml:
-          install_requires: null
-          python_requires: null
-    cast_arguments:
-      data: Data
+  - arguments:
+      pipfile_lock:
+        default:
+          package_0:
+            version: ==version_0
+            markers: python_version >= '3.7'
+          package_1:
+            version: '>=version_1'
+            markers: python_version >= '3.7.*'
+          package_2:
+            version: <=version_2
+            markers: python_version >= '3.11'
+      setup_yaml:
+        setup_requires: {}
+        python_requires: {}
+      long_description: long_description
     assertions:
-    - has_attributes: 
-        pipfile_lock: null
-        setup_yml:
-          install_requires: 
-          - package_0==version_0
-          - package_1>=version_1
-          - package_2<=version_2
-          long_description: null
-          python_requires: '>=3.7'
-- name: get_setup_yml
-- name: main
+    - method: equals
+      expected:
+        setup_requires:
+        - package_0==version_0
+        - package_1>=version_1
+        - package_2<=version_2
+        long_description: long_description
+        python_requires: '>=3.7'
+- function: main
   description: Returns the data used to package an app by executing the other functions within the module.
   tests:
   - description: Test 0
-    arguments: 
-      directory: TEST_RESOURCES
-    assertions: 
-    - equals: 
+    arguments:
+      directory: ${ROOT_DIR}/test_resources/setup
+    assertions:
+    - method: equals
+      expected:
         author: author
         author_email: author_email
         description: description
         long_description: '# README.md'
-        classifiers: 
+        classifiers:
         - classifiers_0
         - classifiers_1
         license: license
         include_package_data: True
-        keywords: 
+        keywords:
         - keywords_0
         - keywords_1
         name: name
-        packages: []
+        packages:
+        - app
+        python_requires: '>=3.7'
         url: http://www.example.com
         version: '0.1'
         zip_safe: True
-        install_requires: ['pytest==7.4.0']
-        python_requires: '>=3.7'
+        setup_requires:
+        - pytest==7.4.0

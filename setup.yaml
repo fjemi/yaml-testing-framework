@@ -11,18 +11,18 @@ license: MIT license
 include_package_data: True
 keywords:
 - pytest
-- data
 - yaml
 - testing
 name: pytest-yaml
-packages: ['app']
+packages:
+- main
 url: https://github.com/fjemi/pytest-yaml
 version: '0.1'
 zip_safe: True
 setup_requires: null
-extra_require: 
+extra_require:
   dev: null
 python_requires: null
 entry_points:
   pytest11:
-  - 'pytest-yaml = app.plugin'
+  - pytest-yaml = main.plugin

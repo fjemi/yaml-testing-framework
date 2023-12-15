@@ -11,11 +11,9 @@ keywords:
 - keywords_0
 - keywords_1
 name: name
-packages:
-  include:
-  - app
+packages: [app]
 url: http://www.example.com
 version: '0.1'
 zip_safe: True
-install_requires: null
+setup_requires: null
 python_requires: null

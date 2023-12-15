@@ -1,18 +1,19 @@
 [build-system]
-requires = [
-  'setuptools>=61.0', 
-  'pyyaml==6.0',
-] 
+requires = ['setuptools>=61.0', 'pyyaml==6.0']
 build-backend = 'setuptools.build_meta'
 
 
 [tool.coverage.run]
 omit = [
   '*/test_resources/*',
-  '*/ignore/*',
-  '*_ignore*',
+  '*ignore/*',
+  #'*_ignore*',
+  '*__init__.py',
+  'test_entrypoint.py',
+  '*_test.py',
 ]
 branch = true
+source = ['/']
 
 
 [tool.coverage.html]
@@ -22,6 +23,18 @@ directory = 'htmlcov'
 [tool.coverage.report]
 exclude_lines = [
   "if __name__ == '__main__':",
-  'def example()',
+  'def example',
+  'def invoke_pytest',
+  'def run_app',
 ]
 fail_under = 90
+
+
+[tool.pytest.ini_options]
+addopts = """
+-ra
+--tb=short
+--project-directory=.
+--cov=.
+--cov-report=html
+"""
