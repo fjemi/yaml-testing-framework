@@ -1,0 +1,343 @@
+resources:
+- https://stackoverflow.com/questions/55409641/asyncio-run-cannot-be-called-from-a-running-event-loop-when-using-jupyter-no
+- https://stackoverflow.com/questions/65206110/when-to-use-asyncio-get-running-loop-vs-asyncio-get-event-loop#:~:text=In%20accordance%20with%20the%20official,of%20the%20loop%20is%20not
+- https://stackoverflow.com/questions/4887081/get-the-name-of-a-decorated-function
+- https://stackoverflow.com/questions/74074580/how-to-avoid-losing-type-hinting-of-decorated-function
+- https://stackoverflow.com/questions/55590343/asyncio-run-or-run-until-complete
+
+
+todo:
+- Add functionality for processing operations
+- Fix test for main function. Make sure the default value is being set
+  and that exceptions are or are not raise
+
+
+globals:
+  resources:
+  - ${ROOT_DIR}/assertions/app.py
+
+
+tests:
+- function: process_arguments
+  description: >
+    Process the main function's arguments
+    as a dataclass
+  cast_output:
+  - caster: dc.asdict
+  tests:
+  - description: Undefined arguments
+    arguments:
+      locals_: {}
+    assertions:
+    - method: equals
+      expected:
+        args: []
+        call_back: null
+        data: null
+        default_value: null
+        exception: null
+        function: null
+        kwargs: {}
+        log_enabled: false
+        log_level: debug
+        module: null
+        raise_exception: false
+        result: null
+        standard_output: '0'
+        timestamp: null
+  - description: Defined arguments
+    arguments:
+      locals_:
+        args: args
+        call_back: call_back
+        default_value: default_value
+        kwargs: kwargs
+        log_enabled: log_enabled
+        log_level: log_level
+        raise_exception: raise_exception
+        standard_output: standard_output
+        timestamp: timestamp
+    assertions:
+    - method: equals
+      expected:
+        args: args
+        call_back: call_back
+        data: null
+        default_value: default_value
+        exception: null
+        function: null
+        kwargs: kwargs
+        log_enabled: log_enabled
+        log_level: log_level
+        module: null
+        raise_exception: raise_exception
+        result: null
+        standard_output: standard_output
+        timestamp: timestamp
+- function: process_exception
+  description: >
+    Formats an exception. Returns a dictionary containing
+    the exceptions' name, description, and traceback
+  tests:
+  - description: Exception is an sh`Exception` object
+    cast_arguments:
+    - caster: test_resources.app.exception_resource
+      field: exception
+    arguments:
+      exception: exception
+    assertions:
+    - method: equals
+      field: name
+      expected: TypeError
+    - method: equals
+      field: description
+      expected: 'unsupported operand type(s) for +: ''int'' and ''str'''
+  - description: Exception is not an sh`Exception` object
+    arguments:
+      exception: exception
+    assertions:
+    - method: equals
+      expected:
+        description: exception
+        name: str
+        traceback_: []
+- function: get_task_from_event_loop
+  description: >
+    Returns a coroutine from the event loop (the output of a async function).
+  tests:
+  - arguments:
+      task: null
+    assertions:
+    - method: equals
+      expected: null
+  - arguments:
+      task: task
+    assertions:
+    - method: equals
+      expected: task
+  - cast_arguments:
+    - caster: test_resources.app.task_resource
+      field: task
+    arguments:
+      task: task
+    assertions:
+    - method: equals
+      expected: async_task
+- function: get_awaitable_output
+  tests: &GET_AWAITABLE_OUTPUT_TESTS
+  - cast_arguments:
+    - caster: test_resources.app.function_resource
+      field: data
+    - caster: Data
+      field: data
+      unpack: True
+    description: Returns the output from calling an awaitable function
+    tests:
+    - arguments:
+        data:
+          function: awaitable_function
+      assertions:
+      - method: equals
+        expected: awaitable_output
+- function: get_callable_output
+  tests: &GET_CALLABLE_OUTPUT_TESTS
+  - cast_arguments:
+    - caster: test_resources.app.function_resource
+      field: data
+    - caster: Data
+      field: data
+      unpack: True
+    description: Returns the output from calling an awaitable function
+    tests:
+    - arguments:
+        data:
+          function: callable_function
+      assertions:
+      - method: equals
+        expected: callable_output
+- function: get_function_output
+  description: Returns the output from calling a async or sync function
+  cast_arguments:
+  - caster: test_resources.app.function_resource
+    field: data
+  - caster: Data
+    field: data
+    unpack: True
+  tests:
+  - << : *GET_AWAITABLE_OUTPUT_TESTS
+  - << : *GET_CALLABLE_OUTPUT_TESTS
+  - description: >
+      Return nothing when exceptions are raised
+    cast_arguments:
+    - caster: test_resources.app.function_resource
+    arguments:
+      data:
+        function: function_exception
+        raise_exception: true
+    assertions:
+    - method: equals
+      expected: null
+- function: process_function_output
+  description: >
+    Sets the result from a function to a default
+    value if an exception occurred, or processes
+    the result through a call back method
+  cast_arguments:
+  - caster: Data
+    field: data
+    unpack: true
+  - caster: test_resources.app.call_back_resource
+    field: data
+  tests:
+  - arguments:
+      data:
+        result: Earth
+        call_back: null
+    assertions:
+    - method: equals
+      field: result
+      expected: Earth
+  - description: >
+      Perform call back when a method is defined
+    tests:
+    - arguments:
+        data:
+          result: World
+          call_back:
+            method: hello_word
+            data: {}
+      assertions:
+      - method: equals
+        field: result
+        expected: Hello World
+    - arguments:
+        data:
+          result: MARS
+          call_back:
+            method: hello_word
+            data: {}
+      assertions:
+      - method: equals
+        field: result
+        expected: Hello MARS
+- function: get_function_parameters
+  description: >
+    Returns the a list of the parameters for
+    a function
+  cast_arguments:
+  - caster: test_resources.app.get_function_parameters_resource
+  tests:
+  - arguments:
+      function: sync_function
+    assertions:
+    - method: equals
+      expected: []
+  - arguments:
+      function: hello_world
+    assertions:
+    - method: equals
+      expected:
+      - result
+  - arguments:
+      function: add
+    assertions:
+    - method: equals
+      expected:
+      - a
+      - b
+- function: log_function_output
+  description: Logs the output from calling a function
+  cast_arguments:
+  - caster: test_resources.app.log_function_output_resource
+  tests:
+  - description: Logging disabled
+    arguments:
+      log_enabled: false
+    assertions:
+    - method: equals
+      expected: false
+  - description: Logging enabled
+    arguments:
+      log_enabled: True
+      function: sync_function
+      log_level: debug
+      standard_output: false
+      args: []
+      kwargs: {}
+      result: result
+    assertions:
+    - method: equals
+      expected: true
+  - description: Log an exception
+    arguments:
+      log_enabled: True
+      function: sync_function
+      standard_output: false
+      args: []
+      kwargs: {}
+      exception: exception
+    assertions:
+    - method: equals
+      expected: true
+
+
+# - function: add_locals_to_data_class
+#   # cast_arguments:
+#   # - caster: CONFIG.shcema.Data
+#   #   field: data
+#   #   unpack: true
+#   description:
+#   tests:
+#   - description: Data is an empty dictionary
+#     arguments:
+#       data: {}
+#     assertions:
+#     - method: equals
+#       expected: {}
+#   - arguments:
+#       data: {}
+#     assertions:
+#     - method: equals
+#       expected: {}
+
+- function: main
+  description: >
+    Wrapper that handles running functions
+  cast_output:
+  - caster: test_resources.app.main_resource
+  - caster: __builtins__.str
+    field: sync_function_exception
+  tests:
+  - description: No defined arguments
+    arguments: {}
+    assertions:
+    - method: equals
+      expected:
+        sync_function: sync_output
+        async_function: async_output
+        sync_function_exception: '''str'' object has no attribute ''value'''
+        async_function_exception: null
+  - description: Raise exceptions
+    arguments:
+      raise_exception: false
+      default_value: default_value
+    assertions:
+    - method: equals
+      expected:
+        sync_function: sync_output
+        async_function: async_output
+        async_function_exception: default_value
+        sync_function_exception: '''str'' object has no attribute ''value'''
+  # todo: fix test - default value is not being returned
+  # think of a better way of testing the main function
+  # - description: Default value defined for exceptions
+  #   arguments:
+  #     default_value: default_value
+  #     raise_exception: false
+  #   assertions:
+  #   - method: equals
+  #     expected:
+  #       sync_function: sync_output
+  #       async_function: async_output
+  #       sync_function_exception: default_value
+  #       async_function_exception: default_value

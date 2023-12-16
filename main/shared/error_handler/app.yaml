@@ -1,0 +1,97 @@
+environment:
+  DEBUG: ${DEBUG}
+  ROOT_DIR: ${ROOT_DIR}
+
+
+schema:
+- &DATA
+  cls_name: Data
+  slots: true
+  description:
+  fields:
+  - name: data
+    description:
+    type:  Any | None
+    default: null
+  - name: function
+    description:
+    type: str | Callable | None
+    default: null
+  - name: module
+    description:
+    type: str | ModuleType | None 
+    default: null
+  - name: args
+    description:
+    type: list | None
+    default: null
+  - name: timestamp
+    description:
+    type: int | None
+    default: 0
+  - name: kwargs
+    description:
+    type: dict | None
+    default: []
+  - name: result
+    description:
+    type: Any | None
+    default: null
+  - name: exception
+    description:
+    type: Exception | dict | None
+    default: null
+  - name: raise_exception
+    description:
+    type: bool | None
+    default: null
+  - name: default_value
+    description:
+    type: Any | None
+    default: null
+  - name: log_enabled
+    description:
+    type: bool | None
+    default: null
+  - name: log_level
+    description:
+    type: str | None
+    default: null
+  - name: call_back
+    description:
+    type: Callable | dict | None
+    default: null
+  - name: standard_output
+    description:
+    type: bool | None
+    default: null
+
+- &OPERATIONS
+  cls_name: Operations
+  description:
+  slots: False
+  fields:
+  - name: parameters
+    type: dict | None
+    description:
+    default: null
+  - name: results
+    type: dict | None
+    description:
+    default: {}
+  - name: fields
+    type: dict | None
+    description:
+    default: {}
+  - name: function
+    type: Callable | None
+    description:
+    default: null
+
+
+operations:
+# - get_function_kind
+# - get_event_loop
+- handle_function_run
+- process_output
+# - log_output
