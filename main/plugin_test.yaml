@@ -1,0 +1,243 @@
+resources:
+- https://stackoverflow.com/questions/51666621/pytest-help-does-not-run-when-using-pytest-configure-in-conftest-py
+- https://stackoverflow.com/questions/50817905/pytest-dynamically-parametrized-test
+- https://docs.pytest.org/en/7.1.x/how-to/usage.html
+- https://stackoverflow.com/questions/49824248/allow-argparse-nargs-to-accept-comma-separated-input-with-choices
+
+
+todo:
+- complete test for add_args_and_ini_options_to_parser
+- complete test for get_options_or_inis
+- implement a spy assertion and complete tests for pytest_configure and pytest_itemcollected
+  can probably use pytest's spy
+- make sure globally defined configs are pulled into app
+
+
+globals:
+  exclude_functions:
+  - pytest_runtest_logreport
+  - pytest_itemcollected
+  - pytest_addoption
+  - pytest_itemcollected
+  # - pytest_configure
+  resources:
+  - ${ROOT_DIR}/assertions/app.py
+
+
+tests:
+- function: get_options
+  description: Returns a dictionary containing option names and values
+  tests:
+  - arguments:
+      options:
+        option_0: value_0
+        option_1: value_1
+        option_2: value_2
+      option_names:
+      - option_0
+      - option_2
+    assertions:
+    - method: equals
+      expected:
+        option_0: value_0
+        option_2: value_2
+- function: process_option_exclude_files
+  description: Process the `exclude-files` option as a list of strings
+  tests:
+  - description: Option is null
+    arguments:
+      option: null
+      config: null
+    assertions:
+    - method: equals
+      expected: []
+  - description: Option is a string
+    arguments:
+      option: option
+      config: null
+    assertions:
+    - method: equals
+      expected:
+      - option
+  - description: Option is a list
+    arguments:
+      option:
+      - option_0
+      - option_1
+      config: null
+    assertions:
+    - method: equals
+      expected:
+      - option_0
+      - option_1
+- function: process_option_project_directory
+  description: Returns the root directory for the project
+  cast_arguments:
+  - field: config
+    caster: test_resources.plugin.app.get_pytest_config
+  tests:
+  - description: Option and config are null
+    arguments:
+      option: ${ROOT_DIR}/main/plugin_test.yaml
+      config: null
+    assertions:
+    - method: equals
+      expected: ${ROOT_DIR}/main/plugin_test.yaml
+  - description: Option is a single dot representing root directory
+    arguments:
+      option: .
+      config: root_dir
+    assertions:
+    - method: equals
+      expected: root_dir
+  - description: Option is path to directory within the root directory
+    arguments:
+      option: ./path_to_directory
+      config: null
+    assertions:
+    - method: equals
+      expected: /path_to_directory
+  - description: Option is path to directory in test resources
+    arguments:
+      option: path_to_directory
+      config: config
+    assertions:
+    - method: equals
+      expected: path_to_directory
+  - description: Option is path to directory in root directory
+    arguments:
+      option: root_directory/sub_directory
+      config: config
+    assertions:
+    - method: equals
+      expected: root_directory/sub_directory
+- function: get_pytest_parser
+  description: Returns the parser from pytest for adding configuration options
+  cast_output:
+  - caster: __builtins__.str
+    unpack: false
+  tests:
+  - description: Non-null instance of pytest
+    cast_arguments:
+    - field: pytest_instance
+      caster: test_resources.plugin.app.pytest_resource
+      unpack: false
+    arguments:
+      pytest_instance: pytest_instance
+    assertions:
+    - method: equals
+      expected:  <class '_pytest.config.argparsing.Parser'>
+  - description: Null instance of pytest
+    arguments:
+      pytest_instance: null
+    assertions:
+    - method: equals
+      expected:  <class '_pytest.config.argparsing.Parser'>
+- function: get_pytest_instance
+  description: Returns an instance of the pytest module
+  tests:
+  - arguments: {}
+    assertions:
+    - method: equals
+      field: __name__
+      expected: pytest
+    - method: type
+      expected: module
+- function: pass_through
+  description: Returns the data passed into the function
+  tests:
+  - description: Option is undefined
+    arguments:
+      option: null
+      config: null
+    assertions:
+    - method: equals
+      expected: null
+  - description: Option is defined
+    arguments:
+      option: option
+      config: null
+    assertions:
+    - method: equals
+      expected: option
+- function: add_args_and_ini_options_to_parser
+  description: >
+    Add data cli arguments and ini settings
+    options to the pytest parser
+  cast_arguments:
+  - field: parser
+    caster: test_resources.plugin.app.pytest_parser_resource
+  tests:
+  - arguments:
+      parser: parser
+    assertions:
+    - method: type
+      expected: Parser
+    - method: equals
+      field: _ininames
+      expected:
+      - resources
+      - project-directory
+      - include-functions
+      - exclude-files
+    - method: length
+      field: _anonymous.options
+      expected: 4
+- function: pytest_configure
+  description: >
+    Retrieves the values of ini and CLI arguments
+    and calls the app to collect and run tests
+  tests:
+  - cast_arguments:
+    - field: config
+      caster: test_resources.plugin.app.pytest_configure_resource
+    arguments:
+      config: config
+    assertions:
+    - method: equals
+      expected: null
+- function: set_node_ids
+  description: >
+    Sets node ids that are displayed in pytest report
+    summaries
+  tests:
+  - arguments:
+      item: null
+    assertions:
+    - method: equals
+      expected: null
+  - arguments:
+      item: item
+    assertions:
+    - method: equals
+      expected: item
+  - cast_arguments:
+    - caster: test_resources.plugin.app.set_node_ids_resource
+      field: item
+    arguments:
+      item: item
+    assertions:
+    - method: equals
+      field: _nodeid
+      expected: module_location.function
+- function: format_report_nodeid
+  description: >
+    Format the nodeid displayed in pytest
+    report summaries
+  tests:
+  - arguments:
+      nodeid: null
+    assertions:
+    - method: equals
+      expected: None
+  - arguments:
+      nodeid: ::test_[nodeid
+    assertions:
+    - method: equals
+      expected: nodeid
+  - arguments:
+      nodeid: nodeid <- test_entrypoint.py
+    assertions:
+    - method: equals
+      expected: nodeid
+

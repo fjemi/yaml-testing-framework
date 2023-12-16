@@ -1,159 +1,196 @@
-#!/usr/bin/env python3
-# encoding: utf-8
+#!.venv/bin/python3
+# -*- coding: utf-8 -*-
 
-import asyncio
+
+import dataclasses as dc
 import os
-from typing import List
+from types import ModuleType
+from typing import Any, List
 
-import pytest
-import yaml
+import pytest as py_test
+from error_handler.app import main as error_handler
+from get_config.app import main as get_config
 
-import app.main as pytest_yaml
+# trunk-ignore(ruff/F401)
+from utils import app as utils
 
-MODULE_PATH = __file__
-
-
-def get_config(module_path: str) -> dict:
-  yaml_path = module_path.replace('.py', '.yml')
-  with open(
-    file=yaml_path,
-    mode='r',
-    encoding='utf-8',
-  ) as file:
-    content = file.read()
-    return yaml.safe_load(content)
+from main.app import main as app
 
 
-CONFIG = get_config(module_path=MODULE_PATH)
+MODULE = __file__
+CONFIG = get_config(module=MODULE)
+CONFIG.root_paths = [
+  f'.{os.sep}',
+  f'{os.sep}{os.sep}',
+  f'.{os.sep}',
+  *CONFIG.root_paths, ]
+LOCALS = locals()
 
 
-def pytest_addoption(parser: pytest.Parser) -> None:
-  for argument in CONFIG.get('cli_arguments'):
+@dc.dataclass
+class Data_Class:
+  pass
+
+
+@error_handler()
+def get_options(
+  options: dict,
+  option_names: dict,
+) -> dict:
+  store = {}
+  for name in option_names:
+    option_name = name.replace('-', '_')
+    store[option_name] = options.get(option_name)
+  return store
+
+
+@error_handler()
+def process_option_exclude_files(
+  option: dict | None = None,
+  # trunk-ignore(ruff/ARG001)
+  config: py_test.Config | None = None,
+) -> List[str]:
+  if option is None:
+    return []
+  if isinstance(option, list) is False:
+    option = [option]
+  return option
+
+
+@error_handler(default_value='')
+def process_option_project_directory(
+  option: str | None,
+  config: py_test.Config,
+) -> str:
+  root = getattr(config, 'rootdir', '')
+  root = root or ''
+
+  root = str(root)
+  option = str(option)
+
+  condition = option in CONFIG.root_paths
+  if condition:
+    return root
+
+  condition = option.find('.') == 0
+  if condition:
+    option = os.path.join(root, option[1:])
+
+  return option
+
+
+@error_handler()
+def get_pytest_parser(pytest_instance: ModuleType) -> py_test.Parser:
+  if not pytest_instance:
+    pytest_instance = get_pytest_instance()
+  return pytest_instance.Parser
+
+
+@error_handler()
+async def get_pytest_instance(
+  # trunk-ignore(ruff/ARG001)
+  data: None = None,
+) -> py_test:
+  import pytest as instance
+  return instance
+
+
+@error_handler()
+async def add_args_and_ini_options_to_parser(
+  parser: py_test.Parser,
+) -> py_test.Parser:
+  for argument in CONFIG.options:
     parser.addoption(
       f"--{argument.get('args')}",
-      **argument.get('options'),
-    )
-
+      **argument.get('options'), )
     ini_options = {'help': argument.get('options').get('help')}
     parser.addini(
       argument.get('args'),
-      **ini_options,
-    )
+      **ini_options, )
+  return parser
 
 
-def get_project_path(config: pytest.Config) -> str:
-  name = 'project-path'
-
-  option = config.getoption(name.replace('-', '_'))
-  ini = config.getini(name)
-  directory = option if option else ini
-
-  if directory in ['.', None]:
-    return config.rootdir
-
-  # Absolute directory path given relative directory path
-  if directory.find('./') == 0:
-    relative_path = directory.replace('./', '')
-    return f'{config.rootdir}{os.sep}{relative_path}'
-
-  return directory
+@error_handler()
+async def pytest_addoption(parser: py_test.Parser) -> None:
+  add_args_and_ini_options_to_parser(parser=parser)
 
 
-def get_custom_assertions(config: pytest.Config) -> str:
-  name = 'custom-assertions'
-
-  directory = config.rootdir
-  option = config.getoption(f'--{name}')
-  ini = config.getini(name)
-
-  directory = directory if not option else option
-  directory = directory if not ini else ini
-  return directory
+@error_handler()
+async def pass_through(
+  option: Any | None = None,
+  # trunk-ignore(ruff/ARG001)
+  config: py_test.Config | None = None,
+) -> Any:
+  return option
 
 
-def get_exclude_match(config: pytest.Config) -> List[str]:
-  name = 'exclude-match'
-  exclude = [
-    '.venv',
-    '.eggs',
-    'build',
-    'test_entrypoint.py',
-    'plugin.py'
-  ]
+@error_handler()
+async def pytest_configure(config: py_test.Config) -> None:
+  data = {}
 
-  configs = [
-    config.getoption(f'--{name}'),
-    config.getini(name),
-  ]
+  names = [item['args'] for item in CONFIG.options]
+  for name in names:
+    option_name = f'--{name}'
+    option = config.getoption(name=option_name)
+    ini = config.getini(name)
+    key = name.replace('-', '_')
+    data[key] = option or ini
 
-  for item in configs:
-    if not item:
-      continue
-    if isinstance(item, list):
-      exclude.extend(item)
-    if isinstance(item, str):
-      exclude.append(item)
-
-  return exclude
+  py_test.yaml_tests = app(**data)
+  py_test.yaml_tests = py_test.yaml_tests or []
 
 
-# ruff: noqa: ARG001
-def get_yml_tests(
-  project_path: str,
-  exclude_match: List[str],
-  yml_suffix: str | None = None,
-  yml_prefix: str | None = None,
-  test_resources_directory: str | None = None,
-) -> List[pytest_yaml.Test]:
-  test_results = asyncio.run(pytest_yaml.main(**locals()))
-  tests = []
+@error_handler()
+async def set_node_ids(item) -> str:
+  item_callspec = getattr(item, 'callspec', None)
 
-  for module in test_results.modules:
-    for function in module.functions:
-      for test in function.tests:
-        tests.append(list(test.values())[0])
-
-  # Handle no tests being collected
-  if not tests:
-    tests = [
-      pytest_yaml.Test(
-        module='',
-        function='',
-        description='',
-        result='No tests collected',
-        assertions=[{
-          'equals': True,
-        }],
-      )
-    ]
-
-  return tests
+  condition = not item_callspec
+  if condition:
+    return item
 
 
-def pytest_configure(config: pytest.Config) -> None:
-  pytest.project_path = get_project_path(config=config)
-  pytest.exclude_match = get_exclude_match(config=config)
-  pytest.custom_assertions = get_custom_assertions(config=config)
-  pytest.yml_tests = get_yml_tests(
-    project_path=pytest.project_path,
-    exclude_match=pytest.exclude_match,
-  )
+  test = item.callspec.params.get('test', None)
+  kind = type(test).__name__.lower()
+  if kind in CONFIG.null_types:
+    return item
+
+  id_ = f"{test.module_location[-1]}.{test.function}"
+  item._nodeid = id_.strip()
+  return item
 
 
 def pytest_itemcollected(item):
-  params = item.callspec.params.get('test')
+  item = set_node_ids(item=item)
 
-  module = params.module
-  if not isinstance(module, str):
-    module = module.__file__
 
-  nodeid = [
-    '\n',
-    f'function: {params.function}\n',
-    f'test: {params.description}\n',
-    f'module: {module}\n',
-    f"yml: {module.replace('.py', '_test.yml')}\n",
-    'result:',
-  ]
-  nodeid = ''.join(nodeid)
-  item._nodeid = nodeid
+def pytest_runtest_logreport(report):
+  report.nodeid = format_report_nodeid(nodeid=report.nodeid)
+
+
+def format_report_nodeid(nodeid: str) -> str:
+  nodeid = str(nodeid)
+
+  match = '<- test_entrypoint.py'
+  index = nodeid.find(match)
+  if index != -1:
+    nodeid = nodeid[:index]
+
+  match = '::test_['
+  index = nodeid.find(match)
+  if index != -1:
+    nodeid = nodeid[index + len(match):]
+
+  return nodeid.strip()
+
+
+@error_handler()
+async def example() -> None:
+  from invoke_pytest.app import main as invoke_pytest
+
+
+  project_directory = MODULE
+  invoke_pytest(project_directory=project_directory)
+
+
+if __name__ == '__main__':
+  example()

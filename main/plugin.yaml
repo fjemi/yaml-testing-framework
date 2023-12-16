@@ -1,0 +1,71 @@
+environment:
+  ROOT_DIR: ${ROOT_DIR}
+
+
+schema:
+- cls_name: Data
+  description: Data processed by functions within the module
+  slots: False
+  fields:
+  - name: pytest_config
+    type: py_test.Config | None
+  - name: pytest_parser
+    type: py_test.Parser | None
+  - name: pytest_instance
+    type: ModuleType | None
+  - name: module_locationby
+    type: str | None
+  - name: project_directory
+    type: str | None
+
+
+options:
+- args: resources
+  options:
+    action: store
+    help: Path to a directory python file that contains resources for the test
+    required: false
+    dest: resources
+    default: []
+- args: project-directory
+  options:
+    action: store
+    help: Directory containing python files to test.
+    required: false
+    dest: project_directory
+    default: .
+- args: include-functions
+  options:
+    action: store
+    help: A list of functions to include for testing
+    required: false
+    dest: include_functions
+    default: []
+- args: exclude-files
+  options:
+    action: store
+    help: A list of patterns for excluding files represented as a comma delimited string
+    default:
+    - .venv
+    - .eggs
+    - build
+    - __pycache__
+    nargs: +
+    # - ignore
+    # - test_resources
+    dest: exclude_files
+    required: false
+    # type: str
+  help: A list of strings. Exclude python files containing on of the strings
+
+
+root_paths:
+- .
+- ''
+- null
+- None
+
+
+null_types:
+- nonetype
+- notsettype
