@@ -1,2 +1,19 @@
 resources:
 - https://stackoverflow.com/questions/46827007/runtimeerror-this-event-loop-is-already-running-in-python
+- https://pypi.org/project/nest-asyncio/
+
+
+tests:
+- function: allow_nested_event_loops
+  description: Allows asyncio event loop to be nested
+  arguments: {}
+  assertions:
+  - method: equals
+    expected: 1
+- function: allow_nested_event_loops
+  description: Allows asyncio event loop to be nested
+  arguments:
+    data: null
+  assertions:
+  - method: equals
+    expected: 1

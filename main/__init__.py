@@ -5,4 +5,12 @@
 import nest_asyncio
 
 
-nest_asyncio.apply()
+def allow_nested_event_loops(
+  # trunk-ignore(ruff/ARG001)
+  data: None = None,
+) -> int:
+  nest_asyncio.apply()
+  return 1
+
+
+allow_nested_event_loops()
