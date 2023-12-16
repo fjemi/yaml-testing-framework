@@ -1,0 +1,63 @@
+environment:
+  ROOT_DIR: ${ROOT_DIR}
+  LOGS_DIR: ${LOGS_DIR} 
+  DEBUG: ${DEBUG}
+
+schema:
+- &DATA
+  cls_name: Data
+  description:
+  slots: true
+  fields:
+  - name: data
+    description: Data_Class to log
+    default: null
+    type: Any | None
+  - name: format_
+    description: | 
+      Format for the log:  'json' or 'yaml'
+    default: yaml
+    type: str | None
+  - name: standard_output
+    description: Flag for outputing to terminal
+    default: false
+    type: bool
+  - name: location
+    description: Location of a log file
+    default: debug
+    type: str | None
+  - name: timestamp
+    description: Timestamp, seconds past epoch
+    default: null
+    type: int | None
+  - name: level
+    description: Logging level
+    default: debug
+    type: str | None
+  - name: status
+    type: dict
+    description: Status of a function's execution
+    default: {}
+  - name: enabled
+    type: bool
+    description: Enable or disable logging
+    default: False
+
+
+empty_values:
+- false
+- 'false'
+- null
+- none
+- 0
+- '0'
+- ''
+
+
+operations:
+- format_location
+- format_data
+- convert_data
+- format_level
+- log_data
+- output_to_terminal
