@@ -1,87 +1,132 @@
-#!/usr/bin/env python3
+#!.venv/bin/python3
+# -*- coding: utf-8 -*-
 
-# from importlib.machinery import SourceFileLoader
+
+from __future__ import annotations  # noqa: I001
+
 import dataclasses as dc
 import importlib
-import inspect
+import importlib.util  # as importlib_util
 import os
 from types import ModuleType
 
-from app.shared.format_main_arguments import app as format_main_arguments
+from error_handler.app import (
+  main as error_handler, )
+from get_config.app import main as get_config
+# from get_value.app import main as get_value
+from utils import app as utils
 
-MODULE_PATH = __file__
+
+MODULE_LOCATION = __file__
+CONFIG = get_config(module=MODULE_LOCATION)
+LOCALS = locals()
+
+POOL = {}
 
 
 @dc.dataclass
-class Body:
-  path: str | None = None
+class Data_Class:
+  pass
 
 
-@dc.dataclass
-class Data:
-  body: Body | None = None
-  module: ModuleType | None = None
-  call_method: str = "module"
+@error_handler()
+async def format_module_name(
+  name: str | None = None,
+  location: str | None = None,
+) -> dict:
+  if name not in CONFIG.empty_values:
+    return {'name': name.replace('.py', '')}
+
+  if location in CONFIG.empty_values:
+    return {'name': 'app'}
+
+  name = location.replace('.py', '')
+  name = name.split(os.sep)
+  return {'name': '.'.join(name)}
 
 
-async def raise_exception(data: Data) -> None:
-  message = f"No module exists at {data.body.path}"
-  raise RuntimeError(message)
+@error_handler()
+async def get_module_from_pool(
+  location: str,
+  pool: bool
+) -> dict:
+  module = None
+
+  if pool:
+    module = POOL.get(location, None)
+
+  return {'module': module}
 
 
-async def load_module_from_path(data: Data) -> Data:
-  """Returns a python module at a given file path"""
-  module_name = os.path.basename(data.body.path)
+
+
+@error_handler()
+async def get_module_from_location(
+  location: str | None = None,
+  name: str | None = None,
+  module: ModuleType | None = None,
+) -> dict:
+  kind = type(module).__name__.lower()
+  condition = kind == 'module'
+  if condition:
+    return {'module': module}
+
+  location = str(location)
+  if os.path.exists(location) is False:
+    return {}
+
   spec = importlib.util.spec_from_file_location(
-    name=module_name,
-    location=data.body.path,
-  )
-  data.module = importlib.util.module_from_spec(spec)
-  spec.loader.exec_module(data.module)
-  return data
+    name=name,
+    location=location, )
+  module = importlib.util.module_from_spec(spec)
+
+  try:
+    spec.loader.exec_module(module)
+  finally:
+    return {'module': module}
 
 
-GET_MODULE = {
-  True: load_module_from_path,
-  False: raise_exception,
-}
+@error_handler()
+async def add_module_to_pool(
+  module: ModuleType,
+  location: str,
+  pool: bool,
+) -> dict:
+  conditions = [
+    pool in CONFIG.empty_values,
+    module in CONFIG.empty_values, ]
+  if True not  in conditions:
+    global POOL
+    POOL[location] = module
+  return {}
 
 
-async def get_module(data: Data) -> Data:
-  cases = os.path.exists(data.body.path)
-  switcher = GET_MODULE[cases]
-  data = await switcher(data=data)
-  return data
+@error_handler()
+async def main(  # ruff: noqa: ARG001
+  location: str | None = None,
+  name: str | None = None,
+  pool: bool = True,
+) -> ModuleType | None:
+  data = utils.process_arguments(
+    data_class=CONFIG.schema.Data,
+    locals=locals(), )
+  data = utils.process_operations(
+    functions=LOCALS,
+    operations=CONFIG.operations,
+    data=data, )
+  return data.module
 
 
-async def get_response(data: Data) -> Data:
-  if data.call_method == "module":
-    return data.module
-  if data.call_method == "api":
-    source = inspect.getsource(data.module)
-    return source
+@error_handler()
+def example() -> None:
+  from invoke_pytest.app import main as invoke_pytest
 
-
-# ruff: noqa: ARG001
-async def main(path: str | None = None) -> ModuleType:
-  data = await format_main_arguments.main(
-    _locals=locals(),
-    data_classes={"body": Body},
-    main_data_class=Data,
-  )
-  data = await get_module(data=data)
-  data = await get_response(data=data)
-  return data
-
-
-async def example() -> None:
-  directory = os.path.dirname(MODULE_PATH)
-  path = os.path.join(directory, "test_resources", "app.py")
-  module = await main(path=path)
-  print(module)
+  project_directory = MODULE_LOCATION
+  # project_directory = 'main/examples/'
+  invoke_pytest(
+    # invoke='pytest',
+    project_directory=project_directory, )
 
 
 if __name__ == '__main__':
-  import asyncio
-
-  asyncio.run(example())
+  example()
