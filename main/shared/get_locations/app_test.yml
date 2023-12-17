@@ -1,0 +1,520 @@
+
+locations:
+  root: &ROOT ${ROOT_DIR}
+  shared: &SHARED ${ROOT_DIR}/main/shared
+  app: &APP ${ROOT_DIR}/main/shared/get_locations/app.py
+  resources: &RESOURCES ${ROOT_DIR}/main/shared/get_locations/test_resources
+
+
+globals:
+  resources:
+  - ${ROOT_DIR}/assertions/app.py
+
+
+tests:
+- function: format_project_directory
+  description: >
+    Returns a project's directory based on the location
+    defined in a dictionary
+  tests:
+  - description: Undefined directory
+    arguments:
+      project_directory: null
+    assertions:
+    - method: equals
+      expected:
+        root_directory: *ROOT
+        project_directory: *ROOT
+        project_directory_type: directory
+  - description: Directory does not exist
+    arguments:
+      project_directory: does_not_exist
+    assertions:
+    - method: equals
+      expected:
+        root_directory: *ROOT
+        project_directory: does_not_exist
+        project_directory_type: ''
+  - description: Directory is a list or tuple
+    arguments:
+      project_directory:
+      - does_not_exist
+    assertions:
+    - method: equals
+      expected:
+        root_directory: *ROOT
+        project_directory: does_not_exist
+        project_directory_type: ''
+  - description: Exisitng directory
+    arguments:
+      project_directory: *RESOURCES
+    assertions:
+    - method: equals
+      expected:
+        root_directory: *ROOT
+        project_directory: *RESOURCES
+        project_directory_type: directory
+  - description: Directory is an existing file
+    arguments:
+      project_directory: ${ROOT_DIR}/main/shared/get_locations/test_resources/app.py
+    assertions:
+    - method: equals
+      expected:
+        root_directory: *ROOT
+        project_directory: ${ROOT_DIR}/main/shared/get_locations/test_resources/app.py
+        project_directory_type: file
+  - description: Location that starts with a dot
+    arguments:
+      project_directory: .main/shared/get_locations/test_resources
+    assertions:
+    - method: equals
+      expected:
+        root_directory: *ROOT
+        project_directory: ${ROOT_DIR}main/shared/get_locations/test_resources
+        project_directory_type: directory
+- function: format_exclude_files
+  description: >
+    Returns a list strings that are patterns used to
+    exclude files from testing
+  tests:
+  - description: Argument is undefined
+    arguments:
+      exclude_files: null
+    assertions:
+    - method: equals
+      expected:
+        exclude_files:
+        - .venv
+        - .eggs
+        - build
+        - _ignore
+        - __pycache__
+        - .pyc
+        - .trunk
+  - description: Argument is a string
+    arguments:
+      exclude_files: exclude_files
+    assertions:
+    - method: equals
+      expected:
+        exclude_files:
+        - exclude_files
+        - .venv
+        - .eggs
+        - build
+        - _ignore
+        - __pycache__
+        - .pyc
+        - .trunk
+  - description: Argument is a list
+    arguments:
+      exclude_files:
+      - exclude_files_a
+      - exclude_files_b
+    assertions:
+    - method: equals
+      expected:
+        exclude_files:
+        - exclude_files_a
+        - exclude_files_b
+        - .venv
+        - .eggs
+        - build
+        - _ignore
+        - __pycache__
+        - .pyc
+        - .trunk
+- function: format_resources_folder_name
+  description: Sets the resources folder names for modules
+  tests:
+  - description: Argument is undefined
+    arguments:
+      resources_folder_name: null
+    assertions:
+    - method: equals
+      expected:
+        resources_folder_name: test_resources
+  - description: Argument is a string
+    arguments:
+      resources_folder_name: resources_folder_name
+    assertions:
+    - method: equals
+      expected:
+        resources_folder_name: resources_folder_name
+- function: format_yaml_suffix
+  description: Sets the suffix used in YAML test file names
+  tests:
+  - description: Argument is undefined
+    arguments:
+      yaml_suffix: null
+    assertions:
+    - method: equals
+      expected:
+        yaml_suffix: _test
+  - description: Argument is defined
+    arguments:
+      yaml_suffix: yaml_suffix
+    assertions:
+    - method: equals
+      expected:
+        yaml_suffix: yaml_suffix
+- function: format_resources
+  description: Formats the resources field as a list of strings
+  tests:
+  - description: Argument is undefined
+    arguments:
+      resources: null
+    assertions:
+    - method: equals
+      expected:
+        resources: []
+  - description: Argument is a string
+    arguments:
+      resources: resources
+    assertions:
+    - method: equals
+      expected:
+        resources:
+        - resources
+  - description: Argument is a list
+    arguments:
+      resources:
+      - resource_a
+      - resource_b
+    assertions:
+    - method: equals
+      expected:
+        resources:
+        - resource_a
+        - resource_b
+- function: check_location_for_matching_extensions
+  description: >
+    Returns the location to a file if its extension
+    is in a list of matching extensions. Otherwise, returns
+    the empty string
+  tests:
+  - description: Has matchining extension
+    arguments:
+      location: location.match_extension
+      extensions: .match_extension
+    assertions:
+    - method: equals
+      expected: location.match_extension
+  - description: Doesn't have matching extension
+    arguments:
+      location: location.match_extension
+      extensions: .no_match
+    assertions:
+    - method: equals
+      expected: ''
+  - description: Location and extensions are undefined
+    arguments: {}
+    assertions:
+    - method: equals
+      expected: null
+- function: check_location_for_exclusion_patterns
+  description: >
+    Returns the location to a file if its extension
+    is in a list of matching extensions. Otherwise, returns
+    the empty string
+  tests:
+  - description: Has matchining pattern
+    arguments:
+      location: location/pattern_c/file
+      patterns:
+      - pattern_a
+      - pattern_b
+    assertions:
+    - method: equals
+      expected: location/pattern_c/file
+  - description: Doesn't have matching extension
+    arguments:
+      location: location/pattern_b/file
+      patterns:
+      - pattern_a
+      - pattern_b
+    assertions:
+    - method: equals
+      expected: ''
+- function: check_location_for_matching_patterns
+  description: >
+    Returns the location to a file if its extension
+    is in a list of matching extensions. Otherwise, returns
+    the empty string
+  tests:
+  - description: Has matchining pattern
+    arguments:
+      location: location/pattern_c/file
+      patterns:
+      - pattern_a
+      - pattern_b
+    assertions:
+    - method: equals
+      expected: ''
+  - description: Doesn't have matching extension
+    arguments:
+      location: location/pattern_b/file
+      patterns:
+      - pattern_a
+      - pattern_b
+    assertions:
+    - method: equals
+      expected: location/pattern_b/file
+- function: get_file_locations
+  description: >
+    Returns a list of files, specified
+    by type or name, in a directory
+  tests:
+  - arguments: {}
+    assertions:
+    - method: equals
+      expected:
+        locations: []
+  - arguments:
+      directory: does_not_exist
+    assertions:
+    - method: equals
+      expected:
+        locations: []
+  - arguments:
+      directory: *RESOURCES
+      match_extensions:
+      - .yml
+      - .yaml
+      file_type: yaml
+    assertions:
+    - method: equals
+      expected:
+        locations:
+        - yaml: ${ROOT_DIR}/main/shared/get_locations/test_resources/exclusion_pattern_test.yml
+        - yaml: ${ROOT_DIR}/main/shared/get_locations/test_resources/app_test.yml
+        - yaml: ${ROOT_DIR}/main/shared/get_locations/test_resources/resources_folder_name/resource_a_test.yaml
+        - yaml: ${ROOT_DIR}/main/shared/get_locations/test_resources/resources_folder_name/resource_a.yml
+  - arguments:
+      directory: *RESOURCES
+      match_extensions:
+      - .py
+      file_type: module
+    assertions:
+    - method: equals
+      expected:
+        locations:
+        - module: ${ROOT_DIR}/main/shared/get_locations/test_resources/exclusion_pattern.py
+        - module: ${ROOT_DIR}/main/shared/get_locations/test_resources/app.py
+        - module: ${ROOT_DIR}/main/shared/get_locations/test_resources/resources_folder_name/resource_b.py
+        - module: ${ROOT_DIR}/main/shared/get_locations/test_resources/resources_folder_name/resource_a.py
+  - arguments:
+      directory: *RESOURCES
+      match_extensions:
+      - .yml
+      - .yaml
+      file_type: resources
+    assertions:
+    - method: equals
+      expected:
+        locations:
+        - ${ROOT_DIR}/main/shared/get_locations/test_resources/exclusion_pattern_test.yml
+        - ${ROOT_DIR}/main/shared/get_locations/test_resources/app_test.yml
+        - ${ROOT_DIR}/main/shared/get_locations/test_resources/resources_folder_name/resource_a_test.yaml
+        - ${ROOT_DIR}/main/shared/get_locations/test_resources/resources_folder_name/resource_a.yml
+  - arguments:
+      directory: *RESOURCES
+      exclude_patterns: test_resources
+    assertions:
+    - method: equals
+      expected:
+        locations: []
+- function: format_module_locations
+  description: >
+    Format's the module location for use in a test id
+  tests:
+  - description: Locations is an empty list
+    arguments:
+      root_directory: location
+      locations: []
+    assertions:
+    - method: equals
+      expected:
+        locations: []
+  - description:
+    arguments:
+      root_directory: location
+      locations:
+      - module: location/module.py
+    assertions:
+    - method: equals
+      expected:
+        locations:
+        - module: location/module.py
+          module_location: .module
+  - description:
+    arguments:
+      root_directory: project_directory
+      locations:
+      - module: project_directory/module_location.py
+    assertions:
+    - method: equals
+      expected:
+        locations:
+        - module: project_directory/module_location.py
+          module_location: .module_location
+- function: get_modules
+  description: >
+    Get the locations of modules associated with
+    YAML test files
+  # patches:
+  # - method: value
+  #   name: CONFIG.resources_folder_name
+  #   value: ''
+  tests:
+  - description: No YAML locations defined
+    arguments:
+      locations: []
+      yaml_suffix: null
+      project_directory: null
+      project_directory_type: ''
+    assertions:
+    - method: equals
+      expected:
+        locations: []
+  - description: No YAML locations defined
+    arguments:
+      locations: locations
+      yaml_suffix: null
+      project_directory: null
+      project_directory_type: ''
+    assertions:
+    - method: equals
+      expected:
+        locations: locations
+  - description: >
+      Defined YAML locations have associated module
+      locations
+    arguments:
+      yaml_suffix: _test
+      project_directory: ${ROOT_DIR}/main/shared/get_locations/test_resources
+      locations:
+      - yaml: ${ROOT_DIR}/main/shared/get_locations/test_resources/app_test.yml
+      - yaml: ${ROOT_DIR}/main/shared/get_locations/test_resources/exclusion_pattern.yml
+      project_directory_type: directory
+    assertions:
+    - method: equals
+      expected:
+        locations:
+        - yaml: ${ROOT_DIR}/main/shared/get_locations/test_resources/app_test.yml
+          module: ${ROOT_DIR}/main/shared/get_locations/test_resources/app.py
+        - yaml: ${ROOT_DIR}/main/shared/get_locations/test_resources/exclusion_pattern.yml
+          module: ''
+- function: get_yamls
+  description: >
+    Returns a list of YAML files in a specified directory
+  tests:
+  - description: No YAML files
+    arguments:
+      yaml_suffix: _test
+      exclude_files: []
+      project_directory_type: directory
+      project_directory: *RESOURCES
+      resources_folder_name: test_resources
+    assertions:
+    - method: equals
+      expected:
+        locations: []
+  - description: Project directory is the locaiton of a file
+    arguments:
+      yaml_suffix: _test
+      exclude_files: []
+      project_directory_type: file
+      project_directory: ${ROOT_DIR}/main/shared/get_locations/test_resources/app.py
+      resources_folder_name: resources_folder_name
+    assertions:
+    - method: equals
+      expected:
+        locations:
+        - yaml: ${ROOT_DIR}/main/shared/get_locations/test_resources/app_test.yml
+          module: ${ROOT_DIR}/main/shared/get_locations/test_resources/app.py
+  - description: Project directory is the locaiton of a directory
+    arguments:
+      yaml_suffix: _test
+      exclude_files: []
+      project_directory_type: directory
+      project_directory: *RESOURCES
+      resources_folder_name: resources_folder_name
+    assertions:
+    - method: equals
+      expected:
+        locations:
+        - yaml: ${ROOT_DIR}/main/shared/get_locations/test_resources/exclusion_pattern_test.yml
+        - yaml: ${ROOT_DIR}/main/shared/get_locations/test_resources/app_test.yml
+- function: get_resources
+  description: >
+    Get the locations of resources or modules used during
+    tests
+  tests:
+  - description: No module listed
+    arguments:
+      resources_folder_name: test_resources
+      exclude_files:
+      - test_resources
+      locations: []
+      resources: []
+    assertions:
+    - method: equals
+      expected:
+        locations: []
+  - description: Module listed
+    arguments:
+      resources_folder_name: test_resources
+      exclude_files:
+      - test_resources
+      locations:
+      - module: ${ROOT_DIR}/main/shared/get_locations/app.py
+      resources:
+      - resource_a
+      - resource_b
+    assertions:
+    - method: equals
+      expected:
+        locations:
+        - module: ${ROOT_DIR}/main/shared/get_locations/app.py
+          resources:
+          - resource_a
+          - resource_b
+          - ${ROOT_DIR}/main/shared/get_locations/test_resources/exclusion_pattern.py
+          - ${ROOT_DIR}/main/shared/get_locations/test_resources/app.py
+          - ${ROOT_DIR}/main/shared/get_locations/test_resources/resources_folder_name/resource_b.py
+          - ${ROOT_DIR}/main/shared/get_locations/test_resources/resources_folder_name/resource_a.py
+- function: main
+  description: >
+    Return a list of dictionaries containing
+    the locations of a module, YAML, and resources
+    for testing
+  tests:
+  - description: Locations is defined
+    arguments:
+      locations: locations
+    assertions:
+    - method: equals
+      expected:
+        locations: locations
+  - description: Defined project directory
+    arguments:
+      project_directory: *RESOURCES
+      resources_folder_name: resources_folder_name
+      exclude_files: []
+    assertions:
+    - method: equals
+      expected:
+        locations:
+        - module: ${ROOT_DIR}/main/shared/get_locations/test_resources/exclusion_pattern.py
+          module_location: .main.shared.get_locations.test_resources.exclusion_pattern
+          resources:
+          - ${ROOT_DIR}/main/shared/get_locations/test_resources/resources_folder_name/resource_b.py
+          - ${ROOT_DIR}/main/shared/get_locations/test_resources/resources_folder_name/resource_a.py
+          yaml: ${ROOT_DIR}/main/shared/get_locations/test_resources/exclusion_pattern_test.yml
+        - module: ${ROOT_DIR}/main/shared/get_locations/test_resources/app.py
+          module_location: .main.shared.get_locations.test_resources.app
+          resources:
+          - ${ROOT_DIR}/main/shared/get_locations/test_resources/resources_folder_name/resource_b.py
+          - ${ROOT_DIR}/main/shared/get_locations/test_resources/resources_folder_name/resource_a.py
+          yaml: ${ROOT_DIR}/main/shared/get_locations/test_resources/app_test.yml
