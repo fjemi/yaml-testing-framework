@@ -1,0 +1,25 @@
+schema:
+- name: Config
+  fields:
+  - name: resources
+    type: str | None
+    default: null
+    description: Path to directory containing resources to use for tests
+  - name: exclude
+    type: List[str] | None
+    default: null
+- name: Base
+  fields:
+  - name: description
+    type: str | None
+    default: null
+  - name: cast
+    type: Cast | None
+    default: null
+  - name: patches
+    type: List[Patch] | None
+    default: null
+  - name: assert
+    type: dict | None
+    default: None
+
