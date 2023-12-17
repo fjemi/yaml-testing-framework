@@ -1,0 +1,53 @@
+schema:
+- &PARENTS
+  cls_name: Parents
+  description: >
+    Store the names, values, and types of the
+    parents of an object
+  slots: False
+  fields:
+  - name: names
+    type: list | None
+    description:
+    default: null
+  - name: values
+    type: list | None
+    description:
+    default: null
+  - name: types
+    type: list | None
+    description:
+    default: null
+- &DATA
+  cls_name: Data
+  description: Data used by the functions within the module
+  slots: False
+  fields:
+  - name: parent
+    type: Any
+    description:
+    default: null
+  - name: name
+    type: str | None
+    description: Dot-delimited path to the cast object
+    default: null
+  - name: parents
+    type: Data_Class | None
+    description:
+    default: null
+  - name: names
+    type: list | None
+    description:
+    default: null
+
+
+kinds:
+- dict
+- object
+
+
+undefined:
+- ''
+- .
+- None
+- null
