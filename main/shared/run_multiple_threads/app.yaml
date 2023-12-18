@@ -1,0 +1,98 @@
+environment:
+  DEBUG: ${DEBUG}
+
+
+schema:
+- &DATA
+  cls_name: Data
+  description: Store data used by the functions in a module
+  slots: False
+  fields:
+  - name: target
+    type: Callable | None
+    description: The function to run in a threads
+    default: null
+  - name: args
+    type: list | tuple | None
+    description: Arguments passed to a function
+    default: null
+  - name: kwargs
+    type: dict | None
+    description: Keyword arguments passed to a function
+    default: null
+  - name: store_name
+    type: str | None
+    description: >
+      The name of a global variable in a function's module,
+      that's used to store results of functions run inside threads
+    default: null
+  - name: results
+    type: list | None
+    description: The results of running the functions
+    default: null
+  - name: timestamp
+    type: int | list | None
+    description: An integer timestamp
+    default: null
+  - name: arguments
+    type: list | None
+    description: Arguements passed to a function called within a thread
+    default: null
+  - name: threads
+    type: list | None
+    description: Store threads created for multi-threading
+    default: null
+  - name: result_key
+    type: str | None
+    description: >
+      The dictionary key the results from running the threads is saved to
+    default: ''
+  - name: kind
+    type: str | None
+    description: The kind or type of an object
+    default: ''
+
+
+format_kinds_handler:
+  nonetype: empty_list
+  list: argument
+  tuple: argument
+  dict: argument
+  any: list
+
+
+format_kinds:
+-  nonetype
+-  list
+-  tuple
+-  dict
+-  any
+
+
+argument_kinds:
+- args
+- kwargs
+
+
+empty_values:
+- null
+- None
+- False
+- 'false'
+- 'False'
+- []
+- {}
+
+
+operations:
+- format_target_arguments
+- set_target_entrypoints_for_threads
+- get_threads
+- run_threads_in_parallel
+
+
+entrypoint_operations:
+- call_target_with_unpacked_argument
+- call_target_with_packed_argument
+# - update_result_store
+- update_results

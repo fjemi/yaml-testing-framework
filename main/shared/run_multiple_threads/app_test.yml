@@ -1,0 +1,626 @@
+todo:
+- complete test for update_store
+- fix first tested for call_async_target_with_unpacked_argument
+
+
+resources:
+- https://www.includehelp.com/python/thread-getname-method-with-example.aspx
+- https://www.pythontutorial.net/python-concurrency/python-threading/
+- https://stackoverflow.com/questions/10724495/getting-all-arguments-and-values-passed-to-a-function
+- https://stackoverflow.com/questions/7027848/getting-corresponding-module-from-function
+- https://stackoverflow.com/questions/53215074/using-time-sleep-in-thread-python3
+- https://stackoverflow.com/questions/61151031/start-an-async-function-inside-a-new-thread
+- https://stackoverflow.com/questions/36076619/test-if-function-or-method-is-normal-or-asynchronous
+
+
+globals:
+  resources:
+  - ${ROOT_DIR}/assertions/app.py
+
+
+tests:
+- function: get_task_from_event_loop
+  description: Retrieves the result of a coroutine
+  tests:
+  - arguments: {}
+    assertions:
+    - method: equals
+      expected: null
+  - arguments:
+      task: task
+    assertions:
+    - method: equals
+      expected: task
+  - cast_arguments:
+    - caster: test_resources.app.coroutine_resource
+      field: task
+    arguments:
+      task: coroutine
+    assertions:
+    - method: equals
+      expected: async_output
+- function: format_argument_as_empty_list
+  description: >
+    Return an empty list when the argument is None
+  tests: &FORMAT_ARGUMENT_AS_EMPTY_LIST_TESTS
+  - description: Arguments are undefined
+    arguments:
+      argument: null
+    assertions:
+    - method: equals
+      expected: []
+- function: format_argument_as_argument
+  description: >
+    Returns the argument passed into the function
+  tests: &FORMAT_ARGUMENT_AS_ARGUMENT_TESTS
+  - description: Argument is a list
+    arguments:
+      argument:
+      - a
+      - b
+    assertions:
+    - method: equals
+      expected:
+      - a
+      - b
+  - description: Argument is a dict
+    arguments:
+      argument:
+        a: a
+        b: b
+    assertions:
+    - method: equals
+      expected:
+        a: a
+        b: b
+- function: format_argument_as_list
+  description: >
+    Returns a list containing the argument
+  tests: &FORMAT_ARGUMENT_AS_LIST_TESTS
+  - description: Argument is a string
+    arguments:
+      argument: argument
+    assertions:
+    - method: equals
+      expected:
+      - argument
+  - description: Argument is a int
+    arguments:
+      argument: 100
+    assertions:
+    - method: equals
+      expected:
+      - 100
+- function: format_argument
+  description: >
+    Handler used to call functions for formatting arguments
+  tests:
+  - << : *FORMAT_ARGUMENT_AS_EMPTY_LIST_TESTS
+  - << : *FORMAT_ARGUMENT_AS_LIST_TESTS
+  - << : *FORMAT_ARGUMENT_AS_ARGUMENT_TESTS
+- function: format_target_arguments
+  description: Formats sh`args` or sh`kwargs` arguments
+  tests:
+  - description: No arguments defined
+    arguments:
+      kwargs: []
+      args: null
+    assertions:
+    - method: equals
+      expected:
+        kwargs: null
+        args: null
+        arguments: []
+  - description: Argument is args
+    arguments:
+      kwargs:
+      - kwargs_a
+      - kwargs_b
+      - kwargs_c
+      args:
+      - args_1
+      - args_2
+    assertions:
+    - method: equals
+      expected:
+        kwargs: null
+        args: null
+        arguments:
+        - args:
+          - args_1
+          - args_2
+        - kwargs: kwargs_a
+        - kwargs: kwargs_b
+        - kwargs: kwargs_c
+  - description: Defined args
+    arguments:
+      kwargs: []
+      args:
+        - args_a
+        - args_b
+    assertions:
+    - method: equals
+      expected:
+        args: null
+        kwargs: null
+        arguments:
+        - args:
+          - args_a
+          - args_b
+  - description: Argument is kwargs
+    arguments:
+      kwargs:
+      - key_a: value_a
+      - key_b: value_b
+    assertions:
+    - method: equals
+      expected:
+        args: null
+        kwargs: null
+        arguments:
+        - kwargs:
+            key_a: value_a
+        - kwargs:
+            key_b: value_b
+- function: call_sync_target_with_packed_argument
+  description: Call function with a packed argument
+  tests:
+  - arguments: {}
+    assertions:
+    - method: equals
+      expected: null
+  - arguments:
+      output: output
+      exception: null
+    assertions:
+    - method: equals
+      expected: output
+  - arguments:
+      target: null
+      output: output
+      exception: exception
+    assertions:
+    - method: equals
+      expected: exception
+  - cast_arguments:
+    - caster: test_resources.app.target_resource
+      field: target
+    arguments:
+      target: sync_target
+      argument: {}
+      output: null
+      exception: null
+    assertions:
+    - method: equals
+      expected: sync_output
+- function: call_sync_target_with_unpacked_argument
+  description:
+  cast_arguments:
+  - field: target
+    caster: test_resources.app.target_resource
+  tests:
+  - arguments:
+      argument: {}
+      target: sync_exception_target
+      kind: kwargs
+    cast_output:
+    - field: exception
+      caster: __builtins__.str
+    assertions:
+    - method: equals
+      expected:
+        output: null
+        exception: "unsupported operand type(s) for +: 'int' and 'str'"
+  - arguments:
+      argument: []
+      target: sync_target
+      kind: args
+    assertions:
+    - method: equals
+      expected:
+        output: sync_output
+        exception: null
+  - arguments:
+      argument: []
+      target: null
+      kind: args
+    cast_output:
+    - caster: __builtins__.str
+      field: exception
+    assertions:
+    - method: equals
+      expected:
+        output: null
+        exception: "'NoneType' object is not callable"
+- function: call_async_target_with_packed_argument
+  description: Call function with a packed argument
+  tests:
+  - arguments: {}
+    assertions:
+    - method: equals
+      expected: null
+  - arguments:
+      output: output
+      exception: null
+    assertions:
+    - method: equals
+      expected: output
+  - arguments:
+      target: null
+      output: output
+      exception: exception
+    assertions:
+    - method: equals
+      expected: exception
+  - cast_arguments:
+    - caster: test_resources.app.target_resource
+      field: target
+    arguments:
+      target: async_target
+      argument: {}
+      output: null
+      exception: exception
+    assertions:
+    - method: equals
+      expected: async_output
+- function: call_async_target_with_unpacked_argument
+  description: >
+    Call a coroutine function with an unpacked dictionary of arguments
+  cast_arguments:
+  - field: target
+    caster: test_resources.app.target_resource
+  tests:
+  - arguments:
+      argument:
+        a: '1'
+        b: 1
+      target: add_async
+      kind: kwargs
+    cast_output:
+    - field: exception
+      caster: __builtins__.str
+    assertions:
+    - method: equals
+      expected:
+        output: null
+        exception: ''
+  - arguments:
+      argument: []
+      target: async_target
+      kind: args
+    assertions:
+    - method: equals
+      expected:
+        output: async_output
+        exception: null
+  - arguments:
+      argument: []
+      target: null
+      kind: args
+    cast_output:
+    - caster: __builtins__.str
+      field: exception
+    assertions:
+    - method: equals
+      expected:
+        output: null
+        exception: "'NoneType' object is not callable"
+- function: get_entrypoint_for_sync_target
+  description: >
+    Returns the entrypoint into a thread
+    for a synchronous function
+  cast_arguments:
+  - field: target
+    caster: test_resources.app.target_resource
+  tests:
+  - arguments:
+      target: sync_target
+      argument: {}
+      result_key: result_key
+      kind: kwargs
+    assertions:
+    - method: type
+      expected: function
+    - method: equals
+      field: __name__
+      expected: entrypoint_wrapper
+  - arguments:
+      target: sync_target
+      argument: {}
+      kind: kwargs
+      result_key: result_key
+    cast_output:
+    - caster: test_resources.app.call_entrypoint
+    assertions:
+    - method: equals
+      expected: sync_output
+  - arguments:
+      target: add_sync
+      argument:
+        a: 10
+        b: 10
+      kind: kwargs
+      result_key: result_key
+    cast_output:
+    - caster: test_resources.app.call_entrypoint
+    assertions:
+    - method: equals
+      expected: 20
+- function: get_entrypoint_for_async_target
+  description: >
+    Returns the entrypoint into a thread
+    for a asynchronous function
+  cast_arguments:
+  - field: target
+    caster: test_resources.app.target_resource
+  tests:
+  - arguments:
+      target: async_target
+      argument: {}
+      result_key: result_key
+      kind: kwargs
+    assertions:
+    - method: type
+      expected: function
+    - method: equals
+      field: __name__
+      expected: entrypoint_wrapper
+  - arguments:
+      target: async_target
+      argument: {}
+      kind: kwargs
+      result_key: result_key
+    cast_output:
+    - caster: test_resources.app.call_entrypoint
+    assertions:
+    - method: equals
+      expected: async_output
+  - arguments:
+      target: add_async
+      argument:
+        a: 11
+        b: 11
+      kind: kwargs
+      result_key: result_key
+    cast_output:
+    - caster: test_resources.app.call_entrypoint
+    assertions:
+    - method: equals
+      expected: 22
+- function: get_entrypoint_handler
+  description: >
+    Returns the entrypoint into a thread
+    for an async or sync target
+  cast_arguments:
+  - field: target
+    caster: test_resources.app.target_resource
+  tests:
+  - description: Target is a function
+    arguments:
+      target: sync_target
+      argument:
+        kwargs: {}
+      result_key: result_key
+    tests:
+    - assertions:
+      - method: type
+        expected: function
+      - method: equals
+        field: __name__
+        expected: entrypoint_wrapper
+    - cast_output:
+      - caster: test_resources.app.call_entrypoint
+      assertions:
+      - method: equals
+        expected: sync_output
+  - description: Target is a coroutine function
+    arguments:
+      target: async_target
+      argument:
+        kwargs: {}
+      result_key: result_key
+    tests:
+    - assertions:
+      - method: type
+        expected: function
+      - method: equals
+        field: __name__
+        expected: entrypoint_wrapper
+    - cast_output:
+      - caster: test_resources.app.call_entrypoint
+      assertions:
+      - method: equals
+        expected: async_output
+- function: set_target_entrypoints_for_threads
+  description:
+  cast_arguments:
+  - field: target
+    caster: test_resources.app.target_resource
+  tests:
+  - arguments:
+      target: sync_target
+      arguments:
+      - args: []
+      - kwargs: {}
+      result_key: result_key
+      module: module
+    cast_output:
+    - caster: test_resources.app.set_target_entrypoints_for_threads_resource
+      field: entrypoints
+    assertions:
+    - method: equals
+      expected:
+        entrypoints:
+        - entrypoint_wrapper
+        - entrypoint_wrapper
+        module: module
+        arguments: null
+  - arguments:
+      target: async_target
+      arguments:
+      - args: []
+      - kwargs: {}
+      result_key: result_key
+      module: module
+    cast_output:
+    - caster: test_resources.app.set_target_entrypoints_for_threads_resource
+      field: entrypoints
+    assertions:
+    - method: equals
+      expected:
+        entrypoints:
+        - entrypoint_wrapper
+        - entrypoint_wrapper
+        module: module
+        arguments: null
+- function: create_single_thread
+  description: Creates a thread for a target
+  cast_arguments:
+  - field: target
+    caster: test_resources.app.target_resource
+  tests:
+  - arguments:
+      target: sync_target
+      daemon: True
+    assertions:
+    - method: type
+      expected: threading.Thread
+    - method: contains
+      field: name
+      expected: sync_target
+  - arguments:
+      target: async_target
+      daemon: True
+    assertions:
+    - method: type
+      expected: threading.Thread
+    - method: contains
+      field: name
+      expected: async_target
+- function: get_threads
+  description: >
+    Returns a list of threads; a single thread for each entrypoint created
+  tests:
+  - arguments:
+      entrypoints: []
+    assertions:
+    - method: equals
+      expected:
+        entrypoints: null
+        threads: []
+  - cast_arguments:
+    - field: entrypoints
+      caster: test_resources.app.entrypoints_resource
+    arguments:
+      entrypoints: entrypoints
+    cast_output:
+    - field: threads
+      caster: test_resources.app.output_threads_resource
+    assertions:
+    - method: equals
+      expected:
+        entrypoints: null
+        threads:
+        - target: sync_target
+          type: thread
+        - target: async_target
+          type: thread
+  - arguments:
+      entrypoints: entrypoints
+    cast_output:
+    - caster: test_resources.app.get_threads_resource
+      field: threads
+    assertions:
+    - method: equals
+      expected:
+        entrypoints: null
+        threads:
+        - thread
+        - thread
+        - thread
+        - thread
+        - thread
+        - thread
+        - thread
+        - thread
+        - thread
+        - thread
+        - thread
+- function: run_threads_in_parallel
+  description: Runs a list of threads in parallel
+  tests:
+  - arguments:
+      threads: null
+    assertions:
+    - method: equals
+      expected:
+        threads: null
+  - cast_arguments:
+    - caster: test_resources.app.threads_resource
+      field: threads
+    arguments:
+      threads: threads
+    assertions:
+    - method: equals
+      expected:
+        threads: null
+- function: run_threads_in_sequence
+  description: Runs a list of threads sequentially
+  tests:
+  - arguments:
+      threads: null
+    assertions:
+    - method: equals
+      expected:
+        threads: null
+  - cast_arguments:
+    - caster: test_resources.app.threads_resource
+      field: threads
+    arguments:
+      threads: threads
+    assertions:
+    - method: equals
+      expected:
+        threads: null
+- function: main
+  description: Returns the results of running functions in multiple threads
+  cast_arguments:
+  - caster: test_resources.app.target_resource
+    field: target
+  tests:
+  - arguments:
+      target: add_sync
+      kwargs:
+        a: 11
+        b: 11
+      timestamp: timestamp
+    assertions:
+    - method: equals
+      expected:
+      - 22
+  - arguments:
+      target: add_sync
+      args:
+      - 22
+      - 22
+      timestamp: timestamp_1
+    assertions:
+    - method: equals
+      expected:
+      - 44
+  - arguments:
+      target: add_sync
+      kwargs:
+        a: 11
+        b: 11
+      args:
+      - 22
+      - 22
+      timestamp: timestamp_1
+    # Using the contains assertions since results
+    # added to the list out of order
+    assertions:
+    - method: contains
+      expected: 22
+    - method: contains
+      expected: 44
