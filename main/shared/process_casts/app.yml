@@ -1,0 +1,192 @@
+schema:
+- &KINDS
+  cls_name: Kinds
+  description: Store the kinds of casters, objects, and casted_objects
+  slots: False
+  fields:
+  - name: caster
+    type: str | Any | None
+    description: The trype of the object
+    default: null
+  - name: object
+    type: str | None
+    description: Any object
+    default: null
+  - name: casted_object
+    type: str | None
+    description: The trype of the object
+    default: null
+- &CAST
+  cls_name: Cast
+  description: Store data needed to cast an object
+  slots: False
+  fields: &CAST_FIELDS
+  - name: caster
+    type: str | Any | None
+    description: Dot-delimited path to a caster or the caster itself
+    default: null
+  - name: unpack
+    type: bool
+    description: Cast an packed or unpacked object
+    default: true
+  - name: module
+    type: ModuleType | None
+    description: Module containing the cast object
+    default: null
+  - name: object
+    type: Any | None
+    description: Any object
+    default: null
+  - name: casted_object
+    type: str | None
+    description: The result from casting an object
+    default: null
+
+
+- &DATA
+  cls_name: Data
+  description: Store data used by the functions in a module
+  slots: False
+  fields:
+  - name: caster
+    type: str | Any | None
+    description: Dot-delimited path to a caster or the caster itself
+    default: null
+  - name: unpack
+    type: bool
+    description: Cast an packed or unpacked object
+    default: true
+  - name: module
+    type: ModuleType | None
+    description: Module containing the cast object
+    default: null
+  - name: object
+    type: Any | None
+    description: Any object
+    default: null
+  - name: casted_object
+    type: Any | None
+    description: Any object
+    default: null
+  - name: kinds
+    type: Data_Class | None
+    description: Stores the kind of objects
+    default: null
+  - name: field
+    type: str | None
+    description: The name of a field or attribute of an object
+    default: ''
+  - name: object_key
+    type: str | None
+    description: Key for the field (arguments, output, or object) to cast
+    default: ''
+  - name: casts
+    type: List[dict] | None
+    description: List of individual casts to perform
+    default: []
+  - name: cast
+    type: dict | None
+    description: List of individual casts to perform
+    default: {}
+  - name: arguments
+    type: dict | None
+    description: Arguments to pass to a function
+    default: {}
+  - name: cast_arguments
+    type: list | None
+    description: Casts to perform on function arguments
+    default: []
+  - name: output
+    type: Any | None
+    description: Output from running a function
+    default: null
+  - name: cast_output
+    type: list | None
+    description: Casts to perform on function output
+    default: []
+  - name: i
+    type: int | None
+    description: Index for an element in a list
+    default: 0
+  # trunk-ignore(yamllint/quoted-strings)
+  - name: 'n'
+    type: Any | None
+    description: An iterable range
+    default: null
+
+
+unpack_kinds:
+- list
+- tuple
+- dict
+- module
+- dataclass
+- nonetype
+
+
+object_kinds:
+- list
+- dict
+- module
+- dataclass
+- nonetype
+
+
+casted_object_kinds:
+- list
+- dict
+- module
+- dataclass
+- nonetype
+
+
+caster_kinds:
+- dataclass
+- function
+- callable
+- type
+- nonetype
+
+
+empty_values:
+- null
+- None
+- []
+- '[]'
+- {}
+- '{}'
+- ''
+- .
+- False
+- 'False'
+- 'false'
+- 0
+- '0'
+
+
+operations:
+- get_caster
+- get_object_to_cast
+- get_kinds
+- cast_object
+
+
+cast_fields:
+- cast_arguments
+- cast_output
+- cast_object
+
+
+get_object_properties:
+- object: caster
+  parent: module
+  name: caster
+- object: object
+  parent: object
+  name: field
+
+
+cast_keys:
+- cast_arguments: cast_arguments
+- cast_output: cast_output
+- caster: cast_object
