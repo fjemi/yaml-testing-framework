@@ -1,0 +1,28 @@
+schema:
+- &OPERATIONS
+  cls_name: Operations
+  description: Store data for performing operations on data
+  slots: False
+  fields:
+  - name: names
+    type: list | None
+    description: The names of functions or operations
+    default: []
+  - name: parameters
+    type: dict | None
+    description: A list of the parameters of a function
+    default: []
+  - name: results
+    type: dict | None
+    description: >
+      The output of calling the function
+      with its parameters/arguments
+    default: {}
+  - name: fields
+    type: dict | None
+    description: The  value of parameters that exist in the data
+    default: {}
+  - name: function
+    type: Callable | None
+    description: A function to call
+    default: null

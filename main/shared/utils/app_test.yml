@@ -1,0 +1,189 @@
+resources:
+- https://stackoverflow.com/questions/55590343/asyncio-run-or-run-until-complete
+
+
+globals:
+  resources:
+  - ${ROOT_DIR}/assertions/app.py
+
+
+tests:
+- function: get_function_parameters
+  description: Returns the parameters of a function
+  cast_arguments:
+  - caster: test_resources.app.function_resource
+    field: function
+  tests:
+  - description: Function with one parameter
+    arguments:
+      function: function_one_parameter
+    assertions:
+    - method: equals
+      expected:
+      - parameter_1
+  - description: Function with two parameters
+    arguments:
+      function: function_two_parameters
+    assertions:
+    - method: equals
+      expected:
+      - parameter_1
+      - parameter_2
+- function: process_arguments
+  description: Returns arguments as a dataclass
+  cast_arguments:
+  - caster: test_resources.app.data_class_resource
+    field: data_class
+  cast_output:
+  - caster: __builtins__.dict
+  tests:
+  - description: Undefined arguments
+    arguments:
+      locals: {}
+      data_class: data_class
+    assertions:
+    - method: equals
+      expected:
+        a: 0
+        b: 0
+        result: 0
+  - description: Defined arguments
+    arguments:
+      locals:
+        a: 1
+        b: 2
+      data_class: data_class
+    assertions:
+    - method: equals
+      expected:
+        a: 1
+        b: 2
+        result: 0
+- function: process_operations
+  description: >
+    Executes functions listed as operations in
+    config files n times to process data
+  tests:
+  - cast_arguments:
+    - caster: test_resources.app.functions_resource
+      field: functions
+    - caster: test_resources.app.Data_Class
+      field: data
+      unpack: true
+    cast_output:
+    - caster: dc.asdict
+    tests:
+    - description: Data object is a dataclass
+      arguments:
+        operations:
+        - subtract
+        data:
+          a: 1
+          b: 3
+        functions: functions
+      assertions:
+      - method: equals
+        expected:
+          a: 1
+          b: 3
+          result: -2
+    - arguments:
+        operations:
+        - add
+        data:
+          a: 1
+          b: 3
+        functions: functions
+      assertions:
+      - method: equals
+        expected:
+          a: 1
+          b: 3
+          result: 4
+    - arguments:
+        operations:
+        - multiply
+        data:
+          a: 1
+          b: 3
+        functions: functions
+      assertions:
+      - method: equals
+        expected:
+          a: 1
+          b: 3
+          result: 3
+  - description: >
+      Data argument is a dict
+    cast_arguments:
+    - caster: test_resources.app.functions_resource
+      field: functions
+    arguments:
+      operations:
+      - subtract
+      data:
+        a: 1
+        b: 3
+    assertions:
+    - method: equals
+      expected:
+        a: 1
+        b: 3
+        result: -2
+- function: set_field_value
+  description: >
+    Set the value for a field (key of a dict
+    or attribute of an object)
+  tests:
+  - description: Set value for key of a dict
+    arguments:
+      kind: dict
+      data:
+        key: value
+      field: key
+      value:  set_value
+    assertions:
+    - method: equals
+      expected:
+        key: set_value
+  - description: Set value for attribute of an object
+    cast_arguments:
+    - field: data
+      caster: test_resources.app.data_resource
+    arguments:
+      kind: object
+      data:
+        a: 0
+        b: 0
+        result: 0
+      field: result
+      value:  -1
+    cast_output:
+    - caster: dc.asdict
+    assertions:
+    - method: equals
+      expected:
+        a: 0
+        b: 0
+        result: -1
+- function: get_task_from_event_loop
+  description: Returns the output of a coroutine
+  tests:
+  - arguments:
+      task: null
+    assertions:
+    - method: equals
+      expected: null
+  - arguments:
+      task: task
+    assertions:
+    - method: equals
+      expected: task
+  - cast_arguments:
+    - caster: test_resources.app.coroutine_resource
+      field: task
+    arguments:
+      task: coroutine_task
+    assertions:
+    - method: equals
+      expected: coroutine_output
