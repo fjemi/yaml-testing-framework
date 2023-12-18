@@ -1,0 +1,485 @@
+todo:
+- >
+  add a key, such as `from_module` to allow objects to be patched as python objects
+    object: example
+    value: app.example
+    from_module: True
+  This lets us pass the object as app.example. If from module is False it is patched as a string
+
+  option 2)
+    patch:
+      object: str
+      module_object: str
+- dot-delimited attribute paths in has_attributes
+- more robust way of testing functions that create patches
+- catch error when cast_arguments and arguments don't have matching keys
+- add logic to allow casting at the in process_assertions
+- fix this test to verify the values within parents.values
+
+
+globals:
+  resources:
+  - ${ROOT_DIR}/assertions/app.py
+
+
+tests:
+- function: get_patch_for_value
+  description: Returns a value patch
+  tests:
+  - description: Patch value is a string
+    arguments:
+      value: patch_value
+    assertions:
+    - method: type
+      expected: str
+    - method: equals
+      expected: patch_value
+  - description: Patch value is a integer
+    arguments:
+      value: 1
+    assertions:
+    - method: type
+      expected: int
+    - method: equals
+      expected: 1
+- function: get_patch_for_callable
+  description: Returns callable patch
+  tests:
+  - description: Returns a function
+    arguments:
+      value: value
+      timestamp: timestamp
+    assertions:
+    - method: type
+      expected: function
+    - method: equals
+      field: __name__
+      expected: callable_patch
+  - description: Name of function should contain sh`callable_patch`
+    arguments:
+      value: value
+      timestamp: timestamp
+    cast_output:
+    - caster: __builtins__.str
+    assertions:
+    - method: contains
+      expected: callable_patch
+  - description: Returns the value when the patch is called
+    arguments:
+      value: patch_value
+      timestamp: timestamp
+    cast_output:
+    - caster: test_resources.app.get_patch_callable_resource
+    assertions:
+    - method: type
+      expected: function
+    - method: equals
+      field: __name__
+      expected: callable_patch
+- function: get_patch_for_side_effect_list
+  description: Sets the patch for a side effect list
+  tests:
+  - description: Return a side effect list patch
+    arguments:
+      value:
+      - value_a
+      - value_b
+      - value_c
+      timestamp: timestamp
+    assertions:
+    - method: type
+      expected: function
+    - method: equals
+      field: __name__
+      expected: side_effect_list_patch
+  - description: Name of function should contain sh`side_effect_list_patch`
+    arguments:
+      value:
+      - value_a
+      - value_b
+      - value_c
+      timestamp: timestamp
+    cast_output:
+    - caster: __builtins__.str
+    assertions:
+    - method: contains
+      expected: side_effect_list_patch
+- function: get_patch_for_side_effect_dict
+  description: Sets the patch for a side effect dict
+  tests:
+  - description: Return a side effect dict patch
+    arguments:
+      value:
+        key_0: value_0
+        key_1: value_1
+        key_2: value_2
+      timestamp: timestamp
+    assertions:
+    - method: type
+      expected: function
+    - method: equals
+      field: __name__
+      expected: side_effect_dict_patch
+  - description: Name of function should contain sh`side_effect_dict_patch`
+    arguments:
+      value:
+        key_0: value_0
+        key_1: value_1
+        key_2: value_2
+      timestamp: timestamp
+    cast_output:
+    - caster: __builtins__.str
+    assertions:
+    - method: contains
+      expected: side_effect_dict_patch
+- function: get_patch
+  description: Handles retrieving and setting the correct patch
+  tests:
+  - description: Return a value patch
+    arguments:
+      method: value
+      value: value_patch
+      timestamp: timestamp
+    assertions:
+    - method: type
+      expected: dict
+    - method: type
+      field: patch
+      expected: str
+    - method: equals
+      field: patch
+      expected: value_patch
+  - description: Return a callable patch
+    arguments:
+      method: callable
+      value: value
+      timestamp: timestamp
+    assertions:
+    - method: equals
+      field: patch.__name__
+      expected: callable_patch
+    - method: type
+      field: patch
+      expected: function
+- function: get_parent_from_dict
+  description: Get an object when its parent is a dictionary
+  tests:
+  - description: Key in dictionary 1
+    arguments:
+      parent:
+        key_a: value_a
+        key_b: value_b
+      name: key_a
+    assertions:
+    - method: equals
+      expected: value_a
+  - description: Key in dictionary 2
+    arguments:
+      parent:
+        key_a: value_a
+        key_b: value_b
+      name: key_b
+    assertions:
+    - method: equals
+      expected: value_b
+  - description: Returns a sh`Data_Class` object when the key is not in dictionary
+    arguments:
+      parent:
+        key: value
+      name: key_a
+    cast_output:
+    - caster: __builtins__.str
+    assertions:
+    - method: equals
+      expected: Data_Class()
+- function: get_parent_from_object
+  description: Returns a attributes or field of another object
+  tests:
+  - description: Returns a sh`Data_Class` object when the attribute doesn't exist in the object
+    cast_arguments:
+    - caster: test_resources.app.setup_get_parent_from_object
+      field: parent
+    arguments:
+      parent: null
+      name: attribute_doesnt_exist
+    assertions:
+    - method: type
+      expected: Data_Class
+  - description: Returns a module's builtin functions
+    cast_arguments:
+    - caster: test_resources.app.setup_get_parent_from_object
+      field: parent
+    arguments:
+      parent: null
+      name: __builtins__
+    assertions:
+    - method: type
+      expected: dict
+    # todo: fix this test. see get_object.app line 57
+    - method: equals
+      field: __name__
+      expected: builtins
+- function: get_parent
+  description: >
+    Returns a sh`Data_Class` object containing values,
+    names, and types of parents of the specified object
+  cast_arguments:
+  - caster: test_resources.app.module_resource
+    field: module
+  tests:
+  - description: Set parent values, types, and names for the builtins class sh`str`
+    arguments:
+      module: module
+      name: ''
+    assertions:
+    - method: type
+      field: parents
+      expected: Parents
+    - method: equals
+      field: name
+      expected: null
+    - method: equals
+      field: parents.names
+      expected:
+      - ''
+      - ''
+    - method: equals
+      field: parents.types
+      expected:
+      - object
+      - object
+    - method: length
+      field: parents.values
+      expected: 2
+    # # todo: add logic to allow casting at the in process_assertions
+    # - method: equals
+    #   # casts:
+    #   # - caster: __builtins__.str
+    #   field: parents.values
+    #   expected: "[<module 'process_patches.test_resources.app_a' from '${ROOT_DIR}main/shared/process_patches/test_resources/app_a.py'>, Data_Class()]"
+  - description: >
+      Set parent values, types, and names for the
+      builtins attribute of the dataclass sh`EXAMPLE`
+    arguments:
+      module: module
+      name: EXAMPLE_OBJECT.field
+    tests:
+    - assertions:
+      - method: equals
+        field: parents.types
+        expected:
+        - object
+        - object
+        - object
+      - method: equals
+        field: parents.names
+        expected:
+        - ''
+        - EXAMPLE_OBJECT
+        - field
+    # todo: fix this test to verify the values within parents.values
+    # - cast_output:
+    #   - caster: __builtins__.str
+    #     field: parents
+    #   assertions:
+    #   - method: equals
+    #     field: parents
+    #     expected: >
+    #       Parents(names=['', 'EXAMPLE_OBJECT', 'field'], values=[<module 'process_patches.test_resources.app_a'
+    #       from '/home/olufemij/repos/pytest-yaml-dev/main/shared/process_patches/test_resources/app_a.py'>,
+    #       Data_Class_Resource(field='value'), 'value'], types=['object', 'object', 'object'])
+- function: patch_object_in_dict
+  description: >
+    Patches a key/value pair in a dictionary. Set the
+    second to last value from the sh`Parents` object to
+    the patch
+  cast_arguments: &PATCH_OBJECT_IN_DICT_CAST_ARGUMENTS
+  - caster: test_resources.app.patch_resource
+    field: patch
+  - caster: test_resources.app.parents_resource
+    field: parents
+  cast_output: &PATCH_OBJECT_IN_DICT_CAST_OUTPUT
+  tests: &PATCH_OBJECT_IN_DICT_TESTS
+  - arguments:
+      parents:
+        types:
+        - dict
+        values:
+        - key: value
+        names:
+        - ''
+      patch: value
+    cast_output:
+    - caster: dc.asdict
+      field: parents
+    assertions:
+    - method: equals
+      expected:
+        patch: null
+        parents:
+          names:
+          - ''
+          types:
+          - dict
+          values:
+          - patched_value
+  - arguments:
+      parents:
+        types:
+        - dict
+        - object
+        values:
+        - key: value
+        - value
+        names:
+        - ''
+        - key
+      patch: value
+    cast_output:
+    - caster: dc.asdict
+      field: parents
+    assertions:
+    - method: equals
+      expected:
+        patch: null
+        parents:
+          names:
+          - ''
+          - key
+          types:
+          - dict
+          - object
+          values:
+          - key: patched_value
+          - value
+  - arguments:
+      parents:
+        types:
+        - dict
+        - dict
+        - object
+        values:
+        - key:
+            key_a: value_a
+            key_b: value_b
+        - key_a: value_a
+          key_b: value_b
+        - value_a
+        names:
+        - ''
+        - key
+        - key_a
+      patch: value
+    cast_output:
+    - caster: dc.asdict
+      field: parents
+    assertions:
+    - method: equals
+      expected:
+        patch: null
+        parents:
+          names:
+          - ''
+          - key
+          - key_a
+          types:
+          - dict
+          - dict
+          - object
+          values:
+          - key:
+              key_a: value_a
+              key_b: value_b
+          - key_a: patched_value
+            key_b: value_b
+          - value_a
+- function: patch_object_in_object
+  description: Patches the value for an object's field or attribute
+  cast_arguments:
+  - caster: test_resources.app.patch_object_in_object_resource
+  tests: &PATCH_OBJECT_IN_OBJECT_TESTS
+  - arguments:
+      parents: parents_length_three
+      patch: value
+    assertions:
+    - method: type
+      field: parents
+      expected: Parents
+    - method: equals
+      field: parents.names
+      expected:
+      - ''
+      - EXAMPLE_OBJECT
+      - field
+    - method: equals
+      field: parents.types
+      expected:
+      - object
+      - object
+      - object
+    - method: length
+      field: parents.values
+      expected: 3
+  - arguments:
+      parents: parents_length_one
+      patch: patched_value
+    assertions:
+    - method: type
+      field: parents
+      expected: Parents
+    - method: equals
+      field: parents.names
+      expected:
+      - ''
+    - method: equals
+      field: parents.types
+      expected:
+      - object
+    - method: length
+      field: parents.values
+      expected: 1
+- function: patch_object
+  description: >
+    Handler for patching objects in objects or dicts
+  tests:
+  - tests: *PATCH_OBJECT_IN_OBJECT_TESTS
+  - cast_arguments: *PATCH_OBJECT_IN_DICT_CAST_ARGUMENTS
+    cast_output: *PATCH_OBJECT_IN_DICT_CAST_OUTPUT
+    tests: *PATCH_OBJECT_IN_DICT_TESTS
+- function: main
+  description: >
+    Patches an object within the module to test or modules used as resources
+    during testing
+  cast_arguments:
+  - caster: test_resources.app.module_resource
+    field: module
+  tests:
+  - description: Return the module when there are no patches
+    arguments:
+      patches: null
+      module: module
+    assertions:
+    - method: type
+      field: module
+      expected: module
+    - method: type
+      expected: dict
+    - method: equals
+      field: module.__file__
+      expected: ${ROOT_DIR}main/shared/process_patches/test_resources/app_a.py
+  - description: Patch a non-existing object in another object
+    arguments:
+      patches:
+      - method: value
+        value: patched_value
+        name: does_not_exist
+        timestamp: timestamp
+      module: module
+    assertions:
+    - method: equals
+      field: patches
+      expected: null
+    - method: equals
+      field: module.does_not_exist
+      expected: patched_value
+  
