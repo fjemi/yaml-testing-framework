@@ -1,0 +1,61 @@
+environment:
+  ROOT_DIR: ${ROOT_DIR}
+
+
+schema:
+- &ASSERTION
+  cls_name: Assertion
+  description: Store data needed to process an assertion form a test
+  fields:
+  - name: method
+    type: str | None
+    description: The assertion method
+  - name: field
+    type: str | None
+    description: Dot-delimited path to an attribute or key of the result
+  - name: expected
+    type: Any | None
+    description: Expected value
+  - name: actual
+    type: Any | None
+    description: Actual value
+  - name: exception
+    type: dict | None
+    description: Dictionary containing an exception
+    default: null
+  - name: passed
+    type: bool | None
+    default: false
+    description: Flag indicating whether a test was passed or not
+- &DATA
+  cls_name: Data
+  description: Store data used by the fucntions within the module
+  fields:
+  - name: assertions
+    type: list | None
+    description: List of dictionaries or assertion objects
+    default: []
+  - name: output
+    type: Any | None
+    description: Ouput from calling a function
+    default: []
+  - name: exception
+    type: dict | None
+    description: Exception from calling a function
+    default: []
+
+
+empty_values:
+- []
+- {}
+- null
+- ''
+- None
+- '[]'
+- '{}'
+
+
+operations: []
+# - process_assertion
+# - process_cast
+# - post_processong
