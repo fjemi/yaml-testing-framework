@@ -1,0 +1,4 @@
+todo:
+- description: refactor assertions logic to be able to access assertions
+    similar to casting/patches
+  method: test_resources.assertions.assert_contains
