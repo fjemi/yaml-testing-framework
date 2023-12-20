@@ -1,0 +1,356 @@
+globals:
+  resources:
+  - ${ROOT_DIR}/assertions/app.py
+
+
+tests:
+- function: get_schema_location
+  description: >
+    Sets the location of the schema to
+    module one folder level above
+  tests:
+  - arguments: {}
+    assertions:
+    - method: equals
+      expected: ''
+  - arguments:
+      module: does_not_exist
+    assertions:
+    - method: equals
+      expected: ''
+  - arguments:
+      module: ${ROOT_DIR}/main/shared/get_tests/collate_tests/test_resources/app.py
+    assertions:
+    - method: equals
+      expected: ${ROOT_DIR}/main/shared/get_tests/collate_tests/test_resources/app.yml
+- function: add_globals_to_test
+  description: >
+    Adds key/value pairs from the globals dict to a
+    test dict
+  tests:
+  - description: Globals and test are empty dicts
+    arguments:
+      globals: {}
+      test: {}
+    assertions:
+    - method: equals
+      expected: {}
+  - description: >
+      Format and add key/value from globals to test
+    arguments:
+      globals: {}
+      test:
+        key_a: value_a
+        key_b: value_b
+    assertions:
+    - method: equals
+      expected:
+        key_a: value_a
+        key_b: value_b
+  - description: >
+      Combine values for the same key in globals and
+      test
+    arguments:
+      globals:
+        key: globals
+      test:
+        key: test
+    assertions:
+    - method: equals
+      expected:
+        key:
+        - globals
+        - test
+  - description: >
+      Format and add key/value from globals to test
+    arguments:
+      globals:
+        key_globals: value_globals
+      test:
+        key_test: value_test
+    assertions:
+    - method: equals
+      expected:
+        key_globals:
+        - value_globals
+        key_test: value_test
+- function: get_tree_roots
+  description: >
+    Returns a dictionary with keys being numeric indices,
+    and values being top level tests
+  tests:
+  - arguments:
+      tests: []
+      globals: {}
+    assertions:
+    - method: equals
+      expected:
+        tree: {}
+        # roots: []
+        globals: null
+        tests: null
+  - arguments:
+      tests:
+      - {}
+      - {}
+      globals: {}
+    assertions:
+    - method: equals
+      expected:
+        tree:
+          '0': {}
+          '1': {}
+        # roots:
+        # - '0'
+        # - '1'
+        globals: null
+        tests: null
+  - arguments:
+      tests:
+      - {}
+      - {}
+      - test_0
+      - test_1
+      globals: {}
+    assertions:
+    - method: equals
+      expected:
+        tree:
+          '0': {}
+          '1': {}
+          '2': test_0
+          '3': test_1
+        # roots:
+        # - '0'
+        # - '1'
+        # - '2'
+        # - '3'
+        globals: null
+        tests: null
+- function: get_child_branches
+  description: Returns the children of a branch.
+  tests:
+  - arguments: {}
+    assertions:
+    - method: equals
+      expected: {}
+  - arguments:
+      branch_key: branch_key
+      tree:
+        branch_key:
+          tests: []
+      visited: []
+      store: {}
+    assertions:
+    - method: equals
+      expected: {}
+  - arguments:
+      branch_key: branch_key
+      tree:
+        branch_key:
+          tests:
+          - test_0
+          - test_1
+      visited: []
+      store: {}
+    assertions:
+    - method: equals
+      expected:
+        branch_key.0: test_0
+        branch_key.1: test_1
+  - arguments:
+      branch_key: branch_key_a
+      tree:
+        branch_key_b: null
+        branch_key_a:
+          tests:
+          - test_a
+          - test_b
+          - test_c
+      visited: []
+      store: {}
+    assertions:
+    - method: equals
+      expected:
+        branch_key_a.0: test_a
+        branch_key_a.1: test_b
+        branch_key_a.2: test_c
+- function: get_tree_branches
+  description: >
+    Returns the nested tests or
+    branches of a parent test
+  tests:
+  - description: Undefined arguments
+    arguments:
+      roots: null
+      tree: null
+      visited: null
+    assertions:
+    - method: equals
+      expected:
+        roots: []
+        tree: {}
+        visited: null
+  - arguments:
+      roots:
+      - '0'
+      tree:
+        '0':
+          tests:
+          - test_0: test_0
+          - test_1: test_1
+      visited: []
+    assertions:
+    - method: equals
+      expected:
+        roots:
+        - '0'
+        - '0'
+        tree:
+          '0':
+            tests: []
+          '0.0':
+            test_0: test_0
+          '0.1':
+            test_1: test_1
+        visited: null
+  - arguments:
+      roots:
+      - branch_key
+      tree:
+        branch_key:
+          tests:
+          - test_0: test_0
+          - test_1: test_1
+      visited: null
+    assertions:
+    - method: equals
+      expected:
+        roots:
+        - branch_key
+        - branch_key
+        tree:
+          branch_key:
+            tests: []
+          branch_key.0:
+            test_0: test_0
+          branch_key.1:
+            test_1: test_1
+        visited: null
+  - description: >
+      Do nothing if the branch key has
+      already been visited
+    arguments:
+      roots:
+      - branch_key
+      tree:
+        branch_key:
+          tests:
+          - test_0
+          - test_1
+      visited:
+      - branch_key
+    assertions:
+    - method: equals
+      expected:
+        roots:
+        - branch_key
+        tree:
+          branch_key:
+            tests:
+            - test_0
+            - test_1
+        visited: null
+- function: prune_tree_branches
+  description: >
+    Removes roots that have branches from the tree
+  tests:
+  - arguments:
+      roots: null
+      tree: null
+    assertions:
+    - method: equals
+      expected:
+        tree: null
+        tests: []
+        roots: null
+  - arguments:
+      roots:
+      - a
+      - b
+      tree:
+        a: a
+        b: b
+        c: c
+    assertions:
+    - method: equals
+      expected:
+        tree: null
+        tests:
+        - c
+        roots: null
+  - arguments:
+      roots:
+      - c
+      tree:
+        a: a
+        b: b
+        c: c
+    assertions:
+    - method: equals
+      expected:
+        tree: null
+        tests:
+        - a
+        - b
+        roots: null
+- function: main
+  description: >
+    Collates data to return a list of
+    individual tests
+  tests:
+  - description: No defined tests
+    arguments:
+      tests: null
+    assertions:
+    - method: equals
+      expected:
+        tests: []
+  - description: Defined tests
+    arguments:
+      tests:
+      - test_0: test_0
+      - test_1: test_1
+    assertions:
+    - method: equals
+      expected:
+        tests:
+        - test_0: test_0
+        - test_1: test_1
+  - description: Undefined arguments
+    arguments:
+      tests:
+      - field_a: field_a
+        tests:
+        - test_a0: test_a0
+        - test_a1: test_a1
+      - field_b: field_b
+        tests:
+        - field_c: field_c
+          tests:
+          - test_c1: test_c1
+    assertions:
+    - method: equals
+      expected:
+        tests:
+        - field_a:
+          - field_a
+          test_a1: test_a1
+        - field_a:
+          - field_a
+          test_a0: test_a0
+        - field_b:
+          - field_b
+          field_c:
+          - field_c
+          test_c1: test_c1

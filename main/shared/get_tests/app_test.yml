@@ -1,0 +1,286 @@
+globals:
+  resources:
+  - ${ROOT_DIR}/assertions/app.py
+
+
+tests:
+- function: merge_global_and_test_configs
+  description: Combine globals and individual test configs defined in YAML files
+  tests:
+  - description: Undefined arguments
+    arguments: {}
+    assertions:
+    - method: equals
+      expected:
+        tests: []
+        globals: null
+  - description: Defined tests with no global configs
+    arguments:
+      tests:
+      - test_0: test_0
+      globals: {}
+      module: module
+      module_location: module_location
+      yaml: yaml
+      resources:
+      - resource_a
+      - resource_b
+    assertions:
+    - method: equals
+      expected:
+        tests:
+        - module:
+          - module
+          module_location:
+          - module_location
+          resources:
+          - resource_a
+          - resource_b
+          test_0: test_0
+          yaml:
+          - yaml
+        globals: null
+  - description: Defined tests and global configs
+    arguments:
+      tests:
+      - test_0: test_0
+      globals:
+        global_config_a: global_config_a
+        global_config_b: global_config_b
+      module: module
+      module_location: module_location
+      yaml: yaml
+      resources:
+      - resource_a
+      - resource_b
+    assertions:
+    - method: equals
+      expected:
+        tests:
+        - module:
+          - module
+          module_location:
+          - module_location
+          resources:
+          - resource_a
+          - resource_b
+          test_0: test_0
+          yaml:
+          - yaml
+          global_config_a:
+          - global_config_a
+          global_config_b:
+          - global_config_b
+        globals: null
+- function: parse_content
+  description: >
+    Parse content from YAML files to
+    get tests and configs
+  tests:
+  - description: Undefiend arguments
+    arguments: {}
+    assertions:
+    - method: equals
+      expected:
+        globals: {}
+        tests: []
+  - description: Content is empty dict
+    arguments:
+      content: {}
+    assertions:
+    - method: equals
+      expected:
+        globals: {}
+        tests: []
+  - description: >
+      Content has desired defined key/value pairs
+    arguments:
+      content:
+        tests: tests
+        globals: globals
+    assertions:
+    - method: equals
+      expected:
+        globals: globals
+        tests: tests
+- function: get_content
+  description: >
+    Returns data retrieved from a YAML file
+  tests:
+  - description: Undefined arguments
+    arguments: {}
+    assertions:
+    - method: equals
+      expected:
+        content: {}
+  - arguments:
+      yaml:
+      - does_not_exist
+    assertions:
+    - method: equals
+      expected:
+        content: {}
+  - description: >
+      List containing the location to a
+      YAML file
+    arguments:
+      yaml:
+      - ${ROOT_DIR}main/shared/get_tests/test_resources/app.yml
+    assertions:
+    - method: equals
+      expected:
+        content:
+          hello: world
+- function: main
+  description: >
+    Formats and collates data for nested
+    tests to return a list of tests
+  tests:
+  - description: No defined arguments
+    arguments: {}
+    assertions:
+    - method: equals
+      expected:
+        tests: []
+  - description: Defined arguments
+    arguments:
+      yaml: ${ROOT_DIR}main/shared/get_tests/test_resources/app_test.yml
+      module: ${ROOT_DIR}main/shared/get_tests/test_resources/app.py
+      module_location: ${ROOT_DIR}main/shared/get_tests/test_resources/app.py
+      resources:
+      - ${ROOT_DIR}main/shared/get_tests/test_resources/resource.py
+    cast_output:
+    - caster: test_resources.app.tests_resource
+      field: tests
+    assertions:
+    - method: equals
+      expected:
+        tests:
+        - arguments: {}
+          assertions: null
+          cast_arguments: []
+          cast_group: null
+          cast_output: null
+          description: []
+          environment: {}
+          exception: null
+          exclude: null
+          function: ''
+          function_name: ''
+          id: null
+          id_long:
+            description: []
+            function: ''
+            module: ${ROOT_DIR}main/shared/get_tests/test_resources/app.py
+            yaml: ${ROOT_DIR}main/shared/get_tests/test_resources/app_test.yml
+          id_short: ' ${ROOT_DIR}main/shared/get_tests/test_resources/app.py.
+            -  '
+          module: ${ROOT_DIR}main/shared/get_tests/test_resources/app.py
+          module_location:
+          - ${ROOT_DIR}main/shared/get_tests/test_resources/app.py
+          n: null
+          output: null
+          patches: []
+          project_directory: ''
+          resources:
+          - ${ROOT_DIR}main/shared/get_tests/test_resources/resource.py
+          result: null
+          tests: null
+          timestamp: null
+          yaml: ${ROOT_DIR}main/shared/get_tests/test_resources/app_test.yml
+        - arguments: {}
+          assertions: null
+          cast_arguments: []
+          cast_group: null
+          cast_output: null
+          description: []
+          environment: {}
+          exception: null
+          exclude: null
+          function: ''
+          function_name: ''
+          id: null
+          id_long:
+            description: []
+            function: ''
+            module: ${ROOT_DIR}main/shared/get_tests/test_resources/app.py
+            yaml: ${ROOT_DIR}main/shared/get_tests/test_resources/app_test.yml
+          id_short: ' ${ROOT_DIR}main/shared/get_tests/test_resources/app.py.
+            -  '
+          module: ${ROOT_DIR}main/shared/get_tests/test_resources/app.py
+          module_location:
+          - ${ROOT_DIR}main/shared/get_tests/test_resources/app.py
+          n: null
+          output: null
+          patches: []
+          project_directory: ''
+          resources:
+          - ${ROOT_DIR}main/shared/get_tests/test_resources/resource.py
+          result: null
+          tests: null
+          timestamp: null
+          yaml: ${ROOT_DIR}main/shared/get_tests/test_resources/app_test.yml
+        - arguments: {}
+          assertions: null
+          cast_arguments: []
+          cast_group: null
+          cast_output: null
+          description: []
+          environment: {}
+          exception: null
+          exclude: null
+          function: ''
+          function_name: ''
+          id: null
+          id_long:
+            description: []
+            function: ''
+            module: ${ROOT_DIR}main/shared/get_tests/test_resources/app.py
+            yaml: ${ROOT_DIR}main/shared/get_tests/test_resources/app_test.yml
+          id_short: ' ${ROOT_DIR}main/shared/get_tests/test_resources/app.py.
+            -  '
+          module: ${ROOT_DIR}main/shared/get_tests/test_resources/app.py
+          module_location:
+          - ${ROOT_DIR}main/shared/get_tests/test_resources/app.py
+          n: null
+          output: null
+          patches: []
+          project_directory: ''
+          resources:
+          - ${ROOT_DIR}main/shared/get_tests/test_resources/resource.py
+          result: null
+          tests: null
+          timestamp: null
+          yaml: ${ROOT_DIR}main/shared/get_tests/test_resources/app_test.yml
+        - arguments: {}
+          assertions: null
+          cast_arguments: []
+          cast_group: null
+          cast_output: null
+          description: []
+          environment: {}
+          exception: null
+          exclude: null
+          function: ''
+          function_name: ''
+          id: null
+          id_long:
+            description: []
+            function: ''
+            module: ${ROOT_DIR}main/shared/get_tests/test_resources/app.py
+            yaml: ${ROOT_DIR}main/shared/get_tests/test_resources/app_test.yml
+          id_short: ' ${ROOT_DIR}main/shared/get_tests/test_resources/app.py.
+            -  '
+          module: ${ROOT_DIR}main/shared/get_tests/test_resources/app.py
+          module_location:
+          - ${ROOT_DIR}main/shared/get_tests/test_resources/app.py
+          n: null
+          output: null
+          patches: []
+          project_directory: ''
+          resources:
+          - ${ROOT_DIR}main/shared/get_tests/test_resources/resource.py
+          result: null
+          tests: null
+          timestamp: null
+          yaml: ${ROOT_DIR}main/shared/get_tests/test_resources/app_test.yml

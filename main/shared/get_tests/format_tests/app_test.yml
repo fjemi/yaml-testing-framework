@@ -1,0 +1,619 @@
+globals:
+  resources:
+  - ${ROOT_DIR}/assertions/app.py
+
+
+tests:
+- function: pass_through
+  description: >
+    Returns the dict passed into the function
+  tests:
+  - arguments:
+      data: {}
+    assertions:
+    - method: equals
+      expected: {}
+- function: format_exclude_functions_refactor
+  description: Format field as a list
+  tests:
+  - arguments: {}
+    assertions:
+    - method: equals
+      expected:
+        exclude_functions: []
+  - arguments:
+      exclude_functions: exclude_functions
+    assertions:
+    - method: equals
+      expected:
+        exclude_functions:
+        - exclude_functions
+  - arguments:
+      exclude_functions:
+      - function_a
+      - function_b
+    assertions:
+    - method: equals
+      expected:
+        exclude_functions:
+        - function_a
+        - function_b
+- function: format_field_as_list
+  description: Format field as list
+  tests:
+  - arguments:
+      value: null
+      field: field
+    cast_ouput:
+    - caster: __builtins__.str
+      field: field
+    assertions:
+    - method: equals
+      expected:
+        field: []
+  - arguments:
+      value:
+      - a
+      - b
+      field: field
+    assertions:
+    - method: equals
+      expected:
+        field:
+        - a
+        - b
+- function: format_exclude_modules_refactor
+  description: Format field as a list
+  tests:
+  - arguments: {}
+    assertions:
+    - method: equals
+      expected:
+        exclude_modules: []
+  - arguments:
+      exclude_modules: exclude_modules
+    assertions:
+    - method: equals
+      expected:
+        exclude_modules:
+        - exclude_modules
+  - arguments:
+      exclude_modules:
+      - modules_a
+      - modules_b
+    assertions:
+    - method: equals
+      expected:
+        exclude_modules:
+        - modules_a
+        - modules_b
+- function: format_function_refactor
+  description: >
+    Retrieve the name of the function to test
+  tests:
+  - description: Function is a string
+    arguments:
+      function: function
+    assertions:
+    - method: equals
+      expected:
+        function: function
+        function_name: function
+  - description: Function is a list of string
+    arguments:
+      function:
+      - null
+      - function_a
+      - function_b
+    assertions:
+    - method: equals
+      expected:
+        function: function_a
+        function_name: function_a
+- function: format_resources_refactor
+  description: >
+    Retrieve the name of the function to test
+  tests:
+  - description: Resources is undefined
+    arguments:
+      resources: null
+    assertions:
+    - method: equals
+      expected:
+        resources: []
+  - description: Resources is a string
+    arguments:
+      resources: resources
+    assertions:
+    - method: equals
+      expected:
+        resources:
+        - resources
+  - description: Resources is a list
+    arguments:
+      resources:
+      - null
+      - resources_a
+      - resources_b
+    assertions:
+    - method: equals
+      expected:
+        resources:
+        - null
+        - resources_a
+        - resources_b
+- function: format_module_refactor
+  description: Formats the module field as string
+  tests:
+  - arguments:
+      module: null
+    assertions:
+    - method: equals
+      expected:
+        module: ''
+  - arguments:
+      module: module
+    assertions:
+    - method: equals
+      expected:
+        module: module
+  - arguments:
+      module:
+      - null
+      - null
+      - module
+    assertions:
+    - method: equals
+      expected:
+        module: module
+- function: format_yaml_refactor
+  description: Formats the yaml field as a string
+  tests:
+  - arguments:
+      yaml: null
+    assertions:
+    - method: equals
+      expected:
+        yaml: ''
+  - arguments:
+      yaml: yaml
+    assertions:
+    - method: equals
+      expected:
+        yaml: yaml
+  - arguments:
+      yaml:
+      - null
+      - null
+      - yaml
+    assertions:
+    - method: equals
+      expected:
+        yaml: yaml
+- function: format_field_as_str
+  description: Formats a value as string
+  tests:
+  - arguments:
+      field: field
+      value: null
+    assertions:
+    - method: equals
+      expected:
+        field: ''
+  - arguments:
+      field: field
+      value: value
+    assertions:
+    - method: equals
+      expected:
+        field: value
+  - arguments:
+      field: field
+      value:
+      - null
+      - null
+      - value
+    assertions:
+    - method: equals
+      expected:
+        field: value
+  - arguments:
+      field: field
+      value: {}
+    assertions:
+    - method: equals
+      expected:
+        field: '{}'
+- function: format_arguments_refactor
+  description: Format arguments field as a dictionary
+  tests:
+  - arguments:
+      arguments: null
+    assertions:
+    - method: equals
+      expected:
+        arguments: {}
+  - arguments:
+      arguments:
+        a: a
+        b: b
+    assertions:
+    - method: equals
+      expected:
+        arguments:
+          a: a
+          b: b
+  - arguments:
+      arguments:
+      - a: a
+        b: b
+      - b: B
+        c: c
+      - d: d
+        a: A
+    assertions:
+    - method: equals
+      expected:
+        arguments:
+          a: A
+          b: B
+          c: c
+          d: d
+- function: format_field_as_dict
+  description: Formats a field as a dictionary
+  tests:
+  - arguments:
+      field: field
+      value: null
+    assertions:
+    - method: equals
+      expected:
+        field: {}
+  - arguments:
+      field: field
+      value:
+        a: a
+        b: b
+    assertions:
+    - method: equals
+      expected:
+        field:
+          a: a
+          b: b
+  - arguments:
+      field: field
+      value:
+      - a: a
+      - b: b
+        c: c
+      - b: B
+        a: A
+        d: d
+      - not_a_dictionary
+    assertions:
+    - method: equals
+      expected:
+        field:
+          a: A
+          b: B
+          c: c
+          d: d
+- function: format_environment_refactor
+  description: Formats a field as a dictionary
+  tests:
+  - arguments:
+      environment: null
+    assertions:
+    - method: equals
+      expected:
+        environment: {}
+  - arguments:
+      environment:
+        a: a
+        b: b
+    assertions:
+    - method: equals
+      expected:
+        environment:
+          a: a
+          b: b
+  - arguments:
+      environment:
+      - a: a
+      - b: b
+        c: c
+      - b: B
+        a: A
+        d: d
+    assertions:
+    - method: equals
+      expected:
+        environment:
+          a: A
+          b: B
+          c: c
+          d: d
+- function: format_cast_arguments_refactor
+  description: Format field as list
+  tests:
+  - arguments:
+      cast_arguments: null
+    assertions:
+    - method: equals
+      expected:
+        cast_arguments: []
+  - arguments:
+      cast_arguments:
+      - a
+      - b
+    assertions:
+    - method: equals
+      expected:
+        cast_arguments:
+        - a
+        - b
+- function: format_cast_output_refactor
+  description: Format field as list
+  tests:
+  - arguments:
+      cast_output: null
+    assertions:
+    - method: equals
+      expected:
+        cast_output: []
+  - arguments:
+      cast_output:
+      - a
+      - b
+    assertions:
+    - method: equals
+      expected:
+        cast_output:
+        - a
+        - b
+- function: format_patches_refactor
+  description: Format field as list
+  tests:
+  - arguments:
+      patches: null
+    assertions:
+    - method: equals
+      expected:
+        patches: []
+  - arguments:
+      patches:
+      - a
+      - b
+    assertions:
+    - method: equals
+      expected:
+        patches:
+        - a
+        - b
+- function: format_assertions_refactor
+  description: Format field as list
+  tests:
+  - arguments:
+      assertions: null
+    assertions:
+    - method: equals
+      expected:
+        assertions: []
+  - arguments:
+      assertions:
+      - a
+      - b
+    assertions:
+    - method: equals
+      expected:
+        assertions:
+        - a
+        - b
+- function: format_id_long_refactor
+  description: Format the id for a test
+  tests:
+  - arguments: &FORMAT_ID_LONG_ARGUMENTS_0
+      description: null
+      function: null
+      module: null
+      yaml: null
+    assertions:
+    - method: equals
+      expected:
+        id_long: *FORMAT_ID_LONG_ARGUMENTS_0
+  - arguments: &FORMAT_ID_LONG_ARGUMENTS_1
+      description: description
+      function: function
+      module: module
+      yaml: yaml
+    assertions:
+    - method: equals
+      expected:
+        id_long: *FORMAT_ID_LONG_ARGUMENTS_1
+- function: format_project_directory_refactor
+  description: >
+    Formats the field as string. Returns a dictionary
+    with the field as a key/value pair
+  tests:
+  - arguments: {}
+    assertions:
+    - method: equals
+      expected:
+        project_directory: ''
+  - arguments:
+      project_directory:
+      - null
+      - null
+    assertions:
+    - method: equals
+      expected:
+        project_directory: ''
+  - arguments:
+      project_directory:
+      - null
+      - project_directory
+    assertions:
+    - method: equals
+      expected:
+        project_directory: project_directory
+  - arguments:
+      project_directory: project_directory
+    assertions:
+    - method: equals
+      expected:
+        project_directory: project_directory
+- function: format_id_short_refactor
+  description: Format the id for a test
+  tests:
+  - arguments:
+      description: null
+      function: null
+      module_location: null
+    assertions:
+    - method: equals
+      expected:
+        id_short: ' . -  '
+  - arguments:
+      description: description
+      function: function
+      module_location: module_location
+    assertions:
+    - method: equals
+      expected:
+        id_short: ' module_location.function - description '
+  - arguments:
+      description:
+      - description_0
+      - description_1
+      function: function
+      module_location: module_location
+    assertions:
+    - method: equals
+      expected:
+        id_short: ' module_location.function - description_1 '
+  - arguments:
+      description:
+      - null
+      - description
+      function:
+      - null
+      - function
+      module_location:
+      - null
+      - module_location
+    assertions:
+    - method: equals
+      expected:
+        id_short: ' module_location.function - description '
+- function: main
+  description: Format the fields/values of tests
+  cast_output:
+  - caster: test_resources.app.tests_resource
+    field: tests
+  tests:
+  - arguments:
+      tests: []
+    assertions:
+    - method: equals
+      expected:
+        tests: []
+  - arguments:
+      tests:
+      - {}
+    assertions:
+    - method: equals
+      expected:
+        tests:
+        - test:
+            resources: []
+            exclude: null
+            module: ''
+            function: ''
+            function_name: ''
+            cast_arguments: []
+            cast_output: null
+            description: []
+            patches: []
+            environment: {}
+            arguments: {}
+            assertions: null
+            yaml: ''
+            exception: null
+            result: null
+            output: null
+            project_directory: ''
+            id: null
+            id_long:
+              function: ''
+              module: ''
+              yaml: ''
+              description: []
+            id_short: ' . -  '
+            cast_group: null
+            module_location: null
+            n: null
+            timestamp: null
+            tests: null
+  - arguments:
+      tests:
+      - module: module
+        yaml: yaml
+        resources: resources
+        function: function
+        environment:
+          a: a
+          b: b
+        arguments:
+          a: a
+          b: b
+        cast_arguments: cast_arguments
+        cast_output: cast_output
+        description: description
+        project_directory: project_directory
+        assertions: assertions
+        patches: patches
+        exclude_functions: exclude_functions
+        exclude_modules: exclude_modules
+    assertions:
+    - method: equals
+      expected:
+        tests:
+        - test:
+            resources:
+            - resources
+            exclude: null
+            module: module
+            function: function
+            function_name: function
+            cast_arguments:
+            - cast_arguments
+            cast_output: cast_output
+            description:
+            - description
+            patches:
+            - patches
+            environment:
+              a: a
+              b: b
+            arguments:
+              a: a
+              b: b
+            assertions: assertions
+            yaml: yaml
+            exception: null
+            result: null
+            output: null
+            project_directory: project_directory
+            id: null
+            id_long:
+              function: function
+              module: module
+              yaml: yaml
+              description:
+              - description
+            id_short: ' .function - description '
+            cast_group: null
+            module_location: null
+            n: null
+            timestamp: null
+            tests: null

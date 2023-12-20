@@ -1,0 +1,20 @@
+schema:
+- &KINDS
+  cls_name: Kinds
+  slots: true
+  description: Paths to a python and associated resources for testing
+  fields:
+  - name: parent
+    type: str | None
+    default: None
+    description: Parent object
+  - name: child
+    type: str | None
+    default: ''
+    description: Child of the parent object
+
+
+field_kinds:
+- dict
+- list
+- nonetype
