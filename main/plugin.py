@@ -63,9 +63,8 @@ def process_option_project_directory(
   config: py_test.Config,
 ) -> str:
   root = getattr(config, 'rootdir', '')
-  root = root or ''
+  root = str(root) or ''
 
-  root = str(root)
   option = str(option)
 
   condition = option in CONFIG.root_paths

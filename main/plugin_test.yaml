@@ -73,27 +73,26 @@ tests:
 - function: process_option_project_directory
   description: Returns the root directory for the project
   cast_arguments:
-  - field: config
-    caster: test_resources.plugin.app.get_pytest_config
+  - caster: test_resources.plugin.app.process_option_project_directory_resource
   tests:
   - description: Option and config are null
     arguments:
-      option: ${ROOT_DIR}/main/plugin_test.yaml
+      option: null
       config: null
     assertions:
     - method: equals
-      expected: ${ROOT_DIR}/main/plugin_test.yaml
+      expected: root_dir
   - description: Option is a single dot representing root directory
     arguments:
       option: .
-      config: root_dir
+      config: config
     assertions:
     - method: equals
       expected: root_dir
   - description: Option is path to directory within the root directory
     arguments:
       option: ./path_to_directory
-      config: null
+      config: config
     assertions:
     - method: equals
       expected: /path_to_directory
@@ -240,4 +239,3 @@ tests:
     assertions:
     - method: equals
       expected: nodeid
-

@@ -36,16 +36,31 @@ def get_locals(*args, **kwargs) -> dict:
     'process_option_option_1': lambda *args, **kwargs: 'processed_value_1', }
 
 
-def get_pytest_config(config: dict | str | None = None):
-  kind = type(config).__name__.lower()
-  
-  if kind == 'str':
-    pytest.Config.rootdir = config
-  elif kind == 'dict':
-    for key, value in config.items():
-      setattr(pytest.Config, key, value)
+def project_directory_option_resource(option: str | None) -> str:
+  conditions = [
+    option is None,
+    option == '.', ]
+  if True in conditions:
+    option = 'root_dir'
+  return option
 
-  return pytest.Config
+
+def process_option_project_directory_resource(
+  arguments: dict | None = None,
+) -> pytest.Config:
+  arguments = arguments or {}
+  
+  option = arguments.get('option', None)
+  option = project_directory_option_resource(option=option)
+
+  config = pytest.Config
+  setattr(config, 'rootdir', option)
+
+  arguments.update({
+    'option': option,
+    'config': config, })
+  
+  return arguments
 
 
 def get_options_or_inis_resource(*args, **kwargs) -> 'unittest.mock':
