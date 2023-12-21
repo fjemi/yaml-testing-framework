@@ -1,0 +1,12 @@
+todo:
+- add arg parser
+- add tests
+- rename to invoke_framkework
+
+
+globals:
+  resources:
+  - ${ROOT_DIR}/assertions/app.py
+
+
+tests: []
