@@ -1,0 +1,11 @@
+tests:
+- function: add
+  description: >
+    Returns the result of adding two integers
+  tests:
+  - arguments:
+      a: 0
+      b: 0
+    assertions:
+    - method: equals
+      expected: 0
