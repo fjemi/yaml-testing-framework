@@ -1,48 +1,61 @@
-#! /usr/bin/env python3
+#!.venv/bin/python3
+# -*- coding: utf-8 -*-
+
 
 import dataclasses as dc
+
+
+MODULE = __file__
+LOCALS = locals()
 
 
 @dc.dataclass
 class Data:
   a: int = 0
   b: int = 0
-  result: int | None = None
+  result: int = 0
 
 
-def add_numbers(a: int, b: int) -> int:
+def add_numbers(
+  a: int | None = None,
+  b: int | None = None,
+  # trunk-ignore(ruff/ARG001)
+  data: None = None,
+) -> int:
   return a + b
 
 
-def add_dataclass(data: Data) -> Data:
+def add_dataclass(
+  data: Data | None = None,
+  # trunk-ignore(ruff/ARG001)
+  a: None = None,
+  # trunk-ignore(ruff/ARG001)
+  b: None = None,
+) -> Data:
   data.result = data.a + data.b
   return data
 
 
-# ruff: noqa: ARG001
-def raise_runtime_error(*args, **kwargs) -> None:
-  raise RuntimeError("run time error")
-
-
-MAIN = {
-  "dataclass": add_dataclass,
-  "int": add_numbers,
-}
-
-
-# ruff: noqa: ARG001
-def main(
-  data: Data | dict | None = None,
+def main(  # ruff: noqa: ARG001
+  data: Data | None = None,
   a: int | float | None = None,
   b: int | float | None = None,
 ) -> int | Data:
-  cases = "dataclass" if data else "numbers"
-  switcher = MAIN[cases]
-  data = switcher(data=data)
-  return data
+  kind = 'dataclass' if data else 'numbers'
+  handler = f'add_{kind}'
+  handler = LOCALS[handler]
+  return handler(
+    data=data,
+    a=a,
+    b=b, )
+
+
+def example() -> None:
+  from invoke_pytest.app import main as invoke_pytest
+
+
+  invoke_pytest(project_directory=MODULE)
 
 
 if __name__ == '__main__':
-  data = Data(1, 2)
-  result = main(data)
-  print(result)
+  example()

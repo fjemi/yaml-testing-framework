@@ -1,10 +1,12 @@
-#!/usr/bin/env python3
+#!.venv/bin/python3
+# -*- coding: utf-8 -*-
+
 
 import dataclasses as dc
 
 
 @dc.dataclass
-class Test_Dataclass:
+class Test_Data_Class:
   a: int | None = None
   b: int | None = None
 

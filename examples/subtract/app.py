@@ -1,12 +1,11 @@
-#! /usr/bin/env python3
+#!.venv/bin/python3
 # -*- coding: utf-8 -*-
 
 
 import dataclasses as dc
 
 
-MODULE = __file__
-
+MODULE_LOCATION = __file__
 LOCALS = locals()
 
 
@@ -27,7 +26,7 @@ def subtract_numbers(
 
 
 def subtract_dataclass(
-  data: Data,
+  data: Data | None = None,
   # trunk-ignore(ruff/ARG001)
   a: None = None,
   # trunk-ignore(ruff/ARG001)
@@ -46,32 +45,28 @@ def raise_runtime_error(
   raise RuntimeError('run time error')
 
 
-MAIN_SWITCHER = {
-  'dataclass': subtract_dataclass,
-  'numbers': subtract_numbers,
-}
-
-
 def main(
   data: Data | dict | None = None,
   a: int | float | None = None,
   b: int | float | None = None,
 ) -> int | Data:
-  function_ = 'dataclass' if data else 'numbers'
-  function_ = f'subtract_{function_}'
-  function_ = LOCALS[function_]
-  return function_(
+  kind = 'dataclass' if data else 'numbers'
+  handler = f'subtract_{kind}'
+  handler = LOCALS[handler]
+  return handler(
+    data=data,
     a=a,
-    b=b,
-    data=data, )
+    b=b, )
 
 
-def example() -> None:
+def examples() -> None:
   from invoke_pytest.app import main as invoke_pytest
 
 
-  invoke_pytest(project_directory=MODULE)
+  invoke_pytest(
+    # invoke='pytest',
+    project_directory=MODULE_LOCATION, )
 
 
 if __name__ == '__main__':
-  example()
+  examples()

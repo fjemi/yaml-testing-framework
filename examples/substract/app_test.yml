@@ -1,3 +1,8 @@
+globals:
+  resources:
+  - ${ROOT_DIR}/assertions/app.py
+
+
 functions:
 - name: main
   description: Orchestration function that calls the function to use for 
@@ -8,7 +13,7 @@ functions:
     - object: patch_os
       value: patch_os_patched
     arguments:
-      data: 
+      data:
         a: 0
         b: 0
     cast_arguments:
@@ -19,7 +24,7 @@ functions:
     - type: Data
   - description: Main argument is a dataclass and result it cast as a string
     arguments:
-      data: 
+      data:
         a: 1
         b: 2
     cast_arguments:
@@ -31,7 +36,7 @@ functions:
     # - type: Data  # Fails the test
   - description: Main argument is a dataclass and result it cast as a string
     arguments:
-      data: 
+      data:
         a: 1
         b: TypeError
     cast_arguments:

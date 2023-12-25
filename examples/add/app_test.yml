@@ -1,72 +1,56 @@
-functions:
-- name: main
-  description: Orchestration function that calls the function to use for 
-    adding two numbers based on the main argument types
-  tests:
-  - description: Main argument is a dataclass
-    patch:
-    - object: patch_os
-      value: patch_os_patched
-    arguments:
-      data: 
-        a: 0
-        b: 0
-    cast_arguments:
-      data: Data
-    assertions:
-    - has_attributes:
-        result: 0
-    - type: Data
-  - description: Main argument is a dataclass and result it cast as a string
-    arguments:
-      data: 
-        a: 1
-        b: 0
-    cast_arguments:
-      data: Data
-    cast_result: str
-    assertions:
-    - equals: Data(a=1, b=0, result=1)
-    - type: str
-    # - type: int  # fail the test
-  - description: Main argument is a dataclass and result it cast as a string
-    arguments:
-      data: 
-        a: 1
-        b: TypeError
-    cast_arguments:
-      data: Data
-    cast_result: str
-    assertions:
-    - equals: TypeError
-- name: add_numbers
+globals:
+  resources:
+  - ${ROOT_DIR}/assertions/app.py
+
+
+tests:
+- function: add_numbers
   description: Returns the result of adding two numbers
   tests:
-  - arguments:
+  - &ADD_NUMBERS_TESTS
+    arguments:
       a: 1
       b: 2
     assertions:
-    - equals: 3
-    - type: [int, float]
-- name: add_dataclass
+    - method: equals
+      expected: 3
+    - method: type
+      expected:
+      - int
+      - float
+- function: add_dataclass
   description: Returns a dataclass containing two numbers and the result
     of adding the numbers
   tests:
-  - arguments:
+  - &ADD_DATACLASS_TESTS
+    arguments:
       data:
         a: 1
         b: 2
     cast_arguments:
-      data: Data
-    cast_result: dict
+    - field: data
+      caster: Data
+      unpack: true
+    cast_output:
+    - caster: dc.asdict
     assertions:
-    - has_keys:
-        result: 3
-    - type: [dict]
-- name: raise_runtime_error
-  description: Raises a run time error
+    - method: equals
+      field: result
+      expected: 3
+    - method: type
+      expected:
+      - dict
+- function: main
+  description: >
+    Returns the results of adding two integers
   tests:
-  - arguments: 
-      data: null
-    assertions:
-    - equals: RuntimeError
+  - tests:
+    - description: Trying to add string and integer should yield a 'TypeError'
+      arguments:
+        a: 1
+        b: TypeError
+      assertions:
+      - method: catch
+        expected: TypeError
+    - << *ADD_NUMBERS_TESTS
+    - << *ADD_DATACLASS_TESTS
