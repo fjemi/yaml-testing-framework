@@ -8,6 +8,7 @@ import asyncio
 import dataclasses as dc
 import inspect
 import os
+from typing import Any, Callable, Iterable, List
 
 from error_handler.app import main as error_handler
 from get_config.app import main as get_config
@@ -86,16 +87,29 @@ async def get_task_from_event_loop(
   return task
 
 
+def get_range_from_integer(
+  n: int | Iterable | None = None,
+) -> Iterable | None:
+  kind = type(n).__name__.lower()
+
+  if kind == 'range':
+    return n
+  if kind == 'nonetype':
+    return range(1)
+  elif kind == 'int':
+    return range(n)
+
+
 @error_handler()
 async def process_operations(
   operations: List[str] | None = None,
   data: dict | Data_Class | None = None,
   functions: dict | None = None,
-  n: int | None = None,
+  n: int | Iterable | None = None,
 ) -> List[Any]:
   operations = CONFIG.schema.Operations(names=operations)
-  n = range(1) if not n else range(n)
   kind = 'dict' if isinstance(data, dict) else 'object'
+  n = get_range_from_integer(n=n)
 
   for i in n:
     for operation in operations.names:
@@ -110,6 +124,7 @@ async def process_operations(
       task = operations.function(**operations.fields)
       operations.result = get_task_from_event_loop(task=task)
 
+      operations.result = operations.result or {}
       for field, value in operations.result.items():
         data = set_field_value(
           data=data,

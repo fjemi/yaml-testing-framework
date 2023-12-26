@@ -207,3 +207,34 @@ tests:
     assertions:
     - method: equals
       expected: root/parent.py
+- function: get_range_from_integer
+  description: >
+    Returns an iterable or range for an integer, sh`n`. If sh`n` is null
+    returns a iterable of range 1
+  tests:
+  - arguments: {}
+    assertions:
+    - method: type
+      expected: range
+    - method: equals
+      expected: 1
+      field: stop
+  - arguments:
+      n: 2
+    assertions:
+    - method: type
+      expected: range
+    - method: equals
+      expected: 2
+      field: stop
+  - cast_arguments:
+    - field: n
+      caster: test_resources.app.get_range_from_integer_resource
+    arguments:
+      n: 3
+    assertions:
+    - method: type
+      expected: range
+    - method: equals
+      expected: 3
+      field: stop

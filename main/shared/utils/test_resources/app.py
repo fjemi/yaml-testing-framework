@@ -6,6 +6,7 @@ from typing import Any
 import dataclasses as dc
 from typing import Callable
 from types import ModuleType
+from typing import Iterable
 
 
 LOCALS = locals()
@@ -70,3 +71,7 @@ def coroutine_resource(task: Any | None = None) -> Any:
     return 'coroutine_output'
 
   return entrypoint()
+
+
+def get_range_from_integer_resource(n: int) -> Iterable:
+  return range(n)
