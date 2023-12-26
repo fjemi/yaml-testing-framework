@@ -5,12 +5,13 @@
 import dataclasses as dc
 import os
 
+import utils.app as utils
+
 
 MODULE = __file__
-PARENT_MODULE = os.path.dirname(MODULE)
-PARENT_MODULE = os.path.dirname(PARENT_MODULE)
-PARENT_MODULE = os.path.join(PARENT_MODULE, 'app.py')
-
+PARENT_MODULE = utils.get_parent_module(
+  module=MODULE,
+  resources_folder_name='test_resources', )
 
 def tests_resource(tests: list) -> list:
   tests = tests or []
@@ -21,15 +22,11 @@ def tests_resource(tests: list) -> list:
   return tests
 
 
-async def example() -> None:
+def example() -> None:
   from invoke_pytest.app import main as invoke_pytest
 
 
-  project_directory = PARENT_MODULE
-  # project_directory = 'examples/add'
-  invoke_pytest(
-    # invoke='pytest',
-    project_directory=project_directory, )
+  invoke_pytest(project_directory=PARENT_MODULE)
 
 
 if __name__ == '__main__':

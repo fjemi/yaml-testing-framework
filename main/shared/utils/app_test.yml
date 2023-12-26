@@ -187,3 +187,23 @@ tests:
     assertions:
     - method: equals
       expected: coroutine_output
+- function: get_parent_module
+  description: Returns the location of a resource module's parent module
+  tests:
+  - arguments: {}
+    assertions:
+    - method: equals
+      expected: null
+  - arguments:
+      module: root/resources_folder_name/module.py
+      resources_folder_name: resources_folder_name
+    assertions:
+    - method: equals
+      expected: root/module.py
+  - arguments:
+      module: root/resources_folder_name/module.py
+      resources_folder_name: resources_folder_name
+      parent_filename: parent.py
+    assertions:
+    - method: equals
+      expected: root/parent.py

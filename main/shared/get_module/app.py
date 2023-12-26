@@ -17,8 +17,8 @@ from get_config.app import main as get_config
 from utils import app as utils
 
 
-MODULE_LOCATION = __file__
-CONFIG = get_config(module=MODULE_LOCATION)
+MODULE = __file__
+CONFIG = get_config(module=MODULE)
 LOCALS = locals()
 
 POOL = {}
@@ -121,11 +121,8 @@ async def main(  # ruff: noqa: ARG001
 def example() -> None:
   from invoke_pytest.app import main as invoke_pytest
 
-  project_directory = MODULE_LOCATION
-  # project_directory = 'main/examples/'
-  invoke_pytest(
-    # invoke='pytest',
-    project_directory=project_directory, )
+
+  invoke_pytest(project_directory=MODULE)
 
 
 if __name__ == '__main__':

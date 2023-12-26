@@ -10,12 +10,13 @@ import os
 import pytest
 from unittest import mock
 
+import utils.app as utils
+
 
 MODULE = __file__
-PARENT_MODULE = os.path.dirname(MODULE)
-PARENT_MODULE = os.path.dirname(PARENT_MODULE)
-PARENT_MODULE = os.path.dirname(PARENT_MODULE)
-PARENT_MODULE = os.path.join(PARENT_MODULE, 'plugin.py')
+PARENT_MODULE = utils.get_parent_module(
+  module=MODULE,
+  resources_folder_name='test_resources', )
 
 
 class Store:

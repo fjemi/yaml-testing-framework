@@ -10,9 +10,13 @@ import os
 
 import yaml
 
+import utils.app as utils
+
 
 MODULE = __file__
-PARENT_MODULE = os.path.dirname(os.path.dirname(MODULE)) + f'{os.sep}app.py'
+PARENT_MODULE = utils.get_parent_module(
+  module=MODULE,
+  resources_folder_name='test_resources', )
 
 LOCALS = locals()
 # Global variable to store results from

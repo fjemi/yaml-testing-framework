@@ -7,7 +7,7 @@ from __future__ import annotations
 import asyncio
 import dataclasses as dc
 import inspect
-from typing import Any, Callable, List
+import os
 
 from error_handler.app import main as error_handler
 from get_config.app import main as get_config
@@ -118,6 +118,19 @@ async def process_operations(
           kind=kind, )
 
   return data
+
+
+@error_handler()
+async def get_parent_module(
+  parent_filename: str | None = None,
+  module: str | None = None,
+  resources_folder_name: str | None = None,
+) -> str:
+  index = module.find(resources_folder_name)
+  directory = module[:index]
+  if not parent_filename:
+    parent_filename = os.path.split(module)[-1]
+  return os.path.join(directory, parent_filename)
 
 
 def example() -> None:

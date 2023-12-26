@@ -14,8 +14,8 @@ from get_config.app import main as get_config
 from utils import app as utils
 
 
-MODULE_LOCATION = __file__
-CONFIG = get_config(module=MODULE_LOCATION)
+MODULE = __file__
+CONFIG = get_config(module=MODULE)
 LOCALS = locals()
 
 SIDE_EFFECTS = {}
@@ -267,8 +267,7 @@ async def example() -> None:
   from invoke_pytest.app import main as invoke_pytest
 
 
-  project_directory=MODULE_LOCATION,
-  invoke_pytest(project_directory=project_directory, )
+  invoke_pytest(project_directory=MODULE)
 
 
 if __name__ == '__main__':

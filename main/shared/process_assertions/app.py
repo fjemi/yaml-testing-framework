@@ -11,8 +11,8 @@ from get_object.app import main as get_object
 from utils import app as utils
 
 
-MODULE_LOCATION = __file__
-CONFIG = get_config(module=MODULE_LOCATION)
+MODULE = __file__
+CONFIG = get_config(module=MODULE)
 LOCALS = locals()
 
 
@@ -204,8 +204,7 @@ async def example() -> None:
   from invoke_pytest.app import main as invoke_pytest
 
 
-  MODULE_LOCATION = '.'
-  invoke_pytest(project_directory=MODULE_LOCATION)
+  invoke_pytest(project_directory=MODULE)
 
 
 if __name__ == '__main__':

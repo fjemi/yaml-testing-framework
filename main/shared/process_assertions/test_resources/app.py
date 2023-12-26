@@ -8,10 +8,14 @@ import os
 import yaml
 
 from get_config.app import main as get_config
+from utils import app as utils
 
 
 MODULE = __file__
-PARENT_MODULE = os.path.dirname(os.path.dirname(MODULE)) + f'{os.sep}app.py'
+PARENT_MODULE = utils.get_parent_module(
+  module=MODULE,
+  resources_folder_name='test_resources', )
+
 CONFIG = get_config(module=PARENT_MODULE)
 
 

@@ -8,12 +8,14 @@ import dataclasses as dc
 from typing import Any, Callable
 
 from get_config.app import main as get_config
+from utils import app as utils
 
 
 MODULE = __file__
-PARENT_MODULE = os.path.dirname(MODULE)
-PARENT_MODULE = os.path.dirname(PARENT_MODULE)
-PARENT_MODULE = os.path.join(PARENT_MODULE, 'app.py')
+PARENT_MODULE = utils.get_parent_module(
+  module=MODULE,
+  resources_folder_name='test_resources', )
+
 CONFIG = get_config(module=PARENT_MODULE)
 LOCALS = locals()
 
@@ -145,9 +147,7 @@ def example() -> None:
   from invoke_pytest.app import main as invoke_pytest
 
 
-  project_directory = PARENT_MODULE
-  # project_directory = 'main'
-  invoke_pytest(project_directory=project_directory)
+  invoke_pytest(project_directory=PARENT_MODULE)
 
 
 if __name__ == '__main__':

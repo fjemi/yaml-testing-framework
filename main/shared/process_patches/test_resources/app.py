@@ -11,12 +11,13 @@ from types import ModuleType
 
 
 from get_config.app import main as get_config
+import utils.app as utils
 
 
 MODULE = __file__
-PARENT_MODULE = os.path.dirname(MODULE)
-PARENT_MODULE = os.path.dirname(PARENT_MODULE)
-PARENT_MODULE = os.path.join(PARENT_MODULE, 'app.py')
+PARENT_MODULE = utils.get_parent_module(
+  module=MODULE,
+  resources_folder_name='test_resources', )
 
 CONFIG = get_config(module=PARENT_MODULE)
 LOCALS = locals()

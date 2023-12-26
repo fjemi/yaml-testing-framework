@@ -11,10 +11,14 @@ import os
 import logger.test_resources.module as module
 
 from get_config.app import main as get_config
+import utils.app as utils
 
 
 MODULE = __file__
-PARENT_MODULE = os.path.dirname(os.path.dirname(MODULE)) + f'{os.sep}app.py'
+PARENT_MODULE = utils.get_parent_module(
+  module=MODULE,
+  resources_folder_name='test_resources', )
+
 SCHEMA = os.path.dirname(os.path.dirname(MODULE)) + 'app.yaml'
 CONFIG = get_config(module=PARENT_MODULE)
 LOCALS = locals()
@@ -94,8 +98,7 @@ def example() -> None:
   from invoke_pytest.app import main as invoke_pytest
 
 
-  project_directory = PARENT_MODULE
-  invoke_pytest(project_directory=project_directory)
+  invoke_pytest(project_directory=PARENT_MODULE)
 
 
 if __name__ == '__main__':

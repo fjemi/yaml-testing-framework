@@ -11,7 +11,7 @@ import utils.app as utils
 
 MODULE = __file__
 PARENT_MODULE = utils.get_parent_module(
-  filename='test_entrypoint.py',
+  parent_filename='test_entrypoint.py',
   resources_folder_name='test_resources',
   module=MODULE, )
 

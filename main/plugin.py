@@ -187,8 +187,7 @@ async def example() -> None:
   from invoke_pytest.app import main as invoke_pytest
 
 
-  project_directory = MODULE
-  invoke_pytest(project_directory=project_directory)
+  invoke_pytest(project_directory=MODULE)
 
 
 if __name__ == '__main__':

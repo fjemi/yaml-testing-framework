@@ -1,7 +1,7 @@
 #!.venv/bin/python3
 # -*- coding: utf-8 -*-
 
-MODULE_LOCATION = __file__
+MODULE = __file__
 
 
 def main(
@@ -18,8 +18,7 @@ def example() -> None:
 
   invoke_pytest(
     invoke='pytest',
-    project_directory=MODULE_LOCATION,
-  )
+    project_directory=MODULE, )
 
 
 if __name__ == '__main__':

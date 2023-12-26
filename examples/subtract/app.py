@@ -5,7 +5,7 @@
 import dataclasses as dc
 
 
-MODULE_LOCATION = __file__
+MODULE = __file__
 LOCALS = locals()
 
 
@@ -63,9 +63,7 @@ def examples() -> None:
   from invoke_pytest.app import main as invoke_pytest
 
 
-  invoke_pytest(
-    # invoke='pytest',
-    project_directory=MODULE_LOCATION, )
+  invoke_pytest(project_directory=MODULE)
 
 
 if __name__ == '__main__':
