@@ -1,48 +1,69 @@
-#!/usr/bin/env python3
+#!.venv/bin/python3
+# -*- coding: utf-8 -*-
 
-import os
-import sys
+
+import dataclasses as dc
+import time
 
 import pytest
 import yaml
 
-import app.main as pytest_yaml
+
+MODULE = __file__
+
+LOCALS = locals()
+UNNAMED_TEST_COUNT = 0
 
 
-def format_ids(test: pytest_yaml.Test | None) -> str:
-  if not test:
-    return
+@dc.dataclass
+class Data_Class:
+  pass
 
-  module = test.module
-  if not isinstance(module, str):
-    module = module.__file__
 
-  project_path = str(pytest.project_path)
-  module = module.replace(project_path, '')
-  module = module.replace('.py', '')
-  module = module.replace(os.sep, '.')[1:]
-  return f'{module}.{test.function} - {test.description}'
+def get_ids(test: Data_Class) -> str:
+  id_ = getattr(test, 'id_short', None)
+  if not id_:
+    global UNNAMED_TEST_COUNT
+    UNNAMED_TEST_COUNT += 1
+    id_ = f'test_{UNNAMED_TEST_COUNT}'
+  return id_
+
+
+def verify_assertions(assertions: list | None = None) -> int | None:
+  assertions = assertions or []
+
+  for assertion in assertions:
+    actual = assertion.actual
+    expected = assertion.expected
+
+    try:
+      actual = yaml.dump(actual)
+      expected = yaml.dump(expected)
+    finally:
+      # trunk-ignore(bandit/B101)
+      assert expected == actual
+
+  return 1
+
+
+time.sleep(.1)  # Prevent overlap with pytest output in terminal
 
 
 @pytest.mark.parametrize(
   argnames='test',
-  argvalues=pytest.yml_tests,
-  ids=lambda test: format_ids(test=test),
-)
-def test_case(test: pytest_yaml.Test) -> None:
-  n = len(test.assertions)
-  for i in range(n):
+  ids=lambda test: get_ids(test=test),
+  argvalues=pytest.yaml_tests, )
+def test_(test: Data_Class) -> None:
+  assertions = getattr(test, 'assertions', [])
+  verify_assertions(assertions=assertions)
 
-    try:
-      test.assertions[i] = yaml.dump(test.assertions[i])
-      test.result[i] = yaml.dump(test.result[i])
-    except TypeError:
-      pass
 
-    if test.assertions[i] != test.result[i]:
-      print(test.exception)
-    assert test.assertions[i] == test.result[i]
+def example() -> None:
+  from invoke_pytest.app import main as invoke_pytest
+
+
+  invoke_pytest(project_directory=MODULE)
 
 
 if __name__ == '__main__':
-  sys.exit(pytest.main(['-s', '-vvv'],))
+  example()

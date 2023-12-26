@@ -1,0 +1,86 @@
+todo:
+- Incorporate the id generated when collating tests ex. 0.1.1 with
+  get_id function
+- Pass excluded funcitons and modules to coverage
+
+
+globals:
+  exclude_functions:
+  - test_
+  resources:
+  - ${ROOT_DIR}/assertions/app.py
+
+
+tests:
+- function: get_ids
+  description: >
+    Returns the id for a test or creates one if the id does not exist.
+  cast_arguments:
+  - field: test
+    caster: test_resources.test_entrypoint.app.test_resource
+  tests:
+  - arguments:
+      test:
+        id_short: null
+    assertions:
+    - method: equals
+      expected: test_1
+  - arguments:
+      test:
+        id_short: id_short
+    assertions:
+    - method: equals
+      expected: id_short
+  - patches:
+    - name: UNNAMED_TEST_COUNT
+      value: 1
+      method: value
+    arguments:
+      test:
+        id_short: null
+    assertions:
+    - method: equals
+      expected: test_2
+  - patches:
+    - name: UNNAMED_TEST_COUNT
+      value: 3
+      method: value
+    arguments:
+      test:
+        id_short: null
+    assertions:
+    - method: equals
+      expected: test_4
+- function: verify_assertions
+  description: >
+    Verifies the expecations and values of assertions defined in tests.
+  cast_arguments:
+  - field: assertions
+    caster: test_resources.test_entrypoint.app.assertions_resource
+  tests:
+  - description: No assertions
+    arguments:
+      assertions: null
+    assertions:
+    - method: equals
+      expected: 1
+  - description: Passed assertion
+    arguments:
+      assertions:
+      - method: equals
+        expected: 1
+        actual: 1
+        passed: true
+    assertions:
+    - method: equals
+      expected: 1
+  - description: Failed assertion
+    arguments:
+      assertions:
+      - method: equals
+        expected: 1
+        actual: 2
+        passed: false
+    assertions:
+    - method: equals
+      expected: null
