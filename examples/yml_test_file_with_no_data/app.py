@@ -4,8 +4,12 @@
 MODULE = __file__
 
 
-# ruff: noqa: ARG001
-def main(*args, **kwargs) -> str:
+def main(
+  # trunk-ignore(ruff/ARG001)
+  *args,
+  # trunk-ignore(ruff/ARG001)
+  **kwargs,
+) -> str:
   return 'yaml test file with no data'
 
 

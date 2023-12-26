@@ -336,7 +336,7 @@ tests:
     - method: equals
       expected:
         locations: []
-  - description:
+  - description: Location is a string 0
     arguments:
       root_directory: location
       locations:
@@ -347,7 +347,7 @@ tests:
         locations:
         - module: location/module.py
           module_location: .module
-  - description:
+  - description: Location is a string 1
     arguments:
       root_directory: project_directory
       locations:
@@ -490,13 +490,6 @@ tests:
     the locations of a module, YAML, and resources
     for testing
   tests:
-  - description: Locations is defined
-    arguments:
-      locations: locations
-    assertions:
-    - method: equals
-      expected:
-        locations: locations
   - description: Defined project directory
     arguments:
       project_directory: *RESOURCES

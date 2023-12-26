@@ -194,7 +194,7 @@ tests:
     - method: equals
       expected: sync_output
 - function: call_sync_target_with_unpacked_argument
-  description:
+  description: Call a function with an unpacked dictionary
   cast_arguments:
   - field: target
     caster: test_resources.app.target_resource
@@ -432,7 +432,7 @@ tests:
       - method: equals
         expected: async_output
 - function: set_target_entrypoints_for_threads
-  description:
+  description: Sets the entrypoint for a function in a thread
   cast_arguments:
   - field: target
     caster: test_resources.app.target_resource

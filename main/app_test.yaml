@@ -4,6 +4,8 @@ todo:
 - Make timestamps a list and append timestamp at each logical operation
 - Add switcher for unpacking based on value and caster in 'execute_test'
 - Add logic for safe loading or regular loading data from yaml files
+- Add logic to exclude specified modules from being imported as resources;
+  help prevent errors caused by circular references
 
 
 globals:
@@ -93,8 +95,11 @@ tests:
       field: module.__name__
       expected: main.test_resources.app.module
     - method: type
-      field: module.main.test_resources.app.example_b
+      field: module.example_b
       expected: module
+    - method: equals
+      field: module.example_b.__file__
+      expected: ${ROOT_DIR}/main/test_resources/app/example_b.py
 - function: get_function_output
   description: Returns the result of running a function with arguments
   cast_arguments:

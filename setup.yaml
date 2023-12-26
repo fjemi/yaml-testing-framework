@@ -17,7 +17,8 @@ name: pytest-yaml
 packages:
 - main
 url: https://github.com/fjemi/pytest-yaml
-version: '0.1'
+# trunk-ignore(yamllint/quoted-strings)
+version: '0.2.0'
 zip_safe: True
 setup_requires: null
 extra_require:

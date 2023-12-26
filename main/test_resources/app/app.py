@@ -3,14 +3,20 @@
 
 
 import dataclasses as dc
-import os
 import types
 import typing
 
-import main.test_resources.app.example_a as example_a
-import main.test_resources.app.example_b as example_b
-import main.test_resources.app.module as module
+import pytest
 import utils.app as utils
+
+from main.test_resources.app import (
+  # trunk-ignore(ruff/F401)
+  example_a,
+  # trunk-ignore(ruff/F401)
+  example_b,
+  # trunk-ignore(ruff/F401)
+  module,
+)
 
 
 MODULE = __file__
@@ -46,7 +52,6 @@ def get_pytest_parser(
 
 
 def get_pytest_config(
-  # trunk-ignore(ruff/ARG001)
   *args,
   # trunk-ignore(ruff/ARG001)
   **kwargs,
@@ -56,15 +61,6 @@ def get_pytest_config(
   if args[0] is not None:
     py_test.Config.rootdir = args[0]
   return py_test.Config
-
-
-def get_locals(_locals: typing.List[str]) -> dict:
-  store = {}
-  for name in _locals:
-    function_ = f'process_option_{name}'
-    # trunk-ignore(ruff/ARG005)
-    store[function_] = lambda *args, **kwargs: function_value
-  return store
 
 
 def function(
@@ -78,7 +74,10 @@ def function_resource(function: str | None = None) -> typing.Callable:
   return LOCALS.get(function, None)
 
 
-def module_resource(module: str | None = None) -> types.ModuleType | None:
+def module_resource(
+  # trunk-ignore(ruff/F811)
+  module: str | None = None,
+) -> types.ModuleType | None:
   if isinstance(module, str):
     return LOCALS.get(module, None)
 
@@ -86,6 +85,7 @@ def module_resource(module: str | None = None) -> types.ModuleType | None:
 def handle_id_resource(data: dict | None = None) -> dict:
   data = data or {}
 
+  # trunk-ignore(ruff/F811)
   module = data.get('module', '')
   module = module_resource(module=module)
 

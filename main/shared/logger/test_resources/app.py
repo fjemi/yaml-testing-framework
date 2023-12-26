@@ -3,15 +3,13 @@
 
 
 import dataclasses as dc
-import sys
-import typing
-import types
 import os
+import types
+import typing
 
-import logger.test_resources.module as module
-
-from get_config.app import main as get_config
 import utils.app as utils
+from get_config.app import main as get_config
+from logger.test_resources import module
 
 
 MODULE = __file__
@@ -42,11 +40,19 @@ def data_class_resource() -> Data:
   return Test_Data()
 
 
-def function(data: None = None) -> int:
+def function(
+  # trunk-ignore(ruff/ARG001)
+  data: None = None,
+) -> int:
   return 1
 
 
-def get_dataclass(*arg, **kwargs) -> Data:
+def get_dataclass(
+  # trunk-ignore(ruff/ARG001)
+  *arg,
+  # trunk-ignore(ruff/ARG001)
+  **kwargs,
+) -> Data:
   data = CONFIG.schema.Data()
   data.data = CONFIG.schema.Data()
   data.timestamp = 'timestamp'
@@ -72,7 +78,7 @@ def set_default_resource(object: str) -> typing.Any:
 
   if object == 'Exception':
     try:
-      a = sum(['0', 0])
+      sum(['0', 0])
     except Exception as e:
       return e
 

@@ -8,15 +8,15 @@ schema:
   fields:
   - name: names
     type: list | None
-    description:
+    description: The names of an object's parents
     default: null
   - name: values
     type: list | None
-    description:
+    description: The values of an object's parents
     default: null
   - name: types
     type: list | None
-    description:
+    description: The types of an object's parents
     default: null
 - &DATA
   cls_name: Data
@@ -25,19 +25,19 @@ schema:
   fields:
   - name: parent
     type: Any
-    description:
+    description: An object's parent
     default: null
   - name: name
     type: str | None
-    description: Dot-delimited path to the cast object
+    description: Name of an object's parent
     default: null
   - name: parents
     type: Data_Class | None
-    description:
+    description: Store parent data for an object
     default: null
   - name: names
     type: list | None
-    description:
+    description: The names of an object's parents
     default: null
 
 

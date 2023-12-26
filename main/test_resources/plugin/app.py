@@ -2,14 +2,11 @@
 # -*- coding: utf-8 -*-
 
 
-import typing
-from typing import Any
 import types
-import os
-
-import pytest
+from typing import Any
 from unittest import mock
 
+import pytest
 import utils.app as utils
 
 
@@ -24,16 +21,24 @@ class Store:
 
 
 def pytest_resource(
-  # ruff: noqa: ARG001
+  # trunk-ignore(ruff/ARG001)
   *args,
+  # trunk-ignore(ruff/ARG001)
   **kwargs,
 ) -> types.ModuleType:
   return pytest
 
 
-def get_locals(*args, **kwargs) -> dict:
+def get_locals(
+  # trunk-ignore(ruff/ARG001)
+  *args,
+  # trunk-ignore(ruff/ARG001)
+  **kwargs,
+) -> dict:
   return {
+    # trunk-ignore(ruff/ARG005)
     'process_option_option_0': lambda *args, **kwargs: 'processed_value_0',
+    # trunk-ignore(ruff/ARG005)
     'process_option_option_1': lambda *args, **kwargs: 'processed_value_1', }
 
 
@@ -50,7 +55,7 @@ def process_option_project_directory_resource(
   arguments: dict | None = None,
 ) -> pytest.Config:
   arguments = arguments or {}
-  
+
   option = arguments.get('option', None)
   option = project_directory_option_resource(option=option)
 
@@ -60,33 +65,44 @@ def process_option_project_directory_resource(
   arguments.update({
     'option': option,
     'config': config, })
-  
+
   return arguments
 
 
-def get_options_or_inis_resource(*args, **kwargs) -> 'unittest.mock':
+def get_options_or_inis_resource(
+  # trunk-ignore(ruff/ARG001)
+  *args,
+  # trunk-ignore(ruff/ARG001)
+  **kwargs,
+) -> mock:
   return mock
 
 
-def pytest_parser_resource(parser: str | None = None) -> pytest.Parser:
+def pytest_parser_resource(
+  # trunk-ignore(ruff/ARG001)
+  parser: str | None = None,
+) -> pytest.Parser:
   return pytest.Parser()
 
 
-def pytest_configure_resource(config: str | None = None) -> pytest.Config:
+def pytest_configure_resource(
+  # trunk-ignore(ruff/ARG001)
+  config: str | None = None,
+) -> pytest.Config:
   return pytest.Config
 
 
-def set_node_ids_resource(item: Any) -> Any:
+def set_node_ids_resource(item: Any) -> Store:
   test = Store()
   test.module_location = ['module_location']
   test.function = 'function'
-  
+
   _ = item
   item = Store()
   item.callspec = Store()
   item.callspec.params = Store()
   item.callspec.params = {'test': test}
-  
+
   return item
 
 

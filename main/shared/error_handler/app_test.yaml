@@ -279,34 +279,13 @@ tests:
     assertions:
     - method: equals
       expected: true
-
-
-# - function: add_locals_to_data_class
-#   # cast_arguments:
-#   # - caster: CONFIG.shcema.Data
-#   #   field: data
-#   #   unpack: true
-#   description:
-#   tests:
-#   - description: Data is an empty dictionary
-#     arguments:
-#       data: {}
-#     assertions:
-#     - method: equals
-#       expected: {}
-#   - arguments:
-#       data: {}
-#     assertions:
-#     - method: equals
-#       expected: {}
-
 - function: main
   description: >
     Wrapper that handles running functions
   cast_output:
   - caster: test_resources.app.main_resource
   - caster: __builtins__.str
-    field: sync_function_exception
+    field: sync_exception
   tests:
   - description: No defined arguments
     arguments: {}
@@ -315,8 +294,8 @@ tests:
       expected:
         sync_function: sync_output
         async_function: async_output
-        sync_function_exception: '''str'' object has no attribute ''value'''
-        async_function_exception: null
+        sync_exception: '''str'' object has no attribute ''value'''
+        async_exception: null
   - description: Raise exceptions
     arguments:
       raise_exception: false
@@ -326,8 +305,8 @@ tests:
       expected:
         sync_function: sync_output
         async_function: async_output
-        async_function_exception: default_value
-        sync_function_exception: '''str'' object has no attribute ''value'''
+        async_exception: default_value
+        sync_exception: '''str'' object has no attribute ''value'''
   # todo: fix test - default value is not being returned
   # think of a better way of testing the main function
   # - description: Default value defined for exceptions
@@ -339,5 +318,5 @@ tests:
   #     expected:
   #       sync_function: sync_output
   #       async_function: async_output
-  #       sync_function_exception: default_value
-  #       async_function_exception: default_value
+  #       sync_exception: default_value
+  #       async_exception: default_value

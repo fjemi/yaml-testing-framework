@@ -179,9 +179,10 @@ tests:
       - project-directory
       - include-functions
       - exclude-files
+      - resources-folder-name
     - method: length
       field: _anonymous.options
-      expected: 4
+      expected: 5
 - function: pytest_configure
   description: >
     Retrieves the values of ini and CLI arguments

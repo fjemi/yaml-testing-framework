@@ -58,7 +58,7 @@ async def get_object_to_cast(
 
 
 @error_handler()
-async def get_kinds(  # ruff:  noqa: ARG001
+async def get_kinds(
   casted_object: Any | None = None,
   object: Any | None = None,
   caster: Any | None = None,

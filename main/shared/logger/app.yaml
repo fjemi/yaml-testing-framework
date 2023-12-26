@@ -1,12 +1,13 @@
 environment:
   ROOT_DIR: ${ROOT_DIR}
-  LOGS_DIR: ${LOGS_DIR} 
+  LOGS_DIR: ${LOGS_DIR}
   DEBUG: ${DEBUG}
+
 
 schema:
 - &DATA
   cls_name: Data
-  description:
+  description: Store data used by the functions in a module
   slots: true
   fields:
   - name: data
@@ -14,7 +15,7 @@ schema:
     default: null
     type: Any | None
   - name: format_
-    description: | 
+    description: >
       Format for the log:  'json' or 'yaml'
     default: yaml
     type: str | None
@@ -47,6 +48,7 @@ schema:
 empty_values:
 - false
 - 'false'
+- 'False'
 - null
 - none
 - 0

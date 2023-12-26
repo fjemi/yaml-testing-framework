@@ -128,7 +128,7 @@ def test_(test: Any) -> None:
     try:
       actual = yaml.dump(actual)
       expected = yaml.dump(expected)
-    except Exception as e:  # noqa: F841
+    except Exception as e:
       pass
 
     assert expected == actual

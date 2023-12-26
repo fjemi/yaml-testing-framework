@@ -10,5 +10,10 @@ class Data:
   field: str = 'value'
 
 
-def object_resource(*args, **kwargs) -> Data:
+def object_resource(
+  # trunk-ignore(ruff/ARG001)
+  *args,
+  # trunk-ignore(ruff/ARG001)
+  **kwargs,
+) -> Data:
   return Data()

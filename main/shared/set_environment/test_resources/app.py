@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 
-import os
 import types
 
 import utils.app as utils
@@ -17,11 +16,22 @@ PARENT_MODULE = utils.get_parent_module(
 def module_resource(
   module: str | None = None,
 ) -> types.ModuleType | None:
+
+
   if module == 'config_environment_does_exist':
-    from main.shared.set_environment.test_resources import config_environment_does_exist
+    from main.shared.set_environment.test_resources import (
+      config_environment_does_exist,
+    )
+
+
     return config_environment_does_exist
+
   elif module == 'config_environment_does_not_exist':
-    from main.shared.set_environment.test_resources import config_environment_does_not_exist
+    from main.shared.set_environment.test_resources import (
+      config_environment_does_not_exist,
+    )
+
+
     return config_environment_does_not_exist
 
 

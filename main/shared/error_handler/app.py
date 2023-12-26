@@ -17,6 +17,7 @@ from logger.app import main as logger
 
 
 MODULE = __file__
+
 CONFIG = get_config(module=MODULE)
 LOCALS = locals()
 

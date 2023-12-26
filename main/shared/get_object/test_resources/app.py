@@ -21,4 +21,3 @@ def format_parents_resource(data: Any) -> Any:
 def get_object_from_object_resource(data: dict) -> Any:
   data.update({'parent': __builtins__})
   return data
-  

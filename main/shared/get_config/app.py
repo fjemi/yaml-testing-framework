@@ -164,7 +164,8 @@ def convert_dict_to_dataclass(
   fields = []
 
   for key, value in data.items():
-    kind = f'{type(value).__name__} | None'
+    kind = f'{type(value).__name__}'
+    kind = kind if kind.find('None') != -1 else kind + ' | None'
     field = [
       key,
       kind,

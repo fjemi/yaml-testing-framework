@@ -13,6 +13,7 @@ from utils import app as utils
 
 MODULE = __file__
 CONFIG = get_config(module=MODULE)
+
 LOCALS = locals()
 
 

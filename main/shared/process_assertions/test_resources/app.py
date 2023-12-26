@@ -4,9 +4,8 @@
 
 import dataclasses as dc
 from typing import Any
-import os
-import yaml
 
+import yaml
 from get_config.app import main as get_config
 from utils import app as utils
 
@@ -26,7 +25,7 @@ class Store:
 
 def set_exception(assertion: Any) -> Any:
   try:
-    c = sum([1, '1'])
+    sum([1, '1'])
   except Exception as exception:
     assertion.exception = exception
   return assertion
@@ -38,7 +37,6 @@ def assertions_resource(
 ) -> Any:
   if assertions:
     return [CONFIG.schema.Assertion(**assertion) for assertion in assertions]
-
 
   if case_ == 'undefined_assertions':
     case_ = Store()
@@ -66,10 +64,10 @@ def main_resource(output: dict) -> dict:
   assertions = output.get(key, [])
   assertions = assertions or []
   n = range(len(assertions))
-  
+
   for i in n:
     assertions[i] = dc.asdict(assertions[i])
-  
+
   output[key] = assertions
   return output
 

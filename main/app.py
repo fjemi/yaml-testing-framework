@@ -16,7 +16,6 @@ from get_config.app import main as get_config
 from get_locations.app import main as get_locations
 from get_module.app import main as get_module
 from get_tests.app import main as get_tests
-from logger.app import main as logger
 
 # trunk-ignore(ruff/F401)
 from process_assertions.app import main as process_assertions
@@ -76,27 +75,36 @@ async def handle_resources(
   visited = []
 
   for location in resources:
-    if os.path.exists(location) is False or location in visited:
-      continue
-    visited.append(location)
-
     extension = os.path.splitext(location)[1]
-    condition = extension not in CONFIG.module_extensions
-    if condition:
+    conditions = [
+      os.path.exists(location),
+      extension in CONFIG.module_extensions,
+      location not in visited, ]
+    if False in conditions:
       continue
+
+    visited.append(location)
 
     resource = get_module(
       location=location,
       pool=False, )
 
+    routes = {
+      'module': module.__file__,
+      'resource': resource.__file__, }
+    for key, value in routes.items():
+      # trunk-ignore(ruff/PLW2901)
+      value = value.replace(f'{os.sep}{os.sep}', os.sep)
+      # trunk-ignore(ruff/PLW2901)
+      value = value.split(os.sep)
+      routes[key] = value
+
     # Get the tree or dot-delimited path to the resource
-    tree = CONFIG.schema.Tree
-    tree = tree(
-      resource=resource.__file__.split(os.sep),
-      module=module.__file__.split(os.sep), )
+    tree = CONFIG.schema.Tree(**routes)
 
     start = 0
     n = range(len(tree.resource))
+
     for i in n:
       if not tree.resource[i]:
         continue
@@ -159,11 +167,6 @@ async def get_function(
   elif kind == 'nonetype':
     module_location = ''
 
-  # data = [{
-  #   'module': module_location,
-  #   'function': function_, }]
-  # task = logger(data=data, standard_output=True, )
-  # utils.get_task_from_event_loop(task=task)
   data = f'- function: {function_}\n  module: {module_location}\n'
   print(data)
 

@@ -2,6 +2,7 @@ todo:
 - add arg parser
 - add tests
 - rename to invoke_framkework
+- add flag to log individual operations
 
 
 globals:

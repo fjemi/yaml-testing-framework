@@ -12,7 +12,12 @@ THIS_MODULE_NAME = __name__
 THIS_MODULE_LOCATION = __file__
 
 
-def print_hello_world(*args, **kwargs) -> str:
+def print_hello_world(
+  # trunk-ignore(ruff/ARG001)
+  *args,
+  # trunk-ignore(ruff/ARG001)
+  **kwargs,
+) -> str:
   data = "Hello World"
   asyncio.run(logger(
     data=data,

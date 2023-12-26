@@ -3,7 +3,6 @@
 
 
 import dataclasses as dc
-import os
 
 import utils.app as utils
 

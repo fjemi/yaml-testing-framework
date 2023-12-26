@@ -12,9 +12,13 @@ from typing import Any, List
 import yaml as py_yaml
 from error_handler.app import main as error_handler
 from get_config.app import main as get_config
-from get_tests.collate_tests.app import main as collate_tests  # noqa: F401
+
+# trunk-ignore(ruff/F401)
+from get_tests.collate_tests.app import main as collate_tests
 from get_tests.combine_fields.app import main as combine_fields
-from get_tests.format_tests.app import main as format_tests  # noqa: F401
+
+# trunk-ignore(ruff/F401)
+from get_tests.format_tests.app import main as format_tests
 from utils import app as utils
 
 

@@ -42,6 +42,7 @@ def main(
 
 def example() -> None:
   import asyncio
+
   from logger.app import main as logger
 
 

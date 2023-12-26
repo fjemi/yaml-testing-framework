@@ -237,11 +237,7 @@ async def main(
   patches: List[dict] | None = None,
   module: ModuleType | None = None,
 ) -> dict:
-  if patches in CONFIG.empty_values:
-    return {
-      'patches': None,
-      'module': module, }
-
+  patches = patches or []
   n = range(len(patches))
 
   for i in n:

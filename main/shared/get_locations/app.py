@@ -198,6 +198,7 @@ async def format_module_locations(
   root_directory: str | None = None,
   locations: List[dict] | None = None,
 ) -> dict:
+  locations = locations or []
   n = range(len(locations))
 
   for i in n:
@@ -336,7 +337,7 @@ async def get_resources(
 
 
 @error_handler()
-async def main(  # ruff: noqa: ARG001, PLR0913
+async def main(
   project_directory: Any | None = None,
   include_files: str | List[str] | None = None,
   include_functions: str | List[str] | None = None,
@@ -344,10 +345,7 @@ async def main(  # ruff: noqa: ARG001, PLR0913
   exclude_functions: str | List[str] | None = None,
   yaml_suffix: str | None = None,
   resources_folder_name: str | None = None,
-  locations: dict | None = None,
 ) -> dict:
-  if locations:
-    return {'locations': locations}
   data = utils.process_arguments(
     locals=locals(),
     data_class=CONFIG.schema.Locations, )

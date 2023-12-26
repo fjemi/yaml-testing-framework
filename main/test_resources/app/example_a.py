@@ -2,5 +2,8 @@
 # -*- coding: utf-8 -*-
 
 
-def example_function(data = None) -> str:
+def example_function(
+  # trunk-ignore(ruff/ARG001)
+  data: None = None,
+) -> str:
   return 'example_output'

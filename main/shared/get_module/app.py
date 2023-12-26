@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 
-from __future__ import annotations  # noqa: I001
+from __future__ import annotations
 
 import dataclasses as dc
 import importlib
@@ -11,9 +11,9 @@ import os
 from types import ModuleType
 
 from error_handler.app import (
-  main as error_handler, )
+  main as error_handler,
+)
 from get_config.app import main as get_config
-# from get_value.app import main as get_value
 from utils import app as utils
 
 
@@ -102,7 +102,7 @@ async def add_module_to_pool(
 
 
 @error_handler()
-async def main(  # ruff: noqa: ARG001
+async def main(
   location: str | None = None,
   name: str | None = None,
   pool: bool = True,

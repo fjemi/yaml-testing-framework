@@ -36,7 +36,7 @@ def add_dataclass(
   return data
 
 
-def main(  # ruff: noqa: ARG001
+def main(
   data: Data | None = None,
   a: int | float | None = None,
   b: int | float | None = None,

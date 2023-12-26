@@ -3,9 +3,7 @@
 
 
 import dataclasses as dc
-import pytest
 
-from get_config.app import main as get_config
 import utils.app as utils
 
 
@@ -27,7 +25,7 @@ def test_resource(test: dict | None = None):
 
   for key, value in test.items():
     setattr(store, key, value)
-  
+
   return store
 
 
@@ -40,7 +38,7 @@ def assertions_resource(assertions: list | None = None) -> list:
     for key, value in assertions[i].items():
       setattr(store, key, value)
     assertions[i] = store
-  
+
   return assertions
 
 

@@ -2,11 +2,8 @@
 # # -*- coding: utf-8 -*-
 
 
-from typing import Any
 import dataclasses as dc
-from typing import Callable
-from types import ModuleType
-from typing import Iterable
+from typing import Any, Callable, Iterable
 
 
 LOCALS = locals()
@@ -39,12 +36,16 @@ def multiply(a: int, b: int) -> dict:
   return {'result': result}
 
 
-def function_one_parameter(parameter_1: None = None) -> None:
-  return
+def function_one_parameter(
+  parameter_1: None = None,
+) -> None:
+  _ = parameter_1
 
 
 def function_two_parameters(
+  # trunk-ignore(ruff/ARG001)
   parameter_1: None = None,
+  # trunk-ignore(ruff/ARG001)
   parameter_2: None = None,
 ) -> None:
   return
@@ -54,7 +55,12 @@ def function_resource(function: str) -> Callable:
   return LOCALS[function]
 
 
-def data_class_resource(*args, **kwargs) -> Data_Class:
+def data_class_resource(
+  # trunk-ignore(ruff/ARG001)
+  *args,
+  # trunk-ignore(ruff/ARG001)
+  **kwargs,
+) -> Data_Class:
   return Data_Class
 
 
@@ -62,11 +68,19 @@ def data_resource(data: dict) -> Data_Class:
   return Data_Class(**data)
 
 
-def functions_resource(*args, **kwargs) -> dict:
+def functions_resource(
+  # trunk-ignore(ruff/ARG001)
+  *args,
+  # trunk-ignore(ruff/ARG001)
+  **kwargs,
+) -> dict:
   return LOCALS
 
 
-def coroutine_resource(task: Any | None = None) -> Any:
+def coroutine_resource(
+  # trunk-ignore(ruff/ARG001)
+  task: Any | None = None,
+) -> Callable:
   async def entrypoint() -> str:
     return 'coroutine_output'
 

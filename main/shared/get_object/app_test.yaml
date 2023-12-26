@@ -102,7 +102,7 @@ tests:
       - shared
       - get_object
 - function: get_data_class
-  description:
+  description: Return a dictionary as a dataclass
   cast_output:
   - caster: dc.asdict
   tests:
@@ -224,19 +224,16 @@ tests:
     - method: equals
       expected: null
 - function: get_object
-  cast_arguments:
-  # - caster: Data_Class
-  #   field: data
-  #   unpack: true
+  cast_arguments: Returns a child object from a parent object
   description: >
     Returns an value of a key or dict or a field of an object
   tests:
-  - *GET_OBJECT_FROM_DICT_TESTS
-  - *GET_OBJECT_FROM_OBJECT_TESTS
+  - << *GET_OBJECT_FROM_DICT_TESTS
+  - << *GET_OBJECT_FROM_OBJECT_TESTS
 - function: main
   description: >
     Retrieve the value of a child (key, field, or attribute)
     from a parent (dict or object)
   tests:
-  - *GET_OBJECT_FROM_DICT_TESTS
-  - *GET_OBJECT_FROM_OBJECT_TESTS
+  - << *GET_OBJECT_FROM_DICT_TESTS
+  - << *GET_OBJECT_FROM_OBJECT_TESTS

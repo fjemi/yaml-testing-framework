@@ -108,11 +108,6 @@ schema:
     type: int | None
     description: Index for an element in a list
     default: 0
-  # trunk-ignore(yamllint/quoted-strings)
-  - name: 'n'
-    type: Any | None
-    description: An iterable range
-    default: null
 
 
 unpack_kinds:

@@ -7,7 +7,9 @@ from typing import Any
 
 from error_handler.app import main as error_handler
 from get_config.app import main as get_config
-from get_module.app import main as get_module  # noqa: F401
+
+# trunk-ignore(ruff/F401)
+from get_module.app import main as get_module
 
 
 MODULE = __file__

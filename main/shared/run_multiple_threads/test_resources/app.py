@@ -1,16 +1,13 @@
+#!.venv/bin/python3
+# -*- coding: utf-8 -*-
+
+
 import asyncio
-import dataclasses as dc
-import threading
-from time import ctime, time
-from typing import Callable
-import threading
-from typing import Any
 import inspect
-import os
+import threading
+from typing import Any, Callable
 
-import yaml
-
-import utils.app as utils
+from utils import app as utils
 
 
 MODULE = __file__
@@ -25,10 +22,11 @@ THREAD_EXECUTION_RESULTS = []
 
 TYPE_HANDLER = {
   "str": lambda name: f"Hello {name}",
+  # trunk-ignore(ruff/ARG005)
   "NoneType": lambda name: "Hello World", }
 
 
-def main_sync(name: str = None) -> str:
+def main_sync(name: str | None = None) -> str:
   kind = type(name).__name__.lower()
   if kind not in TYPE_HANDLER:
     kind = 'NoneType'
@@ -60,11 +58,21 @@ async def add_async(
   return a + b
 
 
-def sync_target(*args, **kwargs) -> str:
+def sync_target(
+  # trunk-ignore(ruff/ARG001)
+  *args,
+  # trunk-ignore(ruff/ARG001)
+  **kwargs,
+) -> str:
   return 'sync_output'
 
 
-async def async_target(*args, **kwargs) -> str:
+async def async_target(
+  # trunk-ignore(ruff/ARG001)
+  *args,
+  # trunk-ignore(ruff/ARG001)
+  **kwargs,
+) -> str:
   return 'async_output'
 
 
@@ -73,11 +81,21 @@ def argument_example(argument) -> tuple | None:
     return ()
 
 
-def sync_entrypoint(*args, **kwargs) -> str:
+def sync_entrypoint(
+  # trunk-ignore(ruff/ARG001)
+  *args,
+  # trunk-ignore(ruff/ARG001)
+  **kwargs,
+) -> str:
   return 'sync_entrypoint_output'
 
 
-async def async_entrypoint(*args, **kwargs) -> str:
+async def async_entrypoint(
+  # trunk-ignore(ruff/ARG001)
+  *args,
+  # trunk-ignore(ruff/ARG001)
+  **kwargs,
+) -> str:
   return 'async_entrypoint_output'
 
 
@@ -88,15 +106,8 @@ def function_resource(function: str) -> Callable:
 def entrypoints_resource(entrypoints: str) -> list:
   if entrypoints == 'entrypoints':
     return [sync_target, async_target]
-  
+
   return entrypoints
-
-
-def argument_example_1(argument) -> dict:
-  key = 'entrypoint'
-  entrypoint = entrypoint_example(entrypoint=argument[key])
-  argument[key] = entrypoint
-  return argument
 
 
 def threads_resource(threads: str | None) -> list:
@@ -106,11 +117,21 @@ def threads_resource(threads: str | None) -> list:
       threading.Thread(target=add_async), ]
 
 
-def sync_exception_target(*args, **kwargs):
+def sync_exception_target(
+  # trunk-ignore(ruff/ARG001)
+  *args,
+  # trunk-ignore(ruff/ARG001)
+  **kwargs,
+) -> None:
   return sum([1, '1'])
 
 
-async def async_exception_target(*args, **kwargs):
+async def async_exception_target(
+  # trunk-ignore(ruff/ARG001)
+  *args,
+  # trunk-ignore(ruff/ARG001)
+  **kwargs,
+) -> None:
   return sum([1, '1'])
 
 
@@ -125,7 +146,7 @@ def target_resource(target: str | dict) -> Callable:
 
   if isinstance(target, str):
     return LOCALS.get(target, None)
-  
+
   return target
 
 
@@ -140,16 +161,21 @@ def get_threads_resource(threads: list | None = None) -> list:
 
 def call_entrypoint(entrypoint: Callable) -> Any:
   result = entrypoint()
-  
+
   condition = inspect.iscoroutine(result)
   if condition:
     loop = asyncio.get_event_loop()
     result = loop.run_until_complete(result)
-  
+
   return result
 
 
-def coroutine_resource(*args, **kwargs) -> Any:
+def coroutine_resource(
+  # trunk-ignore(ruff/ARG001)
+  *args,
+  # trunk-ignore(ruff/ARG001)
+  **kwargs,
+) -> Callable:
   async def async_function():
     return 'async_output'
   return async_function()
