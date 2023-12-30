@@ -16,6 +16,7 @@ from get_config.app import main as get_config
 from get_locations.app import main as get_locations
 from get_module.app import main as get_module
 from get_tests.app import main as get_tests
+from logger.app import main as logger
 
 # trunk-ignore(ruff/F401)
 from process_assertions.app import main as process_assertions
@@ -167,8 +168,9 @@ async def get_function(
   elif kind == 'nonetype':
     module_location = ''
 
-  data = f'- function: {function_}\n  module: {module_location}\n'
-  print(data)
+  data = [{'function': function_, 'module': module_location}]
+  task = logger(data=data, standard_output=True)
+  utils.get_task_from_event_loop(task=task)
 
   function_ = getattr(module, function_, None, )
   return {'function': function_}

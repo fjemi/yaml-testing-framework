@@ -107,6 +107,27 @@ def assert_substring_in_string(
     'expected': expected, }
 
 
+def assert_list_contains_item(
+  output: Any | None = None,
+  expected: list | None = None,
+) -> dict:
+  store = []
+
+  if not isinstance(output, list):
+    output = [output]
+
+  for item in output:
+    if item in expected:
+      store.append(item)
+
+  expected = store
+  passed = expected == output
+  return {
+    'passed': passed,
+    'expected': expected,
+    'output': output, }
+
+
 def assert_item_in_list(
   output: list | tuple | None = None,
   expected: Any | None = None,

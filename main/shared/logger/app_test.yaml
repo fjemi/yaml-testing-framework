@@ -1,5 +1,6 @@
 todo:
 - Are exceptions being logged correctly to `exception.log`? Doesn't look like it...
+- each run should be a seperate log file: timestamp.count.exception or timestamp as the folder
 
 
 resources:
@@ -369,7 +370,7 @@ tests:
       expected:
         status: exited
 - function: output_to_terminal
-  description: Handles printing logs int the CLI
+  description: Handles printing logs to the command line interface (CLI)
   tests:
   - description: Print logs is set to true
     arguments:
@@ -378,9 +379,10 @@ tests:
         b: b
       standard_output: true
     assertions:
-    - method: assertions.app.assert_equals
+    - method: assertions.app.assert_list_contains_item
       expected:
-        status: success
+      - status: success
+      - status: exited
   - description: Print logs is set to false
     arguments:
       data:
@@ -388,9 +390,10 @@ tests:
         b: b
       standard_output: false
     assertions:
-    - method: assertions.app.assert_equals
+    - method: assertions.app.assert_list_contains_item
       expected:
-        status: exited
+      - status: success
+      - status: exited
 - function: main
   description: Handles logging and outputing to the terminal
   tests:
@@ -406,9 +409,12 @@ tests:
       standard_output: False
       enabled: True
     assertions:
-    - method: assertions.app.assert_equals
+    # checking that output is in a list in case the environment variable
+    # sh`DEBUG` is set to true or false
+    - method: assertions.app.assert_list_contains_item
       expected:
-        status: exited
+      - status: exited
+      - status: success
   - description: Logging and standard output are disabled
     arguments:
       data:
@@ -421,9 +427,10 @@ tests:
       standard_output: False
       enabled: False
     assertions:
-    - method: assertions.app.assert_equals
+    - method: assertions.app.assert_list_contains_item
       expected:
-        status: exited
+      - status: exited
+      - status: success
   - description: Only standard output is enabled
     arguments:
       data:
@@ -436,6 +443,7 @@ tests:
       standard_output: True
       enabled: False
     assertions:
-    - method: assertions.app.assert_equals
+    - method: assertions.app.assert_list_contains_item
       expected:
-        status: success
+      - status: exited
+      - status: success

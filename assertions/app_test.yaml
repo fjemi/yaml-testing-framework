@@ -1,3 +1,8 @@
+todo:
+- Check if the "contains" assertions can be combined to reduce duplication of code
+- Need assertion for string/regex
+
+
 tests:
 - function: assert_exception
   description: >
@@ -286,6 +291,55 @@ tests:
         expected:
         - item_0
         - item_1
+- function: assert_list_contains_item
+  description: >
+    Verify that a function's output is within a list of items
+  tests:
+  - arguments: {}
+    assertions:
+    - method: assert_equals
+      expected: null
+  - arguments:
+      output: output
+      expected:
+      - expected
+    assertions:
+    - method: assert_equals
+      expected:
+        passed: False
+        output:
+        - output
+        expected: []
+  - arguments:
+      output: expected
+      expected:
+      - expected
+    assertions:
+    - method: assert_equals
+      expected:
+        passed: true
+        output:
+        - expected
+        expected:
+        - expected
+  - arguments:
+      output:
+      - output_0
+      - output_1
+      expected:
+      - output_0
+      - output_1
+      - output_3
+    assertions:
+    - method: assert_equals
+      expected:
+        passed: true
+        output:
+        - output_0
+        - output_1
+        expected:
+        - output_0
+        - output_1
 - function: assert_key_in_dict
   description: >
     Verify that a dictionary contains a key or keys

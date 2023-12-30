@@ -223,19 +223,19 @@ TRUE_VALUES = ['1', 'true', 1, 'True', True]
 
 
 async def output_to_terminal(
-  # trunk-ignore(ruff/ARG001)
   data: Data_Class | dict,
   standard_output: bool | None = None,
 ) -> dict:
   debug = CONFIG.environment.DEBUG.lower()
   standard_output = str(standard_output).lower()
-  status = 'success'
+  status = 'exited'
 
   conditions = [
-    debug in CONFIG.empty_values,
-    standard_output in CONFIG.empty_values, ]
-  if sum(conditions) == len(conditions):
-    status = 'exited'
+    debug not in CONFIG.empty_values,
+    standard_output not in CONFIG.empty_values, ]
+  if True in conditions:
+    status = 'success'
+    print(data)
 
   return {'status': status}
 

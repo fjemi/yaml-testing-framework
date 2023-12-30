@@ -36,9 +36,9 @@ schema:
     default: debug
     type: str | None
   - name: status
-    type: dict
+    type: str
     description: Status of a function's execution
-    default: {}
+    default: ''
   - name: enabled
     type: bool
     description: Enable or disable logging

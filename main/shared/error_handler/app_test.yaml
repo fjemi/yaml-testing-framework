@@ -29,9 +29,11 @@ tests:
     arguments:
       locals_: {}
     assertions:
-    - method: assertions.app.assert_equals
+    # standard_output can be '1' or '0' depedning on value
+    # of sh`DEBUG` environment variable
+    - method: assertions.app.assert_list_contains_item
       expected:
-        args: []
+      - args: []
         call_back: null
         data: null
         default_value: null
@@ -44,6 +46,20 @@ tests:
         raise_exception: false
         result: null
         standard_output: '0'
+        timestamp: null
+      - args: []
+        call_back: null
+        data: null
+        default_value: null
+        exception: null
+        function: null
+        kwargs: {}
+        log_enabled: false
+        log_level: debug
+        module: null
+        raise_exception: false
+        result: null
+        standard_output: '1'
         timestamp: null
   - description: Defined arguments
     arguments:
