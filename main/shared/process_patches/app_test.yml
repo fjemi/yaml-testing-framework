@@ -30,17 +30,17 @@ tests:
     arguments:
       value: patch_value
     assertions:
-    - method: type
+    - method: assertions.app.assert_type
       expected: str
-    - method: equals
+    - method: assertions.app.assert_equals
       expected: patch_value
   - description: Patch value is a integer
     arguments:
       value: 1
     assertions:
-    - method: type
+    - method: assertions.app.assert_type
       expected: int
-    - method: equals
+    - method: assertions.app.assert_equals
       expected: 1
 - function: get_patch_for_callable
   description: Returns callable patch
@@ -50,9 +50,9 @@ tests:
       value: value
       timestamp: timestamp
     assertions:
-    - method: type
+    - method: assertions.app.assert_type
       expected: function
-    - method: equals
+    - method: assertions.app.assert_equals
       field: __name__
       expected: callable_patch
   - description: Name of function should contain sh`callable_patch`
@@ -62,7 +62,7 @@ tests:
     cast_output:
     - caster: __builtins__.str
     assertions:
-    - method: contains
+    - method: assertions.app.assert_substring_in_string
       expected: callable_patch
   - description: Returns the value when the patch is called
     arguments:
@@ -71,9 +71,9 @@ tests:
     cast_output:
     - caster: test_resources.app.get_patch_callable_resource
     assertions:
-    - method: type
+    - method: assertions.app.assert_type
       expected: function
-    - method: equals
+    - method: assertions.app.assert_equals
       field: __name__
       expected: callable_patch
 - function: get_patch_for_side_effect_list
@@ -87,9 +87,9 @@ tests:
       - value_c
       timestamp: timestamp
     assertions:
-    - method: type
+    - method: assertions.app.assert_type
       expected: function
-    - method: equals
+    - method: assertions.app.assert_equals
       field: __name__
       expected: side_effect_list_patch
   - description: Name of function should contain sh`side_effect_list_patch`
@@ -102,7 +102,7 @@ tests:
     cast_output:
     - caster: __builtins__.str
     assertions:
-    - method: contains
+    - method: assertions.app.assert_substring_in_string
       expected: side_effect_list_patch
 - function: get_patch_for_side_effect_dict
   description: Sets the patch for a side effect dict
@@ -115,9 +115,9 @@ tests:
         key_2: value_2
       timestamp: timestamp
     assertions:
-    - method: type
+    - method: assertions.app.assert_type
       expected: function
-    - method: equals
+    - method: assertions.app.assert_equals
       field: __name__
       expected: side_effect_dict_patch
   - description: Name of function should contain sh`side_effect_dict_patch`
@@ -130,7 +130,7 @@ tests:
     cast_output:
     - caster: __builtins__.str
     assertions:
-    - method: contains
+    - method: assertions.app.assert_substring_in_string
       expected: side_effect_dict_patch
 - function: get_patch
   description: Handles retrieving and setting the correct patch
@@ -141,12 +141,12 @@ tests:
       value: value_patch
       timestamp: timestamp
     assertions:
-    - method: type
+    - method: assertions.app.assert_type
       expected: dict
-    - method: type
+    - method: assertions.app.assert_type
       field: patch
       expected: str
-    - method: equals
+    - method: assertions.app.assert_equals
       field: patch
       expected: value_patch
   - description: Return a callable patch
@@ -155,10 +155,10 @@ tests:
       value: value
       timestamp: timestamp
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       field: patch.__name__
       expected: callable_patch
-    - method: type
+    - method: assertions.app.assert_type
       field: patch
       expected: function
 - function: get_parent_from_dict
@@ -171,7 +171,7 @@ tests:
         key_b: value_b
       name: key_a
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected: value_a
   - description: Key in dictionary 2
     arguments:
@@ -180,7 +180,7 @@ tests:
         key_b: value_b
       name: key_b
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected: value_b
   - description: Returns a sh`Data_Class` object when the key is not in dictionary
     arguments:
@@ -190,7 +190,7 @@ tests:
     cast_output:
     - caster: __builtins__.str
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected: Data_Class()
 - function: get_parent_from_object
   description: Returns a attributes or field of another object
@@ -203,7 +203,7 @@ tests:
       parent: null
       name: attribute_doesnt_exist
     assertions:
-    - method: type
+    - method: assertions.app.assert_type
       expected: Data_Class
   - description: Returns a module's builtin functions
     cast_arguments:
@@ -213,10 +213,10 @@ tests:
       parent: null
       name: __builtins__
     assertions:
-    - method: type
+    - method: assertions.app.assert_type
       expected: dict
     # todo: fix this test. see get_object.app line 57
-    - method: equals
+    - method: assertions.app.assert_equals
       field: __name__
       expected: builtins
 - function: get_parent
@@ -232,27 +232,27 @@ tests:
       module: module
       name: ''
     assertions:
-    - method: type
+    - method: assertions.app.assert_type
       field: parents
       expected: Parents
-    - method: equals
+    - method: assertions.app.assert_equals
       field: name
       expected: null
-    - method: equals
+    - method: assertions.app.assert_equals
       field: parents.names
       expected:
       - ''
       - ''
-    - method: equals
+    - method: assertions.app.assert_equals
       field: parents.types
       expected:
       - object
       - object
-    - method: length
+    - method: assertions.app.assert_length
       field: parents.values
       expected: 2
     # # todo: add logic to allow casting at the in process_assertions
-    # - method: equals
+    # - method: assertions.app.assert_equals
     #   # casts:
     #   # - caster: __builtins__.str
     #   field: parents.values
@@ -265,13 +265,13 @@ tests:
       name: EXAMPLE_OBJECT.field
     tests:
     - assertions:
-      - method: equals
+      - method: assertions.app.assert_equals
         field: parents.types
         expected:
         - object
         - object
         - object
-      - method: equals
+      - method: assertions.app.assert_equals
         field: parents.names
         expected:
         - ''
@@ -282,7 +282,7 @@ tests:
     #   - caster: __builtins__.str
     #     field: parents
     #   assertions:
-    #   - method: equals
+    #   - method: assertions.app.assert_equals
     #     field: parents
     #     expected: >
     #       Parents(names=['', 'EXAMPLE_OBJECT', 'field'], values=[<module 'process_patches.test_resources.app_a'
@@ -313,7 +313,7 @@ tests:
     - caster: dc.asdict
       field: parents
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         patch: null
         parents:
@@ -339,7 +339,7 @@ tests:
     - caster: dc.asdict
       field: parents
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         patch: null
         parents:
@@ -374,7 +374,7 @@ tests:
     - caster: dc.asdict
       field: parents
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         patch: null
         parents:
@@ -402,40 +402,40 @@ tests:
       parents: parents_length_three
       patch: value
     assertions:
-    - method: type
+    - method: assertions.app.assert_type
       field: parents
       expected: Parents
-    - method: equals
+    - method: assertions.app.assert_equals
       field: parents.names
       expected:
       - ''
       - EXAMPLE_OBJECT
       - field
-    - method: equals
+    - method: assertions.app.assert_equals
       field: parents.types
       expected:
       - object
       - object
       - object
-    - method: length
+    - method: assertions.app.assert_length
       field: parents.values
       expected: 3
   - arguments:
       parents: parents_length_one
       patch: patched_value
     assertions:
-    - method: type
+    - method: assertions.app.assert_type
       field: parents
       expected: Parents
-    - method: equals
+    - method: assertions.app.assert_equals
       field: parents.names
       expected:
       - ''
-    - method: equals
+    - method: assertions.app.assert_equals
       field: parents.types
       expected:
       - object
-    - method: length
+    - method: assertions.app.assert_length
       field: parents.values
       expected: 1
 - function: patch_object
@@ -459,12 +459,12 @@ tests:
       patches: null
       module: module
     assertions:
-    - method: type
+    - method: assertions.app.assert_type
       field: module
       expected: module
-    - method: type
+    - method: assertions.app.assert_type
       expected: dict
-    - method: equals
+    - method: assertions.app.assert_equals
       field: module.__file__
       expected: ${ROOT_DIR}main/shared/process_patches/test_resources/app_a.py
   - description: Patch a non-existing object in another object
@@ -476,10 +476,10 @@ tests:
         timestamp: timestamp
       module: module
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       field: patches
       expected: null
-    - method: equals
+    - method: assertions.app.assert_equals
       field: module.does_not_exist
       expected: patched_value
   

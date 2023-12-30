@@ -21,7 +21,7 @@ tests:
       cast: {}
       module: module
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         caster: null
   - description: >
@@ -31,9 +31,9 @@ tests:
         caster: __builtins__.str
       module: module
     assertions:
-    - method: type
+    - method: assertions.app.assert_type
       expected: dict
-    - method: equals
+    - method: assertions.app.assert_equals
       field: caster.__name__
       expected: str
   - description: >
@@ -43,9 +43,9 @@ tests:
         caster: __builtins__.int
       module: module
     assertions:
-    - method: type
+    - method: assertions.app.assert_type
       expected: dict
-    - method: equals
+    - method: assertions.app.assert_equals
       field: caster.__name__
       expected: int
   - description: >
@@ -57,9 +57,9 @@ tests:
         caster: pass_through
       module: module
     assertions:
-    - method: type
+    - method: assertions.app.assert_type
       expected: dict
-    - method: equals
+    - method: assertions.app.assert_equals
       field: caster.__name__
       expected: pass_through
 - function: get_object_to_cast
@@ -74,9 +74,9 @@ tests:
       object:
         key: value
     assertions:
-    - method: type
+    - method: assertions.app.assert_type
       expected: dict
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         field:  key
         casted_object: value
@@ -88,9 +88,9 @@ tests:
       object:
         key: value
     assertions:
-    - method: type
+    - method: assertions.app.assert_type
       expected: dict
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         field:  null
         casted_object:
@@ -108,9 +108,9 @@ tests:
         a: 1
         b: 2
     assertions:
-    - method: type
+    - method: assertions.app.assert_type
       expected: dict
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         field: b
         casted_object: 2
@@ -121,9 +121,9 @@ tests:
         field: null
       object: null
     assertions:
-    - method: type
+    - method: assertions.app.assert_type
       expected: dict
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         field: null
         casted_object: null
@@ -141,7 +141,7 @@ tests:
       object: 1
       caster: 1.1
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         kinds:
           casted_object: any
@@ -160,7 +160,7 @@ tests:
       object: dataclass
       caster: function
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         kinds:
           casted_object: nonetype
@@ -179,7 +179,7 @@ tests:
       object: tuple
       caster: str
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         kinds:
           casted_object: list
@@ -198,7 +198,7 @@ tests:
       arguments: {}
       module: module
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected: {}
   - description: Returns the arguments cast as a string
     arguments:
@@ -208,7 +208,7 @@ tests:
         key: value
       module: module
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         arguments: "{'key': 'value'}"
         cast_arguments: null
@@ -221,7 +221,7 @@ tests:
         field: '0000001'
       module: module
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         arguments:
           field: 1
@@ -240,7 +240,7 @@ tests:
       output: {}
       module: module
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected: {}
   - description: Returns the arguments cast as a string
     arguments:
@@ -250,7 +250,7 @@ tests:
         key: value
       module: module
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         output: "{'key': 'value'}"
         cast_output: null
@@ -263,7 +263,7 @@ tests:
         field: '0000001'
       module: module
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         output:
           field: 1
@@ -283,7 +283,7 @@ tests:
       cast_output: []
       module: module
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected: {}
   - description: Return the result of casting an argument as a string
     arguments:
@@ -295,7 +295,7 @@ tests:
         unpack: false
       module: module
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         arguments: 123
         cast_arguments: null
@@ -312,7 +312,7 @@ tests:
         unpack: false
       module: module
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         cast_output: null
         output:

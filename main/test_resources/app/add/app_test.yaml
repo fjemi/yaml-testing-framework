@@ -1,3 +1,8 @@
+globals:
+  resources:
+  - ${ROOT_DIR}/assertions/app.py
+
+
 tests:
 - function: add
   description: >
@@ -5,7 +10,7 @@ tests:
   tests:
   - arguments:
       a: 0
-      b: 0
+      b: 5
     assertions:
-    - method: equals
-      expected: 0
+    - method: assertions.app.assert_equals
+      expected: 5

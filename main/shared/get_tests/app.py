@@ -26,8 +26,6 @@ MODULE = __file__
 CONFIG = get_config(module=MODULE)
 LOCALS = locals()
 
-TEST_FIELDS = [field.name for field in dc.fields(CONFIG.schema.Test())]
-
 
 @error_handler()
 async def merge_global_and_test_configs(

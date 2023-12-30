@@ -10,9 +10,9 @@ tests:
     cast_arguments:
       data: Data_Class
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected: 0
-    - method: type
+    - method: assertions.app.assert_type
       expected: [int, float]
   - description: Test description
     arguments:
@@ -25,9 +25,9 @@ tests:
       a: 1
       b: 2
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected: 3
-    - method: type
+    - method: assertions.app.assert_type
       expected: [int, float]
 - functions: add_dataclass
   description: Function description
@@ -37,7 +37,7 @@ tests:
         a: 1
         b: 2
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected: 3
-    - method: type
+    - method: assertions.app.assert_type
       expected: [int, float]

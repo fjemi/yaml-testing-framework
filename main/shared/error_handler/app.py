@@ -110,7 +110,9 @@ def get_task_from_event_loop(
 
 def get_awaitable_output(data: Data_Class) -> Any:
   try:
-    task = data.function(*data.args, **data.kwargs)
+    task = data.function(
+      *data.args,
+      **data.kwargs, )
   except Exception as e:
     task = e
 

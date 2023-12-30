@@ -13,14 +13,14 @@ tests:
       object: object_a
       caster: null
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected: object_a
   - description: Undefined caster and defined object 1
     arguments:
       object: object_b
       caster: null
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected: object_b
 - function: pass_packed_object
   description: >
@@ -35,7 +35,7 @@ tests:
       object: 1111
       caster: str
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected: '1111'
   - description: >
       Object is an string and caster is the sh`int` class
@@ -43,7 +43,7 @@ tests:
       object: '1111'
       caster: int
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected: 1111
 - function: do_nothing
   description: >
@@ -56,11 +56,11 @@ tests:
       object: null
       caster: null
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected: null
   - arguments: {}
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected: null
 - function: instatiate_caster
   description: Instatiates and returns the caster
@@ -74,12 +74,12 @@ tests:
   - cast_output:
     - caster: dc.asdict
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         a: 0
         b: 0
   - assertions:
-    - method: type
+    - method: assertions.app.assert_type
       expected: Test_Data
 - function: pass_dataclass
   descritpion: Pass a packed dictionary to a constructor
@@ -94,7 +94,7 @@ tests:
       object: {}
       caster: str
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected: '{}'
   - description: Dict with defined key/value pairs
     arguments:
@@ -103,7 +103,7 @@ tests:
         b: 1
       caster: str
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected: "{'a': 1, 'b': 1}"
 - function: pass_unpacked_dict
   description: Pass a dictionary unpacked to a caster
@@ -118,7 +118,7 @@ tests:
       object: {}
       caster: dataclass
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         a: 0
         b: 0
@@ -129,7 +129,7 @@ tests:
         b: 1
       caster: dataclass
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         a: 1
         b: 1
@@ -140,23 +140,23 @@ tests:
     arguments:
       handler: null
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected: null
   - description: Defined caster
     arguments:
       handler: cast_any_packed_to_nonetype
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       field: __name__
       expected: pass_object_through
-    - method: type
+    - method: assertions.app.assert_type
       expected: function
   - description: Defined caster
     arguments:
       handler: cast_nonetype_unpacked_to_function
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       field: __name__
       expected: pass_packed_object
-    - method: type
+    - method: assertions.app.assert_type
       expected: function

@@ -19,10 +19,10 @@ tests:
         a: -1
         b: -1
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       field: result
       expected: 0
-    - method: type
+    - method: assertions.app.assert_type
       expected: Data
   - description: >
       Main arguments is a dataclass and the result it cast to
@@ -34,20 +34,17 @@ tests:
     cast_output:
     - caster: __builtins__.str
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected: Data(a=1, b=2, result=-1)
-    - method: type
+    - method: assertions.app.assert_type
       expected: str
   - description: Trying to subtract string and integer should yield a `TypeError`
     arguments:
       data:
         a: 1
-        b: TypeError
-    # cast_output:
-    # - name: str
-    #   unpack: false
+        b: '1'
     assertions:
-    - method: catch
+    - method: assertions.app.assert_exception
       expected: TypeError
 - function: subtract_numbers
   description: Returns the result of subtracting two numbers
@@ -57,9 +54,9 @@ tests:
       a: 1
       b: 2
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected: -1
-    - method: type
+    - method: assertions.app.assert_type
       expected: [int, float]
 - function: subtract_dataclass
   description: Returns a dataclass containing two numbers and the result
@@ -76,20 +73,20 @@ tests:
     cast_output:
     - caster: dc.asdict
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         a: 1
         b: 2
         result: -1
-    - method: type
-      expected: [dict]
-    # - method: type  # uncomment to fail test
+    - method: assertions.app.assert_type
+      expected:
+      - dict
+    # - method: assertions.app.assert_type  # uncomment to fail test
     #   expected: Data
 - function: raise_runtime_error
   description: Raises a run time error
   tests:
-  - arguments:
-      data: null
+  - arguments: {}
     assertions:
-    - method: catch
+    - method: assertions.app.assert_exception
       expected: RuntimeError

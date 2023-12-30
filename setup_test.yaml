@@ -1,6 +1,6 @@
 todo:
 - revisit get_python_requires function
-- if project directory is a file only run tests for that file. If directory run the tests for all modules in the directory
+- automate pushing to pypi; github hooks?
 
 
 globals:
@@ -15,12 +15,12 @@ tests:
   - arguments:
       location: null
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected: null
   - arguments:
       location: ${ROOT_DIR}/test_resources/setup/hello_world.yml
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected: >
         hello: world
 - function: get_contents
@@ -29,13 +29,13 @@ tests:
   - arguments:
       directory: null
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         directory: null
   - arguments:
       directory: ${ROOT_DIR}/test_resources/setup
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         directory: ${ROOT_DIR}/test_resources/setup
         long_description: '# README.md'
@@ -130,9 +130,9 @@ tests:
       pipfile_lock:
         default: {}
     assertions:
-    - method: type
+    - method: assertions.app.assert_type
       expected: list
-    - method: equals
+    - method: assertions.app.assert_equals
       expected: []
   - description: One package
     arguments:
@@ -141,12 +141,12 @@ tests:
           package_0:
             version: ==version_0
     assertions:
-    - method: type
+    - method: assertions.app.assert_type
       expected: list
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
       - package_0==version_0
-    - method: length
+    - method: assertions.app.assert_length
       expected: 1
   - description: Three packages
     arguments:
@@ -159,17 +159,17 @@ tests:
           package_2:
             version: <=version_2
     assertions:
-    - method: type
+    - method: assertions.app.assert_type
       expected: list
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
       - package_0==version_0
       - package_1>=version_1
       - package_2<=version_2
-    - method: length
+    - method: assertions.app.assert_length
       expected: 3
 - function: get_python_requires
-  description: Returns the minimum python version associated supported by the packages in the `Pipfile.lock` 
+  description: Returns the minimum python version associated supported by the packages in the `Pipfile.lock`
   tests:
   - arguments:
       pipfile_lock:
@@ -181,9 +181,9 @@ tests:
           package_2:
             markers: python_version >= '3.11'
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected: '>=3.7'
-    - method: type
+    - method: assertions.app.assert_type
       expected: str
 - function: merge_pip_lock_and_setup_yaml
   description: Returns a dataclass with installation requirements and python version added the `setup_yml` field.
@@ -205,7 +205,7 @@ tests:
         python_requires: {}
       long_description: long_description
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         setup_requires:
         - package_0==version_0
@@ -220,7 +220,7 @@ tests:
     arguments:
       directory: ${ROOT_DIR}/test_resources/setup
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         author: author
         author_email: author_email

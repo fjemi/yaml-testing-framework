@@ -18,7 +18,7 @@ tests:
       location: /main/shared/get_module/test_resources/app.py
       name: null
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         name: .main.shared.get_module.test_resources.app
   - description: Location is null
@@ -26,7 +26,7 @@ tests:
       name: name
       location: null
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         name: name
   - description: Name and location are null
@@ -34,7 +34,7 @@ tests:
       name: null
       location: null
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         name: app
 - function: get_module_from_location
@@ -44,13 +44,13 @@ tests:
     arguments:
       location: DOES_NOT_EXIST/app.py
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:  {}
   - description: Module is defined
     arguments:
       module: module
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected: {}
   - description: Module is undefined and the module location exist
     arguments:
@@ -59,7 +59,7 @@ tests:
     cast_output:
     - caster: __builtins__.str
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected: "{'module': <module 'app' from '${ROOT_DIR}/main/shared/get_module/test_resources/app.py'>}"
 - function: get_module_from_pool
   tests:
@@ -68,7 +68,7 @@ tests:
       pool: false
       location: location
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         module: null
   - description: Returns a module in the pool
@@ -81,7 +81,7 @@ tests:
       value:
         location: module_from_pool
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         module: module_from_pool
 - function: add_module_to_pool
@@ -93,7 +93,7 @@ tests:
       module: module
       pool: false
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected: {}
   - description: Don't add module to pool
     arguments:
@@ -101,7 +101,7 @@ tests:
       module: module
       pool: true
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected: {}
 - function: main
   description: Orchestrates execution of functions within the module
@@ -112,9 +112,9 @@ tests:
       location: ${ROOT_DIR}/main/shared/get_module/test_resources/app.py
       name: app
     assertions:
-    - method: type
+    - method: assertions.app.assert_type
       expected: module
-    - method: equals
+    - method: assertions.app.assert_equals
       field: __file__
       expected: ${ROOT_DIR}/main/shared/get_module/test_resources/app.py
   - description: Get module from pool
@@ -127,5 +127,5 @@ tests:
       pool: true
       location: location
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected: module

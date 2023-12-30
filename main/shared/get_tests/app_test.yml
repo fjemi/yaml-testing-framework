@@ -10,7 +10,7 @@ tests:
   - description: Undefined arguments
     arguments: {}
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         tests: []
         globals: null
@@ -26,7 +26,7 @@ tests:
       - resource_a
       - resource_b
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         tests:
         - module:
@@ -54,7 +54,7 @@ tests:
       - resource_a
       - resource_b
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         tests:
         - module:
@@ -80,7 +80,7 @@ tests:
   - description: Undefiend arguments
     arguments: {}
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         globals: {}
         tests: []
@@ -88,7 +88,7 @@ tests:
     arguments:
       content: {}
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         globals: {}
         tests: []
@@ -99,7 +99,7 @@ tests:
         tests: tests
         globals: globals
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         globals: globals
         tests: tests
@@ -110,14 +110,14 @@ tests:
   - description: Undefined arguments
     arguments: {}
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         content: {}
   - arguments:
       yaml:
       - does_not_exist
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         content: {}
   - description: >
@@ -127,7 +127,7 @@ tests:
       yaml:
       - ${ROOT_DIR}main/shared/get_tests/test_resources/app.yml
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         content:
           hello: world
@@ -139,7 +139,7 @@ tests:
   - description: No defined arguments
     arguments: {}
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         tests: []
   - description: Defined arguments
@@ -153,7 +153,7 @@ tests:
     - caster: test_resources.app.tests_resource
       field: tests
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         tests:
         - arguments: {}

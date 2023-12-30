@@ -21,7 +21,7 @@ tests:
     arguments:
       project_directory: null
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         root_directory: *ROOT
         project_directory: *ROOT
@@ -30,7 +30,7 @@ tests:
     arguments:
       project_directory: does_not_exist
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         root_directory: *ROOT
         project_directory: does_not_exist
@@ -40,7 +40,7 @@ tests:
       project_directory:
       - does_not_exist
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         root_directory: *ROOT
         project_directory: does_not_exist
@@ -49,7 +49,7 @@ tests:
     arguments:
       project_directory: *RESOURCES
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         root_directory: *ROOT
         project_directory: *RESOURCES
@@ -58,7 +58,7 @@ tests:
     arguments:
       project_directory: ${ROOT_DIR}/main/shared/get_locations/test_resources/app.py
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         root_directory: *ROOT
         project_directory: ${ROOT_DIR}/main/shared/get_locations/test_resources/app.py
@@ -67,7 +67,7 @@ tests:
     arguments:
       project_directory: .main/shared/get_locations/test_resources
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         root_directory: *ROOT
         project_directory: ${ROOT_DIR}main/shared/get_locations/test_resources
@@ -81,7 +81,7 @@ tests:
     arguments:
       exclude_files: null
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         exclude_files:
         - .venv
@@ -95,7 +95,7 @@ tests:
     arguments:
       exclude_files: exclude_files
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         exclude_files:
         - exclude_files
@@ -112,7 +112,7 @@ tests:
       - exclude_files_a
       - exclude_files_b
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         exclude_files:
         - exclude_files_a
@@ -131,14 +131,14 @@ tests:
     arguments:
       resources_folder_name: null
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         resources_folder_name: test_resources
   - description: Argument is a string
     arguments:
       resources_folder_name: resources_folder_name
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         resources_folder_name: resources_folder_name
 - function: format_yaml_suffix
@@ -148,14 +148,14 @@ tests:
     arguments:
       yaml_suffix: null
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         yaml_suffix: _test
   - description: Argument is defined
     arguments:
       yaml_suffix: yaml_suffix
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         yaml_suffix: yaml_suffix
 - function: format_resources
@@ -165,14 +165,14 @@ tests:
     arguments:
       resources: null
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         resources: []
   - description: Argument is a string
     arguments:
       resources: resources
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         resources:
         - resources
@@ -182,7 +182,7 @@ tests:
       - resource_a
       - resource_b
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         resources:
         - resource_a
@@ -198,19 +198,19 @@ tests:
       location: location.match_extension
       extensions: .match_extension
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected: location.match_extension
   - description: Doesn't have matching extension
     arguments:
       location: location.match_extension
       extensions: .no_match
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected: ''
   - description: Location and extensions are undefined
     arguments: {}
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected: null
 - function: check_location_for_exclusion_patterns
   description: >
@@ -225,7 +225,7 @@ tests:
       - pattern_a
       - pattern_b
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected: location/pattern_c/file
   - description: Doesn't have matching extension
     arguments:
@@ -234,7 +234,7 @@ tests:
       - pattern_a
       - pattern_b
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected: ''
 - function: check_location_for_matching_patterns
   description: >
@@ -249,7 +249,7 @@ tests:
       - pattern_a
       - pattern_b
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected: ''
   - description: Doesn't have matching extension
     arguments:
@@ -258,7 +258,7 @@ tests:
       - pattern_a
       - pattern_b
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected: location/pattern_b/file
 - function: get_file_locations
   description: >
@@ -267,13 +267,13 @@ tests:
   tests:
   - arguments: {}
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         locations: []
   - arguments:
       directory: does_not_exist
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         locations: []
   - arguments:
@@ -283,7 +283,7 @@ tests:
       - .yaml
       file_type: yaml
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         locations:
         - yaml: ${ROOT_DIR}/main/shared/get_locations/test_resources/exclusion_pattern_test.yml
@@ -296,7 +296,7 @@ tests:
       - .py
       file_type: module
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         locations:
         - module: ${ROOT_DIR}/main/shared/get_locations/test_resources/exclusion_pattern.py
@@ -310,7 +310,7 @@ tests:
       - .yaml
       file_type: resources
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         locations:
         - ${ROOT_DIR}/main/shared/get_locations/test_resources/exclusion_pattern_test.yml
@@ -321,7 +321,7 @@ tests:
       directory: *RESOURCES
       exclude_patterns: test_resources
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         locations: []
 - function: format_module_locations
@@ -333,7 +333,7 @@ tests:
       root_directory: location
       locations: []
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         locations: []
   - description: Location is a string 0
@@ -342,7 +342,7 @@ tests:
       locations:
       - module: location/module.py
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         locations:
         - module: location/module.py
@@ -353,7 +353,7 @@ tests:
       locations:
       - module: project_directory/module_location.py
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         locations:
         - module: project_directory/module_location.py
@@ -374,7 +374,7 @@ tests:
       project_directory: null
       project_directory_type: ''
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         locations: []
   - description: No YAML locations defined
@@ -384,7 +384,7 @@ tests:
       project_directory: null
       project_directory_type: ''
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         locations: locations
   - description: >
@@ -398,7 +398,7 @@ tests:
       - yaml: ${ROOT_DIR}/main/shared/get_locations/test_resources/exclusion_pattern.yml
       project_directory_type: directory
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         locations:
         - yaml: ${ROOT_DIR}/main/shared/get_locations/test_resources/app_test.yml
@@ -417,7 +417,7 @@ tests:
       project_directory: *RESOURCES
       resources_folder_name: test_resources
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         locations: []
   - description: Project directory is the locaiton of a file
@@ -428,7 +428,7 @@ tests:
       project_directory: ${ROOT_DIR}/main/shared/get_locations/test_resources/app.py
       resources_folder_name: resources_folder_name
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         locations:
         - yaml: ${ROOT_DIR}/main/shared/get_locations/test_resources/app_test.yml
@@ -441,7 +441,7 @@ tests:
       project_directory: *RESOURCES
       resources_folder_name: resources_folder_name
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         locations:
         - yaml: ${ROOT_DIR}/main/shared/get_locations/test_resources/exclusion_pattern_test.yml
@@ -459,7 +459,7 @@ tests:
       locations: []
       resources: []
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         locations: []
   - description: Module listed
@@ -473,7 +473,7 @@ tests:
       - resource_a
       - resource_b
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         locations:
         - module: ${ROOT_DIR}/main/shared/get_locations/app.py
@@ -496,7 +496,7 @@ tests:
       resources_folder_name: resources_folder_name
       exclude_files: []
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         locations:
         - module: ${ROOT_DIR}/main/shared/get_locations/test_resources/exclusion_pattern.py

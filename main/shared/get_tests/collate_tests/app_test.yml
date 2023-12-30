@@ -11,17 +11,17 @@ tests:
   tests:
   - arguments: {}
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected: ''
   - arguments:
       module: does_not_exist
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected: ''
   - arguments:
       module: ${ROOT_DIR}/main/shared/get_tests/collate_tests/test_resources/app.py
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected: ${ROOT_DIR}/main/shared/get_tests/collate_tests/test_resources/app.yml
 - function: add_globals_to_test
   description: >
@@ -33,7 +33,7 @@ tests:
       globals: {}
       test: {}
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected: {}
   - description: >
       Format and add key/value from globals to test
@@ -43,7 +43,7 @@ tests:
         key_a: value_a
         key_b: value_b
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         key_a: value_a
         key_b: value_b
@@ -56,7 +56,7 @@ tests:
       test:
         key: test
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         key:
         - globals
@@ -69,7 +69,7 @@ tests:
       test:
         key_test: value_test
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         key_globals:
         - value_globals
@@ -83,7 +83,7 @@ tests:
       tests: []
       globals: {}
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         tree: {}
         # roots: []
@@ -95,7 +95,7 @@ tests:
       - {}
       globals: {}
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         tree:
           '0': {}
@@ -113,7 +113,7 @@ tests:
       - test_1
       globals: {}
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         tree:
           '0': {}
@@ -132,7 +132,7 @@ tests:
   tests:
   - arguments: {}
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected: {}
   - arguments:
       branch_key: branch_key
@@ -142,7 +142,7 @@ tests:
       visited: []
       store: {}
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected: {}
   - arguments:
       branch_key: branch_key
@@ -154,7 +154,7 @@ tests:
       visited: []
       store: {}
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         branch_key.0: test_0
         branch_key.1: test_1
@@ -170,7 +170,7 @@ tests:
       visited: []
       store: {}
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         branch_key_a.0: test_a
         branch_key_a.1: test_b
@@ -186,7 +186,7 @@ tests:
       tree: null
       visited: null
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         roots: []
         tree: {}
@@ -201,7 +201,7 @@ tests:
           - test_1: test_1
       visited: []
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         roots:
         - '0'
@@ -224,7 +224,7 @@ tests:
           - test_1: test_1
       visited: null
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         roots:
         - branch_key
@@ -251,7 +251,7 @@ tests:
       visited:
       - branch_key
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         roots:
         - branch_key
@@ -269,7 +269,7 @@ tests:
       roots: null
       tree: null
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         tree: null
         tests: []
@@ -283,7 +283,7 @@ tests:
         b: b
         c: c
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         tree: null
         tests:
@@ -297,7 +297,7 @@ tests:
         b: b
         c: c
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         tree: null
         tests:
@@ -313,7 +313,7 @@ tests:
     arguments:
       tests: null
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         tests: []
   - description: Defined tests
@@ -322,7 +322,7 @@ tests:
       - test_0: test_0
       - test_1: test_1
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         tests:
         - test_0: test_0
@@ -340,7 +340,7 @@ tests:
           tests:
           - test_c1: test_c1
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         tests:
         - field_a:

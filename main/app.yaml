@@ -52,9 +52,12 @@ schema:
   - name: expected
     type: Any | None
     description: Expected output from executing a function
-  - name: actual
+  - name: output
     type: Any | None
-    description: Actual value
+    description: Output from the function to verify
+  - name: cast_output
+    type: list | None
+    description: Casts to perform on the output before verifying expected output
   - name: passed
     type: bool | None
     default: false

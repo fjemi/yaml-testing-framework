@@ -13,7 +13,7 @@ tests:
       parent: parent
       child: child
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
       - parent
       - child
@@ -21,7 +21,7 @@ tests:
       parent: order_0
       child: order_1
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
       - order_0
       - order_1
@@ -36,7 +36,7 @@ tests:
       - child_a
       - child_b
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
       - parent
       - child_a
@@ -46,7 +46,7 @@ tests:
       child:
       - order_1
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
       - order_0
       - order_1
@@ -59,14 +59,14 @@ tests:
       parent: parent
       child: null
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
       - parent
   - arguments:
       parent: order_0
       child: null
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
       - order_0
 - function: combine_parent_nonetype_and_child_any
@@ -78,14 +78,14 @@ tests:
       parent: null
       child: child_a
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
       - child_a
   - arguments:
       parent: null
       child: child_b
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
       - child_b
 - function: combine_parent_nonetype_and_child_nonetype
@@ -96,7 +96,7 @@ tests:
       parent: null
       child: null
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected: []
 - function: combine_parent_nonetype_and_child_list
   description: Returnd the child
@@ -107,7 +107,7 @@ tests:
       - child_a
       - child_b
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
       - child_a
       - child_b
@@ -117,7 +117,7 @@ tests:
       - child_0
       - child_1
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
       - child_0
       - child_1
@@ -129,7 +129,7 @@ tests:
       parent: null
       child: {}
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
       - {}
   - arguments:
@@ -137,7 +137,7 @@ tests:
       child:
         key: value
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
       - key: value
 - function: combine_parent_dict_and_child_dict
@@ -148,7 +148,7 @@ tests:
       parent: {}
       child: {}
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
       - {}
       - {}
@@ -158,7 +158,7 @@ tests:
       child:
         key_b: value_b
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
       - key_a: value_a
       - key_b: value_b
@@ -170,7 +170,7 @@ tests:
       parent: {}
       child: null
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
       - {}
   - arguments:
@@ -179,7 +179,7 @@ tests:
         key_b: value_b
       child: child
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
       - key_a: value_a
         key_b: value_b
@@ -194,7 +194,7 @@ tests:
       - value_c
       - value_d
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
       - {}
       - value_c
@@ -207,7 +207,7 @@ tests:
       - value_c
       - value_d
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
       - key_a: value_a
         key_b: value_b
@@ -220,7 +220,7 @@ tests:
       parent: []
       child: null
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected: []
   - arguments:
       parent:
@@ -228,7 +228,7 @@ tests:
       - value_d
       child: child
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
       - value_c
       - value_d
@@ -243,7 +243,7 @@ tests:
       - value_c
       - value_d
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
       - {}
       - value_c
@@ -256,7 +256,7 @@ tests:
       - value_c
       - value_d
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
       - key_a: value_a
         key_b: value_b
@@ -270,7 +270,7 @@ tests:
       parent: []
       child: child
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
       - child
   - arguments:
@@ -279,7 +279,7 @@ tests:
       - value_d
       child: child
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
       - value_c
       - value_d
@@ -292,7 +292,7 @@ tests:
       parent: []
       child: []
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected: []
   - arguments:
       parent:
@@ -302,7 +302,7 @@ tests:
       - child_a
       - child_b
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
       - value_c
       - value_d
@@ -316,7 +316,7 @@ tests:
       parent: []
       child: {}
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
       - {}
   - arguments:
@@ -326,7 +326,7 @@ tests:
       child:
         key: value
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
       - value_c
       - value_d
@@ -344,7 +344,7 @@ tests:
       parent: parent
       child: false
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         parent: any
         child: any
@@ -357,7 +357,7 @@ tests:
       parent: {}
       child: 1.1
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         parent: any
         child: any
@@ -373,7 +373,7 @@ tests:
   #       key_a: value_a
   #       key_b: value_b
   #   assertions:
-  #   - method: equals
+  #   - method: assertions.app.assert_equals
   #     expected:
   #       parent: list
   #       child: dict
@@ -386,7 +386,7 @@ tests:
       - parent
       child: null
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         parent: list
         child: nonetype
@@ -396,7 +396,7 @@ tests:
   - description: Undefined child and parent
     arguments: {}
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected: []
   - description: Dictionary parent and child
     arguments:
@@ -407,7 +407,7 @@ tests:
         key_b: value_b
         key_c: value_c
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
       - key_b: value_b
         key_c: value_c

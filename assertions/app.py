@@ -1,163 +1,182 @@
-# #!.venv/bin/python3
-# # -*- coding: utf-8 -*-
+#!.venv/bin/python3
+# -*- coding: utf-8 -*-
 
 
-# import dataclasses as dc
-# from typing import Any, List
-
-# from error_handler.app import main as error_handler
-# from get_config.app import main as get_config
-# from get_object.app import main as get_object
-# from utils import app as utils
+import dataclasses as dc
+from typing import Any
 
 
-# MODULE_LOCATION = __file__
-# CONFIG = get_config(module=MODULE_LOCATION)
-# LOCALS = locals()
+MODULE = __file__
 
 
-# @dc.dataclass
-# class Data_Class:
-#   pass
+@dc.dataclass
+class Data_Class:
+  pass
 
 
-# @error_handler()
-# async def assert_equals(
-#   output: Any | None = None,
-#   expected: Any | None = None,
-# ) -> dict:
-#   passed = output == expected
-#   return {'passed': passed}
+def assert_exception(
+  expected: str | None = None,
+  exception: str | None = None,
+) -> dict:
+  exception = exception or {}
+  if isinstance(exception, Exception):
+    exception = exception.__class__.__name__
+  elif isinstance(exception, dict):
+    exception = exception.get('name', None)
+  passed = expected == exception
+  return {
+    'passed': passed,
+    'expected': expected,
+    'output': exception, }
 
 
-# @error_handler()
-# async def assert_str_contains(
-#   output: str | None = None,
-#   expected: dict | str | None = None,
-# ) -> dict:
-#   index = str(output).find(str(expected))
-#   passed = index != -1
-#   if passed:
-#     return {
-#       'passed': passed,
-#       'output': index,
-#       'expected': index, }
-#   elif not passed:
-#     return {'passed': passed}
+def assert_equals(
+  output: Any | None = None,
+  expected: Any | None = None,
+) -> dict:
+  passed = output == expected
+  return {
+    'passed': passed,
+    'expected': expected,
+    'output': output, }
 
 
-
-# @error_handler()
-# async def assert_list_contains(assertion: Data_Class) -> Data_Class:
-#   index = -1
-#   if assertion.expected in assertion.actual:
-#       index = assertion.actual.index(assertion.expected)
-#   return {
-#     'list': assertion.actual,
-#     'element': assertion.expected,
-#     'index': index, }
-
-
-# @error_handler()
-# async def assert_dict_contains(assertion: Data_Class) -> Data_Class:
-#   index = 0
-
-#   for key, value in assertion.expected.items():
-#     if key not in assertion.actual:
-#       index = -1
-#       break
-
-#     actual_value = assertion.actual.get(key)
-#     if actual_value != value:
-#       index = -1
-#       break
-
-#   return {
-#     'dict': assertion.actual,
-#     'key_value': assertion.expected,
-#     'index': index, }
+def assert_length(
+  output: Any | None = None,
+  expected: Any | None = None,
+) -> dict:
+  output = len(output)
+  passed = output == expected
+  return {
+    'passed': passed,
+    'output': output,
+    'expected': expected, }
 
 
-# # @error_handler()
-# async def assert_any_contains(assertion: Data_Class) -> Data_Class:
-#   raise RuntimeError(f'{assertion.actual} has not element {assertion.expected}')
+def assert_type(
+  output: Any | None = None,
+  expected: Any | None = None,
+) -> dict:
+  passed = False
+
+  if isinstance(expected, list) is False:
+    expected = [expected]
+  output_types = [
+    type(output).__name__,
+    str(output.__class__),]
+  output = output_types
+
+  for expected_type in expected:
+    for output_type in output_types:
+      index = output_type.find(expected_type)
+      if index == -1:
+        continue
+      output = expected_type
+      expected = expected_type
+      passed = True
+      break
+
+  return {
+    'passed': passed,
+    'output': output,
+    'expected': expected, }
 
 
-# CONTAINS_KINDS = ['list', 'dict', 'tuple', 'str', ]
+def assert_substring_in_string(
+  output: str | None = None,
+  expected: list | str | None = None,
+) -> dict:
+  store = []
+  passed = True
+  output = str(output)
+
+  if not isinstance(expected, list):
+    expected = [expected]
+
+  for item in expected:
+    string = str(item)
+    index = output.find(string)
+    if index != -1:
+      store.append(string)
+
+  output = store
+  passed = expected == output
+  return {
+    'passed': passed,
+    'output': store,
+    'expected': expected, }
 
 
-# @error_handler()
-# async def assert_contains(assertion: Data_Class) -> Data_Class:
-#   kind = type(assertion.actual).__name__.lower()
-#   kind = 'list' if kind == 'tuple' else kind
-#   kind = kind if kind in CONTAINS_KINDS else 'any'
-#   handler = f'assert_{kind}_contains'
-#   handler = LOCALS[handler]
-#   assertion.expected = handler(assertion=assertion)
+def assert_item_in_list(
+  output: list | tuple | None = None,
+  expected: Any | None = None,
+) -> dict:
+  store = []
+  passed = True
+  output = output or []
 
-#   assertion.actual = None
-#   if assertion.expected.get('index', -1) != -1:
-#     assertion.actual = assertion.expected
+  if not isinstance(expected, list):
+    expected = [expected]
 
-#   assertion.passed = assertion.actual == assertion.expected
-#   return assertion
+  for item in expected:
+    if item in output:
+      store.append(item)
 
-
-# @error_handler()
-# async def assert_type(assertion: Data_Class) -> Data_Class:
-#   if isinstance(assertion.expected, list) is False:
-#     assertion.expected = [assertion.expected]
-
-#   assertion.actual = [
-#     str(assertion.actual.__class__),
-#     assertion.actual.__class__.__name__, ]
-
-#   for value in assertion.expected:
-#     for type_ in assertion.actual:
-#       assertion.passed = type_.find(value) > -1
-#       if assertion.passed is True:
-#         assertion.expected = type_
-#         assertion.actual = type_
-#         return assertion
-
-#   assertion.passed = False
-#   return assertion
+  output = store
+  passed = output == expected
+  return {
+    'passed': passed,
+    'expected': expected,
+    'output': output, }
 
 
-# @error_handler()
-# async def assert_length(assertion: Data_Class) -> Data_Class:
-#   if assertion.actual is None:
-#     assertion.actual = []
+def assert_key_in_dict(
+  output: dict | None = None,
+  expected: list | str | None = None,
+) -> dict:
+  expected = expected or []
+  if isinstance(expected, list) is False:
+    expected = [expected]
 
-#   assertion.actual = len(assertion.actual)
-#   assertion.passed = assertion.actual == assertion.expected
-#   return assertion
+  store = []
 
+  for key in expected:
+    if key in output:
+      store.append(key)
 
-# @error_handler()
-# async def assert_catch(assertion: Data_Class) -> Data_Class | None:
-#   if isinstance(assertion.exception, Exception):
-#     assertion.exception = {'name': assertion.exception.__class__.__name__}
-
-#   assertion.actual = assertion.exception.get('name')
-#   assertion.passed = assertion.actual.find(assertion.expected) > -1
-#   return assertion
-
-
-# @error_handler()
-# async def pass_through(assertion: Data_Class) -> Data_Class:
-#   if assertion in CONFIG.empty_values:
-#     return CONFIG.schema.Assertion(
-#       actual=True,
-#       expected=False,
-#       passed=False, )
-#   assertion.passed = False
-#   assertion.actual = not assertion.expected
-#   return assertion
+  output = store
+  passed = output == expected
+  return {
+    'passed': passed,
+    'output': output,
+    'expected': expected, }
 
 
+def assert_key_value_in_dict(
+  output: dict | None = None,
+  expected: dict | None = None,
+) -> dict:
+  store = {}
+
+  for key, value in expected.items():
+    output_value = output.get(key, None)
+    if value == output_value:
+      store.update({key: value})
+
+  output = store
+  passed = output == expected
+  return {
+    'passed': passed,
+    'output': output,
+    'expected': expected, }
 
 
+def example() -> None:
+  from main.shared.invoke_pytest import app as invoke_pytest
 
 
-# print('ASSERTIONS')
+  invoke_pytest.main(project_directory=MODULE)
+
+
+if __name__ == '__main__':
+  example()

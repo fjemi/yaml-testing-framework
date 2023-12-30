@@ -33,15 +33,15 @@ def verify_assertions(assertions: list | None = None) -> int | None:
   assertions = assertions or []
 
   for assertion in assertions:
-    actual = assertion.actual
+    output = assertion.output
     expected = assertion.expected
 
     try:
-      actual = yaml.dump(actual)
+      output = yaml.dump(output)
       expected = yaml.dump(expected)
     finally:
       # trunk-ignore(bandit/B101)
-      assert expected == actual
+      assert expected == output
 
   return 1
 

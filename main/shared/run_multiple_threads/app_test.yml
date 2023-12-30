@@ -24,12 +24,12 @@ tests:
   tests:
   - arguments: {}
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected: null
   - arguments:
       task: task
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected: task
   - cast_arguments:
     - caster: test_resources.app.coroutine_resource
@@ -37,7 +37,7 @@ tests:
     arguments:
       task: coroutine
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected: async_output
 - function: format_argument_as_empty_list
   description: >
@@ -47,7 +47,7 @@ tests:
     arguments:
       argument: null
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected: []
 - function: format_argument_as_argument
   description: >
@@ -59,7 +59,7 @@ tests:
       - a
       - b
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
       - a
       - b
@@ -69,7 +69,7 @@ tests:
         a: a
         b: b
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         a: a
         b: b
@@ -81,14 +81,14 @@ tests:
     arguments:
       argument: argument
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
       - argument
   - description: Argument is a int
     arguments:
       argument: 100
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
       - 100
 - function: format_argument
@@ -106,7 +106,7 @@ tests:
       kwargs: []
       args: null
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         kwargs: null
         args: null
@@ -121,7 +121,7 @@ tests:
       - args_1
       - args_2
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         kwargs: null
         args: null
@@ -139,7 +139,7 @@ tests:
         - args_a
         - args_b
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         args: null
         kwargs: null
@@ -153,7 +153,7 @@ tests:
       - key_a: value_a
       - key_b: value_b
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         args: null
         kwargs: null
@@ -167,20 +167,20 @@ tests:
   tests:
   - arguments: {}
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected: null
   - arguments:
       output: output
       exception: null
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected: output
   - arguments:
       target: null
       output: output
       exception: exception
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected: exception
   - cast_arguments:
     - caster: test_resources.app.target_resource
@@ -191,7 +191,7 @@ tests:
       output: null
       exception: null
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected: sync_output
 - function: call_sync_target_with_unpacked_argument
   description: Call a function with an unpacked dictionary
@@ -207,7 +207,7 @@ tests:
     - field: exception
       caster: __builtins__.str
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         output: null
         exception: "unsupported operand type(s) for +: 'int' and 'str'"
@@ -216,7 +216,7 @@ tests:
       target: sync_target
       kind: args
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         output: sync_output
         exception: null
@@ -228,7 +228,7 @@ tests:
     - caster: __builtins__.str
       field: exception
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         output: null
         exception: "'NoneType' object is not callable"
@@ -237,20 +237,20 @@ tests:
   tests:
   - arguments: {}
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected: null
   - arguments:
       output: output
       exception: null
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected: output
   - arguments:
       target: null
       output: output
       exception: exception
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected: exception
   - cast_arguments:
     - caster: test_resources.app.target_resource
@@ -261,7 +261,7 @@ tests:
       output: null
       exception: exception
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected: async_output
 - function: call_async_target_with_unpacked_argument
   description: >
@@ -280,7 +280,7 @@ tests:
     - field: exception
       caster: __builtins__.str
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         output: null
         exception: ''
@@ -289,7 +289,7 @@ tests:
       target: async_target
       kind: args
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         output: async_output
         exception: null
@@ -301,7 +301,7 @@ tests:
     - caster: __builtins__.str
       field: exception
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         output: null
         exception: "'NoneType' object is not callable"
@@ -319,9 +319,9 @@ tests:
       result_key: result_key
       kind: kwargs
     assertions:
-    - method: type
+    - method: assertions.app.assert_type
       expected: function
-    - method: equals
+    - method: assertions.app.assert_equals
       field: __name__
       expected: entrypoint_wrapper
   - arguments:
@@ -332,7 +332,7 @@ tests:
     cast_output:
     - caster: test_resources.app.call_entrypoint
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected: sync_output
   - arguments:
       target: add_sync
@@ -344,7 +344,7 @@ tests:
     cast_output:
     - caster: test_resources.app.call_entrypoint
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected: 20
 - function: get_entrypoint_for_async_target
   description: >
@@ -360,9 +360,9 @@ tests:
       result_key: result_key
       kind: kwargs
     assertions:
-    - method: type
+    - method: assertions.app.assert_type
       expected: function
-    - method: equals
+    - method: assertions.app.assert_equals
       field: __name__
       expected: entrypoint_wrapper
   - arguments:
@@ -373,7 +373,7 @@ tests:
     cast_output:
     - caster: test_resources.app.call_entrypoint
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected: async_output
   - arguments:
       target: add_async
@@ -385,7 +385,7 @@ tests:
     cast_output:
     - caster: test_resources.app.call_entrypoint
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected: 22
 - function: get_entrypoint_handler
   description: >
@@ -403,15 +403,15 @@ tests:
       result_key: result_key
     tests:
     - assertions:
-      - method: type
+      - method: assertions.app.assert_type
         expected: function
-      - method: equals
+      - method: assertions.app.assert_equals
         field: __name__
         expected: entrypoint_wrapper
     - cast_output:
       - caster: test_resources.app.call_entrypoint
       assertions:
-      - method: equals
+      - method: assertions.app.assert_equals
         expected: sync_output
   - description: Target is a coroutine function
     arguments:
@@ -421,15 +421,15 @@ tests:
       result_key: result_key
     tests:
     - assertions:
-      - method: type
+      - method: assertions.app.assert_type
         expected: function
-      - method: equals
+      - method: assertions.app.assert_equals
         field: __name__
         expected: entrypoint_wrapper
     - cast_output:
       - caster: test_resources.app.call_entrypoint
       assertions:
-      - method: equals
+      - method: assertions.app.assert_equals
         expected: async_output
 - function: set_target_entrypoints_for_threads
   description: Sets the entrypoint for a function in a thread
@@ -448,7 +448,7 @@ tests:
     - caster: test_resources.app.set_target_entrypoints_for_threads_resource
       field: entrypoints
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         entrypoints:
         - entrypoint_wrapper
@@ -466,7 +466,7 @@ tests:
     - caster: test_resources.app.set_target_entrypoints_for_threads_resource
       field: entrypoints
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         entrypoints:
         - entrypoint_wrapper
@@ -483,18 +483,18 @@ tests:
       target: sync_target
       daemon: True
     assertions:
-    - method: type
+    - method: assertions.app.assert_type
       expected: threading.Thread
-    - method: contains
+    - method: assertions.app.assert_substring_in_string
       field: name
       expected: sync_target
   - arguments:
       target: async_target
       daemon: True
     assertions:
-    - method: type
+    - method: assertions.app.assert_type
       expected: threading.Thread
-    - method: contains
+    - method: assertions.app.assert_substring_in_string
       field: name
       expected: async_target
 - function: get_threads
@@ -504,7 +504,7 @@ tests:
   - arguments:
       entrypoints: []
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         entrypoints: null
         threads: []
@@ -517,7 +517,7 @@ tests:
     - field: threads
       caster: test_resources.app.output_threads_resource
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         entrypoints: null
         threads:
@@ -531,7 +531,7 @@ tests:
     - caster: test_resources.app.get_threads_resource
       field: threads
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         entrypoints: null
         threads:
@@ -552,7 +552,7 @@ tests:
   - arguments:
       threads: null
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         threads: null
   - cast_arguments:
@@ -561,7 +561,7 @@ tests:
     arguments:
       threads: threads
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         threads: null
 - function: run_threads_in_sequence
@@ -570,7 +570,7 @@ tests:
   - arguments:
       threads: null
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         threads: null
   - cast_arguments:
@@ -579,7 +579,7 @@ tests:
     arguments:
       threads: threads
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         threads: null
 - function: main
@@ -595,7 +595,7 @@ tests:
         b: 11
       timestamp: timestamp
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
       - 22
   - arguments:
@@ -605,7 +605,7 @@ tests:
       - 22
       timestamp: timestamp_1
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
       - 44
   - arguments:
@@ -620,7 +620,7 @@ tests:
     # Using the contains assertions since results
     # added to the list out of order
     assertions:
-    - method: contains
-      expected: 22
-    - method: contains
-      expected: 44
+    - method: assertions.app.assert_substring_in_string
+      expected: '22'
+    - method: assertions.app.assert_substring_in_string
+      expected: '44'

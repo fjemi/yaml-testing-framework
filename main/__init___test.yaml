@@ -3,17 +3,22 @@ resources:
 - https://pypi.org/project/nest-asyncio/
 
 
+globals:
+  resources:
+  - ${ROOT_DIR}/assertions/app.py
+
+
 tests:
 - function: allow_nested_event_loops
   description: Allows asyncio event loop to be nested
   arguments: {}
   assertions:
-  - method: equals
+  - method: assertions.app.assert_equals
     expected: 1
 - function: allow_nested_event_loops
   description: Allows asyncio event loop to be nested
   arguments:
     data: null
   assertions:
-  - method: equals
+  - method: assertions.app.assert_equals
     expected: 1

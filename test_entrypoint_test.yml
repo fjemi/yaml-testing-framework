@@ -1,7 +1,7 @@
 todo:
-- Incorporate the id generated when collating tests ex. 0.1.1 with
-  get_id function
+- Incorporate the numeric id generated when collating tests ex. 0.1.1 with get_id function
 - Pass excluded funcitons and modules to coverage
+- Move some logic to plugin.py so that all that is needed is to import function test_
 
 
 globals:
@@ -23,13 +23,13 @@ tests:
       test:
         id_short: null
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected: test_1
   - arguments:
       test:
         id_short: id_short
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected: id_short
   - patches:
     - name: UNNAMED_TEST_COUNT
@@ -39,7 +39,7 @@ tests:
       test:
         id_short: null
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected: test_2
   - patches:
     - name: UNNAMED_TEST_COUNT
@@ -49,7 +49,7 @@ tests:
       test:
         id_short: null
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected: test_4
 - function: verify_assertions
   description: >
@@ -62,25 +62,25 @@ tests:
     arguments:
       assertions: null
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected: 1
   - description: Passed assertion
     arguments:
       assertions:
-      - method: equals
+      - method: assertions.app.assert_equals
         expected: 1
-        actual: 1
+        output: 1
         passed: true
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected: 1
   - description: Failed assertion
     arguments:
       assertions:
-      - method: equals
+      - method: assertions.app.assert_equals
         expected: 1
-        actual: 2
+        output: 2
         passed: false
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected: null

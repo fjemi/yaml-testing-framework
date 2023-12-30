@@ -28,12 +28,12 @@ tests:
         enabled: null
         status: null
     assertions:
-    - method: type
+    - method: assertions.app.assert_type
       expected: Data
   - cast_output:
     - caster: dc.asdict
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         data: null
         format_: null
@@ -52,17 +52,17 @@ tests:
   - arguments:
       task: null
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected: null
   - arguments:
       task: sync_function
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected: sync_output
   - arguments:
       task: async_function
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected: async_output
 - function: set_default
   description: >
@@ -76,13 +76,13 @@ tests:
     arguments:
       object: string
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected: string
   - description: Undefined object produces an error
     arguments:
       object: null
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected: None
   - description: When the object is a module, return its location
     cast_arguments:
@@ -91,7 +91,7 @@ tests:
     arguments:
       object: module
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected: ${ROOT_DIR}main/shared/logger/test_resources/module.py
   - description: Object is a function
     cast_arguments:
@@ -100,7 +100,7 @@ tests:
     arguments:
       object: function
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected: function
   - description: Object is of type sh`Test`
     cast_arguments:
@@ -109,9 +109,9 @@ tests:
     arguments:
       object: Test
     assertions:
-    - method: type
+    - method: assertions.app.assert_type
       expected: str
-    - method: contains
+    - method: assertions.app.assert_substring_in_string
       expected: .main.shared.logger.test_resources.app.Test
   - description: >
       Object is of type sh`Exception`
@@ -121,7 +121,7 @@ tests:
     arguments:
       object: Exception
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         exception: TypeError
         description: 'unsupported operand type(s) for +: ''int'' and ''str'''
@@ -133,7 +133,7 @@ tests:
       level: null
       enabled: true
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         location: ${LOGS_DIR}/debug.log
   - description: Level is undefined
@@ -141,7 +141,7 @@ tests:
       level: level
       enabled: true
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         location: ${LOGS_DIR}/level.log
   - description: Logging is not enabled
@@ -149,7 +149,7 @@ tests:
       level: level
       enabled: false
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         status: exited
 - function: format_data
@@ -160,7 +160,7 @@ tests:
       data:
         key: value
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         data:
           key: value
@@ -172,7 +172,7 @@ tests:
     arguments:
       data: null
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         data:
           a: 0
@@ -187,14 +187,14 @@ tests:
   - arguments:
       data: {}
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         data: '{}'
   - arguments:
       data:
         key: value
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         data: '{"key": "value"}'
   - arguments:
@@ -202,7 +202,7 @@ tests:
         a: a
         b: b
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         data: '{"a": "a", "b": "b"}'
 - function: convert_data_to_yaml
@@ -216,7 +216,7 @@ tests:
     arguments:
       data: {}
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         data: |
           {}
@@ -226,7 +226,7 @@ tests:
         a: a
         b: b
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         data: |
           a: a
@@ -245,7 +245,7 @@ tests:
         b: b
       format_: json
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         data: '{"a": "a", "b": "b"}'
   - description: Format is YAML
@@ -255,7 +255,7 @@ tests:
         b: b
       format_: yaml
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         data: |
           a: a
@@ -268,7 +268,7 @@ tests:
       level: null
       enabled: true
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         level: 10
   - description: Handle debug level
@@ -276,7 +276,7 @@ tests:
       level: debug
       enabled: true
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         level: 10
   - description: Handle info level
@@ -284,7 +284,7 @@ tests:
       level: info
       enabled: true
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         level: 20
   - description: Handle exception level
@@ -292,7 +292,7 @@ tests:
       level: error
       enabled: true
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         level: 10
   - description: Logging is disabled
@@ -300,7 +300,7 @@ tests:
       level: error
       enabled: false
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         status: exited
 - function: create_logger
@@ -311,14 +311,14 @@ tests:
       level: INFO
       location: ${ROOT_DIR}/main/shared/logger/test_resources/logs/info.log
     assertions:
-    - method: type
+    - method: assertions.app.assert_type
       expected: Logger
   - description: Log level is debug
     arguments:
       level: DEBUG
       location: ${ROOT_DIR}/main/shared/logger/test_resources/logs/debug.log
     assertions:
-    - method: type
+    - method: assertions.app.assert_type
       expected: Logger
   - description: Logging level is debug
     arguments:
@@ -327,7 +327,7 @@ tests:
     cast_output:
     - caster: __builtins__.str
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected: <Logger ${ROOT_DIR}/main/shared/logger/test_resources/logs/debug.log (DEBUG)>
 - function: log_data
   description: Get a logger form the pool; or create a logger, add it to the pool, and return the logger
@@ -338,7 +338,7 @@ tests:
       data: data
       enabled: true
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         status: success
   - arguments:
@@ -347,7 +347,7 @@ tests:
       data: data
       enabled: true
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         status: success
   - arguments:
@@ -356,7 +356,7 @@ tests:
       data: data
       enabled: true
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         status: success
   - arguments:
@@ -365,7 +365,7 @@ tests:
       data: data
       enabled: false
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         status: exited
 - function: output_to_terminal
@@ -378,7 +378,7 @@ tests:
         b: b
       standard_output: true
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         status: success
   - description: Print logs is set to false
@@ -388,7 +388,7 @@ tests:
         b: b
       standard_output: false
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         status: exited
 - function: main
@@ -406,7 +406,7 @@ tests:
       standard_output: False
       enabled: True
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         status: exited
   - description: Logging and standard output are disabled
@@ -421,7 +421,7 @@ tests:
       standard_output: False
       enabled: False
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         status: exited
   - description: Only standard output is enabled
@@ -436,6 +436,6 @@ tests:
       standard_output: True
       enabled: False
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         status: success

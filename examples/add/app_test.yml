@@ -12,9 +12,9 @@ tests:
       a: 1
       b: 2
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected: 3
-    - method: type
+    - method: assertions.app.assert_type
       expected:
       - int
       - float
@@ -34,10 +34,10 @@ tests:
     cast_output:
     - caster: dc.asdict
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       field: result
       expected: 3
-    - method: type
+    - method: assertions.app.assert_type
       expected:
       - dict
 - function: main
@@ -50,7 +50,7 @@ tests:
         a: 1
         b: TypeError
       assertions:
-      - method: catch
+      - method: assertions.app.assert_exception
         expected: TypeError
     - << *ADD_NUMBERS_TESTS
     - << *ADD_DATACLASS_TESTS

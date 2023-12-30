@@ -200,9 +200,9 @@ tests:
       a: 1
       b: 2
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected: 3
-    - method: type
+    - method: assertions.app.assert_type
       expected:
         - int
   - description: Add two floats
@@ -210,9 +210,9 @@ tests:
       a: 1.5
       b: 2.5
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected: 4
-    - method: type
+    - method: assertions.app.assert_type
       expected:
         - float
 ```
@@ -440,14 +440,14 @@ tests:
     cast_output:
     - caster: __builtins__.str
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected: "01"
   - description: use function level casting
     arguments:
       a: 1
       b: 2
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected: 12
 ```
 
@@ -499,9 +499,9 @@ tests:
       a: 1
       b: 2
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected: 3
-    - method: type
+    - method: assertions.app.assert_type
       expected:
         - int
   - description: Result should be an type error
@@ -509,7 +509,7 @@ tests:
       a: 1
       b: string
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected: TypeError
 - function: add_numbers_in_dataclass
   description: Returns a dataclass with the result of adding two numbers
@@ -524,10 +524,10 @@ tests:
       unpack: true
       caster: Data_Class
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected: 3
       field: result
-    - method: type
+    - method: assertions.app.assert_type
       expected: Data_Class
   - description: Result should have the correct key/value and type
     arguments:
@@ -541,10 +541,10 @@ tests:
     cast_output:
     - caster: dc.asdict
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       field: result
       expected: 3
-    - method: type
+    - method: assertions.app.assert_type
       expected: dict
 ```
 

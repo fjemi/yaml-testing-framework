@@ -1,4 +1,393 @@
-todo:
-- description: refactor assertions logic to be able to access assertions
-    similar to casting/patches
-  method: test_resources.assertions.assert_contains
+tests:
+- function: assert_exception
+  description: >
+    Verfies that an exception was raised. Checks for the name of the exception
+    (TypeError, RuntimeError, etc)
+  cast_arguments:
+  - caster: test_resources.app.assert_catch_resource
+    field: exception
+  tests:
+  - arguments: {}
+    assertions:
+    - method: assert_equals
+      expected:
+        output: null
+        passed: true
+        expected: null
+  - arguments:
+      exception: null
+      expected: TypeError
+    assertions:
+    - method: assert_equals
+      expected:
+        output: null
+        passed: false
+        expected: TypeError
+  - arguments:
+      exception: exception
+      expected: RuntimeError
+    assertions:
+    - method: assert_equals
+      expected:
+        output: RuntimeError
+        passed: true
+        expected: RuntimeError
+  - arguments:
+      exception: dict
+      expected: RuntimeError
+    assertions:
+    - method: assert_equals
+      expected:
+        output: RuntimeError
+        passed: true
+        expected: RuntimeError
+- function: assert_equals
+  description: >
+    Verifies that the output and expected out are equal
+  tests:
+  - arguments: {}
+    assertions:
+    - method: assert_equals
+      expected:
+        output: null
+        expected: null
+        passed: true
+  - arguments:
+      expected: 1
+      output: 1
+    assertions:
+    - method: assert_equals
+      expected:
+        output: 1
+        expected: 1
+        passed: true
+  - arguments:
+      expected: true
+      output: false
+    assertions:
+    - method: assert_equals
+      expected:
+        output: false
+        expected: true
+        passed: false
+- function: assert_length
+  description: >
+    Verify that the length of an object is as specified
+  tests:
+  - arguments: {}
+    assertions:
+    - method: assert_equals
+      expected: null
+  - arguments:
+      expected: 0
+      output: ''
+    assertions:
+    - method: assert_equals
+      expected:
+        output: 0
+        expected: 0
+        passed: true
+  - arguments:
+      expected: 0
+      output: []
+    assertions:
+    - method: assert_equals
+      expected:
+        output: 0
+        expected: 0
+        passed: true
+  - arguments:
+      expected: 3
+      output:
+      - a
+      - b
+      - c
+    assertions:
+    - method: assert_equals
+      expected:
+        output: 3
+        expected: 3
+        passed: true
+  - arguments:
+      expected: 2
+      output:
+      - a
+      - b
+      - c
+    assertions:
+    - method: assert_equals
+      expected:
+        output: 3
+        expected: 2
+        passed: false
+- function: assert_type
+  description: >
+    Verify that the output is of a certain type
+  tests:
+  - arguments: {}
+    assertions:
+    - method: assert_equals
+      expected: null
+  - arguments:
+      expected: str
+      output: string
+    assertions:
+    - method: assert_equals
+      expected:
+        expected: str
+        output: str
+        passed: true
+  - arguments:
+      expected:
+      - int
+      - float
+      output: 1
+    assertions:
+    - method: assert_equals
+      expected:
+        expected: int
+        output: int
+        passed: true
+  - arguments:
+      expected:
+      - int
+      - float
+      output: 1.1
+    assertions:
+    - method: assert_equals
+      expected:
+        expected: float
+        output: float
+        passed: true
+  - arguments:
+      expected:
+      - int
+      - float
+      - list
+      output: {}
+    assertions:
+    - method: assert_equals
+      expected:
+        expected:
+        - int
+        - float
+        - list
+        output:
+        - dict
+        - <class 'dict'>
+        passed: false
+- function: assert_substring_in_string
+  description: >
+    Verify that a string contains a substring or list of substrings
+  tests:
+  - arguments: {}
+    assertions:
+    - method: assert_equals
+      expected:
+        expected:
+        - null
+        output:
+        - None
+        passed: false
+  - arguments:
+      output: output
+      expected: expected
+    assertions:
+    - method: assert_equals
+      expected:
+        expected:
+        - expected
+        output: []
+        passed: false
+  - arguments:
+      output: abc
+      expected:
+      - a
+      - b
+      - c
+    assertions:
+    - method: assert_equals
+      expected:
+        expected:
+        - a
+        - b
+        - c
+        output:
+        - a
+        - b
+        - c
+        passed: true
+  - arguments:
+      output: substring
+      expected:
+      - sub
+      - string
+    assertions:
+    - method: assert_equals
+      expected:
+        expected:
+        - sub
+        - string
+        output:
+        - sub
+        - string
+        passed: true
+- function: assert_item_in_list
+  description: >
+    Verify that a list contains an item or list of items
+  tests:
+  - arguments: {}
+    assertions:
+    - method: assert_item_in_list
+      expected:
+        passed: False
+        output: []
+        expected:
+        - null
+  - arguments:
+      output:
+      - item_0
+      - item_1
+      expected: item
+    assertions:
+    - method: assert_item_in_list
+      expected:
+        passed: False
+        output: []
+        expected:
+        - item
+  - arguments:
+      output:
+      - item_0
+      - item_1
+      expected: item_0
+    assertions:
+    - method: assert_item_in_list
+      expected:
+        passed: true
+        output:
+        - item_0
+        expected:
+        - item_0
+  - arguments:
+      output:
+      - item_0
+      - item_1
+      expected:
+      - item_0
+      - item_1
+    assertions:
+    - method: assert_item_in_list
+      expected:
+        passed: true
+        output:
+        - item_0
+        - item_1
+        expected:
+        - item_0
+        - item_1
+- function: assert_key_in_dict
+  description: >
+    Verify that a dictionary contains a key or keys
+  tests:
+  - arguments: {}
+    assertions:
+    - method: assert_equals
+      expected:
+        expected: []
+        output: []
+        passed: true
+  - arguments:
+      output:
+        a: a
+        b: b
+      expected: a
+    assertions:
+    - method: assert_equals
+      expected:
+        expected:
+        - a
+        output:
+        - a
+        passed: true
+  - arguments:
+      output:
+        a: a
+        b: b
+      expected:
+      - a
+      - b
+    assertions:
+    - method: assert_equals
+      expected:
+        expected:
+        - a
+        - b
+        output:
+        - a
+        - b
+        passed: true
+  - arguments:
+      output:
+        a: a
+        b: b
+      expected: c
+    assertions:
+    - method: assert_equals
+      expected:
+        expected:
+        - c
+        output: []
+        passed: false
+- function: assert_key_value_in_dict
+  description:
+    Verify that a dictionary contains key/value pairs
+  tests:
+  - arguments: {}
+    assertions:
+    - method: assert_equals
+      expected: null
+  - arguments:
+      output:
+        a: a
+        b: b
+      expected:
+        a: a
+    assertions:
+    - method: assert_equals
+      expected:
+        expected:
+          a: a
+        output:
+          a: a
+        passed: true
+  - arguments:
+      output:
+        a: a
+        b: b
+      expected:
+        c: c
+    assertions:
+    - method: assert_equals
+      expected:
+        expected:
+          c: c
+        output: {}
+        passed: false
+  - arguments:
+      output:
+        a: a
+        b: b
+      expected:
+        a: a
+        b: b
+    assertions:
+    - method: assert_equals
+      expected:
+        expected:
+          a: a
+          b: b
+        output:
+          a: a
+          b: b
+        passed: true

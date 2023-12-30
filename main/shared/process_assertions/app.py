@@ -3,11 +3,13 @@
 
 
 import dataclasses as dc
+from types import ModuleType
 from typing import Any, List
 
 from error_handler.app import main as error_handler
 from get_config.app import main as get_config
 from get_object.app import main as get_object
+from process_casts.app import process_casts_for_output
 from utils import app as utils
 
 
@@ -23,134 +25,114 @@ class Data_Class:
 
 
 @error_handler()
-async def assert_equals(assertion: Data_Class) -> Data_Class:
-  assertion.passed = assertion.actual == assertion.expected
-  return assertion
-
-
-@error_handler()
-async def assert_str_contains(assertion: Data_Class) -> Data_Class:
-  index = str(assertion.actual).find(str(assertion.expected))
+async def pass_through(
+  output: Any | None = None,
+) -> Data_Class:
+  # global variable accessible by timestamp and number of elements
+  # save method name there
   return {
-    'string': assertion.actual,
-    'substring': assertion.expected,
-    'index': index, }
+    'passed': False,
+    'output': f"assertion method {output} doesn't exist",
+    'expected': '', }
 
 
 @error_handler()
-async def assert_list_contains(assertion: Data_Class) -> Data_Class:
-  index = -1
-  if assertion.expected in assertion.actual:
-      index = assertion.actual.index(assertion.expected)
+async def get_current_assertion(
+  i: int | None = None,
+  assertions: list | None = None,
+  output: Any | None = None,
+  exception: Exception | dict | None = None,
+) -> dict:
+  i = i or 0
+  assertion = CONFIG.schema.Assertion(
+    **assertions[i],
+    exception=exception,
+    output=output, )
   return {
-    'list': assertion.actual,
-    'element': assertion.expected,
-    'index': index, }
+    'i': i,
+    'assertion': assertion, }
 
 
 @error_handler()
-async def assert_dict_contains(assertion: Data_Class) -> Data_Class:
-  index = 0
-
-  for key, value in assertion.expected.items():
-    if key not in assertion.actual:
-      index = -1
-      break
-
-    actual_value = assertion.actual.get(key)
-    if actual_value != value:
-      index = -1
-      break
-
-  return {
-    'dict': assertion.actual,
-    'key_value': assertion.expected,
-    'index': index, }
-
-
-# @error_handler()
-async def assert_any_contains(assertion: Data_Class) -> Data_Class:
-  raise RuntimeError(f'{assertion.actual} has not element {assertion.expected}')
-
-
-CONTAINS_KINDS = ['list', 'dict', 'tuple', 'str', ]
+async def get_assertion_method(
+  assertion: Data_Class | None = None,
+  module: ModuleType | None = None,
+) -> dict:
+  method_name = assertion.method
+  assertion.method = get_object(
+    parent=module,
+    name=assertion.method, )
+  if not assertion.method:
+    assertion.method = pass_through
+    assertion.output = method_name
+  return {'assertion': assertion}
 
 
 @error_handler()
-async def assert_contains(assertion: Data_Class) -> Data_Class:
-  kind = type(assertion.actual).__name__.lower()
-  kind = 'list' if kind == 'tuple' else kind
-  kind = kind if kind in CONTAINS_KINDS else 'any'
-  handler = f'assert_{kind}_contains'
-  handler = LOCALS[handler]
-  assertion.expected = handler(assertion=assertion)
+async def verify_expected_output(
+  assertion: Data_Class | None = None,
+) -> dict:
+  parameters = utils.get_function_parameters(function=assertion.method)
+  arguments = {}
 
-  assertion.actual = None
-  if assertion.expected.get('index', -1) != -1:
-    assertion.actual = assertion.expected
+  for key in parameters:
+    value = getattr(assertion, key, None)
+    arguments[key] = value
 
-  assertion.passed = assertion.actual == assertion.expected
-  return assertion
+  result = assertion.method(**arguments)
+  assertion.method = assertion.method.__name__
+  for key, value in result.items():
+    setattr(assertion, key, value)
 
-
-@error_handler()
-async def assert_type(assertion: Data_Class) -> Data_Class:
-  if isinstance(assertion.expected, list) is False:
-    assertion.expected = [assertion.expected]
-
-  assertion.actual = [
-    str(assertion.actual.__class__),
-    assertion.actual.__class__.__name__, ]
-
-  for value in assertion.expected:
-    for type_ in assertion.actual:
-      assertion.passed = type_.find(value) > -1
-      if assertion.passed is True:
-        assertion.expected = type_
-        assertion.actual = type_
-        return assertion
-
-  assertion.passed = False
-  return assertion
+  return {'assertion': assertion}
 
 
 @error_handler()
-async def assert_length(assertion: Data_Class) -> Data_Class:
-  if assertion.actual is None:
-    assertion.actual = []
-
-  assertion.actual = len(assertion.actual)
-  assertion.passed = assertion.actual == assertion.expected
-  return assertion
-
-
-@error_handler()
-async def assert_catch(assertion: Data_Class) -> Data_Class | None:
-  if isinstance(assertion.exception, Exception):
-    assertion.exception = {'name': assertion.exception.__class__.__name__}
-
-  assertion.actual = assertion.exception.get('name')
-  assertion.passed = assertion.actual.find(assertion.expected) > -1
-  return assertion
+async def update_assertions_and_increment_i(
+  i: int | None = None,
+  assertion: Data_Class | None = None,
+  assertions: list | None = None,
+) -> dict:
+  assertions[i] = assertion
+  i = i + 1
+  return{
+    'i': i,
+    'assertions': assertions, }
 
 
 @error_handler()
-async def pass_through(assertion: Data_Class) -> Data_Class:
-  if assertion in CONFIG.empty_values:
-    return CONFIG.schema.Assertion(
-      actual=True,
-      expected=False,
-      passed=False, )
-  assertion.passed = False
-  assertion.actual = not assertion.expected
-  return assertion
+async def get_assertion_output_field(
+  assertion: Data_Class | None = None,
+) -> dict:
+  assertion.output = get_object(
+    parent=assertion.output,
+    name=assertion.field, )
+  return {'assertion': assertion}
+
+
+@error_handler()
+async def get_casted_assertion_output(
+  assertion: dict | None = None,
+  module: ModuleType | None = None,
+) -> dict:
+  assertion.cast_output = assertion.cast_output or []
+
+  key = 'output'
+  casted_output = process_casts_for_output(
+    output=assertion.output,
+    cast_output=assertion.cast_output,
+    module=module, )
+  assertion.output = casted_output.get(key, assertion.output)
+
+  return {'assertion': assertion}
 
 
 @error_handler()
 async def main(
-  assertions: List[dict | Data_Class] | None = None,
+  assertions: List[dict] | None = None,
   output: Any | None = None,
-  exception: Any | None = None,
+  exception: str | None = None,
+  module: ModuleType | None = None,
 ) -> dict:
   assertions = assertions or []
   n = range(len(assertions))
@@ -163,45 +145,11 @@ async def main(
     functions=LOCALS,
     n=n,
     operations=CONFIG.operations, )
-  # operations = CONFIG.schema.Operations
 
-  # for i in n:
-  # for operation in CONFIG.operations:
-  #   operations.function = LOCALS[operation]
-  # from utils import app as utils
-  #   operations.parameters = utils.get_function_parameters(
-  #     function=operations.function)
-
-  # for i in data.n:
-  for i in n:
-    if isinstance(assertions[i], dict) is True:
-      data_class = CONFIG.schema.Assertion
-      assertions[i] = data_class(
-        **assertions[i],
-        actual=output,
-        exception=exception, )
-    assertions[i].actual = get_object(
-      parent=assertions[i].actual,
-      name=assertions[i].field, )
-    # for assertion in assertion.casts:
-    #   assertion.actual = cast_value(
-    #     object=assertion.actual,
-    #     unpack=assertion.cast['unpack'],
-    #     caster_name=assertion.cast['caster_name'], )
-    handler = f'assert_{assertions[i].method}'
-    handler = LOCALS.get(
-      handler,
-      pass_through, )
-    assertions[i] = handler(assertion=assertions[i])
-
-  return {
-    'output': None,
-    'exception': None,
-    'assertions': assertions, }
+  return {'assertions': assertions}
 
 
-@error_handler()
-async def example() -> None:
+def example() -> None:
   from invoke_pytest.app import main as invoke_pytest
 
 

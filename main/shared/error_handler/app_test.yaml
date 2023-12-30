@@ -29,7 +29,7 @@ tests:
     arguments:
       locals_: {}
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         args: []
         call_back: null
@@ -58,7 +58,7 @@ tests:
         standard_output: standard_output
         timestamp: timestamp
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         args: args
         call_back: call_back
@@ -86,17 +86,17 @@ tests:
     arguments:
       exception: exception
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       field: name
       expected: TypeError
-    - method: equals
+    - method: assertions.app.assert_equals
       field: description
       expected: 'unsupported operand type(s) for +: ''int'' and ''str'''
   - description: Exception is not an sh`Exception` object
     arguments:
       exception: exception
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         description: exception
         name: str
@@ -108,12 +108,12 @@ tests:
   - arguments:
       task: null
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected: null
   - arguments:
       task: task
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected: task
   - cast_arguments:
     - caster: test_resources.app.task_resource
@@ -121,7 +121,7 @@ tests:
     arguments:
       task: task
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected: async_task
 - function: get_awaitable_output
   tests: &GET_AWAITABLE_OUTPUT_TESTS
@@ -137,7 +137,7 @@ tests:
         data:
           function: awaitable_function
       assertions:
-      - method: equals
+      - method: assertions.app.assert_equals
         expected: awaitable_output
 - function: get_callable_output
   tests: &GET_CALLABLE_OUTPUT_TESTS
@@ -153,7 +153,7 @@ tests:
         data:
           function: callable_function
       assertions:
-      - method: equals
+      - method: assertions.app.assert_equals
         expected: callable_output
 - function: get_function_output
   description: Returns the output from calling a async or sync function
@@ -175,7 +175,7 @@ tests:
         function: function_exception
         raise_exception: true
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected: null
 - function: process_function_output
   description: >
@@ -194,7 +194,7 @@ tests:
         result: Earth
         call_back: null
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       field: result
       expected: Earth
   - description: >
@@ -207,7 +207,7 @@ tests:
             method: hello_word
             data: {}
       assertions:
-      - method: equals
+      - method: assertions.app.assert_equals
         field: result
         expected: Hello World
     - arguments:
@@ -217,7 +217,7 @@ tests:
             method: hello_word
             data: {}
       assertions:
-      - method: equals
+      - method: assertions.app.assert_equals
         field: result
         expected: Hello MARS
 - function: get_function_parameters
@@ -230,18 +230,18 @@ tests:
   - arguments:
       function: sync_function
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected: []
   - arguments:
       function: hello_world
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
       - result
   - arguments:
       function: add
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
       - a
       - b
@@ -254,7 +254,7 @@ tests:
     arguments:
       log_enabled: false
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected: false
   - description: Logging enabled
     arguments:
@@ -266,7 +266,7 @@ tests:
       kwargs: {}
       result: result
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected: true
   - description: Log an exception
     arguments:
@@ -277,7 +277,7 @@ tests:
       kwargs: {}
       exception: exception
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected: true
 - function: main
   description: >
@@ -290,7 +290,7 @@ tests:
   - description: No defined arguments
     arguments: {}
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         sync_function: sync_output
         async_function: async_output
@@ -301,7 +301,7 @@ tests:
       raise_exception: false
       default_value: default_value
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         sync_function: sync_output
         async_function: async_output
@@ -314,7 +314,7 @@ tests:
   #     default_value: default_value
   #     raise_exception: false
   #   assertions:
-  #   - method: equals
+  #   - method: assertions.app.assert_equals
   #     expected:
   #       sync_function: sync_output
   #       async_function: async_output

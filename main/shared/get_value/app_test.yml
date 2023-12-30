@@ -20,7 +20,7 @@ tests:
         key_b: value_b
       field: key_a
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected: value_a
   - description: >
       Object is a dictionary that doesn't contain the field.
@@ -32,7 +32,7 @@ tests:
       field: key_c
       default_value: default_value
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected: default_value
 - function: get_value_from_nonetype
   description: Returns null
@@ -41,14 +41,14 @@ tests:
       object: null
       field: field
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected: null
   - arguments:
       object: null
       field: field
       default_value: default_value
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected: default_value
 - function: get_value_from_object
   description: Retrieve the value for a field of an object
@@ -64,7 +64,7 @@ tests:
         field: field
         default_value: default_value
       assertions:
-      - method: equals
+      - method: assertions.app.assert_equals
         expected: value
     - description: Field does not exist in object
       arguments:
@@ -72,7 +72,7 @@ tests:
         field: does_not_exist
         default_value: default_value
       assertions:
-      - method: equals
+      - method: assertions.app.assert_equals
         expected: default_value
 - function: main
   description: Retrieves a value from a dictionary or object

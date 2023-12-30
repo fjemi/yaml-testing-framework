@@ -42,6 +42,8 @@ cast_dataclass_packed_to_any: pass_dataclass
 cast_dataclass_unpacked_to_function: pass_dataclass
 cast_dataclass_packed_to_function: pass_dataclass
 cast_dataclass_packed_to_dataclass: pass_object_through
+cast_nonetype_packed_to_nonetype: do_nothing
+cast_any_packed_to_nonetype: pass_object_through
 '''
 HANDLER_MAP = yaml.safe_load(HANDLER_MAP)
 

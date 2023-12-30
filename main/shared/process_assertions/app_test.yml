@@ -1,6 +1,5 @@
 todo:
-- Move some of the assertion logic outside of main and add logic
-  for user defined assertions
+- add module route to function/method name after processing: module.function
 
 
 globals:
@@ -9,562 +8,373 @@ globals:
 
 
 tests:
-- function: assert_equals
-  description: >
-    Formats an sh`Assertion` object to determine if
-    the expected and actual outputs of function are
-    equal
-  cast_arguments:
-  - caster: CONFIG.schema.Assertion
-    field: assertion
-    unpack: true
-  tests:
-  - description: Expected and actual values are not equal
-    arguments:
-      assertion:
-        passed: false
-        actual: actual
-        expected: expected
-    cast_output:
-    - caster: __builtins__.dict
-    assertions:
-    - method: equals
-      expected:
-        actual: actual
-        exception: null
-        expected: expected
-        field: null
-        method: null
-        passed: false
-  - description: Expected and actual values are equal
-    arguments:
-      assertion:
-        passed: false
-        actual: value
-        expected: value
-    assertions:
-    - method: equals
-      field: passed
-      expected: true
-    - method: type
-      expected: Assertion
-- function: assert_contains
-  description: >
-    Formats an sh`Assertion` object to determine if
-    a string contains a substring, a list contains
-    an element, or a dictionary contains a key/value
-    pair
-  cast_arguments:
-  - caster: CONFIG.schema.Assertion
-    field: assertion
-    unpack: true
-  cast_output:
-  - caster: __builtins__.dict
-  tests:
-  - description: Substring not in string
-    arguments:
-      assertion:
-        actual: actual
-        expected: expected
-        passed: null
-    assertions:
-    - method: equals
-      expected:
-        actual: null
-        expected:
-          string: actual
-          substring: expected
-          index: -1
-        exception: null
-        field: null
-        method: null
-        passed: false
-  - description: Substring in string
-    arguments:
-      assertion:
-        actual: value
-        expected: value
-        passed: null
-    assertions:
-    - method: equals
-      expected:
-        actual:
-          index: 0
-          substring: value
-          string: value
-        exception: null
-        expected:
-          index: 0
-          substring: value
-          string: value
-        field: null
-        method: null
-        passed: true
-  - description: Element not in list
-    arguments:
-      assertion:
-        actual:
-        - value_a
-        - value_b
-        expected: value_c
-    assertions:
-    - method: equals
-      expected:
-        actual: null
-        expected:
-          element: value_c
-          list:
-          - value_a
-          - value_b
-          index: -1
-        exception: null
-        field: null
-        method: null
-        passed: false
-  - description: Element in list
-    arguments:
-      assertion:
-        actual:
-        - value
-        expected: value
-        passed: null
-    assertions:
-    - method: equals
-      expected:
-        actual:
-          index: 0
-          list:
-          - value
-          element: value
-        exception: null
-        expected:
-          index: 0
-          list:
-          - value
-          element: value
-        field: null
-        method: null
-        passed: true
-  - description: Key in dictionary but not value
-    arguments:
-      assertion:
-        actual:
-          key_a: value_a
-          key_b: value_b
-        expected:
-          key_b: value_c
-    assertions:
-    - method: equals
-      expected:
-        actual: null
-        expected:
-          dict:
-            key_a: value_a
-            key_b: value_b
-          key_value:
-            key_b: value_c
-          index: -1
-        exception: null
-        field: null
-        method: null
-        passed: false
-  - description: Key/value in dictionary
-    arguments:
-      assertion:
-        actual:
-          key_a: value_a
-          key_b: value_b
-        expected:
-          key_b: value_b
-        passed: null
-    assertions:
-    - method: equals
-      expected:
-        actual:
-          index: 0
-          dict:
-            key_a: value_a
-            key_b: value_b
-          key_value:
-            key_b: value_b
-        exception: null
-        expected:
-          index: 0
-          dict:
-            key_a: value_a
-            key_b: value_b
-          key_value:
-            key_b: value_b
-        field: null
-        method: null
-        passed: true
-  - description: Key not in dictionary
-    arguments:
-      assertion:
-        actual:
-          key_a: value_a
-          key_b: value_b
-        expected:
-          key_c: value_c
-        passed: null
-    assertions:
-    - method: equals
-      expected:
-        actual: null
-        exception: null
-        expected:
-          index: -1
-          dict:
-            key_a: value_a
-            key_b: value_b
-          key_value:
-            key_c: value_c
-        field: null
-        method: null
-        passed: false
-- function: assert_type
-  description: >
-    Formats an sh`Assertion` object to determine if they
-    type of a function's actual output is as expected
-  cast_arguments:
-  - caster: CONFIG.schema.Assertion
-    field: assertion
-    unpack: true
-  cast_output:
-  - caster: __builtins__.dict
-  tests:
-  - description: Actual and expected types are strings
-    arguments:
-      assertion:
-        actual: string
-        expected: str
-    assertions:
-    - method: equals
-      expected:
-        actual: <class 'str'>
-        exception: null
-        expected: <class 'str'>
-        field: null
-        method: null
-        passed: true
-  - description: Actual and expected types are lists
-    arguments:
-      assertion:
-        actual:
-        - value_a
-        - value_b
-        expected: list
-    assertions:
-    - method: equals
-      expected:
-        actual: <class 'list'>
-        exception: null
-        expected: <class 'list'>
-        field: null
-        method: null
-        passed: true
-  - description: Actual type is an integer and expected type is a string
-    arguments:
-      assertion:
-        actual: 1
-        expected:
-        - str
-    assertions:
-    - method: equals
-      expected:
-        actual:
-        - <class 'int'>
-        - int
-        exception: null
-        expected:
-        - str
-        field: null
-        method: null
-        passed: false
-- function: assert_length
-  description: >
-    Formats an sh`Assertion` object to determine if length
-    of the function's actual output is as expected
-  cast_arguments:
-  - caster: CONFIG.schema.Assertion
-    field: assertion
-    unpack: true
-  cast_output:
-  - caster: __builtins__.dict
-  tests:
-  - description: List of length 0
-    arguments:
-      assertion:
-        actual: []
-        expected: 0
-    assertions:
-    - method: equals
-      expected:
-        actual: 0
-        exception: null
-        expected: 0
-        field: null
-        method: null
-        passed: true
-  - description: String of length 6
-    arguments:
-      assertion:
-        actual: string
-        expected: 6
-    assertions:
-    - method: equals
-      expected:
-        actual: 6
-        exception: null
-        expected: 6
-        field: null
-        method: null
-        passed: true
-  - description: String with incorrect expected length
-    arguments:
-      assertion:
-        actual: string
-        expected: 0
-    assertions:
-    - method: equals
-      expected:
-        actual: 6
-        exception: null
-        expected: 0
-        field: null
-        method: null
-        passed: false
-  - description: Dict of length 3
-    arguments:
-      assertion:
-        actual:
-          a: a
-          b: b
-          c: c
-        expected: 3
-    assertions:
-    - method: equals
-      expected:
-        actual: 3
-        exception: null
-        expected: 3
-        field: null
-        method: null
-        passed: true
-- function: assert_catch
-  description: >
-    Formats an sh`Assertion` object to determine if an
-    exception was caught during a function's execution
-  cast_arguments:
-  - caster: CONFIG.schema.Assertion
-    field: assertion
-    unpack: true
-  tests:
-  - description: >
-      Processed sh`Exception` object, a dict containing am exception's
-      name, description, and traceback
-    arguments:
-      assertion:
-        exception: &PROCESSED_EXCEPTION
-          name: name
-          description: description
-          traceback: trackeback
-        expected: name
-    cast_output:
-    - caster: __builtins__.dict
-    assertions:
-    - method: equals
-      expected:
-        actual: name
-        exception: *PROCESSED_EXCEPTION
-        expected: name
-        field: null
-        method: null
-        passed: true
-  - description: Exception is a TypeError, but expected is RuntimeError
-    cast_arguments:
-    - caster: test_resources.app.set_exception
-      field: assertion
-    arguments:
-      assertion:
-        exception: exception
-        expected: RuntimeError
-    cast_output:
-    - caster: __builtins__.str
-    assertions:
-    - method: contains
-      expected: passed=False
-  - description: Exception is a TypeError
-    cast_arguments:
-    - caster: test_resources.app.set_exception
-      field: assertion
-    arguments:
-      assertion:
-        exception: exception
-        expected: TypeError
-    cast_output:
-    - caster: __builtins__.str
-    assertions:
-    - method: contains
-      expected: passed=True
 - function: pass_through
-  description: Returns the sh`Assertion` object passed into the function.
-  cast_arguments:
-  - caster: CONFIG.schema.Assertion
-    field: assertion
-    unpack: true
-  tests:
-  - description: Returns an sh`Assertion` object
-    arguments:
-      assertion: {}
-    assertions:
-    - method: type
-      expected: Assertion
-  - description: Returns an sh`Assertion` object with passed set to false
-    arguments:
-      assertion: {}
-    cast_output:
-    - caster: __builtins__.dict
-    assertions:
-    - method: equals
-      expected:
-        actual: True
-        exception: null
-        expected: null
-        field: null
-        method: null
-        passed: false
-- function: main
   description: >
-    Orchestrates executing the other functions in the
-    module to use different methods to verify assertions
+    Method to use if an assertion method does not exist. Returns data needed to
+    fail an assertion.
+  tests:
+  - description: Undefined argument
+    arguments: {}
+    assertions:
+    - method: assertions.app.assert_equals
+      expected:
+        output: assertion method None doesn't exist
+        expected: ''
+        passed: false
+  - description: Defined argument
+    arguments:
+      output: assertion_method_does_not_exist
+    assertions:
+    - method: assertions.app.assert_equals
+      expected:
+        output: assertion method assertion_method_does_not_exist doesn't exist
+        expected: ''
+        passed: false
+  - description: Defined argument
+    arguments:
+      output: output
+    assertions:
+    - method: assertions.app.assert_equals
+      expected:
+        output: assertion method output doesn't exist
+        expected: ''
+        passed: false
+- function: get_current_assertion
+  description: >
+    Retrieves assertion data for the current iteration and casts it as an
+    Assertion object
+  tests:
+  - arguments: {}
+    assertions:
+    - method: assertions.app.assert_equals
+      expected: null
+  - arguments:
+      i: 0
+      assertions:
+      - {}
+      output: output
+    assertions:
+    - method: assertions.app.assert_equals
+      field: i
+      expected: 0
+    - method: assertions.app.assert_equals
+      field: assertion.output
+      expected: output
+  - arguments:
+      i: 1
+      assertions:
+      - {}
+      - expected: expected
+        method: method
+      output: output
+    assertions:
+    - method: assertions.app.assert_equals
+      field: i
+      expected: 1
+    - method: assertions.app.assert_equals
+      field: assertion.output
+      expected: output
+    - method: assertions.app.assert_equals
+      field: assertion.expected
+      expected: expected
+    - method: assertions.app.assert_equals
+      field: assertion.method
+      expected: method
+- function: get_assertion_method
+  description: >
+    Gets the method used to verufy that the output is as expected
+  cast_arguments:
+  - caster: test_resources.app.module_resource
+    field: module
+  - caster: test_resources.app.assertion_resource
+    field: assertion
+  tests:
+  - arguments: {}
+    assertions:
+    - method: assertions.app.assert_equals
+      expected: null
+  - arguments:
+      assertion:
+        method: pass_through
+        expected: expected
+        output: output
+      module: assertions
+    assertions:
+    - method: assertions.app.assert_type
+      field: assertion
+      expected: Assertion
+    - method: assertions.app.assert_type
+      field: assertion.method
+      expected: function
+    - method: assertions.app.assert_equals
+      field: assertion.method.__name__
+      expected: pass_through
+- function: verify_expected_output
+  description: >
+    Calls an method with output and expected output to verify the assertion.
+    Sets fields of the assertions with the key/value pairs of the result from
+    method call.
+  cast_arguments:
+  # - caster: CONFIG.schema.Assertion
+  #   field: assertion
+  - caster: test_resources.app.verify_expected_output_resource
+    field: assertion
+  tests:
+  - arguments:
+      assertion: {}
+    assertions:
+    - method: assertions.app.assert_equals
+      expected: null
+  - arguments:
+      assertion:
+        expected: expected
+        output: output
+        method: assert_equals
+    assertions:
+    - method: assertions.app.assert_equals
+      cast_output:
+      - caster: dc.asdict
+        field: assertion
+      expected:
+        assertion:
+          cast_output: null
+          exception: null
+          expected: expected
+          field: null
+          method: assert_equals
+          output: output
+          passed: false
+  - arguments:
+      assertion:
+        expected: expected
+        output: output
+        method: assert_equals
+    assertions:
+    - method: assertions.app.assert_type
+      expected: Assertion
+      field: assertion
+- function: update_assertions_and_increment_i
+  description: >
+    Updates the assertion for the current iteration in the list of assertions
+    and increments sh`i` to move to the next iteration
   tests:
   - description: Undefined arguments
-    arguments:
-      assertions: null
-      output: null
-      exception: null
+    arguments: {}
     assertions:
-    - method: equals
-      expected:
-        assertions: []
-        exception: null
-        output: null
-  - description: Assertions is an empty list
+    - method: assertions.app.assert_equals
+      expected: null
+  - description: Defined arguments
     arguments:
-      assertions: []
-      output: null
-      exception: null
-    assertions:
-    - method: equals
-      expected:
-        assertions: []
-        exception: null
-        output: null
-  - description: Single assertion defined
-    arguments:
+      i: 0
+      assertion: processed_assertion
       assertions:
-      - method: equals
-        expected: output
-      output: output
-      exception: null
-    cast_output:
-    - caster: test_resources.app.main_resource
+      - assertion_0
+      - assertion_1
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
+        i: 1
         assertions:
-        - actual: output
-          exception: null
-          expected: output
-          field: null
-          method: equals
-          passed: true
-        output: null
-        exception: null
-  - description: Multiple assertions defined
+        - processed_assertion
+        - assertion_1
+  - description: Defined arguments
     arguments:
+      i: 1
+      assertion: processed_assertion
       assertions:
-      - method: equals
-        expected: output
-      - method: type
-        expected: str
-      output: output
-      exception: null
-    cast_output:
-    - caster: test_resources.app.main_resource
+      - assertion_0
+      - assertion_1
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
+        i: 2
         assertions:
-        - actual: output
+        - assertion_0
+        - processed_assertion
+- function: get_assertion_output_field
+  description: >
+    Sets the output of the assertion of a dot-delimited field/key of
+    an object/dictionary.
+  cast_arguments:
+  - caster: CONFIG.schema.Assertion
+    field: assertion
+  cast_output:
+  - caster: dc.asdict
+    field: assertion
+  tests:
+  - arguments:
+      assertion: {}
+    assertions:
+    - method: assertions.app.assert_equals
+      expected:
+        assertion:
+          cast_output: null
           exception: null
-          expected: output
+          expected: null
           field: null
-          method: equals
-          passed: true
-        - actual: <class 'str'>
+          method: null
+          output: null
+          passed: null
+  - arguments:
+      assertion:
+        output: output
+        field: null
+    assertions:
+    - method: assertions.app.assert_equals
+      expected:
+        assertion:
+          cast_output: null
           exception: null
-          expected: <class 'str'>
+          expected: null
           field: null
-          method: type
-          passed: true
-        output: null
-        exception: null
-  - description: >
-      Assert that a field of the output is cotains an element
-    arguments:
-      assertions:
-      - method: contains
+          method: null
+          output: output
+          passed: null
+  - arguments:
+      assertion:
+        output:
+          key: value
         field: key
-        expected: value_b
-      output:
-        key:
-        - value_a
-        - value_b
-        - value_c
-      exception: null
-    cast_output:
-    - caster: test_resources.app.main_resource
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
+      expected:
+        assertion:
+          cast_output: null
+          exception: null
+          expected: null
+          field: key
+          method: null
+          output: value
+          passed: null
+  - arguments:
+      assertion:
+        output:
+          key_a:
+            key_b: value
+        field: key_a.key_b
+    assertions:
+    - method: assertions.app.assert_equals
+      expected:
+        assertion:
+          cast_output: null
+          exception: null
+          expected: null
+          field: key_a.key_b
+          method: null
+          output: value
+          passed: null
+- function: get_casted_assertion_output
+  description: >
+    Casts the output of an assertion to a constructor before verifying
+    the a function's output
+  cast_arguments:
+  - caster: CONFIG.schema.Assertion
+    field: assertion
+  - caster: test_resources.app.module_resource
+    field: module
+  tests:
+  - arguments:
+      assertion:
+        output: output
+        cast_output: []
+      module: assertions
+    assertions:
+    - method: assertions.app.assert_equals
+      field: assertion.output
+      expected: output
+  - arguments:
+      assertion:
+        output: 1234
+        cast_output:
+        - caster: __builtins__.str
+      module: assertions
+    assertions:
+    - method: assertions.app.assert_equals
+      field: assertion.output
+      expected: '1234'
+  - arguments:
+      assertion:
+        output: '00000'
+        cast_output:
+        - caster: __builtins__.int
+      module: assertions
+    assertions:
+    - method: assertions.app.assert_equals
+      field: assertion.output
+      expected: 0
+- function: main
+  description: >
+    Processes assertions by:
+    - Retrieving assertion methods or functions from resources defined for the
+      test
+    - Drilling into a function's output to get an attribute, field, or key
+    - Casting a function's output if needed
+    - Verifying that a function's output is as expected
+  cast_arguments:
+  - caster: test_resources.app.module_resource
+    field: module
+  cast_output:
+  - caster: test_resources.app.main_cast_output
+    field: assertions
+  tests:
+  - arguments:
+      module: null
+      output: null
+      assertions: null
+    assertions:
+    - method: assertions.app.assert_equals
+      expected:
+        assertions: []
+  - arguments:
+      module: assertions
+      output: output
+      assertions:
+      - method: assert_equals
+        expected: output
+    assertions:
+    - method: assertions.app.assert_equals
       expected:
         assertions:
-        - actual:
-            element: value_b
-            index: 1
-            list:
-            - value_a
-            - value_b
-            - value_c
-          exception: null
-          expected:
-            element: value_b
-            index: 1
-            list:
-            - value_a
-            - value_b
-            - value_c
-          field: key
-          method: contains
+        - method: assert_equals
           passed: true
-        output: null
-        exception: null
-      # - actual:
-      #     dict:
-      #       key: value
-      #     index: 0
-      #     key_value:
-      #       key: value
-      #   exception:
-      #     name: name
-      #   expected:
-      #     dict:
-      #       key: value
-      #     index: 0
-      #     key_value:
-      #       key: value
-      #   field: null
-      #   method: contains
-      #   passed: true
-
+          exception: null
+          output: output
+          expected: output
+          field: null
+          cast_output: []
+  - arguments:
+      module: assertions
+      exception:
+        name: RuntimeError
+      assertions:
+      - method: assert_exception
+        expected: RuntimeError
+    assertions:
+    - method: assertions.app.assert_equals
+      expected:
+        assertions:
+        - method: assert_exception
+          passed: true
+          exception:
+            name: RuntimeError
+          output: RuntimeError
+          expected: RuntimeError
+          field: null
+          cast_output: []
+  - arguments:
+      module: assertions
+      output: output
+      assertions:
+      - method: assertion_method_does_not_exist
+        expected: output
+    assertions:
+    - method: assertions.app.assert_equals
+      expected:
+        assertions:
+        - method: pass_through
+          passed: false
+          exception: null
+          output: assertion method assertion_method_does_not_exist doesn't exist
+          expected: ''
+          field: null
+          cast_output: []

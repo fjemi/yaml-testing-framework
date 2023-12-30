@@ -14,7 +14,7 @@ tests:
     cast_output:
     - caster: __builtins__.str
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected: Data(module=None, yaml=None, contents=None, config=None, environment=None, schema=None)
   - description: Defined arguments
     arguments:
@@ -28,7 +28,7 @@ tests:
     cast_output:
     - caster: dc.asdict
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         config: config
         contents: contents
@@ -45,7 +45,7 @@ tests:
       module: module
       yaml: yaml
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         yaml: yaml
   - description: Module and YAML exist
@@ -53,7 +53,7 @@ tests:
       module: ${ROOT_DIR}/main/shared/get_config/test_resources/app.py
       yaml: null
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         yaml: ${ROOT_DIR}/main/shared/get_config/test_resources/app.yaml
   - description: Module doesn't exist
@@ -61,7 +61,7 @@ tests:
       module: module_location.py
       yaml: null
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         yaml: ''
 - function: set_locations
@@ -72,7 +72,7 @@ tests:
     arguments:
       yaml: ${ROOT_DIR}/main/shared/get_config/test_resources/blank.yml
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         yaml: null
         config: ${ROOT_DIR}/main/shared/get_config/test_resources/blank.yml
@@ -89,7 +89,7 @@ tests:
       environment: environment
       schema: schema
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         config: config
         environment: environment
@@ -103,7 +103,7 @@ tests:
     arguments:
       yaml: null
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         yaml: null
         config: null
@@ -118,13 +118,13 @@ tests:
     arguments:
       yaml: yaml
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected: {}
   - description: Return the contents of the YAML at the Location
     arguments:
       yaml: ${ROOT_DIR}/main/shared/get_config/test_resources/app.yaml
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         config_a: config_a
         config_b: '00001'
@@ -164,7 +164,7 @@ tests:
       contents:
         null: {}
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         config:
           environment: null
@@ -184,7 +184,7 @@ tests:
       environment: location_a
       schema: location_b
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         config:
           environment: null
@@ -200,7 +200,7 @@ tests:
     - caster: dc.asdict
       field: config
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         config: {}
   - arguments:
@@ -211,7 +211,7 @@ tests:
     - caster: __builtins__.str
       field: config
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         config: Config(a='a', b='b')
 - function: format_environment
@@ -225,7 +225,7 @@ tests:
     cast_output:
     - caster: __builtins__.str
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected: "{'environment': None, 'config': {'environment': Environment()}}"
   - description: >
       Environment is dictionary with defined key/value pairs
@@ -237,7 +237,7 @@ tests:
     cast_output:
     - caster: __builtins__.str
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected: "{'environment': None, 'config': {'environment': Environment(VAR_A='VALUE_A', VAR_B='VALUE_B')}}"
   # - description: >
   #     Config has defined environment and schema attributes
@@ -245,10 +245,10 @@ tests:
   #     data:
   #       config: config
   #   assertions:
-  #   - method: type
+  #   - method: assertions.app.assert_type
   #     field: config.environment
   #     expected: Environment
-  #   - method: type
+  #   - method: assertions.app.assert_type
   #     field: config.schema
   #     expected: dict
 - function: format_schema
@@ -261,7 +261,7 @@ tests:
     cast_output:
     - caster: __builtins__.str
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected: "{'schema': None, 'config': {'schema': Schema()}}"
   - description: Defined schema
     arguments:
@@ -298,7 +298,7 @@ tests:
     cast_output:
     - caster: __builtins__.str
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected: "{'schema': None, 'config': {'schema': Schema(Schema_A=<class 'types.Schema_A'>, Schema_B=<class 'types.Schema_B'>)}}"
 - function: convert_dict_to_dataclass
   description: Returns a dictionary as a dataclass
@@ -310,7 +310,7 @@ tests:
     cast_output:
     - caster: __builtins__.str
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected: Empty()
   - description: Data_Class is an empty dictionary 2
     arguments:
@@ -321,7 +321,7 @@ tests:
     cast_output:
     - caster: __builtins__.str
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected: Numbers(a=0, b=0)
   - description: Data_Class is a dictionary with defined key/value pairs
     arguments:
@@ -332,7 +332,7 @@ tests:
     cast_output:
     - caster: __builtins__.dict
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         key_a: value_a
         key_b: value_b
@@ -344,7 +344,7 @@ tests:
   arguments:
     function: function
   assertions:
-  - method: equals
+  - method: assertions.app.assert_equals
     expected:
     - parameter_1
     - parameter_2
@@ -357,17 +357,17 @@ tests:
     arguments:
       yaml: ${ROOT_DIR}/main/shared/get_config/test_resources/blank.yml
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected: Config(schema=Schema(), environment=Environment())
   - description: YAML path provided and configs not empty
     arguments:
       yaml: ${ROOT_DIR}/main/shared/get_config/test_resources/app.yaml
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected: "Config(config_a='config_a', config_b='00001', config_c=['config_c', 'config_c'], config_d={'config_d': 'config_d'}, config_f='config_f', environment=Environment(A='A', B='B', C='C', D='D'), schema=Schema(Example=<class 'types.Example'>))"
   - description: Module path provided and configs not empty
     arguments:
       module: ${ROOT_DIR}/main/shared/get_config/test_resources/app.py
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected: "Config(config_a='config_a', config_b='00001', config_c=['config_c', 'config_c'], config_d={'config_d': 'config_d'}, config_f='config_f', environment=Environment(A='A', B='B', C='C', D='D'), schema=Schema(Example=<class 'types.Example'>))"

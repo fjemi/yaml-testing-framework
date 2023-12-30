@@ -1,3 +1,11 @@
+todo:
+- >
+  Add timestamp logic; a time stamp for each operations. Either of these formats
+  timestamp = [{operation_1: timestamp}, {operation_2: timestamp}]
+  timestamp = {op1: timestamp, op2: timestamp}
+- Adding the ability to log each operation
+
+
 resources:
 - https://stackoverflow.com/questions/55590343/asyncio-run-or-run-until-complete
 
@@ -18,14 +26,14 @@ tests:
     arguments:
       function: function_one_parameter
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
       - parameter_1
   - description: Function with two parameters
     arguments:
       function: function_two_parameters
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
       - parameter_1
       - parameter_2
@@ -42,7 +50,7 @@ tests:
       locals: {}
       data_class: data_class
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         a: 0
         b: 0
@@ -54,7 +62,7 @@ tests:
         b: 2
       data_class: data_class
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         a: 1
         b: 2
@@ -82,7 +90,7 @@ tests:
           b: 3
         functions: functions
       assertions:
-      - method: equals
+      - method: assertions.app.assert_equals
         expected:
           a: 1
           b: 3
@@ -95,7 +103,7 @@ tests:
           b: 3
         functions: functions
       assertions:
-      - method: equals
+      - method: assertions.app.assert_equals
         expected:
           a: 1
           b: 3
@@ -108,7 +116,7 @@ tests:
           b: 3
         functions: functions
       assertions:
-      - method: equals
+      - method: assertions.app.assert_equals
         expected:
           a: 1
           b: 3
@@ -125,7 +133,7 @@ tests:
         a: 1
         b: 3
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         a: 1
         b: 3
@@ -143,7 +151,7 @@ tests:
       field: key
       value:  set_value
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         key: set_value
   - description: Set value for attribute of an object
@@ -161,7 +169,7 @@ tests:
     cast_output:
     - caster: dc.asdict
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         a: 0
         b: 0
@@ -172,12 +180,12 @@ tests:
   - arguments:
       task: null
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected: null
   - arguments:
       task: task
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected: task
   - cast_arguments:
     - caster: test_resources.app.coroutine_resource
@@ -185,27 +193,27 @@ tests:
     arguments:
       task: coroutine_task
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected: coroutine_output
 - function: get_parent_module
   description: Returns the location of a resource module's parent module
   tests:
   - arguments: {}
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected: null
   - arguments:
       module: root/resources_folder_name/module.py
       resources_folder_name: resources_folder_name
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected: root/module.py
   - arguments:
       module: root/resources_folder_name/module.py
       resources_folder_name: resources_folder_name
       parent_filename: parent.py
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected: root/parent.py
 - function: get_range_from_integer
   description: >
@@ -214,17 +222,17 @@ tests:
   tests:
   - arguments: {}
     assertions:
-    - method: type
+    - method: assertions.app.assert_type
       expected: range
-    - method: equals
+    - method: assertions.app.assert_equals
       expected: 1
       field: stop
   - arguments:
       n: 2
     assertions:
-    - method: type
+    - method: assertions.app.assert_type
       expected: range
-    - method: equals
+    - method: assertions.app.assert_equals
       expected: 2
       field: stop
   - cast_arguments:
@@ -233,8 +241,8 @@ tests:
     arguments:
       n: 3
     assertions:
-    - method: type
+    - method: assertions.app.assert_type
       expected: range
-    - method: equals
+    - method: assertions.app.assert_equals
       expected: 3
       field: stop

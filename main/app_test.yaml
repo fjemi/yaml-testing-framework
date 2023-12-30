@@ -1,6 +1,7 @@
 todo:
-- Add support for user defined logic
-  (assertions, run_test_for_*, etc) in resource modules
+- >
+  Add support for user defined logic (example: run_test_for_*) following the example for assertions
+- Add logic for testing APIs
 - Make timestamps a list and append timestamp at each logical operation
 - Add switcher for unpacking based on value and caster in 'execute_test'
 - Add logic for safe loading or regular loading data from yaml files
@@ -24,7 +25,7 @@ tests:
       module: null
       module_location: module_location
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         module: ''
   - description: Module location doesn't exist
@@ -32,7 +33,7 @@ tests:
       module: module
       module_location: module_location
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         module: ''
   - description: >
@@ -43,10 +44,10 @@ tests:
       - ${ROOT_DIR}/main/test_resources/app/app.py
       module_location: .main.test_resources.app
     assertions:
-    - method: type
+    - method: assertions.app.assert_type
       field: module
       expected: module
-    - method: equals
+    - method: assertions.app.assert_equals
       field: module.__name__
       expected: .main.test_resources.app
   - description: Module location exists
@@ -54,10 +55,10 @@ tests:
       module: ${ROOT_DIR}/main/test_resources/app/app.py
       module_location: .main.test_resources.app
     assertions:
-    - method: type
+    - method: assertions.app.assert_type
       field: module
       expected: module
-    - method: equals
+    - method: assertions.app.assert_equals
       field: module.__name__
       expected: .main.test_resources.app
 - function: handle_resources
@@ -71,7 +72,7 @@ tests:
       module: null
       resources: null
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         resources: null
         module: null
@@ -85,19 +86,19 @@ tests:
       - ${ROOT_DIR}/main/test_resources/app/example_b.js
       - ${ROOT_DIR}/main/test_resources/app/example_b.py
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       field: resources
       expected: null
-    - method: type
+    - method: assertions.app.assert_type
       field: module
       expected: module
-    - method: equals
+    - method: assertions.app.assert_equals
       field: module.__name__
       expected: main.test_resources.app.module
-    - method: type
+    - method: assertions.app.assert_type
       field: module.example_b
       expected: module
-    - method: equals
+    - method: assertions.app.assert_equals
       field: module.example_b.__file__
       expected: ${ROOT_DIR}/main/test_resources/app/example_b.py
 - function: get_function_output
@@ -110,10 +111,10 @@ tests:
       function: null
       arguments: null
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       field: output
       expected: null
-    - method: type
+    - method: assertions.app.assert_type
       field: exception
       expected: TypeError
   - description: Defined arguments
@@ -121,7 +122,7 @@ tests:
       function: function
       arguments: {}
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         exception: null
         output: output
@@ -134,7 +135,7 @@ tests:
   - description: Undefined arguments
     arguments: {}
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         function: null
   - description: Defined arguments
@@ -143,10 +144,10 @@ tests:
       module: example_a
       module_location: module_location
     assertions:
-    - method: type
+    - method: assertions.app.assert_type
       field: function
       expected: function
-    - method: equals
+    - method: assertions.app.assert_equals
       field: function.__name__
       expected: example_function
 - function: handle_id
@@ -161,7 +162,7 @@ tests:
       description: description
       # id: id
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         module: ''
         function: ''
@@ -176,7 +177,7 @@ tests:
       - description_b
       # id: id
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         module: module
         function: example_function
@@ -199,7 +200,10 @@ tests:
   - description: Undefined arguments
     arguments: {}
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
+      cast_output:
+      - caster: __builtins__.str
+        field: exception
       expected:
         arguments: null
         assertions: []
@@ -208,7 +212,7 @@ tests:
         cast_output: null
         description: []
         environment: null
-        exception: null
+        exception: '''NoneType'' object is not callable'
         exclude: null
         function: ''
         function_name: null
@@ -232,30 +236,32 @@ tests:
       test:
         project_directory: ${ROOT_DIR}/main/test_resources/app/add/app.py
         module: ${ROOT_DIR}/main/test_resources/app/add/app.py
-        yaml: ${ROOT_DIR}/main/test_resources/app/add/app_yaml_suffix.yaml
+        yaml: ${ROOT_DIR}/main/test_resources/app/add/app_test.yaml
         function: add
         function_name: add
         module_location: .main.test_resources.app.add.app
         arguments:
           a: 0
           b: 1
-        resources: []
+        resources:
+        - ${ROOT_DIR}/assertions/app.py
         assertions:
-        - method: equals
+        - method: assertions.app.assert_equals
           expected: 1
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         arguments:
           a: 0
           b: 1
         assertions:
-        - method: equals
-          actual: 1
+        - method: assert_equals
+          cast_output: []
+          exception: null
+          output: 1
           expected: 1
           passed: true
           field: null
-          exception: null
         cast_arguments: null
         cast_group: null
         cast_output: null
@@ -272,14 +278,14 @@ tests:
         module: ${ROOT_DIR}/main/test_resources/app/add/app.py
         module_location: .main.test_resources.app.add.app
         n: null
-        output: null
+        output: 1
         patches: null
         project_directory:  ${ROOT_DIR}/main/test_resources/app/add/app.py
         resources: null
         result: null
         tests: null
         timestamp: null
-        yaml: ${ROOT_DIR}/main/test_resources/app/add/app_yaml_suffix.yaml
+        yaml: ${ROOT_DIR}/main/test_resources/app/add/app_test.yaml
 - function: run_test_handler
   description: Runs a list of tests
   cast_arguments:
@@ -298,23 +304,24 @@ tests:
   - description: Undefined timestamp argument
     arguments: {}
     assertions:
-    - method: type
+    - method: assertions.app.assert_type
       field: timestamp
       expected: list
-    - method: length
+    - method: assertions.app.assert_length
       field: timestamp
       expected: 1
+  # Think about patching time.time() to return 'timestamp' for better test
   - description: timestamp argument is an integer
     arguments:
       timestamp: 1111
     assertions:
-    - method: type
+    - method: assertions.app.assert_type
       field: timestamp
       expected: list
-    - method: length
+    - method: assertions.app.assert_length
       expected: 2
       field: timestamp
-    - method: contains
+    - method: assertions.app.assert_item_in_list
       field: timestamp
       expected: 1111
   - description: timestamp argument is an list
@@ -323,16 +330,16 @@ tests:
       - 1111
       - 1234
     assertions:
-    - method: type
+    - method: assertions.app.assert_type
       field: timestamp
       expected: list
-    - method: length
+    - method: assertions.app.assert_length
       field: timestamp
       expected: 3
-    - method: contains
+    - method: assertions.app.assert_item_in_list
       field: timestamp
       expected: 1111
-    - method: contains
+    - method: assertions.app.assert_item_in_list
       field: timestamp
       expected: 1234
 - function: main
@@ -344,22 +351,23 @@ tests:
   tests:
   - arguments:
       project_directory: ${ROOT_DIR}/main/test_resources/app/add
-      yaml_suffix: _yaml_suffix
+      yaml_suffix: _test
       resources_folder_name: resources_folder_name
       timestamp: timestamp
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         - arguments:
             a: 0
-            b: 0
+            b: 5
           assertions:
-          - actual: 0
+          - output: 5
             exception: null
-            expected: 0
+            expected: 5
             field: null
-            method: equals
+            method: assert_equals
             passed: true
+            cast_output: []
           cast_arguments: []
           cast_group: null
           cast_output: null
@@ -380,17 +388,17 @@ tests:
               '
             function: add
             module: ${ROOT_DIR}/main/test_resources/app/add/app.py
-            yaml: ${ROOT_DIR}/main/test_resources/app/add/app_yaml_suffix.yaml
+            yaml: ${ROOT_DIR}/main/test_resources/app/add/app_test.yaml
           id_short: " .main.test_resources.app.add.app.add - Returns the result of adding two integers\n "
           module: ${ROOT_DIR}/main/test_resources/app/add/app.py
           module_location:
           - .main.test_resources.app.add.app
           n: null
-          output: null
+          output: 5
           patches: null
           project_directory: ''
           resources: null
           result: null
           tests: null
           timestamp: null
-          yaml: ${ROOT_DIR}/main/test_resources/app/add/app_yaml_suffix.yaml
+          yaml: ${ROOT_DIR}/main/test_resources/app/add/app_test.yaml

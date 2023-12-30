@@ -11,20 +11,20 @@ tests:
   - arguments:
       data: {}
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected: {}
 - function: format_exclude_functions_refactor
   description: Format field as a list
   tests:
   - arguments: {}
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         exclude_functions: []
   - arguments:
       exclude_functions: exclude_functions
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         exclude_functions:
         - exclude_functions
@@ -33,7 +33,7 @@ tests:
       - function_a
       - function_b
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         exclude_functions:
         - function_a
@@ -48,7 +48,7 @@ tests:
     - caster: __builtins__.str
       field: field
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         field: []
   - arguments:
@@ -57,7 +57,7 @@ tests:
       - b
       field: field
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         field:
         - a
@@ -67,13 +67,13 @@ tests:
   tests:
   - arguments: {}
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         exclude_modules: []
   - arguments:
       exclude_modules: exclude_modules
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         exclude_modules:
         - exclude_modules
@@ -82,7 +82,7 @@ tests:
       - modules_a
       - modules_b
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         exclude_modules:
         - modules_a
@@ -95,7 +95,7 @@ tests:
     arguments:
       function: function
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         function: function
         function_name: function
@@ -106,7 +106,7 @@ tests:
       - function_a
       - function_b
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         function: function_a
         function_name: function_a
@@ -118,14 +118,14 @@ tests:
     arguments:
       resources: null
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         resources: []
   - description: Resources is a string
     arguments:
       resources: resources
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         resources:
         - resources
@@ -136,7 +136,7 @@ tests:
       - resources_a
       - resources_b
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         resources:
         - null
@@ -148,13 +148,13 @@ tests:
   - arguments:
       module: null
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         module: ''
   - arguments:
       module: module
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         module: module
   - arguments:
@@ -163,7 +163,7 @@ tests:
       - null
       - module
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         module: module
 - function: format_yaml_refactor
@@ -172,13 +172,13 @@ tests:
   - arguments:
       yaml: null
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         yaml: ''
   - arguments:
       yaml: yaml
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         yaml: yaml
   - arguments:
@@ -187,7 +187,7 @@ tests:
       - null
       - yaml
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         yaml: yaml
 - function: format_field_as_str
@@ -197,14 +197,14 @@ tests:
       field: field
       value: null
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         field: ''
   - arguments:
       field: field
       value: value
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         field: value
   - arguments:
@@ -214,14 +214,14 @@ tests:
       - null
       - value
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         field: value
   - arguments:
       field: field
       value: {}
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         field: '{}'
 - function: format_arguments_refactor
@@ -230,7 +230,7 @@ tests:
   - arguments:
       arguments: null
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         arguments: {}
   - arguments:
@@ -238,7 +238,7 @@ tests:
         a: a
         b: b
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         arguments:
           a: a
@@ -252,7 +252,7 @@ tests:
       - d: d
         a: A
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         arguments:
           a: A
@@ -266,7 +266,7 @@ tests:
       field: field
       value: null
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         field: {}
   - arguments:
@@ -275,7 +275,7 @@ tests:
         a: a
         b: b
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         field:
           a: a
@@ -291,7 +291,7 @@ tests:
         d: d
       - not_a_dictionary
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         field:
           a: A
@@ -304,7 +304,7 @@ tests:
   - arguments:
       environment: null
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         environment: {}
   - arguments:
@@ -312,7 +312,7 @@ tests:
         a: a
         b: b
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         environment:
           a: a
@@ -326,7 +326,7 @@ tests:
         a: A
         d: d
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         environment:
           a: A
@@ -339,7 +339,7 @@ tests:
   - arguments:
       cast_arguments: null
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         cast_arguments: []
   - arguments:
@@ -347,7 +347,7 @@ tests:
       - a
       - b
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         cast_arguments:
         - a
@@ -358,7 +358,7 @@ tests:
   - arguments:
       cast_output: null
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         cast_output: []
   - arguments:
@@ -366,7 +366,7 @@ tests:
       - a
       - b
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         cast_output:
         - a
@@ -377,7 +377,7 @@ tests:
   - arguments:
       patches: null
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         patches: []
   - arguments:
@@ -385,7 +385,7 @@ tests:
       - a
       - b
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         patches:
         - a
@@ -396,7 +396,7 @@ tests:
   - arguments:
       assertions: null
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         assertions: []
   - arguments:
@@ -404,7 +404,7 @@ tests:
       - a
       - b
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         assertions:
         - a
@@ -418,7 +418,7 @@ tests:
       module: null
       yaml: null
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         id_long: *FORMAT_ID_LONG_ARGUMENTS_0
   - arguments: &FORMAT_ID_LONG_ARGUMENTS_1
@@ -427,7 +427,7 @@ tests:
       module: module
       yaml: yaml
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         id_long: *FORMAT_ID_LONG_ARGUMENTS_1
 - function: format_project_directory_refactor
@@ -437,7 +437,7 @@ tests:
   tests:
   - arguments: {}
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         project_directory: ''
   - arguments:
@@ -445,7 +445,7 @@ tests:
       - null
       - null
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         project_directory: ''
   - arguments:
@@ -453,13 +453,13 @@ tests:
       - null
       - project_directory
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         project_directory: project_directory
   - arguments:
       project_directory: project_directory
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         project_directory: project_directory
 - function: format_id_short_refactor
@@ -470,7 +470,7 @@ tests:
       function: null
       module_location: null
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         id_short: ' . -  '
   - arguments:
@@ -478,7 +478,7 @@ tests:
       function: function
       module_location: module_location
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         id_short: ' module_location.function - description '
   - arguments:
@@ -488,7 +488,7 @@ tests:
       function: function
       module_location: module_location
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         id_short: ' module_location.function - description_1 '
   - arguments:
@@ -502,7 +502,7 @@ tests:
       - null
       - module_location
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         id_short: ' module_location.function - description '
 - function: main
@@ -514,14 +514,14 @@ tests:
   - arguments:
       tests: []
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         tests: []
   - arguments:
       tests:
       - {}
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         tests:
         - test:
@@ -575,7 +575,7 @@ tests:
         exclude_functions: exclude_functions
         exclude_modules: exclude_modules
     assertions:
-    - method: equals
+    - method: assertions.app.assert_equals
       expected:
         tests:
         - test:

@@ -16,13 +16,16 @@ schema:
   - name: expected
     type: Any | None
     description: Expected value
-  - name: actual
+  - name: output
     type: Any | None
-    description: Actual value
+    description: Output from the function to verify
   - name: exception
     type: dict | None
     description: Dictionary containing an exception
     default: null
+  - name: cast_output
+    type: list | None
+    description: Casts to perform on the output before verifying expected output
   - name: passed
     type: bool | None
     default: false
@@ -31,18 +34,30 @@ schema:
   cls_name: Data
   description: Store data used by the fucntions within the module
   fields:
+  - name: module
+    type: Any | None
+    description: Module containing the verification or assertion functions
+    default: null
   - name: assertions
     type: list | None
     description: List of dictionaries or assertion objects
     default: []
   - name: output
     type: Any | None
-    description: Ouput from calling a function
+    description: Output from calling a function
     default: []
   - name: exception
     type: dict | None
     description: Exception from calling a function
     default: []
+  - name: i
+    type: int | None
+    description: Value of the current iteration in a loop
+    default: 0
+  - name: assertion
+    type: dict | None
+    description: The ith assertion from a list of assertions
+    default: {}
 
 
 empty_values:
@@ -55,7 +70,10 @@ empty_values:
 - '{}'
 
 
-operations: []
-# - process_assertion
-# - process_cast
-# - post_processong
+operations:
+- get_current_assertion
+- get_assertion_method
+- get_assertion_output_field
+- get_casted_assertion_output
+- verify_expected_output
+- update_assertions_and_increment_i
