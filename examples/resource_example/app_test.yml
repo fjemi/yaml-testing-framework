@@ -1,0 +1,47 @@
+# /examples/resources_example/app_test.yml
+
+globals:
+  # Define global resources for use throughout
+  # the YAML file
+  resources:
+  - /examples/resource_example/resource.py
+
+
+tests:
+- function: add
+  description: Return the result of adding two numbers from a dataclass
+  tests:
+  - cast_arguments:
+    # Dot-delimited route to object from the resource folder
+    - caster: test_resources.app.Data
+      field: data
+    arguments:
+      data:
+        a: 0
+        b: 0
+    assertions:
+    # Dot-delimited route to object from the resource folder
+    - method: test_resources.app.assert_type
+      expected: Data
+    # Dot-delimited route to object in relation to the location of app to test
+    # /examples/resource_example/resource.py
+    # /examples/resource_example/app.py
+    # We can access objects from this module by resource.[object_name]
+    - method: resource.assert_equals
+      field: result
+      expected: 0
+  - cast_arguments:
+    - caster: resource.Data
+      field: data
+    arguments:
+      data:
+        a: 1
+        b: 1
+    assertions:
+    # Dot-delimited route to object from the resource folder
+    - method: test_resources.app.assert_type
+      expected: Data
+    # Dot-delimited route to object in relation to the location of app to test
+    - method: resource.assert_equals
+      field: result
+      expected: 2

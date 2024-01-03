@@ -1,0 +1,21 @@
+# /examples/quick_example/add_test.yml
+
+tests:
+- function: add
+  description: Returns the result of adding two numbers
+  tests:
+  - description: Add two integers
+    arguments:
+      a: 1
+      b: 2
+    assertions:
+    - method: test_resources.assertions.equals
+      expected: 3
+  - description: Add two floats
+    arguments:
+      a: 1.5
+      b: 2.5
+    assertions:
+    # This test will fail as the result is 4, not 5.
+    - method: test_resources.assertions.equals
+      expected: 5
