@@ -134,15 +134,15 @@ format_id_short_keys:
 
 
 main_operations:
-- format_environment_refactor
-- format_function_refactor
-- format_resources_refactor
-- format_project_directory_refactor
-- format_module_refactor
-- format_yaml_refactor
-- format_patches_refactor
-- format_arguments_refactor
-- format_cast_arguments_refactor
-- format_description_refactor
-- format_id_short_refactor
-- format_id_long_refactor
+- format_environment
+- format_function
+- format_resources
+- format_project_directory
+- format_module
+- format_yaml
+- format_patches
+- format_arguments
+- format_cast_arguments
+- format_description
+- format_id_short
+- format_id_long

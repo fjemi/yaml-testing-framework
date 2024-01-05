@@ -1,7 +1,6 @@
 #!.venv/bin/python3
 # -*- coding: utf-8 -*-
 
-
 import dataclasses as dc
 from typing import Any, Callable
 
@@ -12,7 +11,8 @@ from utils import app as utils
 MODULE = __file__
 PARENT_MODULE = utils.get_parent_module(
   module=MODULE,
-  resources_folder_name='test_resources', )
+  resources_folder_name='test_resources',
+)
 
 CONFIG = get_config(module=PARENT_MODULE)
 LOCALS = locals()
@@ -139,7 +139,8 @@ def call_back_resource(data: Any) -> Any:
 
   data.call_back = {
     'method': hello_world,
-    'data': {}, }
+    'data': {},
+  }
   return data
 
 
@@ -170,7 +171,8 @@ def main_resource(
     sync_function=error_handler_(function=sync_function)(),
     async_function=error_handler_(function=async_function)(),
     sync_exception=error_handler_(function=sync_exception)(),
-    async_exception=error_handler_(function=async_exception)(), )
+    async_exception=error_handler_(function=async_exception)(),
+  )
 
 
 def task_resource(
@@ -182,7 +184,6 @@ def task_resource(
 
 def example() -> None:
   from invoke_pytest.app import main as invoke_pytest
-
 
   invoke_pytest(project_directory=PARENT_MODULE)
 

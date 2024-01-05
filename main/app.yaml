@@ -258,8 +258,7 @@ schema:
       A list of resource module locations.
       The modules are used for all tests
     default: []
-  # trunk-ignore(yamllint/quoted-strings)
-  - name: 'n'
+  - name: 'n'  # yamllint disable-line rule:quoted-strings
     type: int | None
     description: The number of items or iterations to perform
     default: null

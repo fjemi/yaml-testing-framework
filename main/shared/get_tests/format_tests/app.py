@@ -1,7 +1,6 @@
 #!.venv/bin/python3
 # -*- coding: utf-8 -*-
 
-
 import dataclasses as dc
 import os
 from types import ModuleType
@@ -36,9 +35,9 @@ async def pass_through(
 
 
 @error_handler()
-async def format_function_refactor(
+async def format_function(
   function: str | list | None = None,
-)-> dict:
+) -> dict:
   function_ = function
   kind = type(function_).__name__.lower()
 
@@ -54,23 +53,25 @@ async def format_function_refactor(
 
   return {
     'function': function_,
-    'function_name': function_, }
+    'function_name': function_,
+  }
 
 
 @error_handler()
-async def format_exclude_functions_refactor(
+async def format_exclude_functions(
   exclude_functions: str | list | None = None,
-)-> dict:
+) -> dict:
   return format_field_as_list(
     field='exclude_functions',
-    value=exclude_functions, )
+    value=exclude_functions,
+  )
 
 
 @error_handler()
 async def format_field_as_list(
   value: Any | None = None,
   field: str | None = None,
-)-> dict | None:
+) -> dict | None:
   kind = type(value).__name__.lower()
 
   if kind in ['list', 'tuple']:
@@ -84,30 +85,33 @@ async def format_field_as_list(
 
 
 @error_handler()
-async def format_exclude_modules_refactor(
+async def format_exclude_modules(
   exclude_modules: str | list | None = None,
-)-> dict:
+) -> dict:
   return format_field_as_list(
     field='exclude_modules',
-    value=exclude_modules, )
+    value=exclude_modules,
+  )
 
 
 @error_handler()
-async def format_resources_refactor(
+async def format_resources(
   resources: str | list | None = None,
 ) -> dict:
   return format_field_as_list(
     field='resources',
-    value=resources, )
+    value=resources,
+  )
 
 
 @error_handler()
-async def format_description_refactor(
+async def format_description(
   description: str | list | None = None,
 ) -> dict:
   return format_field_as_list(
     field='description',
-    value=description, )
+    value=description,
+  )
 
 
 @error_handler()
@@ -117,10 +121,7 @@ async def format_field_as_str(
 ) -> dict:
   kind = type(value).__name__.lower()
 
-  if kind == 'str':
-    pass
-
-  elif kind == 'list':
+  if kind == 'list':
     temp = ''
     for item in value:
       if item:
@@ -138,61 +139,63 @@ async def format_field_as_str(
 
 
 @error_handler()
-async def format_module_refactor(
+async def format_module(
   module: str | None = None,
 ) -> dict:
   return format_field_as_str(
     field='module',
-    value=module, )
+    value=module,
+  )
 
 
 @error_handler()
-async def format_yaml_refactor(
+async def format_yaml(
   yaml: dict | None = None,
 ) -> dict:
   return format_field_as_str(
     field='yaml',
-    value=yaml, )
+    value=yaml,
+  )
 
 
 @error_handler()
-async def format_arguments_refactor(
+async def format_arguments(
   arguments: list | dict | None = None,
 ) -> dict:
   return format_field_as_dict(
     field='arguments',
-    value=arguments, )
+    value=arguments,
+  )
 
 
 @error_handler()
-async def format_cast_arguments_refactor(
+async def format_cast_arguments(
   cast_arguments: list | dict | None = None,
 ) -> dict:
   return format_field_as_list(
     field='cast_arguments',
-    value=cast_arguments, )
+    value=cast_arguments,
+  )
 
 
 @error_handler()
-async def format_cast_output_refactor(
+async def format_cast_output(
   cast_output: list | dict | None,
 ) -> dict:
   return format_field_as_list(
     field='cast_output',
-    value=cast_output, )
+    value=cast_output,
+  )
 
 
 @error_handler()
 async def format_field_as_dict(
-  field: str | None = None,
+  field: dict | list | None = None,
   value: Any | None = None,
 ) -> dict:
   kind = type(value).__name__.lower()
 
-  if kind == 'dict':
-    pass
-
-  elif kind == 'list':
+  if kind == 'list':
     store = {}
 
     for item in value:
@@ -209,37 +212,36 @@ async def format_field_as_dict(
 
   return {field: value}
 
+
 @error_handler()
-
-
-async def format_environment_refactor(
+async def format_environment(
   environment: Any | None = None,
 ) -> dict:
-    return format_field_as_dict(
+  return format_field_as_dict(
     field='environment',
-    value=environment, )
+    value=environment,
+  )
 
 
 @error_handler()
-async def format_patches_refactor(
+async def format_patches(
   patches: Any | None = None,
 ) -> dict:
-  return format_field_as_list(
-    field='patches',
-    value=patches )
+  return format_field_as_list(field='patches', value=patches)
 
 
 @error_handler()
-async def format_assertions_refactor(
+async def format_assertions(
   assertions: Any | None = None,
 ) -> dict:
   return format_field_as_list(
     field='assertions',
-    value=assertions, )
+    value=assertions,
+  )
 
 
 @error_handler()
-async def format_id_long_refactor(
+async def format_id_long(
   description: str | List[str] | None = None,
   function: Callable | str | None = None,
   module: ModuleType | Callable | None = None,
@@ -249,11 +251,12 @@ async def format_id_long_refactor(
     'function': function,
     'module': module,
     'yaml': yaml,
-    'description': description, }
+    'description': description,
+  }
   return {'id_long': id_long}
 
 
-def format_project_directory_refactor(
+def format_project_directory(
   project_directory: str | None = None,
 ) -> dict:
   kind = type(project_directory).__name__.lower()
@@ -278,7 +281,7 @@ def format_project_directory_refactor(
 
 
 @error_handler()
-async def format_id_short_refactor(
+async def format_id_short(
   module_location: str | None = None,
   function: str | None = None,
   description: str | List[str] | None = None,
@@ -336,12 +339,14 @@ async def main(
 
   for i in n:
     tests[i] = utils.process_operations(
-    operations=CONFIG.main_operations,
-    functions=LOCALS,
-    data=tests[i], )
+      operations=CONFIG.main_operations,
+      functions=LOCALS,
+      data=tests[i],
+    )
     test = utils.process_arguments(
       locals=tests[i],
-      data_class=CONFIG.schema.Test, )
+      data_class=CONFIG.schema.Test,
+    )
     tests[i] = {'test': test}
 
   return {'tests': tests}
@@ -349,7 +354,6 @@ async def main(
 
 def example() -> None:
   from invoke_pytest.app import main as invoke_pytest
-
 
   invoke_pytest(project_directory=MODULE)
 

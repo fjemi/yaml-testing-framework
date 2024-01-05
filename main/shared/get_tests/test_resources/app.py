@@ -1,7 +1,6 @@
 #!.venv/bin/python3
 # -*- coding: utf-8 -*-
 
-
 import dataclasses as dc
 
 import utils.app as utils
@@ -10,7 +9,9 @@ import utils.app as utils
 MODULE = __file__
 PARENT_MODULE = utils.get_parent_module(
   module=MODULE,
-  resources_folder_name='test_resources', )
+  resources_folder_name='test_resources',
+)
+
 
 def tests_resource(tests: list) -> list:
   tests = tests or []
@@ -23,7 +24,6 @@ def tests_resource(tests: list) -> list:
 
 def example() -> None:
   from invoke_pytest.app import main as invoke_pytest
-
 
   invoke_pytest(project_directory=PARENT_MODULE)
 

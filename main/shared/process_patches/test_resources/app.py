@@ -1,7 +1,6 @@
 #!.venv/bin/python3
 # -*- coding: utf-8 -*-
 
-
 import dataclasses as dc
 
 # trunk-ignore(ruff/F401)
@@ -23,7 +22,8 @@ from get_config.app import main as get_config
 MODULE = __file__
 PARENT_MODULE = utils.get_parent_module(
   module=MODULE,
-  resources_folder_name='test_resources', )
+  resources_folder_name='test_resources',
+)
 
 CONFIG = get_config(module=PARENT_MODULE)
 LOCALS = locals()
@@ -70,7 +70,7 @@ def foo(
 
 def bar(
   # trunk-ignore(ruff/ARG001)
-  data: 'None' = None,
+  data: None = None,
 ) -> str:
   return bar
 
@@ -173,7 +173,6 @@ def side_effect_dict_example(
 def setup_001(object_parent: str) -> dict:
   from process_patches.test_resources import app_a
 
-
   if object_parent == 'resources.app':
     object_parent = app_a
   return object_parent
@@ -187,7 +186,6 @@ def setup_get_parent_from_object(
 ) -> ModuleType:
   from process_patches.test_resources import app_a
 
-
   return app_a
 
 
@@ -198,7 +196,6 @@ def setup_0(
   **kwargs,
 ) -> ModuleType:
   from process_patches.test_resources import app_a
-
 
   return app_a
 
@@ -267,7 +264,6 @@ def setup_module(
 ) -> ModuleType:
   from process_patches.test_resources import app_a
 
-
   return app_a
 
 
@@ -288,7 +284,6 @@ def module_resource(
 ) -> ModuleType:
   from process_patches.test_resources import app_a
 
-
   return app_a
 
 
@@ -297,7 +292,6 @@ def patch_object_in_dict_resource(
   patch: None = None,
 ) -> ModuleType:
   from process_patches.test_resources import app_a
-
 
   return app_a
 
@@ -315,7 +309,6 @@ def setup_patch_object_in_object(
   data: Any,
 ) -> Store:
   from process_patches.test_resources import app_a
-
 
   _ = data
   data = Store()
@@ -335,9 +328,7 @@ def main_resources(
 ) -> Any:
   from process_patches.test_resources import app_a
 
-
   return app_a
-
 
 
 def patch_object_in_object_resource(arguments: dict | None = None) -> dict:
@@ -350,7 +341,6 @@ def patch_object_in_object_resource(arguments: dict | None = None) -> dict:
     store[key] = function_(value)
 
   return store
-
 
 
 def get_parent_cast_output(output: list | None) -> list:
@@ -379,23 +369,36 @@ def patch_resource(patch: str | None = None) -> None | str:
 def parents_resource(parents: dict | str | None = None) -> Any:
   if isinstance(parents, dict):
     return CONFIG.schema.Parents(**parents)
-
   from process_patches.test_resources import app_a
 
   data = CONFIG.schema.Parents
 
   if parents == 'parents_length_three':
     return data(
-      values=[app_a, app_a.EXAMPLE_OBJECT, 'value', ],
-      types=['object', 'object', 'object'],
-      names=['', 'EXAMPLE_OBJECT', 'field'], )
+      values=[
+        app_a,
+        app_a.EXAMPLE_OBJECT,
+        'value',
+      ],
+      types=[
+        'object',
+        'object',
+        'object',
+      ],
+      names=[
+        '',
+        'EXAMPLE_OBJECT',
+        'field',
+      ],
+    )
 
   if parents == 'parents_length_one':
     from process_patches.test_resources import app_a
     return data(
       values=[app_a],
       types=['object'],
-      names=[''], )
+      names=[''],
+    )
 
 
 def callable_resource() -> None:
@@ -409,7 +412,6 @@ def value_resource(value: str | None = None) -> Any:
 
 def example() -> None:
   from invoke_pytest.app import main as invoke_pytest
-
 
   invoke_pytest(project_directory=PARENT_MODULE)
 

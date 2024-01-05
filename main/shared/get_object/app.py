@@ -1,7 +1,6 @@
 #!.venv/bin/python3
 # -*- coding: utf-8 -*-
 
-
 import dataclasses as dc
 from typing import Any
 
@@ -18,7 +17,8 @@ LOCALS = locals()
 
 KINDS = [
   'dict',
-  'object', ]
+  'object',
+]
 
 
 @dc.dataclass
@@ -40,14 +40,18 @@ async def format_parents(
   # trunk-ignore(ruff/ARG001)
   field_name: str,
 ) -> list[object]:
-  parent = data.get('parent', None, )
+  parent = data.get(
+    'parent',
+    None,
+  )
   type_ = 'dict' if hasattr(parent, 'keys') else 'object'
 
   data_class = CONFIG.schema.Parents
   return data_class(
     names=[''],
     values=[parent],
-    types=[type_], )
+    types=[type_],
+  )
 
 
 @error_handler()
@@ -76,10 +80,12 @@ async def get_data_class(data: dict) -> Data_Class:
     handler = f'format_{field.name}'
     handler = LOCALS.get(
       handler,
-      pass_through, )
+      pass_through,
+    )
     value = handler(
       data=data,
-      field_name=field.name, )
+      field_name=field.name,
+    )
     setattr(data_class, field.name, value)
   return data_class
 
@@ -108,7 +114,8 @@ async def get_object(data: Data_Class) -> Data_Class:
     handler = LOCALS[handler]
     value = handler(
       parent=data.parents.values[-1],
-      name=name, )
+      name=name,
+    )
     type_ = 'dict' if isinstance(value, dict) else 'object'
 
     data.parents.values.append(value)
@@ -118,7 +125,12 @@ async def get_object(data: Data_Class) -> Data_Class:
   return data
 
 
-UNDEFINED = ['', '.', 'None', None, ]
+UNDEFINED = [
+  '',
+  '.',
+  'None',
+  None,
+]
 
 
 @error_handler()
@@ -137,7 +149,6 @@ async def main(
 
 def example() -> None:
   from invoke_pytest.app import main as invoke_pytest
-
 
   invoke_pytest(project_directory=MODULE)
 

@@ -1,14 +1,13 @@
 #!.venv/bin/python3
 # -*- coding: utf-8 -*-
 
-
 import dataclasses as dc
 from types import ModuleType
 from typing import Any, Callable
 
-import yaml
 from get_config.app import main as get_config
 from utils import app as utils
+import yaml
 
 from assertions import app as assertions
 
@@ -16,7 +15,8 @@ from assertions import app as assertions
 MODULE = __file__
 PARENT_MODULE = utils.get_parent_module(
   module=MODULE,
-  resources_folder_name='test_resources', )
+  resources_folder_name='test_resources',
+)
 
 CONFIG = get_config(module=PARENT_MODULE)
 LOCALS = locals()
@@ -86,7 +86,8 @@ def verify_expected_output_resource(assertion: dict | None = None) -> dict:
   assertion = CONFIG.schema.Assertion(**assertion)
   assertion.method = method_resource(
     module=assertions,
-    method=assertion.method, )
+    method=assertion.method,
+  )
   return assertion
 
 
@@ -100,7 +101,6 @@ def main_cast_output(assertions: list | None = None) -> list | None:
 
 def example() -> None:
   from invoke_pytest.app import main as invoke_pytest
-
 
   invoke_pytest(project_directory=PARENT_MODULE)
 

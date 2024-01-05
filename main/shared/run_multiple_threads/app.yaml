@@ -62,11 +62,11 @@ format_kinds_handler:
 
 
 format_kinds:
--  nonetype
--  list
--  tuple
--  dict
--  any
+- nonetype
+- list
+- tuple
+- dict
+- any
 
 
 argument_kinds:

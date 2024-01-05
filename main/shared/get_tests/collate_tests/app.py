@@ -1,9 +1,6 @@
 #!.venv/bin/python3
 # -*- coding: utf-8 -*-
 
-
-from __future__ import annotations
-
 import dataclasses as dc
 import os
 
@@ -67,7 +64,8 @@ async def add_globals_to_test(
     parent = copy.deepcopy(parent)
     test[key] = combine_fields(
       parent=parent,
-      child=child, )
+      child=child,
+    )
 
   return test
 
@@ -93,7 +91,8 @@ async def get_tree_roots(
     'tree': tree,
     # 'roots': roots,
     'globals': None,
-    'tests': None, }
+    'tests': None,
+  }
 
 
 @error_handler()
@@ -129,7 +128,8 @@ async def get_child_branches(
       parent_value = parent[field]
       store[child_key][field] = combine_fields(
         child=child_value,
-        parent=parent_value, )
+        parent=parent_value,
+      )
 
   return store
 
@@ -159,7 +159,8 @@ async def get_tree_branches(
         visited=visited,
         branch_key=key,
         tree=tree,
-        store=store, )
+        store=store,
+      )
 
       if child_branches:
         branches_added = True
@@ -171,7 +172,8 @@ async def get_tree_branches(
   return {
     'roots': roots,
     'tree': tree,
-    'visited': None, }
+    'visited': None,
+  }
 
 
 @error_handler()
@@ -190,7 +192,8 @@ async def prune_tree_branches(
   return {
     'tests': tests,
     'tree': None,
-    'roots': None, }
+    'roots': None,
+  }
 
 
 @error_handler()
@@ -201,14 +204,14 @@ async def main(
   data = utils.process_operations(
     operations=CONFIG.operations,
     functions=LOCALS,
-    data=data, )
+    data=data,
+  )
   return {'tests': data.get('tests', [])}
 
 
 @error_handler()
 async def example() -> None:
   from invoke_pytest.app import main as invoke_pytest
-
 
   invoke_pytest(project_directory=MODULE)
 

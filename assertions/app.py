@@ -1,7 +1,6 @@
 #!.venv/bin/python3
 # -*- coding: utf-8 -*-
 
-
 import dataclasses as dc
 from typing import Any
 
@@ -27,7 +26,8 @@ def assert_exception(
   return {
     'passed': passed,
     'expected': expected,
-    'output': exception, }
+    'output': exception,
+  }
 
 
 def assert_equals(
@@ -38,7 +38,8 @@ def assert_equals(
   return {
     'passed': passed,
     'expected': expected,
-    'output': output, }
+    'output': output,
+  }
 
 
 def assert_length(
@@ -50,7 +51,8 @@ def assert_length(
   return {
     'passed': passed,
     'output': output,
-    'expected': expected, }
+    'expected': expected,
+  }
 
 
 def assert_type(
@@ -63,7 +65,8 @@ def assert_type(
     expected = [expected]
   output_types = [
     type(output).__name__,
-    str(output.__class__),]
+    str(output.__class__),
+  ]
   output = output_types
 
   for expected_type in expected:
@@ -79,7 +82,8 @@ def assert_type(
   return {
     'passed': passed,
     'output': output,
-    'expected': expected, }
+    'expected': expected,
+  }
 
 
 def assert_substring_in_string(
@@ -104,7 +108,8 @@ def assert_substring_in_string(
   return {
     'passed': passed,
     'output': store,
-    'expected': expected, }
+    'expected': expected,
+  }
 
 
 def assert_list_contains_item(
@@ -125,7 +130,8 @@ def assert_list_contains_item(
   return {
     'passed': passed,
     'expected': expected,
-    'output': output, }
+    'output': output,
+  }
 
 
 def assert_item_in_list(
@@ -148,7 +154,8 @@ def assert_item_in_list(
   return {
     'passed': passed,
     'expected': expected,
-    'output': output, }
+    'output': output,
+  }
 
 
 def assert_key_in_dict(
@@ -170,7 +177,8 @@ def assert_key_in_dict(
   return {
     'passed': passed,
     'output': output,
-    'expected': expected, }
+    'expected': expected,
+  }
 
 
 def assert_key_value_in_dict(
@@ -189,12 +197,12 @@ def assert_key_value_in_dict(
   return {
     'passed': passed,
     'output': output,
-    'expected': expected, }
+    'expected': expected,
+  }
 
 
 def example() -> None:
   from main.shared.invoke_pytest import app as invoke_pytest
-
 
   invoke_pytest.main(project_directory=MODULE)
 

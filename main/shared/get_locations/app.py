@@ -1,7 +1,6 @@
 #!.venv/bin/python3
 # -*- coding: utf-8 -*-
 
-
 import dataclasses as dc
 import os
 from typing import Any, List
@@ -23,12 +22,15 @@ class Data_Class:
   pass
 
 
-ITERABLE_KINDS = ['list', 'tuple', ]
+ITERABLE_KINDS = [
+  'list',
+  'tuple',
+]
 
 
 @error_handler()
 async def format_project_directory(
-  project_directory: str | None = None,
+  project_directory: str | list | None = None,
 ) -> dict:
   kind = type(project_directory).__name__.lower()
 
@@ -41,17 +43,20 @@ async def format_project_directory(
   if condition:
     project_directory = os.path.join(
       ROOT_DIRECTORY,
-      project_directory[1:], )
+      project_directory[1:],
+    )
 
   project_directory_type = [
     'file' * int(os.path.isfile(project_directory)),
-    'directory' * int(os.path.isdir(project_directory)), ]
+    'directory' * int(os.path.isdir(project_directory)),
+  ]
   project_directory_type = ''.join(project_directory_type)
 
   return {
     'project_directory_type': project_directory_type,
     'root_directory': ROOT_DIRECTORY,
-    'project_directory': project_directory, }
+    'project_directory': project_directory,
+  }
 
 
 @error_handler()
@@ -84,7 +89,7 @@ async def format_yaml_suffix(
   yaml_suffix: str | None = None,
 ) -> dict:
   if yaml_suffix in CONFIG.empty_values:
-   yaml_suffix = CONFIG.yaml_suffix
+    yaml_suffix = CONFIG.yaml_suffix
   return {'yaml_suffix': yaml_suffix}
 
 
@@ -106,7 +111,8 @@ async def check_location_for_matching_extensions(
 ) -> str:
   conditions = [
     not location,
-    not extensions, ]
+    not extensions,
+  ]
   if sum(conditions) != 0:
     return location
 
@@ -126,7 +132,8 @@ async def check_location_for_exclusion_patterns(
 ) -> str:
   conditions = [
     not location,
-    not patterns, ]
+    not patterns,
+  ]
   if sum(conditions) != 0:
     return location
 
@@ -144,7 +151,8 @@ async def check_location_for_matching_patterns(
 ) -> str:
   conditions = [
     not location,
-    not patterns, ]
+    not patterns,
+  ]
   if sum(conditions) != 0:
     return location
 
@@ -174,13 +182,16 @@ async def get_file_locations(
       location = os.path.join(path, name)
       location = check_location_for_matching_extensions(
         location=location,
-        extensions=match_extensions, )
+        extensions=match_extensions,
+      )
       location = check_location_for_exclusion_patterns(
         location=location,
-        patterns=exclude_patterns, )
+        patterns=exclude_patterns,
+      )
       location = check_location_for_matching_patterns(
         location=location,
-        patterns=match_patterns, )
+        patterns=match_patterns,
+      )
 
       if location in CONFIG.empty_values:
         continue
@@ -229,7 +240,8 @@ async def get_modules(
 ) -> dict:
   conditions = [
     project_directory_type == '',
-    project_directory_type == 'file', ]
+    project_directory_type == 'file',
+  ]
   if True in conditions:
     return {'locations': locations}
 
@@ -269,7 +281,8 @@ async def get_yamls(
       directory=project_directory,
       exclude_patterns=exclude_files,
       match_extensions=CONFIG.yaml_extensions,
-      file_type='yaml', )
+      file_type='yaml',
+    )
   elif project_directory_type == 'file':
     module = None
     yaml = None
@@ -282,18 +295,23 @@ async def get_yamls(
       for yaml_extension in CONFIG.yaml_extensions:
         location = project_directory.replace(
           CONFIG.module_extension,
-          f'{yaml_suffix}{yaml_extension}')
+          f'{yaml_suffix}{yaml_extension}'
+        )
         if os.path.exists(location):
           yaml = location
           break
     elif not condition:
       yaml = project_directory
       key = f'{yaml_suffix}{extension}'
-      module = yaml.replace(key, CONFIG.module_extension, )
+      module = yaml.replace(
+        key,
+        CONFIG.module_extension,
+      )
 
     locations = [{
       'module': module,
-      'yaml': yaml, }]
+      'yaml': yaml,
+    }]
     return {'locations': locations}
 
 
@@ -323,13 +341,15 @@ async def get_resources(
     directory = os.path.dirname(module)
     directory = os.path.join(
       directory,
-      resources_folder_name, )
+      resources_folder_name,
+    )
 
     store = get_file_locations(
       directory=directory,
       exclude_patterns=exclude_files,
       match_extensions=CONFIG.module_extension,
-      file_type='resources', )
+      file_type='resources',
+    )
     store = store.get('locations', [])
     locations[i]['resources'] = [*resources, *store]
 
@@ -348,18 +368,19 @@ async def main(
 ) -> dict:
   data = utils.process_arguments(
     locals=locals(),
-    data_class=CONFIG.schema.Locations, )
+    data_class=CONFIG.schema.Locations,
+  )
   data = utils.process_operations(
     functions=LOCALS,
     data=data,
-    operations=CONFIG.operations, )
+    operations=CONFIG.operations,
+  )
   return {'locations': data.locations}
 
 
 @error_handler()
 async def example() -> None:
   from invoke_pytest.app import main as invoke_pytest
-
 
   invoke_pytest(project_directory=MODULE)
 

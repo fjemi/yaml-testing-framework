@@ -1,9 +1,6 @@
 #!.venv/bin/python3
 # -*- coding: utf-8 -*-
 
-
-from __future__ import annotations
-
 import dataclasses as dc
 from typing import Any, List
 
@@ -24,7 +21,8 @@ async def combine_parent_any_and_child_any(
 ) -> List[Any]:
   return [
     parent,
-    child, ]
+    child,
+  ]
 
 
 @error_handler()
@@ -88,7 +86,8 @@ async def combine_parent_dict_and_child_dict(
 ) -> list:
   return [
     parent,
-    child, ]
+    child,
+  ]
 
 
 @error_handler()
@@ -106,7 +105,6 @@ async def combine_parent_dict_and_child_list(
   child: Any,
 ) -> List[Any]:
   return [parent, *child]
-
 
 
 @error_handler()
@@ -176,17 +174,18 @@ async def main(
 ) -> List[Any]:
   kinds = get_kinds(
     parent=parent,
-    child=child, )
+    child=child,
+  )
   handler = f'combine_parent_{kinds.parent}_and_child_{kinds.child}'
   handler = LOCALS[handler]
   return handler(
     parent=parent,
-    child=child, )
+    child=child,
+  )
 
 
 def example() -> None:
   from invoke_pytest.app import main as invoke_pytest
-
 
   invoke_pytest(project_directory=MODULE)
 

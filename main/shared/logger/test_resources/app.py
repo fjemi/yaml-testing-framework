@@ -1,7 +1,6 @@
 #!.venv/bin/python3
 # -*- coding: utf-8 -*-
 
-
 import dataclasses as dc
 import os
 import types
@@ -15,7 +14,8 @@ from logger.test_resources import module
 MODULE = __file__
 PARENT_MODULE = utils.get_parent_module(
   module=MODULE,
-  resources_folder_name='test_resources', )
+  resources_folder_name='test_resources',
+)
 
 SCHEMA = os.path.dirname(os.path.dirname(MODULE)) + 'app.yaml'
 CONFIG = get_config(module=PARENT_MODULE)
@@ -102,7 +102,6 @@ async def async_function() -> str:
 
 def example() -> None:
   from invoke_pytest.app import main as invoke_pytest
-
 
   invoke_pytest(project_directory=PARENT_MODULE)
 

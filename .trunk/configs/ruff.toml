@@ -11,11 +11,7 @@ respect-gitignore = true
 
 
 # Include file path's with matching patterns
-extend-exclude = [
-  '*test_resources/*.py',
-  '*ignore*/*.py',
-  '*_ignore*.py',
-]
+extend-exclude = ['*ignore*/*.py', '*.ignore*/*.py']
 
 # Enable codes
 select = [
@@ -37,6 +33,7 @@ fixable = [
 extend-ignore = [
   'PLW0602', # Using global but no assignment is done
   'PLW0603', # Using the global statement to update
+  'E101',    # Indentation
 ]
 
 

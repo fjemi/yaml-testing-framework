@@ -1,7 +1,6 @@
 #!.venv/bin/python3
 # -*- coding: utf-8 -*-
 
-
 import dataclasses as dc
 import types
 import typing
@@ -9,20 +8,15 @@ import typing
 import pytest
 import utils.app as utils
 
-from main.test_resources.app import (
-  # trunk-ignore(ruff/F401)
-  example_a,
-  # trunk-ignore(ruff/F401)
-  example_b,
-  # trunk-ignore(ruff/F401)
-  module,
-)
+# trunk-ignore(ruff/F401)
+from main.test_resources.app import example_a, example_b, module
 
 
 MODULE = __file__
 PARENT_MODULE = utils.get_parent_module(
   resources_folder_name='test_resources',
-  module=MODULE, )
+  module=MODULE,
+)
 
 LOCALS = locals()
 
@@ -100,7 +94,8 @@ def handle_id_resource(data: dict | None = None) -> dict:
 
   data.update({
     'module': module,
-    'function': function_, })
+    'function': function_,
+  })
   return data
 
 
@@ -115,16 +110,14 @@ def get_function_output_resource(data: dict | None = None) -> dict:
   return data
 
 
-def main_resource(tests: list) -> list:
+def main_resource(tests: list) -> list | None:
   n = range(len(tests))
   for i in n:
-    tests[i] = dc.asdict(tests[i])
-  return tests
+    return dc.asdict(tests[i])
 
 
 def example() -> None:
   from invoke_pytest.app import main as invoke_pytest
-
 
   invoke_pytest(project_directory=PARENT_MODULE)
 

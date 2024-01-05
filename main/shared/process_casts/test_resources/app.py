@@ -1,7 +1,6 @@
 # #!.venv/bin/python3
 # # -*- coding: utf-8 -*-
 
-
 import dataclasses as dc
 from types import ModuleType
 from typing import Any, Callable
@@ -43,7 +42,9 @@ def add_dataclass(data: Any) -> Any:
 
 OBJECT_MAP = {
   'dataclass': Test_Data,
-  'dict_dataclass': {'dataclass': Test_Data()},
+  'dict_dataclass': {
+    'dataclass': Test_Data()
+  },
   'add': add,
   'add_list': add_list,
   'add_dataclass': add_dataclass,
@@ -53,7 +54,8 @@ OBJECT_MAP = {
   'float': float,
   'tuple': (),
   'dataclasses.asdict': dc.asdict,
-  'None': None, }
+  'None': None,
+}
 
 
 def function_one_parameter(
@@ -123,10 +125,10 @@ def example() -> None:
   from invoke_pytest.app import main as invoke_pytest
   from utils import app as utils
 
-
   parent_module = utils.get_parent_module(
     resources_folder_name='test_resources',
-    module=MODULE, )
+    module=MODULE,
+  )
   invoke_pytest(project_directory=parent_module)
 
 

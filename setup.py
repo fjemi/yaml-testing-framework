@@ -1,13 +1,12 @@
 #!.venv/bin/python3
 # -*- coding: utf-8 -*-
 
-
 import dataclasses as dc
 import os
 from typing import Any, List
 
-import yaml as py_yaml
 from setuptools import setup
+import yaml as py_yaml
 
 
 ROOT_DIRECTORY = os.path.dirname(__file__)
@@ -47,10 +46,13 @@ def get_content_from_file(location: str | None = None) -> Any:
     encoding='utf-8',
   ) as file:
     content = file.read()
-    return content
+
+  return content
 
 
-def get_contents(directory: str | None = None,) -> dict:
+def get_contents(
+  directory: str | None = None,
+) -> dict:
   store = {'directory': directory}
 
   if not directory:

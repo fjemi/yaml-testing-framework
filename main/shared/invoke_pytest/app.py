@@ -1,23 +1,19 @@
 #!.venv/bin/python3
 # -*- coding: utf-8 -*-
 
-
-from __future__ import annotations
-
 from typing import List
 
-import pytest
-import yaml
 from error_handler.app import main as error_handler
 from get_config.app import main as get_config
 from logger.app import main as logger
+import pytest
+import yaml
 
 from main.app import main as plugin
 
 
 MODULE = __file__
 CONFIG = get_config(module=MODULE)
-
 LOCALS = locals()
 
 
@@ -32,10 +28,12 @@ async def run_plugin(
     exclude_files=exclude_files,
     project_directory=project_directory,
     yaml_suffix=yaml_suffix,
-    resources_folder_name=resources_folder_name, )
+    resources_folder_name=resources_folder_name,
+  )
   await logger(
-    data=data,
-    standard_output=True, )
+    data_=data,
+    standard_output=True,
+  )
   return 1
 
 
@@ -82,10 +80,12 @@ async def main(
     exclude_files=exclude_files,
     project_directory=project_directory,
     yaml_suffix=yaml_suffix,
-    resources_folder_name=resources_folder_name, )
+    resources_folder_name=resources_folder_name,
+  )
 
 
 if __name__ == '__main__':
   main(
     invoke='pytest',
-    project_directory='.', )
+    project_directory='.',
+  )

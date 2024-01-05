@@ -1,7 +1,6 @@
 # #!.venv/bin/python3
 # # -*- coding: utf-8 -*-
 
-
 import dataclasses as dc
 from typing import Any, Callable, Iterable
 
@@ -81,6 +80,7 @@ def coroutine_resource(
   # trunk-ignore(ruff/ARG001)
   task: Any | None = None,
 ) -> Callable:
+
   async def entrypoint() -> str:
     return 'coroutine_output'
 

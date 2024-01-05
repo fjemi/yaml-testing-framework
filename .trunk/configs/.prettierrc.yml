@@ -2,7 +2,7 @@ tabWidth: 2
 useTabs: false
 singleQoute: true
 maxLineLength: 80
-indentStyle: spaces
+indentStyle: space
 endOfLine: lf
 charSet: utf-8
 insertFinalNewline: true

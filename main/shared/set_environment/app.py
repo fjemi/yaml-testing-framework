@@ -1,7 +1,6 @@
 #!.venv/bin/python3
 # -*- coding: utf-8 -*-
 
-
 import dataclasses as dc
 from types import ModuleType
 
@@ -35,20 +34,25 @@ def main(
   config_environment = getattr(
     module.CONFIG,
     'environment',
-    Data_Class(), )
+    Data_Class(),
+  )
 
   for key, value in environment.items():
     setattr(config_environment, key, value)
-  setattr(module.CONFIG, 'environment', config_environment, )
+  setattr(
+    module.CONFIG,
+    'environment',
+    config_environment,
+  )
 
   return {
     'module': module,
-    'environment': None, }
+    'environment': None,
+  }
 
 
 def example() -> None:
   from invoke_pytest.app import main as invoke_pytest
-
 
   invoke_pytest(project_directory=MODULE)
 

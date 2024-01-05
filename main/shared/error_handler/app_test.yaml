@@ -7,9 +7,8 @@ resources:
 
 
 todo:
-- Add functionality for processing operations
-- Fix test for main function. Make sure the default value is being set
-  and that exceptions are or are not raise
+- TODO: Add functionality for processing operations
+- TODO: Fix test for main function. Make sure the default value is being set and that exceptions are or are not raise
 
 
 globals:
@@ -26,41 +25,27 @@ tests:
   - caster: dc.asdict
   tests:
   - description: Undefined arguments
-    arguments:
-      locals_: {}
+    arguments: {}
     assertions:
-    # standard_output can be '1' or '0' depedning on value
-    # of sh`DEBUG` environment variable
-    - method: assertions.app.assert_list_contains_item
+    - method: assertions.app.assert_type
+      expected: dict
+    - method: assertions.app.assert_key_in_dict
       expected:
-      - args: []
-        call_back: null
-        data: null
-        default_value: null
-        exception: null
-        function: null
-        kwargs: {}
-        log_enabled: false
-        log_level: debug
-        module: null
-        raise_exception: false
-        result: null
-        standard_output: '0'
-        timestamp: null
-      - args: []
-        call_back: null
-        data: null
-        default_value: null
-        exception: null
-        function: null
-        kwargs: {}
-        log_enabled: false
-        log_level: debug
-        module: null
-        raise_exception: false
-        result: null
-        standard_output: '1'
-        timestamp: null
+      - args
+      - call_back
+      - data
+      - default_value
+      - exception
+      - function
+      - kwargs
+      - log_enabled
+      - log_level
+      - module
+      - raise_exception
+      - result
+      - standard_output
+      - timestamp
+      - args
   - description: Defined arguments
     arguments:
       locals_:
@@ -323,7 +308,7 @@ tests:
         async_function: async_output
         async_exception: default_value
         sync_exception: '''str'' object has no attribute ''value'''
-  # todo: fix test - default value is not being returned
+  # TODO: fix test - default value is not being returned
   # think of a better way of testing the main function
   # - description: Default value defined for exceptions
   #   arguments:

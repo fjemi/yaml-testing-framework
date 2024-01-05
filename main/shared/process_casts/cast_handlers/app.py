@@ -1,7 +1,6 @@
 #!.venv/bin/python3
 # -*- coding: utf-8 -*-
 
-
 import dataclasses as dc
 from typing import Any, Callable
 
@@ -97,7 +96,10 @@ async def instatiate_caster(
   return caster()
 
 
-DATACLASS_TO_DICT_NAMES = ['asdict', 'dict', ]
+DATACLASS_TO_DICT_NAMES = [
+  'asdict',
+  'dict',
+]
 
 
 @error_handler()
@@ -129,7 +131,6 @@ async def main(handler: str | None = None) -> Callable:
 @error_handler()
 def example() -> None:
   from invoke_pytest.app import main as invoke_pytest
-
 
   invoke_pytest(project_directory=MODULE)
 

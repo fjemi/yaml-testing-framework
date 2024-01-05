@@ -1,7 +1,6 @@
 #!.venv/bin/python3
 # -*- coding: utf-8 -*-
 
-
 import asyncio
 import sys
 
@@ -20,9 +19,10 @@ def print_hello_world(
 ) -> str:
   data = "Hello World"
   asyncio.run(logger(
-    data=data,
-    standard_output=True, ))
+    data_=data,
+    standard_output=True,
+  ))
 
 
-def get__pool(_pool = None) -> dict:
+def get__pool(_pool=None) -> dict:
   return {THIS_MODULE_LOCATION: sys.modules[THIS_MODULE_NAME]}

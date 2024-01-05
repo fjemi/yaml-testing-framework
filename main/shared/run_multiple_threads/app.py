@@ -1,7 +1,6 @@
 #!.venv/bin/python3
 # -*- coding: utf-8 -*-
 
-
 import asyncio
 import dataclasses as dc
 import inspect
@@ -29,9 +28,7 @@ class Data_Class:
 
 
 @error_handler()
-async def get_task_from_event_loop(
-  task: Any | None = None
-) -> Any:
+async def get_task_from_event_loop(task: Any | None = None) -> Any:
   condition = inspect.iscoroutine(task)
   if condition is False:
     return task
@@ -82,13 +79,15 @@ async def format_argument(
 
 
 def update_store(result_key: str):
+
   def decorator(function):
+
     def entrypoint_wrapper(
       # trunk-ignore(ruff/ARG001)
       *args,
       # trunk-ignore(ruff/ARG001)
-      **kwargs
-  ) -> Callable:
+      **kwargs,
+    ) -> Callable:
       global STORE
 
       result = function()
@@ -100,7 +99,9 @@ def update_store(result_key: str):
         STORE[result_key] = [result]
 
       return result
+
     return entrypoint_wrapper
+
   return decorator
 
 
@@ -128,7 +129,8 @@ async def format_target_arguments(
   return {
     'args': None,
     'kwargs': None,
-    'arguments': arguments, }
+    'arguments': arguments,
+  }
 
 
 @error_handler()
@@ -167,7 +169,8 @@ async def call_sync_target_with_unpacked_argument(
 
   return {
     'exception': exception,
-    'output': output, }
+    'output': output,
+  }
 
 
 @error_handler()
@@ -206,8 +209,9 @@ async def call_async_target_with_unpacked_argument(
     exception = e
 
   return {
-    'exception':  get_task_from_event_loop(task=exception),
-    'output':  get_task_from_event_loop(task=output), }
+    'exception': get_task_from_event_loop(task=exception),
+    'output': get_task_from_event_loop(task=output),
+  }
 
 
 @error_handler()
@@ -223,12 +227,14 @@ async def get_entrypoint_for_sync_target(
     data = call_sync_target_with_unpacked_argument(
       target=target,
       argument=argument,
-      kind=kind, )
+      kind=kind,
+    )
     return call_sync_target_with_packed_argument(
       target=target,
       exception=data.get('exception'),
       output=data.get('output'),
-      argument=argument, )
+      argument=argument,
+    )
 
   return entrypoint
 
@@ -246,12 +252,14 @@ async def get_entrypoint_for_async_target(
     data = call_async_target_with_unpacked_argument(
       target=target,
       argument=argument,
-      kind=kind, )
+      kind=kind,
+    )
     return call_async_target_with_packed_argument(
       target=target,
       exception=data.get('exception'),
       output=data.get('output'),
-      argument=argument, )
+      argument=argument,
+    )
 
   return entrypoint
 
@@ -259,7 +267,7 @@ async def get_entrypoint_for_async_target(
 @error_handler()
 async def get_entrypoint_handler(
   target: Callable,
-  argument: dict | tuple| list | None = None,
+  argument: dict | tuple | list | None = None,
   result_key: str | None = None,
 ) -> Callable:
   kind = 'args'
@@ -276,7 +284,8 @@ async def get_entrypoint_handler(
     target=target,
     argument=argument,
     result_key=result_key,
-    kind=kind, )
+    kind=kind,
+  )
 
 
 @error_handler()
@@ -292,12 +301,13 @@ async def set_target_entrypoints_for_threads(
     entrypoint = get_entrypoint_handler(
       target=target,
       result_key=result_key,
-      argument=argument, )
+      argument=argument,
+    )
     entrypoints.append(entrypoint)
 
   kind = type(module).__name__.lower()
   if kind == 'module':
-      module = inspect.getmodule(target)
+    module = inspect.getmodule(target)
   elif kind == 'list':
     module = module[0]
   elif kind == 'nonetype':
@@ -306,7 +316,8 @@ async def set_target_entrypoints_for_threads(
   return {
     'module': module,
     'entrypoints': entrypoints,
-    'arguments': None, }
+    'arguments': None,
+  }
 
 
 @error_handler()
@@ -330,7 +341,8 @@ async def get_threads(entrypoints: list | None = None) -> dict:
 
   return {
     'entrypoints': None,
-    'threads': threads, }
+    'threads': threads,
+  }
 
 
 @error_handler()
@@ -376,18 +388,19 @@ async def main(
 
   data = utils.process_arguments(
     data_class=CONFIG.schema.Data,
-    locals=locals(), )
+    locals=locals(),
+  )
   data = utils.process_operations(
     operations=CONFIG.operations,
     functions=LOCALS,
-    data=data, )
+    data=data,
+  )
 
   return STORE.get(result_key, None)
 
 
 def example() -> None:
   from invoke_pytest.app import main as invoke_pytest
-
 
   invoke_pytest(project_directory=MODULE)
 

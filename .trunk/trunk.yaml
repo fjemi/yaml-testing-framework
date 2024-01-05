@@ -3,42 +3,50 @@ cli:
   version: 1.18.1
 plugins:
   sources:
-    - id: trunk
-      ref: v1.4.1
-      uri: https://github.com/trunk-io/plugins
+  - id: trunk
+    ref: v1.4.1
+    uri: https://github.com/trunk-io/plugins
 lint:
   enabled:
-    - shellcheck@0.9.0
-    - shfmt@3.6.0
-    - bandit@1.7.6
-    - checkov@3.1.46
-    - git-diff-check
-    - isort@5.13.2
-    - markdownlint@0.38.0
-    - osv-scanner@1.5.0
-    - oxipng@9.0.0
-    - prettier@3.1.1
-    - ruff@0.1.9
-    - taplo@0.8.1
-    - trivy@0.48.1
-    - trufflehog@3.63.7
-    - yamllint@1.33.0
-    - yapf@0.40.2
+  - hadolint@2.12.0
+  - terrascan@1.18.11
+  - shellcheck@0.9.0
+  - shfmt@3.6.0
+  - bandit@1.7.6
+  - checkov@3.1.51
+  - git-diff-check
+  # - isort@5.13.2
+  - markdownlint@0.38.0
+  - osv-scanner@1.5.0
+  - oxipng@9.0.0
+  - prettier@3.1.1
+  - ruff@0.1.11
+  - taplo@0.8.1
+  - trivy@0.48.2
+  - trufflehog@3.63.7
+  - yamllint@1.33.0
+  - yapf@0.40.2
   disabled:
-    - black
-  # ignore:
-    # - linters: [ALL]
-    #   paths:
-    #     - "**/test_resources/**"
+  - black
+  - isort
+  # - yapf
+  ignore:
+  - linters: [ALL]
+    paths:
+    - "**/.logs/**"
+    - "**/.ignore/**"
+    - "**/ignore/**"
+    - "**/.htmlcov/**"
+    - "**/.data/**"
 runtimes:
   enabled:
-    - go@1.21.0
-    - node@18.12.1
-    - python@3.10.8
+  - go@1.21.0
+  - node@18.12.1
+  - python@3.10.8
 actions:
   disabled:
-    - trunk-announce
-    - trunk-check-pre-push
-    - trunk-fmt-pre-commit
+  - trunk-announce
+  - trunk-check-pre-push
+  - trunk-fmt-pre-commit
   enabled:
-    - trunk-upgrade-available
+  - trunk-upgrade-available

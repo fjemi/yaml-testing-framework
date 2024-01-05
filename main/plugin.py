@@ -1,7 +1,6 @@
 #!.venv/bin/python3
 # -*- coding: utf-8 -*-
 
-
 import dataclasses as dc
 import os
 from types import ModuleType
@@ -23,7 +22,8 @@ CONFIG.root_paths = [
   f'.{os.sep}',
   f'{os.sep}{os.sep}',
   f'.{os.sep}',
-  *CONFIG.root_paths, ]
+  *CONFIG.root_paths,
+]
 LOCALS = locals()
 
 
@@ -101,11 +101,13 @@ async def add_args_and_ini_options_to_parser(
   for argument in CONFIG.options:
     parser.addoption(
       f"--{argument.get('args')}",
-      **argument.get('options'), )
+      **argument.get('options'),
+    )
     ini_options = {'help': argument.get('options').get('help')}
     parser.addini(
       argument.get('args'),
-      **ini_options, )
+      **ini_options,
+    )
   return parser
 
 
@@ -147,7 +149,6 @@ async def set_node_ids(item) -> str:
   if condition:
     return item
 
-
   test = item.callspec.params.get('test', None)
   kind = type(test).__name__.lower()
   if kind in CONFIG.null_types:
@@ -185,7 +186,6 @@ def format_report_nodeid(nodeid: str) -> str:
 @error_handler()
 async def example() -> None:
   from invoke_pytest.app import main as invoke_pytest
-
 
   invoke_pytest(project_directory=MODULE)
 

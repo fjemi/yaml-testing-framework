@@ -1,9 +1,6 @@
 #!.venv/bin/python3
 # -*- coding: utf-8 -*-
 
-
-from __future__ import annotations
-
 import os
 import time
 from types import ModuleType
@@ -25,7 +22,7 @@ from process_assertions.app import main as process_assertions
 from process_casts import app as process_casts
 from process_casts.app import (
   # trunk-ignore(ruff/F401)
-  process_casts_for_arguments,
+  process_casts_for_arguments,  #
   # trunk-ignore(ruff/F401)
   process_casts_for_output,
 )
@@ -59,7 +56,8 @@ async def handle_module(
   module = get_module(
     location=module,
     name=module_location,
-    pool=False, )
+    pool=False,
+  )
 
   if module is None:
     module = ''
@@ -80,7 +78,8 @@ async def handle_resources(
     conditions = [
       os.path.exists(location),
       extension in CONFIG.module_extensions,
-      location not in visited, ]
+      location not in visited,
+    ]
     if False in conditions:
       continue
 
@@ -88,18 +87,17 @@ async def handle_resources(
 
     resource = get_module(
       location=location,
-      pool=False, )
+      pool=False,
+    )
 
     routes = {
       'module': module.__file__,
-      'resource': resource.__file__, }
+      'resource': resource.__file__,
+    }
     for key, value in routes.items():
-      # trunk-ignore(ruff/PLW2901)
-      value = value.replace(f'{os.sep}{os.sep}', os.sep)
-      # trunk-ignore(ruff/PLW2901)
-      value = value.split(os.sep)
-      routes[key] = value
-
+      value_ = value.replace(f'{os.sep}{os.sep}', os.sep)
+      value_ = value_.split(os.sep)
+      routes[key] = value_
     # Get the tree or dot-delimited path to the resource
     tree = CONFIG.schema.Tree(**routes)
 
@@ -114,7 +112,6 @@ async def handle_resources(
         start = i
         break
     tree = tree.resource[start:]
-
     # Add resource to module
     parent = module
     for path in tree[:-1]:
@@ -122,14 +119,16 @@ async def handle_resources(
         setattr(
           parent,
           path,
-          Data_Class(), )
+          Data_Class(),
+        )
       parent = getattr(parent, path)
     name = tree[-1].replace('.py', '')
     setattr(parent, name, resource)
 
   return {
     'resources': None,
-    'module': module, }
+    'module': module,
+  }
 
 
 @error_handler()
@@ -151,7 +150,8 @@ async def get_function_output(
 
   return {
     'exception': exception,
-    'output': output, }
+    'output': output,
+  }
 
 
 @error_handler()
@@ -169,10 +169,14 @@ async def get_function(
     module_location = ''
 
   data = [{'function': function_, 'module': module_location}]
-  task = logger(data=data, standard_output=True)
+  task = logger(data_=data, standard_output=True)
   utils.get_task_from_event_loop(task=task)
 
-  function_ = getattr(module, function_, None, )
+  function_ = getattr(
+    module,
+    function_,
+    None,
+  )
   return {'function': function_}
 
 
@@ -186,7 +190,7 @@ async def handle_id(
   kind = type(function_).__name__.lower()
   if kind == 'function':
     function_ = function_.__name__
-  function_ = function_ or  ''
+  function_ = function_ or ''
 
   kind = type(module).__name__.lower()
   if kind == 'module':
@@ -202,7 +206,8 @@ async def handle_id(
   return {
     'module': module,
     'function': function_,
-    'description': description, }
+    'description': description,
+  }
 
 
 @error_handler()
@@ -212,7 +217,8 @@ async def run_test_for_function(
   return utils.process_operations(
     operations=CONFIG.function_operations,
     functions=LOCALS,
-    data=test, )
+    data=test,
+  )
 
 
 @error_handler()
@@ -237,7 +243,8 @@ def format_timestamp(timestamp: int | List[int] | None = None) -> dict:
   if kind == 'int':
     timestamp = [
       timestamp,
-      int(time.time()), ]
+      int(time.time()),
+    ]
   elif kind == 'list':
     timestamp.append(int(time.time()))
   elif kind == 'nonetype':
@@ -262,11 +269,13 @@ async def main(
 
   data = utils.process_arguments(
     data_class=CONFIG.schema.Data,
-    locals=locals(), )
+    locals=locals(),
+  )
   data = utils.process_operations(
     operations=CONFIG.main_operations,
     functions=LOCALS,
-    data=data, )
+    data=data,
+  )
 
   store = []
 
@@ -276,7 +285,11 @@ async def main(
     data.tests = data.tests or []
     data.tests = run_multiple_threads(
       target=run_test_handler,
-      kwargs=data.tests.get('tests', []), )
+      kwargs=data.tests.get(
+        'tests',
+        [],
+      ),
+    )
     data.tests = data.tests or []
     store.extend(data.tests)
 
@@ -286,7 +299,6 @@ async def main(
 @error_handler()
 async def example() -> None:
   from invoke_pytest.app import main as invoke_pytest
-
 
   invoke_pytest(project_directory=MODULE)
 

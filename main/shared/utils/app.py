@@ -1,9 +1,6 @@
 #!.venv/bin/python3
 # -*- coding: utf-8 -*-
 
-
-from __future__ import annotations
-
 import asyncio
 import dataclasses as dc
 import inspect
@@ -43,11 +40,17 @@ async def process_arguments(
   for key, value in locals.items():
     conditions = [
       value is None,
-      hasattr(data_class, key) is False, ]
+      hasattr(data_class,
+              key) is False,
+    ]
     if True in conditions:
       continue
 
-    setattr(data_class, key, value, )
+    setattr(
+      data_class,
+      key,
+      value,
+    )
     locals[key] = None
 
   return data_class
@@ -68,9 +71,7 @@ async def set_field_value(
 
 
 @error_handler()
-async def get_task_from_event_loop(
-  task: Any | None = None
-) -> Any:
+async def get_task_from_event_loop(task: Any | None = None) -> Any:
   condition = inspect.iscoroutine(task)
   if not condition:
     return task
@@ -115,7 +116,8 @@ async def process_operations(
     for operation in operations.names:
       operations.function = functions[operation]
       operations.parameters = get_function_parameters(
-        function=operations.function, )
+        function=operations.function,
+      )
 
       operations.fields = {}
       for parameter in operations.parameters:
@@ -130,7 +132,8 @@ async def process_operations(
           data=data,
           field=field,
           value=value,
-          kind=kind, )
+          kind=kind,
+        )
 
   return data
 
@@ -150,7 +153,6 @@ async def get_parent_module(
 
 def example() -> None:
   from invoke_pytest.app import main as invoke_pytest
-
 
   invoke_pytest(project_directory=MODULE)
 

@@ -18,7 +18,8 @@ def example() -> None:
 
   invoke_pytest(
     invoke='pytest',
-    project_directory=MODULE, )
+    project_directory=MODULE,
+  )
 
 
 if __name__ == '__main__':

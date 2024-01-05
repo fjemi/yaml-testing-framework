@@ -1,18 +1,13 @@
 #!.venv/bin/python3
 # -*- coding: utf-8 -*-
 
-
-from __future__ import annotations
-
 import dataclasses as dc
 import importlib
-import importlib.util  # as importlib_util
+import importlib.util
 import os
 from types import ModuleType
 
-from error_handler.app import (
-  main as error_handler,
-)
+from error_handler.app import main as error_handler
 from get_config.app import main as get_config
 from utils import app as utils
 
@@ -46,18 +41,13 @@ async def format_module_name(
 
 
 @error_handler()
-async def get_module_from_pool(
-  location: str,
-  pool: bool
-) -> dict:
+async def get_module_from_pool(location: str, pool: bool) -> dict:
   module = None
 
   if pool:
     module = POOL.get(location, None)
 
   return {'module': module}
-
-
 
 
 @error_handler()
@@ -77,13 +67,16 @@ async def get_module_from_location(
 
   spec = importlib.util.spec_from_file_location(
     name=name,
-    location=location, )
+    location=location,
+  )
   module = importlib.util.module_from_spec(spec)
 
   try:
     spec.loader.exec_module(module)
-  finally:
-    return {'module': module}
+  except Exception as e:
+    _ = e
+
+  return {'module': module}
 
 
 @error_handler()
@@ -94,8 +87,9 @@ async def add_module_to_pool(
 ) -> dict:
   conditions = [
     pool in CONFIG.empty_values,
-    module in CONFIG.empty_values, ]
-  if True not  in conditions:
+    module in CONFIG.empty_values,
+  ]
+  if True not in conditions:
     global POOL
     POOL[location] = module
   return {}
@@ -109,18 +103,19 @@ async def main(
 ) -> ModuleType | None:
   data = utils.process_arguments(
     data_class=CONFIG.schema.Data,
-    locals=locals(), )
+    locals=locals(),
+  )
   data = utils.process_operations(
     functions=LOCALS,
     operations=CONFIG.operations,
-    data=data, )
+    data=data,
+  )
   return data.module
 
 
 @error_handler()
 def example() -> None:
   from invoke_pytest.app import main as invoke_pytest
-
 
   invoke_pytest(project_directory=MODULE)
 

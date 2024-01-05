@@ -1,7 +1,6 @@
 #!.venv/bin/python3
 # -*- coding: utf-8 -*-
 
-
 import dataclasses as dc
 from typing import Any
 
@@ -22,4 +21,3 @@ def get_resources(
     return int
   if 'dataclass' in [caster, object]:
     return Test_Data
-

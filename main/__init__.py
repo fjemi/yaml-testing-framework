@@ -1,7 +1,6 @@
 #!.venv/bin/python3
 # -*- coding: utf-8 -*-
 
-
 import nest_asyncio
 
 
@@ -21,7 +20,6 @@ allow_nested_event_loops()
 
 def example() -> None:
   from invoke_pytest.app import main as invoke_pytest
-
 
   invoke_pytest(module=MODULE)
 

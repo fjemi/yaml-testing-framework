@@ -1,9 +1,6 @@
 #!.venv/bin/python3
 # -*- coding: utf-8 -*-
 
-
-from __future__ import annotations
-
 import asyncio
 import dataclasses as dc
 import inspect
@@ -30,13 +27,12 @@ class Data_Class:
   pass
 
 
-def get_task_from_event_loop(
-  task: Any | None = None
-) -> Any:
+def get_task_from_event_loop(task: Any | None = None) -> Any:
   conditions = [
     inspect.isawaitable(object=task),
     inspect.iscoroutine(object=task),
-    inspect.iscoroutine(object=task), ]
+    inspect.iscoroutine(object=task),
+  ]
   if True in conditions:
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
@@ -62,7 +58,8 @@ def set_default(object: Any) -> Any:
   if isinstance(object, Exception):
     return {
       'exception': object.__class__.__name__,
-      'description': str(object), }
+      'description': str(object),
+    }
 
   if kind == 'Test':
     if type(object.module).__name__.lower() == 'module':
@@ -89,7 +86,9 @@ async def process_arguments(
   for key, value in locals_.items():
     conditions = [
       value is None,
-      hasattr(data, key) is False, ]
+      hasattr(data,
+              key) is False,
+    ]
     if True in conditions:
       continue
     setattr(data, key, value)
@@ -109,7 +108,9 @@ async def format_location(
   location = f'{level}.log'
   location = os.path.join(
     directory,
-    location, )
+    location,
+  )
+
   return {'location': location}
 
 
@@ -131,7 +132,8 @@ async def convert_data_to_json(data: Data_Class) -> dict:
   try:
     data = json.dumps(
       data,
-      default=set_default, )
+      default=set_default,
+    )
   except Exception as e:
     _ = e
     data = f'{data}\n'
@@ -143,11 +145,13 @@ async def convert_data_to_yaml(data: Data_Class) -> dict:
   try:
     data = json.dumps(
       data,
-      default=set_default, )
+      default=set_default,
+    )
     data = yaml.safe_load(data)
     data = yaml.dump(
       data,
-      default_flow_style=False, )
+      default_flow_style=False,
+    )
   except Exception as e:
     _ = e
     data = str(data)
@@ -167,7 +171,8 @@ async def convert_data(
 LOGGING_LEVELS = {
   'debug': logging.DEBUG,
   'info': logging.INFO,
-  'exception': logging.ERROR, }
+  'exception': logging.ERROR,
+}
 
 
 async def format_level(
@@ -181,7 +186,8 @@ async def format_level(
   level = get_value(
     LOGGING_LEVELS,
     level,
-    logging.DEBUG, )
+    logging.DEBUG,
+  )
 
   return {'level': level}
 
@@ -212,7 +218,8 @@ async def log_data(
   if location not in LOGGERS:
     LOGGERS[location] = await create_logger(
       location=location,
-      level=level, )
+      level=level,
+    )
   logger = LOGGERS[location]
   logger.info(data)
 
@@ -232,7 +239,8 @@ async def output_to_terminal(
 
   conditions = [
     debug not in CONFIG.empty_values,
-    standard_output not in CONFIG.empty_values, ]
+    standard_output not in CONFIG.empty_values,
+  ]
   if True in conditions:
     status = 'success'
     print(data)
@@ -245,7 +253,7 @@ def get_function_parameters(function: Callable) -> List[str]:
 
 
 async def main(
-  data: Any | None = None,
+  data_: Any | None = None,
   format_: str = 'yaml',
   level: str | None = None,
   location: str | None = None,
@@ -254,15 +262,15 @@ async def main(
   enabled: bool = True,
 ) -> dict:
   timestamp = int(time.time()) if not timestamp else timestamp
-  data = await process_arguments(locals=locals())
-
+  locals_ = locals()
+  locals_.update({'data': data_})
+  data = await process_arguments(locals=locals_)
   # data = utils.process_operations(
   #   data=data,
   #   functions=LOCALS,
   #   operations=CONFIG.operations, )
   # Cannot use `utils.process_operations` because
   # of circular references
-
   for operation in CONFIG.operations:
     function_ = LOCALS[operation]
     parameters = get_function_parameters(function=function_)
@@ -278,7 +286,6 @@ async def main(
 
 def example() -> None:
   from invoke_pytest.app import main as invoke_pytest
-
 
   invoke_pytest(project_directory=MODULE)
 

@@ -1,13 +1,15 @@
 #!.venv/bin/python3
 # -*- coding: utf-8 -*-
 
-
 from typing import Any
 
 
 MODULE = __file__
 LOCALS = locals()
-KINDS = ['nonetype', 'dict', ]
+KINDS = [
+  'nonetype',
+  'dict',
+]
 
 
 def get_value_from_object(
@@ -18,7 +20,8 @@ def get_value_from_object(
   return getattr(
     object,
     field,
-    default_value, )
+    default_value,
+  )
 
 
 def get_value_from_dict(
@@ -28,7 +31,8 @@ def get_value_from_dict(
 ) -> Any:
   return object.get(
     field,
-    default_value, )
+    default_value,
+  )
 
 
 def get_value_from_nonetype(
@@ -54,12 +58,12 @@ def main(
   return handler(
     object=object,
     field=field,
-    default_value=default_value, )
+    default_value=default_value,
+  )
 
 
 def example() -> None:
   from invoke_pytest.app import main as invoke_pytest
-
 
   invoke_pytest(project_directory=MODULE)
 

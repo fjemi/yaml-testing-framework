@@ -4,7 +4,7 @@ tests:
   tests:
   - description: Test description
     arguments:
-      data: 
+      data:
         a: 0
         b: 0
     cast_arguments:

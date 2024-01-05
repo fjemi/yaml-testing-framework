@@ -1,4 +1,7 @@
-# /examples/assertions_example/assertions.py
+#!.venv/bin/python3
+# -*- coding: utf-8 -*-
+
+# ${ROOT_DIR}/examples/assertion_example/assertions.py
 
 from typing import Any
 
@@ -11,7 +14,8 @@ def assert_equals(
   return {
     'passed': passed,
     'output': output,
-    'expected': expected, }
+    'expected': expected,
+  }
 
 
 def assert_exception(
@@ -23,4 +27,5 @@ def assert_exception(
   return {
     'passed': passed,
     'output': output,
-    'expected': expected, }
+    'expected': expected,
+  }

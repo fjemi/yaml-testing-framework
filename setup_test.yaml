@@ -1,6 +1,11 @@
 todo:
-- revisit get_python_requires function
-- automate pushing to pypi; github hooks?
+- TODO: revisit get_python_requires function
+- TODO: automate pushing to pypi; github hooks?
+- TODO: linting/formatting/trunk - ignore shebang and encoding at the top of module files
+
+
+resources:
+- https://packaging.python.org/en/latest/guides/distributing-packages-using-setuptools/
 
 
 globals:

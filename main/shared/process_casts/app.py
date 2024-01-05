@@ -1,9 +1,6 @@
 #!.venv/bin/python3
 # -*- coding: utf-8 -*-
 
-
-from __future__ import annotations
-
 import dataclasses as dc
 from types import ModuleType
 from typing import Any, List
@@ -49,12 +46,11 @@ async def get_object_to_cast(
   if True in conditions:
     return {
       'field': field,
-      'casted_object': object, }
+      'casted_object': object,
+    }
 
   casted_object = get_object(parent=object, name=field)
-  return {
-    'field': field,
-    'casted_object': casted_object}
+  return {'field': field, 'casted_object': casted_object}
 
 
 @error_handler()
@@ -75,7 +71,8 @@ async def get_kinds(
     valid_kinds = getattr(
       CONFIG,
       valid_kinds,
-      [], )
+      [],
+    )
     if kind not in valid_kinds:
       kind = 'any'
 
@@ -100,14 +97,19 @@ async def cast_object(
   handler = cast_handlers(handler=handler)
   casted_object = handler(
     object=casted_object,
-    caster=caster, )
+    caster=caster,
+  )
 
   conditions = [
     'whole' if field in CONFIG.empty_values else 'part',
-    'dict' if isinstance(object_, dict) else 'object', ]
+    'dict' if isinstance(object_, dict) else 'object',
+  ]
   conditions = '.'.join(conditions)
 
-  if conditions in ['whole.dict', 'whole.object', ]:
+  if conditions in [
+    'whole.dict',
+    'whole.object',
+  ]:
     object_ = casted_object
   elif conditions == 'part.dict':
     object_[field] = casted_object
@@ -122,7 +124,8 @@ async def cast_object(
     'unpack': None,
     'kinds': None,
     'casted_object': None,
-    'object': object_, }
+    'object': object_,
+  }
 
 
 CAST_OBJECT_FIELDS = ['caster', 'field', 'unpack']
@@ -140,7 +143,8 @@ async def process_casts_for_arguments(
     arguments=arguments,
     cast_arguments=cast_arguments,
     module=module,
-    object_key='arguments', )
+    object_key='arguments',
+  )
 
 
 @error_handler()
@@ -155,7 +159,8 @@ async def process_casts_for_output(
     output=output,
     cast_output=cast_output,
     module=module,
-    object_key='output', )
+    object_key='output',
+  )
 
 
 @error_handler()
@@ -172,7 +177,8 @@ async def main(
 
   data = utils.process_arguments(
     data_class=CONFIG.schema.Data,
-    locals=locals(), )
+    locals=locals(),
+  )
   data.casts_key = f'cast_{data.object_key}'
   data.casts = getattr(data, data.casts_key, [])
   setattr(data, data.casts_key, None)
@@ -187,16 +193,17 @@ async def main(
     data = utils.process_operations(
       functions=LOCALS,
       data=data,
-      operations=CONFIG.operations, )
+      operations=CONFIG.operations,
+    )
 
   return {
     data.casts_key: None,
-    data.object_key: data.object, }
+    data.object_key: data.object,
+  }
 
 
 def example() -> None:
   from invoke_pytest.app import main as invoke_pytest
-
 
   invoke_pytest(project_directory=MODULE)
 

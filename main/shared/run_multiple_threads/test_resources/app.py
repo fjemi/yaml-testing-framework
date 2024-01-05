@@ -1,7 +1,6 @@
 #!.venv/bin/python3
 # -*- coding: utf-8 -*-
 
-
 import asyncio
 import inspect
 import threading
@@ -13,7 +12,8 @@ from utils import app as utils
 MODULE = __file__
 PARENT_MODULE = utils.get_parent_module(
   module=MODULE,
-  resources_folder_name='test_resources', )
+  resources_folder_name='test_resources',
+)
 
 LOCALS = locals()
 # Global variable to store results from
@@ -23,7 +23,8 @@ THREAD_EXECUTION_RESULTS = []
 TYPE_HANDLER = {
   "str": lambda name: f"Hello {name}",
   # trunk-ignore(ruff/ARG005)
-  "NoneType": lambda name: "Hello World", }
+  "NoneType": lambda name: "Hello World",
+}
 
 
 def main_sync(name: str | None = None) -> str:
@@ -114,7 +115,8 @@ def threads_resource(threads: str | None) -> list:
   if threads == 'threads':
     return [
       threading.Thread(target=add_sync),
-      threading.Thread(target=add_async), ]
+      threading.Thread(target=add_async),
+    ]
 
 
 def sync_exception_target(
@@ -176,8 +178,10 @@ def coroutine_resource(
   # trunk-ignore(ruff/ARG001)
   **kwargs,
 ) -> Callable:
+
   async def async_function():
     return 'async_output'
+
   return async_function()
 
 
@@ -195,7 +199,8 @@ def output_threads_resource(threads: list | None) -> list:
   for thread in threads:
     data = {
       'target': thread._target.__name__,
-      'type': type(thread).__name__.lower(), }
+      'type': type(thread).__name__.lower(),
+    }
     store.append(data)
 
   return store
@@ -203,7 +208,6 @@ def output_threads_resource(threads: list | None) -> list:
 
 def example() -> None:
   from invoke_pytest.app import main as invoke_pytest
-
 
   invoke_pytest(project_directory=PARENT_MODULE)
 

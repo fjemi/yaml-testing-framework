@@ -1,7 +1,6 @@
 #!.venv/bin/python3
 # -*- coding: utf-8 -*-
 
-
 import dataclasses as dc
 import inspect
 import os
@@ -61,8 +60,10 @@ def process_arguments(locals_: dict) -> Data:
 
   for key, value in locals_.items():
     conditions = [
-      hasattr(data, key),
-      value is not None, ]
+      hasattr(data,
+              key),
+      value is not None,
+    ]
     if sum(conditions) == len(conditions):
       setattr(data, key, value)
       locals_[key] = None
@@ -109,19 +110,22 @@ def set_locations(
 def get_yaml_content(yaml: str | None = None) -> dict:
   conditions = [
     not yaml,
-    os.path.exists(str(yaml)) is False, ]
+    os.path.exists(str(yaml)) is False,
+  ]
   if True in conditions:
     return {}
 
+  content = None
   with open(
     file=yaml,
     mode='r',
     encoding='utf-8',
   ) as file:
     content = file.read()
-    content = os.path.expandvars(content)
-    content = py_yaml.safe_load(content)
-    return content if content else {}
+
+  content = os.path.expandvars(content)
+  content = py_yaml.safe_load(content)
+  return content if content else {}
 
 
 def get_contents(
@@ -151,8 +155,7 @@ def get_contents(
 
 
 def format_config(config: dict) -> dict:
-  config = convert_dict_to_dataclass(
-    data=config, cls_name='Config')
+  config = convert_dict_to_dataclass(data=config, cls_name='Config')
   return {'config': config}
 
 
@@ -169,12 +172,14 @@ def convert_dict_to_dataclass(
     field = [
       key,
       kind,
-      None, ]
+      None,
+    ]
     fields.append(field)
 
   data_class = dc.make_dataclass(
     cls_name=cls_name,
-    fields=fields, )
+    fields=fields,
+  )
 
   if instantiate is True:
     return data_class(**data)
@@ -195,12 +200,15 @@ def format_environment(
     environment[key] = os.getenv(key, value)
 
   environment = convert_dict_to_dataclass(
-    data=environment, cls_name='Environment', )
+    data=environment,
+    cls_name='Environment',
+  )
   config[field] = environment
 
   return {
     field: None,
-    'config': config, }
+    'config': config,
+  }
 
 
 def format_schema(
@@ -220,17 +228,20 @@ def format_schema(
     scheme_dataclass = convert_dict_to_dataclass(
       data=dict_,
       cls_name=cls_name,
-      instantiate=False, )
+      instantiate=False,
+    )
 
     store[cls_name] = scheme_dataclass
 
   store = convert_dict_to_dataclass(
-      data=store,
-      cls_name='Schema', )
+    data=store,
+    cls_name='Schema',
+  )
   config['schema'] = store
   return {
     'schema': None,
-    'config': config, }
+    'config': config,
+  }
 
 
 def main(
@@ -246,7 +257,8 @@ def main(
   for operation in operations.names:
     operations.function = LOCALS[operation]
     operations.parameters = get_function_parameters(
-      function=operations.function)
+      function=operations.function
+    )
 
     operations.fields = {}
     for parameter in operations.parameters:
@@ -264,7 +276,6 @@ def main(
 
 def example() -> None:
   from invoke_pytest.app import main as invoke_pytest
-
 
   invoke_pytest(project_directory=MODULE)
 

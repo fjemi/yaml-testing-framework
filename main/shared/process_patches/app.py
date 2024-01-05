@@ -1,9 +1,6 @@
 #!.venv/bin/python3
 # -*- coding: utf-8 -*-
 
-
-from __future__ import annotations
-
 import dataclasses as dc
 import time
 from types import ModuleType
@@ -32,6 +29,7 @@ async def get_patch_for_value(
   # trunk-ignore(ruff/ARG001)
   timestamp: int | None = None,
 ) -> Any:
+
   def patch(
     patch_value: Any | None = None,
   ) -> Any:
@@ -46,6 +44,7 @@ async def get_patch_for_callable(
   # trunk-ignore(ruff/ARG001)
   timestamp: int | None = None,
 ) -> Callable:
+
   def callable_patch(
     # trunk-ignore(ruff/ARG001)
     *args,
@@ -68,7 +67,8 @@ async def get_patch_for_side_effect_list(
   data_class = CONFIG.schema.Side_Effect_List
   SIDE_EFFECTS[timestamp] = data_class(
     value=value,
-    count=0, )
+    count=0,
+  )
 
   def side_effect_list_patch(
     # trunk-ignore(ruff/ARG001)
@@ -91,8 +91,11 @@ async def get_patch_for_side_effect_dict(
   # trunk-ignore(ruff/ARG001)
   timestamp: int,
 ) -> Callable:
+
   def side_effect_dict_patch(key) -> Any:
-    return value[key]
+    values = value
+    return values[key]
+
   return side_effect_dict_patch
 
 
@@ -106,7 +109,8 @@ async def get_patch(
   handler = LOCALS[handler]
   patch = handler(
     value=value,
-    timestamp=timestamp, )
+    timestamp=timestamp,
+  )
   return {'patch': patch}
 
 
@@ -128,7 +132,11 @@ async def get_parent_from_object(
   name: str,
 ) -> Any:
   if hasattr(parent, name) is False:
-    setattr(parent, name, Data_Class(), )
+    setattr(
+      parent,
+      name,
+      Data_Class(),
+    )
 
   return getattr(parent, name)
 
@@ -142,7 +150,8 @@ async def get_parent(
   parents = data_class(
     names=[''],
     values=[module],
-    types=['object'], )
+    types=['object'],
+  )
 
   condition = name in CONFIG.empty_values
   if not condition:
@@ -156,7 +165,8 @@ async def get_parent(
 
     value = handler(
       parent=parents.values[-1],
-      name=name, )
+      name=name,
+    )
     type_ = 'dict' if isinstance(value, dict) else 'object'
 
     parents.names.append(name)
@@ -181,7 +191,8 @@ async def patch_object_in_dict(
 
   return {
     'parents': parents,
-    'patch': None, }
+    'patch': None,
+  }
 
 
 @error_handler()
@@ -195,13 +206,15 @@ async def patch_object_in_object(
     setattr(
       parents.values[-2],
       parents.names[-1],
-      patch, )
+      patch,
+    )
   elif n == 1:
     parents.values[-1] = patch
 
   return {
     'parents': parents,
-    'patch': None, }
+    'patch': None,
+  }
 
 
 @error_handler()
@@ -213,7 +226,8 @@ async def patch_object_in_nonetype(
 ) -> Data_Class:
   return {
     'parents': None,
-    'patch': None, }
+    'patch': None,
+  }
 
 
 @error_handler()
@@ -229,7 +243,8 @@ async def patch_object(
   handler = LOCALS[handler]
   return handler(
     parents=parents,
-    patch=patch, )
+    patch=patch,
+  )
 
 
 @error_handler()
@@ -241,27 +256,31 @@ async def main(
   n = range(len(patches))
 
   for i in n:
+    timestamp = int(time.time())
     patches[i].update({
       'module': module,
-      'timestamp': int(time.time()), })
+      'timestamp': timestamp,
+    })
     patches[i] = utils.process_arguments(
       data_class=CONFIG.schema.Data,
-      locals=patches[i], )
+      locals=patches[i],
+    )
     patches[i] = utils.process_operations(
       operations=CONFIG.operations,
       functions=LOCALS,
-      data=patches[i], )
+      data=patches[i],
+    )
     module = patches[i].module
 
   return {
     'module': module,
-    'patches': None, }
+    'patches': None,
+  }
 
 
 @error_handler()
 async def example() -> None:
   from invoke_pytest.app import main as invoke_pytest
-
 
   invoke_pytest(project_directory=MODULE)
 

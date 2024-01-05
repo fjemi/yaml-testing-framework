@@ -1,7 +1,6 @@
 #!.venv/bin/python3
 # -*- coding: utf-8 -*-
 
-
 import types
 from typing import Any
 from unittest import mock
@@ -13,7 +12,8 @@ import utils.app as utils
 MODULE = __file__
 PARENT_MODULE = utils.get_parent_module(
   module=MODULE,
-  resources_folder_name='test_resources', )
+  resources_folder_name='test_resources',
+)
 
 
 class Store:
@@ -36,16 +36,24 @@ def get_locals(
   **kwargs,
 ) -> dict:
   return {
+    'process_option_option_0':
     # trunk-ignore(ruff/ARG005)
-    'process_option_option_0': lambda *args, **kwargs: 'processed_value_0',
+    lambda *args,
     # trunk-ignore(ruff/ARG005)
-    'process_option_option_1': lambda *args, **kwargs: 'processed_value_1', }
+    **kwargs: 'processed_value_0',
+    'process_option_option_1':
+    # trunk-ignore(ruff/ARG005)
+    lambda *args,
+    # trunk-ignore(ruff/ARG005)
+    **kwargs: 'processed_value_1',
+  }
 
 
 def project_directory_option_resource(option: str | None) -> str:
   conditions = [
     option is None,
-    option == '.', ]
+    option == '.',
+  ]
   if True in conditions:
     option = 'root_dir'
   return option
@@ -64,7 +72,8 @@ def process_option_project_directory_resource(
 
   arguments.update({
     'option': option,
-    'config': config, })
+    'config': config,
+  })
 
   return arguments
 
@@ -108,7 +117,6 @@ def set_node_ids_resource(item: Any) -> Store:
 
 def example() -> None:
   from invoke_pytest.app import main as invoke_pytest
-
 
   invoke_pytest(project_directory=PARENT_MODULE)
 

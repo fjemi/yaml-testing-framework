@@ -8,3 +8,8 @@ rules:
   key-duplicates: {}
   octal-values:
     forbid-implicit-octal: true
+  hyphens:
+    max-spaces-after: 1
+  indentation:
+    spaces: consistent
+    indent-sequences: false

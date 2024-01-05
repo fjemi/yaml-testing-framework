@@ -1,9 +1,7 @@
 #!.venv/bin/python3
 # -*- coding: utf-8 -*-
 
-
 import dataclasses as dc
-import time
 
 import pytest
 import yaml
@@ -21,7 +19,11 @@ class Data_Class:
 
 
 def get_ids(test: Data_Class) -> str:
-  id_ = getattr(test, 'id_short', None)
+  id_ = getattr(
+    test,
+    'id_short',
+    None,
+  )
   if not id_:
     global UNNAMED_TEST_COUNT
     UNNAMED_TEST_COUNT += 1
@@ -39,20 +41,20 @@ def verify_assertions(assertions: list | None = None) -> int | None:
     try:
       output = yaml.dump(output)
       expected = yaml.dump(expected)
-    finally:
-      # trunk-ignore(bandit/B101)
-      assert expected == output
+    except Exception as e:
+      _ = e
+
+    # trunk-ignore(bandit/B101)
+    assert expected == output
 
   return 1
-
-
-time.sleep(.1)  # Prevent overlap with pytest output in terminal
 
 
 @pytest.mark.parametrize(
   argnames='test',
   ids=lambda test: get_ids(test=test),
-  argvalues=pytest.yaml_tests, )
+  argvalues=pytest.yaml_tests,
+)
 def test_(test: Data_Class) -> None:
   assertions = getattr(test, 'assertions', [])
   verify_assertions(assertions=assertions)
@@ -60,7 +62,6 @@ def test_(test: Data_Class) -> None:
 
 def example() -> None:
   from invoke_pytest.app import main as invoke_pytest
-
 
   invoke_pytest(project_directory=MODULE)
 

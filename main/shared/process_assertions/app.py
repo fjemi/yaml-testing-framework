@@ -1,7 +1,6 @@
 #!.venv/bin/python3
 # -*- coding: utf-8 -*-
 
-
 import dataclasses as dc
 from types import ModuleType
 from typing import Any, List
@@ -33,7 +32,8 @@ async def pass_through(
   return {
     'passed': False,
     'output': f"assertion method {output} doesn't exist",
-    'expected': '', }
+    'expected': '',
+  }
 
 
 @error_handler()
@@ -47,10 +47,12 @@ async def get_current_assertion(
   assertion = CONFIG.schema.Assertion(
     **assertions[i],
     exception=exception,
-    output=output, )
+    output=output,
+  )
   return {
     'i': i,
-    'assertion': assertion, }
+    'assertion': assertion,
+  }
 
 
 @error_handler()
@@ -61,7 +63,8 @@ async def get_assertion_method(
   method_name = assertion.method
   assertion.method = get_object(
     parent=module,
-    name=assertion.method, )
+    name=assertion.method,
+  )
   if not assertion.method:
     assertion.method = pass_through
     assertion.output = method_name
@@ -95,9 +98,10 @@ async def update_assertions_and_increment_i(
 ) -> dict:
   assertions[i] = assertion
   i = i + 1
-  return{
+  return {
     'i': i,
-    'assertions': assertions, }
+    'assertions': assertions,
+  }
 
 
 @error_handler()
@@ -106,7 +110,8 @@ async def get_assertion_output_field(
 ) -> dict:
   assertion.output = get_object(
     parent=assertion.output,
-    name=assertion.field, )
+    name=assertion.field,
+  )
   return {'assertion': assertion}
 
 
@@ -121,7 +126,8 @@ async def get_casted_assertion_output(
   casted_output = process_casts_for_output(
     output=assertion.output,
     cast_output=assertion.cast_output,
-    module=module, )
+    module=module,
+  )
   assertion.output = casted_output.get(key, assertion.output)
 
   return {'assertion': assertion}
@@ -139,19 +145,20 @@ async def main(
 
   data = utils.process_arguments(
     locals=locals(),
-    data_class=CONFIG.schema.Data, )
+    data_class=CONFIG.schema.Data,
+  )
   data = utils.process_operations(
     data=data,
     functions=LOCALS,
     n=n,
-    operations=CONFIG.operations, )
+    operations=CONFIG.operations,
+  )
 
   return {'assertions': assertions}
 
 
 def example() -> None:
   from invoke_pytest.app import main as invoke_pytest
-
 
   invoke_pytest(project_directory=MODULE)
 

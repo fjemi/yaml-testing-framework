@@ -1,7 +1,6 @@
 #!.venv/bin/python3
 # -*- coding: utf-8 -*-
 
-
 import dataclasses as dc
 
 
@@ -56,12 +55,12 @@ def main(
   return handler(
     data=data,
     a=a,
-    b=b, )
+    b=b,
+  )
 
 
 def examples() -> None:
   from invoke_pytest.app import main as invoke_pytest
-
 
   invoke_pytest(project_directory=MODULE)
 

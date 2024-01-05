@@ -1,6 +1,6 @@
 todo:
-- Are exceptions being logged correctly to `exception.log`? Doesn't look like it...
-- each run should be a seperate log file: timestamp.count.exception or timestamp as the folder
+- TODO: Are exceptions being logged correctly to `exception.log`? Doesn't look like it...
+- TODO: each run should be a seperate log file -> timestamp.count.exception or timestamp as the folder
 
 
 resources:
@@ -399,7 +399,7 @@ tests:
   tests:
   - description: Only logging enabled
     arguments:
-      data:
+      data_:
         a: a
         b: b
       format_: yaml
@@ -417,7 +417,7 @@ tests:
       - status: success
   - description: Logging and standard output are disabled
     arguments:
-      data:
+      data_:
         a: a
         b: b
       format_: yaml
@@ -433,7 +433,7 @@ tests:
       - status: success
   - description: Only standard output is enabled
     arguments:
-      data:
+      data_:
         a: a
         b: b
       format_: yaml
