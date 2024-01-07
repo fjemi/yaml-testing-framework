@@ -95,7 +95,7 @@ async def handle_resources(
       'resource': resource.__file__,
     }
     for key, value in routes.items():
-      value_ = value.replace(f'{os.sep}{os.sep}', os.sep)
+      value_ = os.path.normpath(value)
       value_ = value_.split(os.sep)
       routes[key] = value_
     # Get the tree or dot-delimited path to the resource

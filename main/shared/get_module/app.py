@@ -36,8 +36,11 @@ async def format_module_name(
     return {'name': 'app'}
 
   name = location.replace('.py', '')
+  name = os.path.normpath(name)
   name = name.split(os.sep)
-  return {'name': '.'.join(name)}
+  name = '.'.join(name)
+
+  return {'name': name}
 
 
 @error_handler()

@@ -24,7 +24,7 @@ tests:
     - method: assertions.app.assert_equals
       expected:
         root_directory: *ROOT
-        project_directory: *ROOT
+        project_directory: ${ROOT_DIR}
         project_directory_type: directory
   - description: Directory does not exist
     arguments:
@@ -45,7 +45,7 @@ tests:
         root_directory: *ROOT
         project_directory: does_not_exist
         project_directory_type: ''
-  - description: Exisitng directory
+  - description: Existing directory
     arguments:
       project_directory: *RESOURCES
     assertions:
@@ -70,7 +70,7 @@ tests:
     - method: assertions.app.assert_equals
       expected:
         root_directory: *ROOT
-        project_directory: ${ROOT_DIR}main/shared/get_locations/test_resources
+        project_directory: ${ROOT_DIR}/main/shared/get_locations/test_resources
         project_directory_type: directory
 - function: format_exclude_files
   description: >

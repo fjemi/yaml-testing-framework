@@ -274,6 +274,7 @@ def format_project_directory(
   elif kind == 'nonetype':
     project_directory = ''
 
+  project_directory = os.path.normpath(project_directory)
   project_directory = project_directory.split(os.sep)
   project_directory = '.'.join(project_directory)
 

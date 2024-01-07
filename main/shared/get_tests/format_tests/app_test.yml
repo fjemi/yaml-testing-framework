@@ -13,7 +13,7 @@ tests:
     assertions:
     - method: assertions.app.assert_equals
       expected: {}
-- function: format_exclude_functions_refactor
+- function: format_exclude_functions
   description: Format field as a list
   tests:
   - arguments: {}
@@ -62,7 +62,7 @@ tests:
         field:
         - a
         - b
-- function: format_exclude_modules_refactor
+- function: format_exclude_modules
   description: Format field as a list
   tests:
   - arguments: {}
@@ -87,7 +87,7 @@ tests:
         exclude_modules:
         - modules_a
         - modules_b
-- function: format_function_refactor
+- function: format_function
   description: >
     Retrieve the name of the function to test
   tests:
@@ -110,7 +110,7 @@ tests:
       expected:
         function: function_a
         function_name: function_a
-- function: format_resources_refactor
+- function: format_resources
   description: >
     Retrieve the name of the function to test
   tests:
@@ -142,7 +142,7 @@ tests:
         - null
         - resources_a
         - resources_b
-- function: format_module_refactor
+- function: format_module
   description: Formats the module field as string
   tests:
   - arguments:
@@ -166,7 +166,7 @@ tests:
     - method: assertions.app.assert_equals
       expected:
         module: module
-- function: format_yaml_refactor
+- function: format_yaml
   description: Formats the yaml field as a string
   tests:
   - arguments:
@@ -224,7 +224,7 @@ tests:
     - method: assertions.app.assert_equals
       expected:
         field: '{}'
-- function: format_arguments_refactor
+- function: format_arguments
   description: Format arguments field as a dictionary
   tests:
   - arguments:
@@ -298,7 +298,7 @@ tests:
           b: B
           c: c
           d: d
-- function: format_environment_refactor
+- function: format_environment
   description: Formats a field as a dictionary
   tests:
   - arguments:
@@ -333,7 +333,7 @@ tests:
           b: B
           c: c
           d: d
-- function: format_cast_arguments_refactor
+- function: format_cast_arguments
   description: Format field as list
   tests:
   - arguments:
@@ -352,7 +352,7 @@ tests:
         cast_arguments:
         - a
         - b
-- function: format_cast_output_refactor
+- function: format_cast_output
   description: Format field as list
   tests:
   - arguments:
@@ -371,7 +371,7 @@ tests:
         cast_output:
         - a
         - b
-- function: format_patches_refactor
+- function: format_patches
   description: Format field as list
   tests:
   - arguments:
@@ -390,7 +390,7 @@ tests:
         patches:
         - a
         - b
-- function: format_assertions_refactor
+- function: format_assertions
   description: Format field as list
   tests:
   - arguments:
@@ -409,7 +409,7 @@ tests:
         assertions:
         - a
         - b
-- function: format_id_long_refactor
+- function: format_id_long
   description: Format the id for a test
   tests:
   - arguments: &FORMAT_ID_LONG_ARGUMENTS_0
@@ -430,24 +430,26 @@ tests:
     - method: assertions.app.assert_equals
       expected:
         id_long: *FORMAT_ID_LONG_ARGUMENTS_1
-- function: format_project_directory_refactor
+- function: format_project_directory
   description: >
     Formats the field as string. Returns a dictionary
     with the field as a key/value pair
   tests:
-  - arguments: {}
+  - description: Undefined arguments
+    arguments: {}
     assertions:
     - method: assertions.app.assert_equals
       expected:
-        project_directory: ''
-  - arguments:
+        project_directory: .
+  - description: Project directory is a list
+    arguments:
       project_directory:
       - null
       - null
     assertions:
     - method: assertions.app.assert_equals
       expected:
-        project_directory: ''
+        project_directory: .
   - arguments:
       project_directory:
       - null
@@ -462,7 +464,7 @@ tests:
     - method: assertions.app.assert_equals
       expected:
         project_directory: project_directory
-- function: format_id_short_refactor
+- function: format_id_short
   description: Format the id for a test
   tests:
   - arguments:
@@ -511,13 +513,15 @@ tests:
   - caster: test_resources.app.tests_resource
     field: tests
   tests:
-  - arguments:
+  - description: Tests is an empty list
+    arguments:
       tests: []
     assertions:
     - method: assertions.app.assert_equals
       expected:
         tests: []
-  - arguments:
+  - description: Tests contains an empty dictionary
+    arguments:
       tests:
       - {}
     assertions:
@@ -541,7 +545,7 @@ tests:
             exception: null
             result: null
             output: null
-            project_directory: ''
+            project_directory: .
             id: null
             id_long:
               function: ''
@@ -554,7 +558,8 @@ tests:
             n: null
             timestamp: null
             tests: null
-  - arguments:
+  - description: Tests contains a dictionary with defined key/value pairs
+    arguments:
       tests:
       - module: module
         yaml: yaml

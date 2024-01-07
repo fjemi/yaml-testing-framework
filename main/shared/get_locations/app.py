@@ -33,29 +33,32 @@ async def format_project_directory(
   project_directory: str | list | None = None,
 ) -> dict:
   kind = type(project_directory).__name__.lower()
-
   if kind in ITERABLE_KINDS:
     project_directory = project_directory[0]
-  elif kind == 'nonetype':
-    project_directory = ROOT_DIRECTORY
 
-  condition = project_directory[0] == '.'
+  root = os.path.normpath(ROOT_DIRECTORY)
+  directory = project_directory or root
+
+  condition = directory[0] == '.'
   if condition:
-    project_directory = os.path.join(
-      ROOT_DIRECTORY,
-      project_directory[1:],
+    directory = directory[1:]
+    directory = os.path.join(
+      root,
+      directory,
     )
 
+  directory = os.path.normpath(directory)
+
   project_directory_type = [
-    'file' * int(os.path.isfile(project_directory)),
-    'directory' * int(os.path.isdir(project_directory)),
+    'file' * int(os.path.isfile(directory)),
+    'directory' * int(os.path.isdir(directory)),
   ]
   project_directory_type = ''.join(project_directory_type)
 
   return {
     'project_directory_type': project_directory_type,
-    'root_directory': ROOT_DIRECTORY,
-    'project_directory': project_directory,
+    'root_directory': root,
+    'project_directory': directory,
   }
 
 
@@ -219,6 +222,7 @@ async def format_module_locations(
     if condition:
       module_location = module.replace(CONFIG.module_extension, '')
       module_location = module_location.replace(root_directory, '')
+      module_location = os.path.normpath(module_location)
       module_location = module_location.split(os.sep)
       module_location = '.'.join(module_location)
 

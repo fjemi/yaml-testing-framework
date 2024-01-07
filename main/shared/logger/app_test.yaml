@@ -93,7 +93,7 @@ tests:
       object: module
     assertions:
     - method: assertions.app.assert_equals
-      expected: ${ROOT_DIR}main/shared/logger/test_resources/module.py
+      expected: ${ROOT_DIR}/main/shared/logger/test_resources/module.py
   - description: Object is a function
     cast_arguments:
     - caster: test_resources.app.set_default_resource

@@ -59,7 +59,10 @@ def get_contents(
     return store
 
   for file in FILES:
-    location = f"{directory}{os.sep}{file.get('name')}"
+    filename = file.get('name', '')
+    location = os.path.join(directory, filename)
+    location = os.path.normpath(location)
+
     content = get_content_from_file(location=location)
 
     condition = file.get('type', '') in ['json', 'yaml']

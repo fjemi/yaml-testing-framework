@@ -125,7 +125,7 @@ tests:
       YAML file
     arguments:
       yaml:
-      - ${ROOT_DIR}main/shared/get_tests/test_resources/app.yml
+      - ${ROOT_DIR}/main/shared/get_tests/test_resources/app.yml
     assertions:
     - method: assertions.app.assert_equals
       expected:
@@ -144,11 +144,11 @@ tests:
         tests: []
   - description: Defined arguments
     arguments:
-      yaml: ${ROOT_DIR}main/shared/get_tests/test_resources/app_test.yml
-      module: ${ROOT_DIR}main/shared/get_tests/test_resources/app.py
-      module_location: ${ROOT_DIR}main/shared/get_tests/test_resources/app.py
+      yaml: ${ROOT_DIR}/main/shared/get_tests/test_resources/app_test.yml
+      module: ${ROOT_DIR}/main/shared/get_tests/test_resources/app.py
+      module_location: ${ROOT_DIR}/main/shared/get_tests/test_resources/app.py
       resources:
-      - ${ROOT_DIR}main/shared/get_tests/test_resources/resource.py
+      - ${ROOT_DIR}/main/shared/get_tests/test_resources/resource.py
     cast_output:
     - caster: test_resources.app.tests_resource
       field: tests
@@ -171,23 +171,23 @@ tests:
           id_long:
             description: []
             function: ''
-            module: ${ROOT_DIR}main/shared/get_tests/test_resources/app.py
-            yaml: ${ROOT_DIR}main/shared/get_tests/test_resources/app_test.yml
-          id_short: ' ${ROOT_DIR}main/shared/get_tests/test_resources/app.py.
+            module: ${ROOT_DIR}/main/shared/get_tests/test_resources/app.py
+            yaml: ${ROOT_DIR}/main/shared/get_tests/test_resources/app_test.yml
+          id_short: ' ${ROOT_DIR}/main/shared/get_tests/test_resources/app.py.
             -  '
-          module: ${ROOT_DIR}main/shared/get_tests/test_resources/app.py
+          module: ${ROOT_DIR}/main/shared/get_tests/test_resources/app.py
           module_location:
-          - ${ROOT_DIR}main/shared/get_tests/test_resources/app.py
+          - ${ROOT_DIR}/main/shared/get_tests/test_resources/app.py
           n: null
           output: null
           patches: []
-          project_directory: ''
+          project_directory: .
           resources:
-          - ${ROOT_DIR}main/shared/get_tests/test_resources/resource.py
+          - ${ROOT_DIR}/main/shared/get_tests/test_resources/resource.py
           result: null
           tests: null
           timestamp: null
-          yaml: ${ROOT_DIR}main/shared/get_tests/test_resources/app_test.yml
+          yaml: ${ROOT_DIR}/main/shared/get_tests/test_resources/app_test.yml
         - arguments: {}
           assertions: null
           cast_arguments: []
@@ -203,23 +203,23 @@ tests:
           id_long:
             description: []
             function: ''
-            module: ${ROOT_DIR}main/shared/get_tests/test_resources/app.py
-            yaml: ${ROOT_DIR}main/shared/get_tests/test_resources/app_test.yml
-          id_short: ' ${ROOT_DIR}main/shared/get_tests/test_resources/app.py.
+            module: ${ROOT_DIR}/main/shared/get_tests/test_resources/app.py
+            yaml: ${ROOT_DIR}/main/shared/get_tests/test_resources/app_test.yml
+          id_short: ' ${ROOT_DIR}/main/shared/get_tests/test_resources/app.py.
             -  '
-          module: ${ROOT_DIR}main/shared/get_tests/test_resources/app.py
+          module: ${ROOT_DIR}/main/shared/get_tests/test_resources/app.py
           module_location:
-          - ${ROOT_DIR}main/shared/get_tests/test_resources/app.py
+          - ${ROOT_DIR}/main/shared/get_tests/test_resources/app.py
           n: null
           output: null
           patches: []
-          project_directory: ''
+          project_directory: .
           resources:
-          - ${ROOT_DIR}main/shared/get_tests/test_resources/resource.py
+          - ${ROOT_DIR}/main/shared/get_tests/test_resources/resource.py
           result: null
           tests: null
           timestamp: null
-          yaml: ${ROOT_DIR}main/shared/get_tests/test_resources/app_test.yml
+          yaml: ${ROOT_DIR}/main/shared/get_tests/test_resources/app_test.yml
         - arguments: {}
           assertions: null
           cast_arguments: []
@@ -235,23 +235,23 @@ tests:
           id_long:
             description: []
             function: ''
-            module: ${ROOT_DIR}main/shared/get_tests/test_resources/app.py
-            yaml: ${ROOT_DIR}main/shared/get_tests/test_resources/app_test.yml
-          id_short: ' ${ROOT_DIR}main/shared/get_tests/test_resources/app.py.
+            module: ${ROOT_DIR}/main/shared/get_tests/test_resources/app.py
+            yaml: ${ROOT_DIR}/main/shared/get_tests/test_resources/app_test.yml
+          id_short: ' ${ROOT_DIR}/main/shared/get_tests/test_resources/app.py.
             -  '
-          module: ${ROOT_DIR}main/shared/get_tests/test_resources/app.py
+          module: ${ROOT_DIR}/main/shared/get_tests/test_resources/app.py
           module_location:
-          - ${ROOT_DIR}main/shared/get_tests/test_resources/app.py
+          - ${ROOT_DIR}/main/shared/get_tests/test_resources/app.py
           n: null
           output: null
           patches: []
-          project_directory: ''
+          project_directory: .
           resources:
-          - ${ROOT_DIR}main/shared/get_tests/test_resources/resource.py
+          - ${ROOT_DIR}/main/shared/get_tests/test_resources/resource.py
           result: null
           tests: null
           timestamp: null
-          yaml: ${ROOT_DIR}main/shared/get_tests/test_resources/app_test.yml
+          yaml: ${ROOT_DIR}/main/shared/get_tests/test_resources/app_test.yml
         - arguments: {}
           assertions: null
           cast_arguments: []
@@ -267,20 +267,20 @@ tests:
           id_long:
             description: []
             function: ''
-            module: ${ROOT_DIR}main/shared/get_tests/test_resources/app.py
-            yaml: ${ROOT_DIR}main/shared/get_tests/test_resources/app_test.yml
-          id_short: ' ${ROOT_DIR}main/shared/get_tests/test_resources/app.py.
+            module: ${ROOT_DIR}/main/shared/get_tests/test_resources/app.py
+            yaml: ${ROOT_DIR}/main/shared/get_tests/test_resources/app_test.yml
+          id_short: ' ${ROOT_DIR}/main/shared/get_tests/test_resources/app.py.
             -  '
-          module: ${ROOT_DIR}main/shared/get_tests/test_resources/app.py
+          module: ${ROOT_DIR}/main/shared/get_tests/test_resources/app.py
           module_location:
-          - ${ROOT_DIR}main/shared/get_tests/test_resources/app.py
+          - ${ROOT_DIR}/main/shared/get_tests/test_resources/app.py
           n: null
           output: null
           patches: []
-          project_directory: ''
+          project_directory: .
           resources:
-          - ${ROOT_DIR}main/shared/get_tests/test_resources/resource.py
+          - ${ROOT_DIR}/main/shared/get_tests/test_resources/resource.py
           result: null
           tests: null
           timestamp: null
-          yaml: ${ROOT_DIR}main/shared/get_tests/test_resources/app_test.yml
+          yaml: ${ROOT_DIR}/main/shared/get_tests/test_resources/app_test.yml

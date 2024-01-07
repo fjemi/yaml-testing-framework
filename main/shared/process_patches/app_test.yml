@@ -256,7 +256,7 @@ tests:
     #   # casts:
     #   # - caster: __builtins__.str
     #   field: parents.values
-    #   expected: "[<module 'process_patches.test_resources.app_a' from '${ROOT_DIR}main/shared/process_patches/test_resources/app_a.py'>, Data_Class()]"
+    #   expected: "[<module 'process_patches.test_resources.app_a' from '${ROOT_DIR}/main/shared/process_patches/test_resources/app_a.py'>, Data_Class()]"
   - description: >
       Set parent values, types, and names for the
       builtins attribute of the dataclass sh`EXAMPLE`
@@ -466,7 +466,7 @@ tests:
       expected: dict
     - method: assertions.app.assert_equals
       field: module.__file__
-      expected: ${ROOT_DIR}main/shared/process_patches/test_resources/app_a.py
+      expected: ${ROOT_DIR}/main/shared/process_patches/test_resources/app_a.py
   - description: Patch a non-existing object in another object
     arguments:
       patches:

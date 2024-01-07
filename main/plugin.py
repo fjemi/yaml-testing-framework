@@ -75,7 +75,7 @@ def process_option_project_directory(
   if condition:
     option = os.path.join(root, option[1:])
 
-  return option
+  return os.path.normpath(option)
 
 
 @error_handler()
