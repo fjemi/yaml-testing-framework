@@ -148,7 +148,8 @@ async def get_parent_module(
   directory = module[:index]
   if not parent_filename:
     parent_filename = os.path.split(module)[-1]
-  return os.path.join(directory, parent_filename)
+  location = os.path.join(directory, parent_filename)
+  return os.path.normpath(location)
 
 
 def example() -> None:

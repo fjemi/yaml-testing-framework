@@ -43,6 +43,27 @@ schema:
     type: bool
     description: Enable or disable logging
     default: False
+- &OPERATIONS
+  cls_name: Operations
+  description: Store data for performing operations on data
+  slots: False
+  fields:
+  - name: parameters
+    type: dict | None
+    description: A function's parameters
+    default: null
+  - name: results
+    type: dict | None
+    description: The result of calling a function
+    default: {}
+  - name: fields
+    type: dict | None
+    description: Parameters/arguments to pass to functions
+    default: {}
+  - name: function
+    type: Callable | None
+    description: A function to call
+    default: null
 
 
 empty_values:

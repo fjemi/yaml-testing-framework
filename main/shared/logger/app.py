@@ -177,18 +177,13 @@ LOGGING_LEVELS = {
 
 async def format_level(
   level: str | None = None,
-  enabled: bool | None = None,
 ) -> dict:
-  if enabled in CONFIG.empty_values:
-    return {'status': 'exited'}
-
   level = str(level).lower()
   level = get_value(
     LOGGING_LEVELS,
     level,
     logging.DEBUG,
   )
-
   return {'level': level}
 
 
@@ -233,7 +228,7 @@ async def output_to_terminal(
   data: Data_Class | dict,
   standard_output: bool | None = None,
 ) -> dict:
-  debug = CONFIG.environment.DEBUG.lower()
+  debug = str(CONFIG.environment.DEBUG).lower()
   standard_output = str(standard_output).lower()
   status = 'exited'
 
@@ -264,24 +259,26 @@ async def main(
   timestamp = int(time.time()) if not timestamp else timestamp
   locals_ = locals()
   locals_.update({'data': data_})
+
   data = await process_arguments(locals=locals_)
-  # data = utils.process_operations(
-  #   data=data,
-  #   functions=LOCALS,
-  #   operations=CONFIG.operations, )
-  # Cannot use `utils.process_operations` because
-  # of circular references
+  operations = CONFIG.schema.Operations()
+
   for operation in CONFIG.operations:
-    function_ = LOCALS[operation]
-    parameters = get_function_parameters(function=function_)
-    fields = {}
-    for parameter in parameters:
-      fields[parameter] = getattr(data, parameter, None)
-    result = await function_(**fields)
-    for key, value in result.items():
+    operations.function = LOCALS[operation]
+    operations.parameters = get_function_parameters(
+      function=operations.function)
+
+    operations.fields = {}
+    for parameter in operations.parameters:
+      operations.fields[parameter] = getattr(data, parameter, None)
+
+    operations.results = await operations.function(**operations.fields)
+    operations.results = operations.results or {}
+    for key, value in operations.results.items():
       setattr(data, key, value)
 
-  return {'status': data.status}
+  data = {'status': data.status}
+  return data
 
 
 def example() -> None:

@@ -267,7 +267,6 @@ tests:
   - description: Handle undefined level
     arguments:
       level: null
-      enabled: true
     assertions:
     - method: assertions.app.assert_equals
       expected:
@@ -275,7 +274,6 @@ tests:
   - description: Handle debug level
     arguments:
       level: debug
-      enabled: true
     assertions:
     - method: assertions.app.assert_equals
       expected:
@@ -283,7 +281,6 @@ tests:
   - description: Handle info level
     arguments:
       level: info
-      enabled: true
     assertions:
     - method: assertions.app.assert_equals
       expected:
@@ -291,7 +288,6 @@ tests:
   - description: Handle exception level
     arguments:
       level: error
-      enabled: true
     assertions:
     - method: assertions.app.assert_equals
       expected:
@@ -299,11 +295,10 @@ tests:
   - description: Logging is disabled
     arguments:
       level: error
-      enabled: false
     assertions:
     - method: assertions.app.assert_equals
       expected:
-        status: exited
+        level: 10
 - function: create_logger
   description: Creates a logger for a level and file handler
   tests:
