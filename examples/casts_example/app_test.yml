@@ -40,7 +40,7 @@ tests:
       field: result
       expected: 4
     - method: assertions.assert_equals
-      # Cast preformed at the assertion level
+      # Cast performed at the assertion level
       cast_output:
       - caster: __builtins__.str
       expected: Test_Data(a=2, b=2, result=4)

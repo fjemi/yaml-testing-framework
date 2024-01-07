@@ -100,15 +100,27 @@ def test_(test: Data_Class) -> None:
 
 <h3>Configure Plugin</h3>
 
-The plugin can be configured within the pytest settings of a configuration file, such as a `pytest.ini`, or in the console when invoking pytest. The configurations are
+The plugin can be configured within the pytest settings of a configuration file,
+ such as a `pytest.ini`, or in the console when invoking pytest. The
+ configurations are
 
-- `project-directory` - Location of the a module, YAML file, or directory of modules. Absolute path of a module or directory containing modules to tests. Use `.` to reference the root directory or `.location` to reference a `location` in relation to the root directory.
-- `exclude-files` - A list of patterns. Modules that have loations that match one of the patterns are excluded from testsing.
-- `resources` - A list containing the locations of globals resource modules to use during tests.
-- `resources_folder_name` - Name of folders in the same directory as the module to test.
+- `project-directory` - Location of the a module, YAML file, or directory of
+modules. Absolute path of a module or directory containing modules to tests. Use
+`.` to reference the root directory or `.location` to reference a `location` in
+relation to the root directory.
+- `exclude-files` - A list of patterns. Modules that have locations that match
+one of the patternsare excluded from testing.
+- `resources` - A list containing the locations of globals resource modules to
+use during tests.
+- `resources_folder_name` - Name of folders in the same directory as the module
+to test.
   - These folders contain modules and other files to use during the tests.
-  - Modules in folders are automatically picked up by the app and functions and variables defined in the modules are accessible in the YAML files using the dot-delimited route to the function/variable.
-- `yaml_suffix` - Suffix of YAML files containing tests. For example, the test file for the module `app.py` would be `app_test.yml` or `app_test.yaml` when the `yaml_suffix` is set to `_test`
+  - Modules in folders are automatically picked up by the app and functions and
+  variables defined in the modules are accessible in the YAML files using the
+  dot-delimited route to the function/variable.
+- `yaml_suffix` - Suffix of YAML files containing tests. For example, the test
+file for the module `app.py` would be `app_test.yml` or `app_test.yaml` when the
+`yaml_suffix` is set to `_test`
 
 <h4>Configure in pytest.ini</h4>
 
@@ -145,7 +157,8 @@ pytest \
 <details>
 <summary><h2>YAML Test Files</h2></summary><br>
 
-Tests are defined in YAML files with the top level keys picked up by the plugin being:
+Tests are defined in YAML files with the top level keys picked up by the plugin
+being:
 - `globals` - Configurations to be used locally for each test in the YAML files
 - `tests` - Configurations used for multiple of individual tests.
 
@@ -158,17 +171,25 @@ tests: []  # Default is null or empty list
 
 <h3>Expanding and Collating Tests</h3>
 
-Using the plugin we can define configurations for tests at various levels (globals, tests, nested tests), expand those configurations to lower configurations, and collate individual tests. This allows us to resuse configurations and reduce the duplication of content across a YAML file. This is similar to [anchors](https://yaml.org/spec/1.2.2/#anchors-and-aliases) in YAML, which we can take advantage, along with the other features availabe in YAML.
+Using the plugin we can define configurations for tests at various levels
+(globals, tests, nested tests), expand those configurations to lower
+configurations, and collate individual tests. This allows us to reuse
+configurations and reduce the duplication of content across a YAML file. This is
+similar to [anchors](https://yaml.org/spec/1.2.2/#anchors-and-aliases) in YAML,
+which we can take advantage, along with the other features available in YAML.
 
 <h4>Example</h4>
 
-This is an abstract example of the expanding/collating configurations done by the plugin, where the configurations for tests are comprised of:
+This is an abstract example of the expanding/collating configurations done by
+the plugin, where the configurations for tests are comprised of:
 - `config_a` - a list
 - `config_b` - an object
 - `config_c` - a string
 - `config_d` - null
 
-In this example, we set these configurations at various levels, globally, tests, and nested tests; and the expanded/collated results are three individual tests containing various values for each configuration.
+In this example, we set these configurations at various levels, globally, tests,
+and nested tests; and the expanded/collated results are three individual tests
+containing various values for each configuration.
 
 ```yaml
 # Defined/Condensed
@@ -286,7 +307,9 @@ fields:
 <summary><h2>Quick Example</h2></summary><br>
 
 In this example we create the following files:
-- `/examples/quick_example/add.py` - Contains the function `add`, wich returns the result from adding two numbers `a` and `b`. This is the function we will test.
+- `/examples/quick_example/add.py` - Contains the function `add`, which returns
+the result from adding two numbers `a` and `b`. This is the function we will
+test.
 - `/examples/quick_example/add_test.yml` - YAML file where two test, **Add two integers** and **Add two floats**, are defined.
 - `/examples/quick_example/test_resources/assertions.py` - Contains the method `equals` that will be used to verify the output of the `add` function.
 - `/examples/test_entrypoint.py` - The file that acts as an entrypoint for discovering and running tests
@@ -346,7 +369,8 @@ Execute the command below to call the plugin.
 pytest --project-directory=/examples/quick_example --resources-folder-name=test_resources  -s -vvv
 ```
 
-Here we see the results from calling the plugin. Two tests were collected with one passing and the other failing.
+Here we see the results from calling the plugin. Two tests were collected with
+one passing and the other failing.
 
 ![Alt text](./examples/quick_example/static/quick_example_results.png?raw=true "Quick Example Results")
 
@@ -356,7 +380,8 @@ Here we see the results from calling the plugin. Two tests were collected with o
 <details>
 <summary><h2>Resources</h2></summary><br>
 
-Resources are modules and other files that are used during tests. Resources can be defined when configuring the plugin (see above) or globally within in a YAML test file (global but local to the YAML file) as such:
+Resources are modules and other files that are used during tests. Resources
+can be defined when configuring the plugin (see above) or globally within in a YAML test file (global but local to the YAML file) as such:
 
 ```yaml
 globals:
@@ -367,17 +392,23 @@ globals:
 
 <h4>Configuration Fields</h4>
 
-- `resources_folder_name` - The name of folders containing resources to use during tests. Folders placed in the same directory as the module being tested are picked up automatically by the plugin. The modules in theses folders are imported into the module to test, and the objects with resource modules can be accessed in the YAML test file through the dot delimited  route to the object: `[resources_folder_name].[module_name].[object_name]`.
+- `resources_folder_name` - The name of folders containing resources to use
+during tests. Folders placed in the same directory as the module being tested
+are picked up automatically by the plugin. The modules in these folders are imported into the module to test, and the objects with resource modules can be accessed in the YAML test file through the dot delimited  route to the object:
+`[resources_folder_name].[module_name].[object_name]`.
 - `resources` - The location of a module or a list of module locations to use as resources. These resources are defined globally and can be used within any YAML test file.
 
-**Note**: Since resource modules are imported into the module to test, there is a risk that attributes of the modules to test can be overwritten. To avoid this it is important to pick unique names for resource folders or structure your project in a way to avoid naming conflicts.
+**Note**: Since resource modules are imported into the module to test, there is
+a risk that attributes of the modules to test can be overwritten. To avoid this
+it is important to pick unique names for resource folders or structure your project in a way to avoid naming conflicts.
 
 <h3>Example</h3>
 
 For this example we create the following files:
 - `/examples/resources_example/app.py` - The module to test
 - `/examples/resources_example/test_resources/app.py` - A source module in the resource folder associated with the module to test
-- `/examples/resources_example/app_test.yml` - The YAML test file associated with the module to test
+- `/examples/resources_example/app_test.yml` - The YAML test file associated
+with the module to test
 - `/examples/test_entrypoint.py`
 
 
@@ -524,23 +555,28 @@ Assertions are defined by the user as functions or methods that can be reused be
 The parameters for the methods can be any combination of:
 - `expected`: The expected output of a function
 - `output`: The output of a function
-- `exception`: Any exception that occurs when calling a function. The exception is formatted as a dictionary with `name` and `description` as keys. If an exception is raised the output is usually null.
+- `exception`: Any exception that occurs when calling a function. The exception
+is formatted as a dictionary with `name` and `description` as keys. If an exception is raised the output is usually null.
 
 The the method must return a dictionary containing any combination of:
 - `passed`: A boolean indicating whether or not the test passed or failed
 - `output`: The formatted or unformatted output from the tested function
-- `expected`: The formatted or unformatted expected output from the tested function
+- `expected`: The formatted or unformatted expected output from the tested
+function
 
 The returned dictionary is processed within the entrypoint file when running tests. in the file we assert that the values of the `output` and `expected` are equal. If so, the test passes, otherwise it fails.
 
 <h3>Schema</h3>
 
-Asssertions are defined in YAML test files under the key `assertions`, and a single assertion has the following fields:
+Assertions are defined in YAML test files under the key `assertions`, and a
+single assertion has the following fields:
 
 - `method` - Dot-delimited route to the function or method used to verify the output of a function. If the method cannot be found the assertion will fail. Default is `null`.
 - `expected` - The expected output of the function. Default is `null`.
-- `field` - Sets the output to a dot-delimited route to an atrribute or key within the output. Default is `null`.
-- `cast_output` - Casts the output or field within the output. Default is an empty list.
+- `field` - Sets the output to a dot-delimited route to an attribute or key
+within the output. Default is `null`.
+- `cast_output` - Casts the output or field within the output. Default is an
+empty list.
 
 And single test can have multiple assertions
 
@@ -558,7 +594,8 @@ tests:
 
 For this example we create the following files:
 - `/examples/assertion_example/app.py` - The module containing the functions to test
-- `/examples/assertion_example/assertions.py` - Contains assertion methods to use for tests
+- `/examples/assertion_example/assertions.py` - Contains assertion methods to
+use for tests
 - `/examples/assertion_example/app_test.yml` - YAML file where tests are defined
 - `/examples/test_entrypoint.py`
 
@@ -632,7 +669,7 @@ tests:
     # path of the module to test
     - method: assertions.assert_equals
       expected: 0
-  - description: Substract a number and a string
+  - description: Subtract a number and a string
     arguments:
       a: '0'
       b: 0
@@ -676,7 +713,8 @@ Execute the command below to call the plugin.
 pytest --project-directory=/examples/assertion_example --resources-folder-name=test_resources -s -vvv
 ```
 
-Here we see the results. Three tests were collected with two passing and one failing.
+Here we see the results. Three tests were collected with two passing and one
+failing.
 
 ![Alt text](./examples/assertion_example/static/assertion_example_results.png?raw=true "Assertion Example Results")
 
@@ -686,16 +724,24 @@ Here we see the results. Three tests were collected with two passing and one fai
 <details>
 <summary><h2>Cast Arguments and Output</h2></summary><br>
 
-Arguments can be converted to other data type before passing the arguments to the function we wish to test. Similarly, the output from functions can be converted prior to processing assertions. Also, we can perform any number of conversions on the arguments or output.
+Arguments can be converted to other data type before passing the arguments to
+the function we wish to test. Similarly, the output from functions can be
+converted prior to processing assertions. Also, we can perform any number of
+conversions on the arguments or output.
 
 <h3>Schema</h3>
 
-Casts are defined in YAML files as a list of objects under the keys `cast_arguments` and `cast_output`, or at the assertion level under the `cast_output` key. The following fields make up a cast object:
+Casts are defined in YAML files as a list of objects under the keys
+`cast_arguments` and `cast_output`, or at the assertion level under the
+`cast_output` key. The following fields make up a cast object:
 - `caster`: A function or object to cast the value (arguments/output) to.
-- `field`: Dot-delimited route to a field, attribute, or key of the value. When set the sepecified field of the object is cast.
-- `unpack`: A boolean indicating whether to unpack a dictionary, list, or tuple into the `caster`.
+- `field`: Dot-delimited route to a field, attribute, or key of the value. When
+set the specified field of the object is cast.
+- `unpack`: A boolean indicating whether to unpack a dictionary, list, or tuple
+into the `caster`.
 
-At the test level we can perform multiple casts of arguments or output, and we can perform multiple casts of the output at the assertion level.
+At the test level we can perform multiple casts of arguments or output, and we
+can perform multiple casts of the output at the assertion level.
 
 ```yaml
 tests:  # Test level
@@ -719,9 +765,11 @@ tests:  # Test level
 <h3>Example</h3>
 
 For this example we create the following files:
-- `/examples/casts_example/app.py` - The module containing the functions to test`
+- `/examples/casts_example/app.py` - The module containing the functions to
+test`
 - `/examples/casts_example/test_resources/app.py` - The module containing resources to use during the test
-- `/examples/casts_example/assertions.py` - Contains assertion methods to use for tests
+- `/examples/casts_example/assertions.py` - Contains assertion methods to use
+for tests
 - `/examples/casts_example/app_test.yml` - YAML file where tests are defined
 - `/examples/test_entrypoint.py`
 
@@ -829,7 +877,7 @@ tests:
       field: result
       expected: 4
     - method: assertions.assert_equals
-      # Cast preformed at the assertion level
+      # Cast performed at the assertion level
       cast_output:
       - caster: __builtins__.str
       expected: Test_Data(a=2, b=2, result=4)
@@ -871,8 +919,13 @@ There are four patch methods:
 
 - **value** - A value to return when the patched object is used.
 - **return_value** - A value to return when the patched object is called as function.
-- **side_effect_list** - A list of values to call based off of the number of times the object is called. Returns the item at index `n - 1` of the list for the `nth` call of the object. Reverts to index 0 when number of calls exceeds the length of the list.
-- **side_effect_dict** - A dictionary of key, values for to patch an object with. When the patched object is called with a key, the key's associated value is returned
+- **side_effect_list** - A list of values to call based off of the number of
+times the object is called. Returns the item at index `n - 1` of the list for
+the `nth` call of the object. Reverts to index 0 when number of calls exceeds
+the length of the list.
+- **side_effect_dict** - A dictionary of key, values for to patch an object
+with. When the patched object is called with a key, the key's associated value
+is returned
 
 <h3>Schema</h3>
 
@@ -897,9 +950,12 @@ tests:
 <h3>Example</h3>
 
 For this example we create the following files:
-- `/examples/patch_example/app.py` - The modules to test that contains objects we will patch.
-- `/examples/patch_example/app_test.yml` - The YAML test file associated with the module to test.
-- `/examples/patch_example/assertions.py` - Resource module containing assertions we will use to verify the results of the patches.
+- `/examples/patch_example/app.py` - The modules to test that contains objects
+we will patch.
+- `/examples/patch_example/app_test.yml` - The YAML test file associated with
+the module to test.
+- `/examples/patch_example/assertions.py` - Resource module containing
+assertions we will use to verify the results of the patches.
 
 
 ```python
@@ -1130,7 +1186,8 @@ Execute the command below to call the plugin.
 pytest --project-directory=/examples/assertion_example -s -vvv
 ```
 
-Here we see the results. The tests returning the original and patched objects all as expected.
+Here we see the results. The tests returning the original and patched objects
+all as expected.
 
 ![Alt text](./examples/patch_example/static/patch_example_results.png?raw=true "Patch Example Results")
 

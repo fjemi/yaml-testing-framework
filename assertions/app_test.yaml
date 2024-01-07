@@ -6,7 +6,7 @@ todo:
 tests:
 - function: assert_exception
   description: >
-    Verfies that an exception was raised. Checks for the name of the exception
+    Verifies that an exception was raised. Checks for the name of the exception
     (TypeError, RuntimeError, etc)
   cast_arguments:
   - caster: test_resources.app.assert_catch_resource

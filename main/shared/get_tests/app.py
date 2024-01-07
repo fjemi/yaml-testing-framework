@@ -105,9 +105,9 @@ async def get_content(yaml: str | list | None = None) -> dict:
   if not condition:
     stream = None
     with open(
-      file=yaml,
-      encoding='utf-8',
-      mode='r',
+        file=yaml,
+        encoding='utf-8',
+        mode='r',
     ) as file:
       stream = file.read()
 

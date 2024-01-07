@@ -337,7 +337,7 @@ tests:
         key_a: value_a
         key_b: value_b
 - function: get_function_parameters
-  description: Returns a list of a functions paramters
+  description: Returns a list of a functions parameters
   cast_arguments:
   - caster: test_resources.app.function_resource
     field: function

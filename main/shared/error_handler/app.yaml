@@ -10,7 +10,7 @@ schema:
   description: Store data used by the functions in a module
   fields:
   - name: data
-    description: Data passed to the decorator  # Come up wuth a better description
+    description: Data passed to the decorator  # Come up with a better description
     type:  Any | None
     default: null
   - name: function
@@ -38,7 +38,7 @@ schema:
     type: Any | None
     default: null
   - name: exception
-    description: An expection that results from calling a function
+    description: An exception that results from calling a function
     type: Exception | dict | None
     default: null
   - name: raise_exception

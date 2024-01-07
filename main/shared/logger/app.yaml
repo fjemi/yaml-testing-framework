@@ -20,7 +20,7 @@ schema:
     default: yaml
     type: str | None
   - name: standard_output
-    description: Flag for outputing to terminal
+    description: Flag for outputting to terminal
     default: false
     type: bool
   - name: location

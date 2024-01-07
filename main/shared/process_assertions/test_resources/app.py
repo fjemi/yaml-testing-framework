@@ -5,9 +5,9 @@ import dataclasses as dc
 from types import ModuleType
 from typing import Any, Callable
 
+import yaml
 from get_config.app import main as get_config
 from utils import app as utils
-import yaml
 
 from assertions import app as assertions
 

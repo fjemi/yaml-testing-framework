@@ -5,8 +5,8 @@ import dataclasses as dc
 import os
 from typing import Any, List
 
-from setuptools import setup
 import yaml as py_yaml
+from setuptools import setup
 
 
 ROOT_DIRECTORY = os.path.dirname(__file__)
@@ -41,9 +41,9 @@ def get_content_from_file(location: str | None = None) -> Any:
     return None
 
   with open(
-    file=location,
-    mode='r',
-    encoding='utf-8',
+      file=location,
+      mode='r',
+      encoding='utf-8',
   ) as file:
     content = file.read()
 

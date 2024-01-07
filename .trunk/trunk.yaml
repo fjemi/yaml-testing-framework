@@ -26,6 +26,7 @@ lint:
   - trufflehog@3.63.7
   - yamllint@1.33.0
   - yapf@0.40.2
+  - codespell@2.2.6
   disabled:
   - black
   - isort
@@ -33,6 +34,7 @@ lint:
   ignore:
   - linters: [ALL]
     paths:
+    - "**/.git/**"
     - "**/.logs/**"
     - "**/.ignore/**"
     - "**/ignore/**"

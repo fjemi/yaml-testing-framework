@@ -60,8 +60,7 @@ def process_arguments(locals_: dict) -> Data:
 
   for key, value in locals_.items():
     conditions = [
-      hasattr(data,
-              key),
+      hasattr(data, key),
       value is not None,
     ]
     if sum(conditions) == len(conditions):
@@ -117,9 +116,9 @@ def get_yaml_content(yaml: str | None = None) -> dict:
 
   content = None
   with open(
-    file=yaml,
-    mode='r',
-    encoding='utf-8',
+      file=yaml,
+      mode='r',
+      encoding='utf-8',
   ) as file:
     content = file.read()
 

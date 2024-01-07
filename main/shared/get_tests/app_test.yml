@@ -77,7 +77,7 @@ tests:
     Parse content from YAML files to
     get tests and configs
   tests:
-  - description: Undefiend arguments
+  - description: Undefined arguments
     arguments: {}
     assertions:
     - method: assertions.app.assert_equals

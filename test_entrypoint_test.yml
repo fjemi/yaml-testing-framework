@@ -1,6 +1,6 @@
 todo:
 - TODO: Incorporate the numeric id generated when collating tests ex. 0.1.1 with get_id function
-- TODO: Pass excluded funcitons and modules to coverage
+- TODO: Pass excluded functions and modules to coverage
 - TODO: Move some logic to plugin.py so that all that is needed is to import function test_
 
 
@@ -53,7 +53,7 @@ tests:
       expected: test_4
 - function: verify_assertions
   description: >
-    Verifies the expecations and values of assertions defined in tests.
+    Verifies the expectations and values of assertions defined in tests.
   cast_arguments:
   - field: assertions
     caster: test_resources.test_entrypoint.app.assertions_resource

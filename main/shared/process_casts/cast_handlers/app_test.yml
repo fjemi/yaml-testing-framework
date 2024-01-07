@@ -63,7 +63,7 @@ tests:
     - method: assertions.app.assert_equals
       expected: null
 - function: instatiate_caster
-  description: Instatiates and returns the caster
+  description: Instantiates and returns the caster
   cast_arguments:
   - caster: test_resources.app.get_resources
     field: caster
@@ -82,7 +82,7 @@ tests:
     - method: assertions.app.assert_type
       expected: Test_Data
 - function: pass_dataclass
-  descritpion: Pass a packed dictionary to a constructor
+  description: Pass a packed dictionary to a constructor
   cast_arguments:
   - caster: test_resources.app.get_resources
     field: caster

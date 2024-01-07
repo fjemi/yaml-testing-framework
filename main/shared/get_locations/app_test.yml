@@ -420,7 +420,7 @@ tests:
     - method: assertions.app.assert_equals
       expected:
         locations: []
-  - description: Project directory is the locaiton of a file
+  - description: Project directory is the location of a file
     arguments:
       yaml_suffix: _test
       exclude_files: []
@@ -433,7 +433,7 @@ tests:
         locations:
         - yaml: ${ROOT_DIR}/main/shared/get_locations/test_resources/app_test.yml
           module: ${ROOT_DIR}/main/shared/get_locations/test_resources/app.py
-  - description: Project directory is the locaiton of a directory
+  - description: Project directory is the location of a directory
     arguments:
       yaml_suffix: _test
       exclude_files: []
@@ -493,6 +493,7 @@ tests:
   - description: Defined project directory
     arguments:
       project_directory: *RESOURCES
+      # project_directory: ${ROOT_DIR}/main/shared/get_locations/test_resources/app.py
       resources_folder_name: resources_folder_name
       exclude_files: []
     assertions:

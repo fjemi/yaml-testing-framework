@@ -1,6 +1,6 @@
 todo:
 - TODO: import set_object from set_patches and use that to set dot-delimited field path
-- TODO: for casting think about chainging `caster` to `method`
+- TODO: for casting think about changing `caster` to `method`
 - TODO: may not need the `unpack`
 
 
@@ -302,7 +302,7 @@ tests:
         arguments: 123
         cast_arguments: null
   - description: >
-      Returning the result of casting an outputed dataclass
+      Returning the result of casting an outputted dataclass
       as a dict
     arguments:
       output:

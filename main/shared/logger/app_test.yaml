@@ -1,6 +1,6 @@
 todo:
 - TODO: Are exceptions being logged correctly to `exception.log`? Doesn't look like it...
-- TODO: each run should be a seperate log file -> timestamp.count.exception or timestamp as the folder
+- TODO: each run should be a separate log file -> timestamp.count.exception or timestamp as the folder
 
 
 resources:
@@ -15,7 +15,7 @@ globals:
 tests:
 - function: process_arguments
   description: >
-    Process local agruments of the main function
+    Process local arguments of the main function
     and return the arguments as a dataclass
   tests:
   - arguments:
@@ -68,7 +68,7 @@ tests:
 - function: set_default
   description: >
     Formats and returns objects that
-    are not JSON searializable
+    are not JSON serializable
   tests:
   - description: >
       Return the object cast as a string when
@@ -127,7 +127,7 @@ tests:
         exception: TypeError
         description: 'unsupported operand type(s) for +: ''int'' and ''str'''
 - function: format_location
-  description: Format locatin of log a file
+  description: Format location of log a file
   tests:
   - description: Level is undefined
     arguments:
@@ -390,7 +390,7 @@ tests:
       - status: success
       - status: exited
 - function: main
-  description: Handles logging and outputing to the terminal
+  description: Handles logging and outputting to the terminal
   tests:
   - description: Only logging enabled
     arguments:

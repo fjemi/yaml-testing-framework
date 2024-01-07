@@ -43,8 +43,8 @@ def main(
 
 
 def example() -> None:
-  from invoke_pytest.app import main as invoke_pytest
   import utils.app as utils
+  from invoke_pytest.app import main as invoke_pytest
 
   parent_module = utils.get_parent_module(
     module=MODULE,

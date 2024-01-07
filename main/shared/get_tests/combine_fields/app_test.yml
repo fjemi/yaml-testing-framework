@@ -104,7 +104,7 @@ tests:
     - method: assertions.app.assert_equals
       expected: []
 - function: combine_parent_nonetype_and_child_list
-  description: Returnd the child
+  description: Return the child
   tests:
   - arguments:
       parent: null

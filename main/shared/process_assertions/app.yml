@@ -32,7 +32,7 @@ schema:
     description: Flag indicating whether a test was passed or not
 - &DATA
   cls_name: Data
-  description: Store data used by the fucntions within the module
+  description: Store data used by the functions within the module
   fields:
   - name: module
     type: Any | None

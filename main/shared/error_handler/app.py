@@ -54,8 +54,7 @@ def process_arguments(locals_: dict | None = None) -> Data:
 
   for key, value in locals_.items():
     conditions = [
-      hasattr(data,
-              key) is False,
+      hasattr(data, key) is False,
       value is None,
     ]
     if True not in conditions:

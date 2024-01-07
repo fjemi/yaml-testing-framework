@@ -107,9 +107,8 @@ async def cast_object(
   conditions = '.'.join(conditions)
 
   if conditions in [
-    'whole.dict',
-    'whole.object',
-  ]:
+      'whole.dict',
+      'whole.object', ]:
     object_ = casted_object
   elif conditions == 'part.dict':
     object_[field] = casted_object

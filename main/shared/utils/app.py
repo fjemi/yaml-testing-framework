@@ -40,8 +40,7 @@ async def process_arguments(
   for key, value in locals.items():
     conditions = [
       value is None,
-      hasattr(data_class,
-              key) is False,
+      hasattr(data_class, key) is False,
     ]
     if True in conditions:
       continue

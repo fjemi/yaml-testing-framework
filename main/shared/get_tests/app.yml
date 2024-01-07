@@ -32,15 +32,18 @@ schema:
     default: null
   - name: parents
     type: list | None
-    description: Store tests that are parents. These are tests that have nested tests
+    description: >
+      Store tests that are parents. These are tests that have nested tests
     default: []
   - name: roots
     type: list | None
-    description: Store indices of the initial or original tests defined in YAML files
+    description: >
+      Store indices of the initial or original tests defined in YAML files
     default: []
   - name: visited
     type: list | None
-    description: Keep track of root, parent, and child tests that have been visted
+    description: >
+      Keep track of root, parent, and child tests that have been visited
     default: []
   - name: branch_key
     type: Any | None
@@ -132,7 +135,7 @@ schema:
     type: list | None
     default: []
     description: >
-      A list of assertions and expected results to verfiy against
+      A list of assertions and expected results to verify against
       the actual result
   - name: yaml
     type: str | None

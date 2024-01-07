@@ -60,11 +60,11 @@ options:
 - args: resources-folder-name
   options:
     action: store
-    help: The names of folders contianing resources for tests.
+    help: The names of folders containing resources for tests.
     default: test_resources
     dest: resources_folder_name
     required: false
-  help: A string. The names of folders contianing resources for tests.
+  help: A string. The names of folders containing resources for tests.
 
 
 root_paths:

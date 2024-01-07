@@ -3,11 +3,11 @@
 
 from typing import List
 
+import pytest
+import yaml
 from error_handler.app import main as error_handler
 from get_config.app import main as get_config
 from logger.app import main as logger
-import pytest
-import yaml
 
 from main.app import main as plugin
 

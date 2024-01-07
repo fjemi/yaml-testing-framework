@@ -36,7 +36,7 @@ schema:
     default: null
   - name: arguments
     type: list | None
-    description: Arguements passed to a function called within a thread
+    description: Arguments passed to a function called within a thread
     default: null
   - name: threads
     type: list | None

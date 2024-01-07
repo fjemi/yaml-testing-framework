@@ -86,8 +86,7 @@ async def process_arguments(
   for key, value in locals_.items():
     conditions = [
       value is None,
-      hasattr(data,
-              key) is False,
+      hasattr(data, key) is False,
     ]
     if True in conditions:
       continue
@@ -266,7 +265,8 @@ async def main(
   for operation in CONFIG.operations:
     operations.function = LOCALS[operation]
     operations.parameters = get_function_parameters(
-      function=operations.function)
+      function=operations.function
+    )
 
     operations.fields = {}
     for parameter in operations.parameters:

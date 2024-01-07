@@ -149,7 +149,7 @@ schema:
     type: list | None
     default: []
     description: >
-      A list of assertions and expected results to verfiy against
+      A list of assertions and expected results to verify against
       the actual result
   - name: yaml
     type: str | None
