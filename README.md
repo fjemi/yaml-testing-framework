@@ -256,7 +256,8 @@ tests:
 
 <h3>Schema</h3>
 
-Details for configurations or fields of an actual test are defined below. These fields can be defined globally or at different test levels.
+Details for configurations or fields of an actual test are defined below. These
+fields can be defined globally or at different test levels.
 
 ```yaml
 # Test configurations
@@ -310,9 +311,12 @@ In this example we create the following files:
 - `/examples/quick_example/add.py` - Contains the function `add`, which returns
 the result from adding two numbers `a` and `b`. This is the function we will
 test.
-- `/examples/quick_example/add_test.yml` - YAML file where two test, **Add two integers** and **Add two floats**, are defined.
-- `/examples/quick_example/test_resources/assertions.py` - Contains the method `equals` that will be used to verify the output of the `add` function.
-- `/examples/test_entrypoint.py` - The file that acts as an entrypoint for discovering and running tests
+- `/examples/quick_example/add_test.yml` - YAML file where two test,
+**Add twointegers** and **Add two floats**, are defined.
+- `/examples/quick_example/test_resources/assertions.py` - Contains the method
+`equals` that will be used to verify the output of the `add` function.
+- `/examples/test_entrypoint.py` - The file that acts as an entrypoint for
+discovering and running tests
 
 ```python
 # /examples/quick_example/add.py
@@ -381,7 +385,8 @@ one passing and the other failing.
 <summary><h2>Resources</h2></summary><br>
 
 Resources are modules and other files that are used during tests. Resources
-can be defined when configuring the plugin (see above) or globally within in a YAML test file (global but local to the YAML file) as such:
+can be defined when configuring the plugin (see above) or globally within in a
+YAML test file (global but local to the YAML file) as such:
 
 ```yaml
 globals:
@@ -394,19 +399,25 @@ globals:
 
 - `resources_folder_name` - The name of folders containing resources to use
 during tests. Folders placed in the same directory as the module being tested
-are picked up automatically by the plugin. The modules in these folders are imported into the module to test, and the objects with resource modules can be accessed in the YAML test file through the dot delimited  route to the object:
+are picked up automatically by the plugin. The modules in these folders are
+imported into the module to test, and the objects with resource modules can be
+accessed in the YAML test file through the dot delimited  route to the object:
 `[resources_folder_name].[module_name].[object_name]`.
-- `resources` - The location of a module or a list of module locations to use as resources. These resources are defined globally and can be used within any YAML test file.
+- `resources` - The location of a module or a list of module locations to use as
+ resources. These resources are defined globally and can be used within any
+ YAML test file.
 
 **Note**: Since resource modules are imported into the module to test, there is
 a risk that attributes of the modules to test can be overwritten. To avoid this
-it is important to pick unique names for resource folders or structure your project in a way to avoid naming conflicts.
+it is important to pick unique names for resource folders or structure your
+project in a way to avoid naming conflicts.
 
 <h3>Example</h3>
 
 For this example we create the following files:
 - `/examples/resources_example/app.py` - The module to test
-- `/examples/resources_example/test_resources/app.py` - A source module in the resource folder associated with the module to test
+- `/examples/resources_example/test_resources/app.py` - A source module in the
+resource folder associated with the module to test
 - `/examples/resources_example/app_test.yml` - The YAML test file associated
 with the module to test
 - `/examples/test_entrypoint.py`
@@ -550,13 +561,15 @@ Here we see the results; two tests collected and both pass as expected.
 
 <h3>Methods</h3>
 
-Assertions are defined by the user as functions or methods that can be reused between tests.
+Assertions are defined by the user as functions or methods that can be reused
+between tests.
 
 The parameters for the methods can be any combination of:
 - `expected`: The expected output of a function
 - `output`: The output of a function
 - `exception`: Any exception that occurs when calling a function. The exception
-is formatted as a dictionary with `name` and `description` as keys. If an exception is raised the output is usually null.
+is formatted as a dictionary with `name` and `description` as keys. If an
+exception is raised the output is usually null.
 
 The the method must return a dictionary containing any combination of:
 - `passed`: A boolean indicating whether or not the test passed or failed
@@ -564,14 +577,18 @@ The the method must return a dictionary containing any combination of:
 - `expected`: The formatted or unformatted expected output from the tested
 function
 
-The returned dictionary is processed within the entrypoint file when running tests. in the file we assert that the values of the `output` and `expected` are equal. If so, the test passes, otherwise it fails.
+The returned dictionary is processed within the entrypoint file when running
+tests. in the file we assert that the values of the `output` and `expected`
+are equal. If so, the test passes, otherwise it fails.
 
 <h3>Schema</h3>
 
 Assertions are defined in YAML test files under the key `assertions`, and a
 single assertion has the following fields:
 
-- `method` - Dot-delimited route to the function or method used to verify the output of a function. If the method cannot be found the assertion will fail. Default is `null`.
+- `method` - Dot-delimited route to the function or method used to verify the
+output of a function. If the method cannot be found the assertion will fail.
+Default is `null`.
 - `expected` - The expected output of the function. Default is `null`.
 - `field` - Sets the output to a dot-delimited route to an attribute or key
 within the output. Default is `null`.
@@ -593,7 +610,8 @@ tests:
 <h3>Example</h3>
 
 For this example we create the following files:
-- `/examples/assertion_example/app.py` - The module containing the functions to test
+- `/examples/assertion_example/app.py` - The module containing the functions to
+test
 - `/examples/assertion_example/assertions.py` - Contains assertion methods to
 use for tests
 - `/examples/assertion_example/app_test.yml` - YAML file where tests are defined
@@ -767,7 +785,8 @@ tests:  # Test level
 For this example we create the following files:
 - `/examples/casts_example/app.py` - The module containing the functions to
 test`
-- `/examples/casts_example/test_resources/app.py` - The module containing resources to use during the test
+- `/examples/casts_example/test_resources/app.py` - The module containing
+resources to use during the test
 - `/examples/casts_example/assertions.py` - Contains assertion methods to use
 for tests
 - `/examples/casts_example/app_test.yml` - YAML file where tests are defined
@@ -911,14 +930,17 @@ tests:
 <details>
 <summary><h2>Patches</h2></summary><br>
 
-We can patch objects in the module to test before running tests, and since tests are run in individual threads we can different patches for the same object without interference between tests.
+We can patch objects in the module to test before running tests, and since tests
+ are run in individual threads we can different patches for the same object
+ without interference between tests.
 
 <h3>Methods</h3>
 
 There are four patch methods:
 
 - **value** - A value to return when the patched object is used.
-- **return_value** - A value to return when the patched object is called as function.
+- **callable** - A value to return when the patched object is called as
+function.
 - **side_effect_list** - A list of values to call based off of the number of
 times the object is called. Returns the item at index `n - 1` of the list for
 the `nth` call of the object. Reverts to index 0 when number of calls exceeds
@@ -929,11 +951,13 @@ is returned
 
 <h3>Schema</h3>
 
-Patches are defined at a list of objects in YAML test files under the key `patches`, and a single patch object has the following fields:
+Patches are defined at a list of objects in YAML test files under the key
+`patches`, and a single patch object has the following fields:
 
 - `method` - One of the four patch methods defined above.
 - `value` - The value the patched object should return when called or used.
-- `name` - The dot-delimited route to the object we wish to patch, in the module to test.
+- `name` - The dot-delimited route to the object we wish to patch, in the module
+ to test.
 
 
 ```yaml
