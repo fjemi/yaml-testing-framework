@@ -8,6 +8,7 @@
 hook_entrypoints=(
 	# Formatting and linting
 	"trunk check"
+	"trunk fmt"
 	"pipenv run pytest --project-directory=${PWD} --cov=${PWD} --cov-report=html"
 )
 
