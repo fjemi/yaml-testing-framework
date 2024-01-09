@@ -1,5 +1,5 @@
 {
-  "python.testing.pytestEnabled": true,
+  // "python.testing.pytestEnabled": true,
   "python.terminal.activateEnvInCurrentTerminal": true,
   "cSpell.words": ["builtins", "dataclass", "todo"]
 }
