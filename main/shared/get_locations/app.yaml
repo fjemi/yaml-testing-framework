@@ -37,7 +37,7 @@ schema:
   - name: tmp
     type: Any | None
     default: null
-  - name: module_locations
+  - name: module_routes
     type: list | None
     default: []
   # - name: yaml_locations
@@ -127,7 +127,7 @@ operations:
 - format_resources_folder_name
 - format_exclude_files
 - format_resources
-- get_yamls
-- get_modules
-- format_module_locations
+- get_yaml_locations
+- get_module_locations
+# - format_module_routes
 - get_resources

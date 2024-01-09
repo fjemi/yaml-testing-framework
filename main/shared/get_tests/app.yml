@@ -70,7 +70,7 @@ schema:
     type: str | None
     description: The YAML file containing tests for the module
     default: ''
-  - name: module_location
+  - name: module_route
     type: str | None
     description: The dot-delimted location of the module
     default: ''
@@ -176,7 +176,7 @@ schema:
     description: >
       Keep track of which group, arguments of result,
       to cast
-  - name: module_location
+  - name: module_route
     type: str | None
     description: Location of a module in the file system
     default: ''

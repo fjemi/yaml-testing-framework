@@ -24,7 +24,9 @@ class Data_Class:
 
 
 @error_handler()
-async def get_function_parameters(function: Callable) -> List[str]:
+async def get_function_parameters(
+  function: Callable | None = None,
+) -> List[str]:
   return list(inspect.signature(function).parameters)
 
 
@@ -87,7 +89,8 @@ async def get_task_from_event_loop(task: Any | None = None) -> Any:
   return task
 
 
-def get_range_from_integer(
+@error_handler()
+async def get_range_from_integer(
   n: int | Iterable | None = None,
 ) -> Iterable | None:
   kind = type(n).__name__.lower()

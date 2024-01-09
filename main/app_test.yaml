@@ -22,7 +22,7 @@ tests:
   - description: Module location is undefined
     arguments:
       module: null
-      module_location: module_location
+      module_route: module_route
     assertions:
     - method: assertions.app.assert_equals
       expected:
@@ -30,7 +30,7 @@ tests:
   - description: Module location doesn't exist
     arguments:
       module: module
-      module_location: module_location
+      module_route: module_route
     assertions:
     - method: assertions.app.assert_equals
       expected:
@@ -41,7 +41,7 @@ tests:
     arguments:
       module:
       - ${ROOT_DIR}/main/test_resources/app/app.py
-      module_location: .main.test_resources.app
+      module_route: .main.test_resources.app
     assertions:
     - method: assertions.app.assert_type
       field: module
@@ -52,7 +52,7 @@ tests:
   - description: Module location exists
     arguments:
       module: ${ROOT_DIR}/main/test_resources/app/app.py
-      module_location: .main.test_resources.app
+      module_route: .main.test_resources.app
     assertions:
     - method: assertions.app.assert_type
       field: module
@@ -141,7 +141,7 @@ tests:
     arguments:
       function: example_function
       module: example_a
-      module_location: module_location
+      module_route: module_route
     assertions:
     - method: assertions.app.assert_type
       field: function
@@ -220,7 +220,7 @@ tests:
         id_numeric: null
         id_short: null
         module: ''
-        module_location: null
+        module_route: null
         n: null
         output: null
         patches: null
@@ -238,7 +238,7 @@ tests:
         yaml: ${ROOT_DIR}/main/test_resources/app/add/app_test.yaml
         function: add
         function_name: add
-        module_location: .main.test_resources.app.add.app
+        module_route: .main.test_resources.app.add.app
         arguments:
           a: 0
           b: 1
@@ -275,7 +275,7 @@ tests:
         id_numeric: null
         id_short: null
         module: ${ROOT_DIR}/main/test_resources/app/add/app.py
-        module_location: .main.test_resources.app.add.app
+        module_route: .main.test_resources.app.add.app
         n: null
         output: 1
         patches: null

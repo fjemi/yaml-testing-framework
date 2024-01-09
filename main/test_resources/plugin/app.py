@@ -103,7 +103,7 @@ def pytest_configure_resource(
 
 def set_node_ids_resource(item: Any) -> Store:
   test = Store()
-  test.module_location = ['module_location']
+  test.module_route = ['module_route']
   test.function = 'function'
 
   _ = item

@@ -283,7 +283,7 @@ def format_project_directory(
 
 @error_handler()
 async def format_id_short(
-  module_location: str | None = None,
+  module_route: str | None = None,
   function: str | None = None,
   description: str | List[str] | None = None,
 ) -> dict:
@@ -302,18 +302,18 @@ async def format_id_short(
   elif kind == 'nonetype':
     description = ''
 
-  kind = type(module_location).__name__.lower()
+  kind = type(module_route).__name__.lower()
   if kind == 'list':
     temp = ''
 
-    for item in reversed(module_location):
+    for item in reversed(module_route):
       if item:
         temp = item
         break
 
-    module_location = temp
+    module_route = temp
   elif kind == 'nonetype':
-    module_location = ''
+    module_route = ''
 
   function_ = function
   kind = type(function_).__name__.lower()
@@ -327,7 +327,7 @@ async def format_id_short(
   elif kind == 'nonetype':
     function_ = ''
 
-  id_short = f' {module_location}.{function_} - {description} '
+  id_short = f' {module_route}.{function_} - {description} '
   return {'id_short': id_short}
 
 

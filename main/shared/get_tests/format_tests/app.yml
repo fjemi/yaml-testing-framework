@@ -97,7 +97,7 @@ schema:
     description: >
       Keep track of which group, arguments of result,
       to cast
-  - name: module_location
+  - name: module_route
     type: str | None
     description: Location of a module in the file system
     default: ''
@@ -126,7 +126,7 @@ empty_values:
 
 
 format_id_short_keys:
-  module_location: module
+  module_route: module
   function_name: function
   description: description
   project_directory: directory

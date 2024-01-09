@@ -29,7 +29,7 @@ async def merge_global_and_test_configs(
   tests: list | None = None,
   globals: dict | None = None,
   module: str | None = None,
-  module_location: str | None = None,
+  module_route: str | None = None,
   yaml: str | None = None,
   resources: List[str] | str | None = None,
 ) -> dict:
@@ -40,7 +40,7 @@ async def merge_global_and_test_configs(
   resources = resources + global_resources
   globals_.update({
     'module': module,
-    'module_location': module_location,
+    'module_route': module_route,
     'yaml': yaml,
     'resources': resources,
   })
@@ -122,7 +122,7 @@ async def get_content(yaml: str | list | None = None) -> dict:
 async def main(
   yaml: str | None = None,
   module: str | None = None,
-  module_location: str | None = None,
+  module_route: str | None = None,
   resources: List[str] | None = None,
 ) -> dict:
   data = utils.process_arguments(

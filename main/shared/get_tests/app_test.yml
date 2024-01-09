@@ -20,7 +20,7 @@ tests:
       - test_0: test_0
       globals: {}
       module: module
-      module_location: module_location
+      module_route: module_route
       yaml: yaml
       resources:
       - resource_a
@@ -31,8 +31,8 @@ tests:
         tests:
         - module:
           - module
-          module_location:
-          - module_location
+          module_route:
+          - module_route
           resources:
           - resource_a
           - resource_b
@@ -48,7 +48,7 @@ tests:
         global_config_a: global_config_a
         global_config_b: global_config_b
       module: module
-      module_location: module_location
+      module_route: module_route
       yaml: yaml
       resources:
       - resource_a
@@ -59,8 +59,8 @@ tests:
         tests:
         - module:
           - module
-          module_location:
-          - module_location
+          module_route:
+          - module_route
           resources:
           - resource_a
           - resource_b
@@ -146,7 +146,7 @@ tests:
     arguments:
       yaml: ${ROOT_DIR}/main/shared/get_tests/test_resources/app_test.yml
       module: ${ROOT_DIR}/main/shared/get_tests/test_resources/app.py
-      module_location: ${ROOT_DIR}/main/shared/get_tests/test_resources/app.py
+      module_route: ${ROOT_DIR}/main/shared/get_tests/test_resources/app.py
       resources:
       - ${ROOT_DIR}/main/shared/get_tests/test_resources/resource.py
     cast_output:
@@ -176,7 +176,7 @@ tests:
           id_short: ' ${ROOT_DIR}/main/shared/get_tests/test_resources/app.py.
             -  '
           module: ${ROOT_DIR}/main/shared/get_tests/test_resources/app.py
-          module_location:
+          module_route:
           - ${ROOT_DIR}/main/shared/get_tests/test_resources/app.py
           n: null
           output: null
@@ -208,7 +208,7 @@ tests:
           id_short: ' ${ROOT_DIR}/main/shared/get_tests/test_resources/app.py.
             -  '
           module: ${ROOT_DIR}/main/shared/get_tests/test_resources/app.py
-          module_location:
+          module_route:
           - ${ROOT_DIR}/main/shared/get_tests/test_resources/app.py
           n: null
           output: null
@@ -240,7 +240,7 @@ tests:
           id_short: ' ${ROOT_DIR}/main/shared/get_tests/test_resources/app.py.
             -  '
           module: ${ROOT_DIR}/main/shared/get_tests/test_resources/app.py
-          module_location:
+          module_route:
           - ${ROOT_DIR}/main/shared/get_tests/test_resources/app.py
           n: null
           output: null
@@ -272,7 +272,7 @@ tests:
           id_short: ' ${ROOT_DIR}/main/shared/get_tests/test_resources/app.py.
             -  '
           module: ${ROOT_DIR}/main/shared/get_tests/test_resources/app.py
-          module_location:
+          module_route:
           - ${ROOT_DIR}/main/shared/get_tests/test_resources/app.py
           n: null
           output: null

@@ -470,7 +470,7 @@ tests:
   - arguments:
       description: null
       function: null
-      module_location: null
+      module_route: null
     assertions:
     - method: assertions.app.assert_equals
       expected:
@@ -478,21 +478,21 @@ tests:
   - arguments:
       description: description
       function: function
-      module_location: module_location
+      module_route: module_route
     assertions:
     - method: assertions.app.assert_equals
       expected:
-        id_short: ' module_location.function - description '
+        id_short: ' module_route.function - description '
   - arguments:
       description:
       - description_0
       - description_1
       function: function
-      module_location: module_location
+      module_route: module_route
     assertions:
     - method: assertions.app.assert_equals
       expected:
-        id_short: ' module_location.function - description_1 '
+        id_short: ' module_route.function - description_1 '
   - arguments:
       description:
       - null
@@ -500,13 +500,13 @@ tests:
       function:
       - null
       - function
-      module_location:
+      module_route:
       - null
-      - module_location
+      - module_route
     assertions:
     - method: assertions.app.assert_equals
       expected:
-        id_short: ' module_location.function - description '
+        id_short: ' module_route.function - description '
 - function: main
   description: Format the fields/values of tests
   cast_output:
@@ -554,7 +554,7 @@ tests:
               description: []
             id_short: ' . -  '
             cast_group: null
-            module_location: null
+            module_route: null
             n: null
             timestamp: null
             tests: null
@@ -618,7 +618,7 @@ tests:
               - description
             id_short: ' .function - description '
             cast_group: null
-            module_location: null
+            module_route: null
             n: null
             timestamp: null
             tests: null

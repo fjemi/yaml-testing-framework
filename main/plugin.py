@@ -154,7 +154,7 @@ async def set_node_ids(item) -> str:
   if kind in CONFIG.null_types:
     return item
 
-  id_ = f"{test.module_location[-1]}.{test.function}"
+  id_ = f"{test.module_route[-1]}.{test.function}"
   item._nodeid = id_.strip()
   return item
 

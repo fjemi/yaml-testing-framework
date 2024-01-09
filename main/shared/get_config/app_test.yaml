@@ -58,7 +58,7 @@ tests:
         yaml: ${ROOT_DIR}/main/shared/get_config/test_resources/app.yaml
   - description: Module doesn't exist
     arguments:
-      module: module_location.py
+      module: module_route.py
       yaml: null
     assertions:
     - method: assertions.app.assert_equals

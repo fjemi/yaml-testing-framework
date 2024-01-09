@@ -45,17 +45,17 @@ LOCALS = locals()
 @error_handler()
 async def handle_module(
   module: str | list | None = None,
-  module_location: str | None = None,
+  module_route: str | None = None,
 ) -> dict:
-  if isinstance(module_location, list):
-    module_location = module_location[0]
+  if isinstance(module_route, list):
+    module_route = module_route[0]
 
   if isinstance(module, list):
     module = module[0]
 
   module = get_module(
     location=module,
-    name=module_location,
+    name=module_route,
     pool=False,
   )
 
@@ -158,17 +158,17 @@ async def get_function_output(
 async def get_function(
   function: str | None = None,
   module: ModuleType | None = None,
-  module_location: str | None = None,
+  module_route: str | None = None,
 ) -> dict | None:
   function_ = function or ''
 
-  kind = type(module_location).__name__.lower()
+  kind = type(module_route).__name__.lower()
   if kind == 'list':
-    module_location = module_location[-1]
+    module_route = module_route[-1]
   elif kind == 'nonetype':
-    module_location = ''
+    module_route = ''
 
-  data = [{'function': function_, 'module': module_location}]
+  data = [{'function': function_, 'module': module_route}]
   task = logger(data_=data, standard_output=True)
   utils.get_task_from_event_loop(task=task)
 

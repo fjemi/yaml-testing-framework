@@ -218,7 +218,7 @@ tests:
     assertions:
     - method: assertions.app.assert_equals
       field: _nodeid
-      expected: module_location.function
+      expected: module_route.function
 - function: format_report_nodeid
   description: >
     Format the nodeid displayed in pytest

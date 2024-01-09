@@ -13,8 +13,6 @@ schema:
     type: py_test.Parser | None
   - name: pytest_instance
     type: ModuleType | None
-  - name: module_locationby
-    type: str | None
   - name: project_directory
     type: str | None
 
