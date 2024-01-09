@@ -298,9 +298,7 @@ async def get_yamls(
       module = project_directory
       for yaml_extension in CONFIG.yaml_extensions:
         filename = f'{yaml_suffix}{yaml_extension}'
-        location = project_directory.replace(
-          CONFIG.module_extension, filename
-        )
+        location = project_directory.replace(CONFIG.module_extension, filename)
         if os.path.exists(location):
           yaml = location
           break

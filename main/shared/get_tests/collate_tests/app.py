@@ -28,7 +28,8 @@ def get_schema_location(
 
   yaml = ''
   for extension in YAML_EXTENSIONS:
-    yaml = os.path.join(location, f'{name}{extension}')
+    filename = f'{name}{extension}'
+    yaml = os.path.join(location, filename)
     if os.path.isfile(yaml):
       break
     yaml = ''

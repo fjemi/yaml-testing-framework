@@ -148,7 +148,8 @@ async def get_parent_module(
   if not parent_filename:
     parent_filename = os.path.split(module)[-1]
   location = os.path.join(directory, parent_filename)
-  return os.path.normpath(location)
+  location = os.path.normpath(location)
+  return location
 
 
 def example() -> None:
