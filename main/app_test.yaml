@@ -296,7 +296,7 @@ tests:
   cast_output:
   - caster: test_resources.app.app.dc.asdict
   tests:
-  - << *RUN_TEST_FOR_FUNCTION_TESTS
+  - *RUN_TEST_FOR_FUNCTION_TESTS
 - function: format_timestamp
   description: Formats a timestamp as a list of timestamps
   tests:

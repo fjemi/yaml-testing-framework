@@ -6,9 +6,8 @@ globals:
 tests:
 - function: add_numbers
   description: Returns the result of adding two numbers
-  tests:
-  - &ADD_NUMBERS_TESTS
-    arguments:
+  tests: &ADD_NUMBERS_TESTS
+  - arguments:
       a: 1
       b: 2
     assertions:
@@ -21,9 +20,8 @@ tests:
 - function: add_dataclass
   description: Returns a dataclass containing two numbers and the result
     of adding the numbers
-  tests:
-  - &ADD_DATACLASS_TESTS
-    arguments:
+  tests: &ADD_DATACLASS_TESTS
+  - arguments:
       data:
         a: 1
         b: 2
@@ -52,5 +50,5 @@ tests:
       assertions:
       - method: assertions.app.assert_exception
         expected: TypeError
-    - << *ADD_NUMBERS_TESTS
-    - << *ADD_DATACLASS_TESTS
+    - *ADD_NUMBERS_TESTS
+    - *ADD_DATACLASS_TESTS

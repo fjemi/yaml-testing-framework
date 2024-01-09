@@ -182,7 +182,7 @@ tests:
           - key: value
 - function: get_object_from_dict
   description: Returns a value of a key from a dict
-  tests:
+  tests: &GET_OBJECT_FROM_DICT_TESTS
   # TODO: expected is null when used within an alias
   - description: Key in dict
     arguments:
@@ -192,8 +192,7 @@ tests:
     assertions:
     - method: assertions.app.assert_equals
       expected: value
-  - &GET_OBJECT_FROM_DICT_TESTS
-    description: Key not in dict
+  - description: Key not in dict
     arguments:
       name: key_a
       parent:
@@ -204,9 +203,8 @@ tests:
 - function: get_object_from_object
   description: >
     Returns the value of an attribute or field of an object
-  tests:
-  - &GET_OBJECT_FROM_OBJECT_TESTS
-    description: Field not in object
+  tests: &GET_OBJECT_FROM_OBJECT_TESTS
+  - description: Field not in object
     arguments:
       name: str
       parent: null
@@ -228,12 +226,12 @@ tests:
   description: >
     Returns an value of a key or dict or a field of an object
   tests:
-  - << *GET_OBJECT_FROM_DICT_TESTS
-  - << *GET_OBJECT_FROM_OBJECT_TESTS
+  - *GET_OBJECT_FROM_DICT_TESTS
+  - *GET_OBJECT_FROM_OBJECT_TESTS
 - function: main
   description: >
     Retrieve the value of a child (key, field, or attribute)
     from a parent (dict or object)
   tests:
-  - << *GET_OBJECT_FROM_DICT_TESTS
-  - << *GET_OBJECT_FROM_OBJECT_TESTS
+  - *GET_OBJECT_FROM_DICT_TESTS
+  - *GET_OBJECT_FROM_OBJECT_TESTS
