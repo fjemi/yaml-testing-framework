@@ -30,14 +30,14 @@ tests:
     # Output is always null if an error occurs
     - method: assertions.assert_equals
       expected: null
-  - description: Assertion method doesn't exist
-    arguments:
-      a: 1
-      b: 1
-    assertions:
-    # Fails since method does not exist
-    - method: assertions.method_does_no_exist
-      expected: null
+  # # Uncomment to fail test
+  # - description: Assertion method doesn't exist
+  #   arguments:
+  #     a: 1
+  #     b: 1
+  #   assertions:
+  #   - method: assertions.method_does_no_exist  # Fails since method does not exist
+  #     expected: null
 - function: add
   description: Returns a dictionary containing the result of adding two numbers
   tests:

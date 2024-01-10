@@ -12,11 +12,11 @@ tests:
     assertions:
     - method: test_resources.assertions.equals
       expected: 3
-  - description: Add two floats
-    arguments:
-      a: 1.5
-      b: 2.5
-    assertions:
-    # This test will fail as the result is 4, not 5.
-    - method: test_resources.assertions.equals
-      expected: 5
+  # # Uncomment to fail test
+  # - description: Add two floats
+  #   arguments:
+  #     a: 1.5
+  #     b: 2.5
+  #   assertions:
+  #   - method: test_resources.assertions.equals
+  #     expected: 5  # Fails as result is 4
