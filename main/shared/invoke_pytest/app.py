@@ -52,7 +52,7 @@ async def run_pytest(
     - --resources-folder-name={resources_folder_name}
     - --exclude-files={exclude_files}
     - --project-directory={project_directory}
-    - --yaml_suffix={yaml_suffix}
+    - --yaml-suffix={yaml_suffix}
   '''
   args = yaml.safe_load(args)
   pytest.main(args)
@@ -85,7 +85,10 @@ async def main(
 
 
 if __name__ == '__main__':
+  project_directory = f'{MODULE}/test_resources'
   main(
-    invoke='pytest',
-    project_directory='.',
+    invoke='plugin',
+    project_directory=project_directory,
+    resources_folder_name='resources_folder_name',
+    yaml_suffix='_test',
   )

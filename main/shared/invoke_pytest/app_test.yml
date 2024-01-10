@@ -6,8 +6,44 @@ todo:
 
 
 globals:
+  exclude_functions:
+  - run_pytest
   resources:
   - ${ROOT_DIR}/assertions/app.py
 
 
-tests: []
+tests:
+- function: run_plugin
+  description: Calls the main app of the plugin
+  tests:
+  - arguments:
+      project_directory: ${ROOT_DIR}/main/shared/invoke_pytest/test_resources
+      # exclude_files: [test_resources]
+      resources_folder_name: resources_folder_name
+      yaml_suffix: _test
+    assertions:
+    - method: assertions.app.assert_equals
+      expected: 1
+# # Commenting out to prevent pytest from being called multiple times
+# - function: run_pytest
+#   description: Calls the main app of the plugin
+#   tests:
+#   - arguments:
+#       project_directory: ${ROOT_DIR}/main/shared/invoke_pytest/test_resources
+#       # exclude_files: [test_resources]
+#       resources_folder_name: resources_folder_name
+#       yaml_suffix: _test
+#     assertions:
+#     - method: assertions.app.assert_equals
+#       expected: 1
+- function: main
+  description: Handles calling the plugin or pytest
+  tests:
+  - arguments:
+      project_directory: ${ROOT_DIR}/main/shared/invoke_pytest/test_resources
+      # exclude_files: [test_resources]
+      resources_folder_name: resources_folder_name
+      yaml_suffix: _test
+    assertions:
+    - method: assertions.app.assert_equals
+      expected: 1
