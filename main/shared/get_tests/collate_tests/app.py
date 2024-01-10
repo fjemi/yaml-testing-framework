@@ -125,7 +125,10 @@ async def get_child_branches(
     for field in tree[branch_key]:
       if field in ['tests']:
         continue
-      child_value = store[child_key].get(field)
+      child_value = store[child_key]
+      if not isinstance(child_value, dict):
+        return
+      child_value = child_value.get(field)
       parent_value = parent[field]
       store[child_key][field] = combine_fields(
         child=child_value,
