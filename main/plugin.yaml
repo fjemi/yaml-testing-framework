@@ -42,7 +42,9 @@ options:
 - args: exclude-files
   options:
     action: store
-    help: A list of patterns for excluding files represented as a comma delimited string
+    help: >
+      A list of patterns for excluding files represented as a comma
+      delimited string
     default:
     - .venv
     - .eggs
@@ -63,6 +65,19 @@ options:
     dest: resources_folder_name
     required: false
   help: A string. The names of folders containing resources for tests.
+- args: yaml-suffix
+  options:
+    action: store
+    help: >
+      he suffix at the end of YAML filename that's used to identify test files
+    default: _test
+    dest: yaml_suffix
+    required: false
+  help: >
+    A string. The suffix at the end of YAML filename that's used to identify
+    test files
+
+
 
 
 root_paths:

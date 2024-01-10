@@ -179,9 +179,10 @@ tests:
       - include-functions
       - exclude-files
       - resources-folder-name
+      - yaml-suffix
     - method: assertions.app.assert_length
       field: _anonymous.options
-      expected: 5
+      expected: 6
 - function: pytest_configure
   description: >
     Retrieves the values of ini and CLI arguments
