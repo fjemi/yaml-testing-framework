@@ -79,6 +79,8 @@ def functions_resource(
 def coroutine_resource(
   # trunk-ignore(ruff/ARG001)
   task: Any | None = None,
+  # trunk-ignore(ruff/ARG001)
+  object: Any | None = None,
 ) -> Callable:
 
   async def entrypoint() -> str:

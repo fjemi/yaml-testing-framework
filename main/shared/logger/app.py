@@ -31,7 +31,7 @@ def get_task_from_event_loop(task: Any | None = None) -> Any:
   conditions = [
     inspect.isawaitable(object=task),
     inspect.iscoroutine(object=task),
-    inspect.iscoroutine(object=task),
+    inspect.iscoroutinefunction(obj=task),
   ]
   if True in conditions:
     loop = asyncio.new_event_loop()
@@ -267,6 +267,8 @@ async def main(
     operations.parameters = get_function_parameters(
       function=operations.function
     )
+    operations.parameters = get_task_from_event_loop(
+      task=operations.parameters)
 
     operations.fields = {}
     for parameter in operations.parameters:

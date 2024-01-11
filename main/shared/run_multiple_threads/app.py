@@ -1,7 +1,6 @@
 #!.venv/bin/python3
 # -*- coding: utf-8 -*-
 
-import asyncio
 import dataclasses as dc
 import inspect
 import threading
@@ -25,24 +24,6 @@ LOCK = threading.Lock()
 @dc.dataclass
 class Data_Class:
   pass
-
-
-@error_handler()
-async def get_task_from_event_loop(task: Any | None = None) -> Any:
-  condition = inspect.iscoroutine(task)
-  if condition is False:
-    return task
-
-  loop = asyncio.new_event_loop()
-  asyncio.set_event_loop(loop)
-
-  try:
-    task = loop.run_until_complete(task)
-  finally:
-    loop.close()
-    asyncio.set_event_loop(None)
-
-  return task
 
 
 @error_handler()
@@ -185,7 +166,7 @@ async def call_async_target_with_packed_argument(
 
   try:
     task = target(argument)
-    return get_task_from_event_loop(task=task)
+    return utils.get_task_from_event_loop(task=task)
   except Exception as e:
     _ = e
     return exception
@@ -209,8 +190,8 @@ async def call_async_target_with_unpacked_argument(
     exception = e
 
   return {
-    'exception': get_task_from_event_loop(task=exception),
-    'output': get_task_from_event_loop(task=output),
+    'exception': utils.get_task_from_event_loop(task=exception),
+    'output': utils.get_task_from_event_loop(task=output),
   }
 
 
@@ -277,7 +258,7 @@ async def get_entrypoint_handler(
     kind = 'kwargs'
   argument = argument[kind]
 
-  coroutine = 'async' if inspect.iscoroutinefunction(target) else 'sync'
+  coroutine = 'async' if utils.is_coroutine(object=target) else 'sync'
   handler = f'get_entrypoint_for_{coroutine}_target'
   handler = LOCALS[handler]
   return handler(

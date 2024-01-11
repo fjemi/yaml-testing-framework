@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 import asyncio
-import inspect
 import threading
 from typing import Any, Callable
 
@@ -162,14 +161,19 @@ def get_threads_resource(threads: list | None = None) -> list:
 
 
 def call_entrypoint(entrypoint: Callable) -> Any:
-  result = entrypoint()
+  task = entrypoint()
 
-  condition = inspect.iscoroutine(result)
-  if condition:
-    loop = asyncio.get_event_loop()
-    result = loop.run_until_complete(result)
+  if utils.is_coroutine(object=task):
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
 
-  return result
+    try:
+      task = loop.run_until_complete(task)
+    finally:
+      loop.close()
+      asyncio.set_event_loop(None)
+
+  return task
 
 
 def coroutine_resource(

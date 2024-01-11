@@ -20,26 +20,6 @@ globals:
 
 
 tests:
-- function: get_task_from_event_loop
-  description: Retrieves the result of a coroutine
-  tests:
-  - arguments: {}
-    assertions:
-    - method: assertions.app.assert_equals
-      expected: null
-  - arguments:
-      task: task
-    assertions:
-    - method: assertions.app.assert_equals
-      expected: task
-  - cast_arguments:
-    - caster: test_resources.app.coroutine_resource
-      field: task
-    arguments:
-      task: coroutine
-    assertions:
-    - method: assertions.app.assert_equals
-      expected: async_output
 - function: format_argument_as_empty_list
   description: >
     Return an empty list when the argument is None

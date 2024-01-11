@@ -102,6 +102,29 @@ tests:
         description: exception
         name: str
         traceback_: []
+- function: is_coroutine
+  description: Returns true if an object is a couroutine and false otherwise
+  tests:
+  - description: Undefined argument
+    arguments: {}
+    assertions:
+    - method: assertions.app.assert_equals
+      expected: false
+  - description: Object is not a coroutine
+    arguments:
+      task: 1
+    assertions:
+    - method: assertions.app.assert_equals
+      expected: False
+  - description: Object is a coroutine
+    cast_arguments:
+    - caster: test_resources.app.is_coroutine_resource
+      field: task
+    arguments:
+      task: awaitable_function
+    assertions:
+    - method: assertions.app.assert_equals
+      expected: true
 - function: get_task_from_event_loop
   description: >
     Returns a coroutine from the event loop (the output of a async function).

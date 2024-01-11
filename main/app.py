@@ -142,11 +142,9 @@ async def get_function_output(
 
   try:
     output = function(**arguments)
+    output = utils.get_task_from_event_loop(task=output)
   except Exception as e:
-    exception = e
-
-  output = utils.get_task_from_event_loop(task=output)
-  exception = utils.get_task_from_event_loop(task=exception)
+    exception = utils.get_task_from_event_loop(task=e)
 
   return {
     'exception': exception,

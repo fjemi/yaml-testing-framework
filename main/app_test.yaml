@@ -6,6 +6,7 @@ todo:
 - TODO: Add logic for safe loading or regular loading data from yaml files -> configuration safe_load=true
 - TODO: Add logic to exclude specified modules from being imported as resources; help prevent errors caused by circular references
 - TODO: Add wrapper logic back in for external libraries
+- TODO: Consolidate duplicate code for sync and async functions -> https://stackoverflow.com/questions/27290656/should-i-use-two-asyncio-event-loops-in-one-program/27298880#27298880
 
 
 globals:

@@ -72,19 +72,30 @@ async def set_field_value(
 
 
 @error_handler()
+async def is_coroutine(
+  object: Any | None = None,
+) -> bool:
+  flag = False
+  conditions = [
+    inspect.iscoroutinefunction(obj=object),
+    inspect.iscoroutine(object=object),
+    inspect.isawaitable(object=object), ]
+  if True in conditions:
+    flag = True
+  return flag
+
+
+@error_handler()
 async def get_task_from_event_loop(task: Any | None = None) -> Any:
-  condition = inspect.iscoroutine(task)
-  if not condition:
-    return task
+  if is_coroutine(object=task):
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
 
-  loop = asyncio.new_event_loop()
-  asyncio.set_event_loop(loop)
-
-  try:
-    task = loop.run_until_complete(task)
-  finally:
-    loop.close()
-    asyncio.set_event_loop(None)
+    try:
+      task = loop.run_until_complete(task)
+    finally:
+      loop.close()
+      asyncio.set_event_loop(None)
 
   return task
 

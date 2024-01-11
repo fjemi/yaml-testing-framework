@@ -94,9 +94,19 @@ def process_exception(exception: Exception) -> dict:
   }
 
 
+def is_coroutine(task: Any | None = None) -> bool:
+  flag = False
+  conditions = [
+    inspect.iscoroutine(object=task),
+    inspect.isawaitable(object=task),
+    inspect.iscoroutinefunction(obj=task), ]
+  if True in conditions:
+    flag = True
+  return flag
+
+
 def get_task_from_event_loop(task: Any | None = None) -> Any:
-  condition = inspect.iscoroutine(task)
-  if condition:
+  if is_coroutine(task=task):
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
 
@@ -132,8 +142,7 @@ def get_callable_output(data: Data_Class) -> Any:
 
 
 def get_function_output(data: Data_Class) -> Data_Class:
-  condition = asyncio.iscoroutinefunction(data.function)
-  kind = 'awaitable' if condition else 'callable'
+  kind = 'awaitable' if is_coroutine(task=data.function) else 'callable'
   handler = f'get_{kind}_output'
   handler = LOCALS.get(handler)
 

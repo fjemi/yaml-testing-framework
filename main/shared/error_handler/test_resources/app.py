@@ -182,6 +182,10 @@ def task_resource(
   return 'async_task'
 
 
+def is_coroutine_resource(task: str | None = None) -> Callable | None:
+  return LOCALS.get(task, None)
+
+
 def example() -> None:
   from invoke_pytest.app import main as invoke_pytest
 
