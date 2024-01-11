@@ -136,7 +136,7 @@ tests:
     assertions:
     - method: assertions.app.assert_equals
       expected:
-        location: ${LOGS_DIR}/debug.log
+        location: ${PYTEST_YAML_LOGS_DIR}/debug.log
   - description: Level is undefined
     arguments:
       level: level
@@ -144,7 +144,7 @@ tests:
     assertions:
     - method: assertions.app.assert_equals
       expected:
-        location: ${LOGS_DIR}/level.log
+        location: ${PYTEST_YAML_LOGS_DIR}/level.log
   - description: Logging is not enabled
     arguments:
       level: level
@@ -405,7 +405,7 @@ tests:
       enabled: True
     assertions:
     # checking that output is in a list in case the environment variable
-    # sh`DEBUG` is set to true or false
+    # sh`PYTEST_YAML_DEBUG` is set to true or false
     - method: assertions.app.assert_list_contains_item
       expected:
       - status: exited

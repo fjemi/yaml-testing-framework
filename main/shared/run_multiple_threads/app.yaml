@@ -1,5 +1,5 @@
 environment:
-  DEBUG: ${DEBUG}
+  PYTEST_YAML_DEBUG: ${PYTEST_YAML_DEBUG}
 
 
 schema:

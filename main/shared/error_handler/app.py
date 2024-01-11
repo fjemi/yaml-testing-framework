@@ -38,7 +38,7 @@ class Data:
   log_enabled: bool = False
   log_level: str = 'debug'
   call_back: Callable | dict | None = None
-  standard_output: bool | None = CONFIG.environment.DEBUG
+  standard_output: bool | None = CONFIG.environment.PYTEST_YAML_DEBUG
   timestamp: int | None = None
 
 

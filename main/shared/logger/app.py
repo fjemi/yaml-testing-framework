@@ -103,7 +103,7 @@ async def format_location(
     return {'status': 'exited'}
 
   level = 'debug' if not level else level
-  directory = CONFIG.environment.LOGS_DIR
+  directory = CONFIG.environment.PYTEST_YAML_LOGS_DIR
   location = f'{level}.log'
   location = os.path.join(
     directory,

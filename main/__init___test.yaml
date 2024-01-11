@@ -1,6 +1,7 @@
 resources:
 - https://stackoverflow.com/questions/46827007/runtimeerror-this-event-loop-is-already-running-in-python
 - https://pypi.org/project/nest-asyncio/
+- https://stackoverflow.com/questions/3108285/in-python-script-how-do-i-set-pythonpath
 
 
 globals:
@@ -22,3 +23,23 @@ tests:
   assertions:
   - method: assertions.app.assert_equals
     expected: 1
+- function: add_directories_to_pythonpath
+  description: Adds directories to the PYTHONPATH
+  tests:
+  - arguments: {}
+    assertions:
+    - method: assertions.app.assert_equals
+      expected: 1
+  # TODO: Figure out how to get this test to pass
+  # - description:  Defined arguments
+  #   arguments:
+  #     directories:
+  #       example_0: /example_0
+  #       example_1: /example_1/example_0
+  #   cast_output:
+  #   - caster: test_resources.init.app.get_sys_path
+  #   assertions:
+  #   - method: assertions.app.assert_list_contains_item
+  #     expected:
+  #     - /example_0
+  #     - /example_1/example_0

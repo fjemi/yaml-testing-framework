@@ -1,7 +1,7 @@
 environment:
   ROOT_DIR: ${ROOT_DIR}
-  LOGS_DIR: ${LOGS_DIR}
-  DEBUG: ${DEBUG}
+  PYTEST_YAML_LOGS_DIR: ${ROOT_DIR}/.logs
+  PYTEST_YAML_DEBUG: ${PYTEST_YAML_DEBUG}
 
 
 schema:
