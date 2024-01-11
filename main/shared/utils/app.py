@@ -27,7 +27,10 @@ class Data_Class:
 async def get_function_parameters(
   function: Callable | None = None,
 ) -> List[str]:
-  return list(inspect.signature(function).parameters)
+  parameters = []
+  if isinstance(function, Callable):
+    parameters = list(inspect.signature(function).parameters)
+  return parameters
 
 
 @error_handler()

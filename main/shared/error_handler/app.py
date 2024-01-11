@@ -219,10 +219,11 @@ def log_function_output(
 
 
 def get_function_parameters(
-  function: str | None = None,
+  function: Callable | None = None,
 ) -> List[str]:
-  parameters = list(inspect.signature(function).parameters)
-  parameters = parameters or []
+  parameters = []
+  if isinstance(function, Callable):
+    parameters = list(inspect.signature(function).parameters)
   return parameters
 
 

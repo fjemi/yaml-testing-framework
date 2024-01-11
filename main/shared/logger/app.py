@@ -242,8 +242,13 @@ async def output_to_terminal(
   return {'status': status}
 
 
-def get_function_parameters(function: Callable) -> List[str]:
-  return list(inspect.signature(function).parameters)
+async def get_function_parameters(
+  function: Callable | None = None,
+) -> List[str]:
+  parameters = []
+  if isinstance(function, Callable):
+    parameters = list(inspect.signature(function).parameters)
+  return parameters
 
 
 async def main(

@@ -185,8 +185,13 @@ def convert_dict_to_dataclass(
   return data_class
 
 
-def get_function_parameters(function: Callable) -> List[str]:
-  return list(inspect.signature(function).parameters)
+def get_function_parameters(
+  function: Callable | None = None,
+) -> List[str]:
+  parameters = []
+  if isinstance(function, Callable):
+    parameters = list(inspect.signature(function).parameters)
+  return parameters
 
 
 def format_environment(
