@@ -1,3 +1,7 @@
+environment:
+  PYTEST_YAML_DEBUG: ${PYTEST_YAML_DEBUG}
+
+
 order_of_operations:
   location: &location
   - get_module_name

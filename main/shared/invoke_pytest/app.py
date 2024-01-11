@@ -32,7 +32,7 @@ async def run_plugin(
   )
   await logger(
     data_=data,
-    standard_output=True,
+    standard_output=CONFIG.environment.PYTEST_YAML_DEBUG,
   )
   return 1
 

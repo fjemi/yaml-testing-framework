@@ -806,7 +806,6 @@ class Data:
 
 
 def add(data: Data) -> Data:
-  print(data)
   data.result = data.a + data.b
   return data
 

@@ -111,6 +111,7 @@ async def handle_resources(
       if tree.resource[i] != tree.module[i]:
         start = i
         break
+
     tree = tree.resource[start:]
     # Add resource to module
     parent = module
@@ -167,7 +168,9 @@ async def get_function(
     module_route = ''
 
   data = [{'function': function_, 'module': module_route}]
-  task = logger(data_=data, standard_output=True)
+  task = logger(
+    data_=data,
+    standard_output=CONFIG.environment.PYTEST_YAML_DEBUG, )
   utils.get_task_from_event_loop(task=task)
 
   function_ = getattr(
@@ -227,6 +230,7 @@ async def run_test_handler(
     if isinstance(test, dict):
       test = test.get('test', {})
       test = test or {}
+
     if getattr(test, kind) in CONFIG.empty_values:
       continue
 

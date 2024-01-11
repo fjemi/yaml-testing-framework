@@ -206,33 +206,6 @@ async def get_file_locations(
   return {'locations': locations}
 
 
-# @error_handler()
-# async def format_module_routes(
-#   root_directory: str | None = None,
-#   locations: List[dict] | None = None,
-# ) -> dict:
-#   locations = locations or []
-#   n = range(len(locations))
-
-#   for i in n:
-#     module = locations[i].get('module', '')
-#     condition = module not in CONFIG.empty_values
-
-#     if condition:
-#       module_route = module.replace(CONFIG.module_extension, '')
-#       module_route = module_route.replace(root_directory, '')
-#       module_route = os.path.normpath(module_route)
-#       module_route = module_route.split(os.sep)
-#       module_route = '.'.join(module_route)
-
-#     elif not condition:
-#       module_route = ''
-
-#     locations[i]['module_route'] = module_route
-
-#   return {'locations': locations}
-
-
 @error_handler()
 async def get_module_route(
   module: str | None = None,
@@ -316,6 +289,7 @@ async def get_yaml_locations(
         if os.path.exists(location):
           yaml = location
           break
+
     elif not condition:
       yaml = project_directory
       key = f'{yaml_suffix}{extension}'

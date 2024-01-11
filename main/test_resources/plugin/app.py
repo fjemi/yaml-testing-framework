@@ -54,8 +54,10 @@ def project_directory_option_resource(option: str | None) -> str:
     option is None,
     option == '.',
   ]
+
   if True in conditions:
     option = 'root_dir'
+
   return option
 
 

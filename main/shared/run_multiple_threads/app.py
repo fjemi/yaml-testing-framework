@@ -383,7 +383,11 @@ async def main(
 def example() -> None:
   from invoke_pytest.app import main as invoke_pytest
 
-  invoke_pytest(project_directory=MODULE)
+
+  parent_module = utils.get_parent_module(
+    module=MODULE,
+    resources_folder_name='test_resources', )
+  invoke_pytest(project_directory=parent_module)
 
 
 if __name__ == '__main__':

@@ -1,9 +1,9 @@
 #!.venv/bin/python3
 # -*- coding: utf-8 -*-
 
-import asyncio
 import sys
 
+import utils.app as utils
 from logger.app import main as logger
 
 
@@ -18,10 +18,11 @@ def print_hello_world(
   **kwargs,
 ) -> str:
   data = "Hello World"
-  asyncio.run(logger(
+  task = logger(
     data_=data,
     standard_output=True,
-  ))
+  )
+  utils.get_task_from_event_loop(task=task)
 
 
 def get__pool(_pool=None) -> dict:

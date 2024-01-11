@@ -226,7 +226,7 @@ async def output_to_terminal(
   data: Data_Class | dict,
   standard_output: bool | None = None,
 ) -> dict:
-  debug = str(CONFIG.environment.DEBUG).lower()
+  debug = str(CONFIG.environment.PYTEST_YAML_DEBUG).lower()
   standard_output = str(standard_output).lower()
   status = 'exited'
 

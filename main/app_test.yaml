@@ -77,8 +77,8 @@ tests:
         resources: null
         module: null
   - description: >
-      Defined arguments. Resources is a list containing the locations of an existing
-      modules, a non-existing module, and a non-python module
+      Defined arguments. Resources is a list containing the locations of an
+      existing modules, a non-existing module, and a non-python module
     arguments:
       module: module
       resources:

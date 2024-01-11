@@ -52,8 +52,10 @@ def get_pytest_config(
 ) -> 'pytest.Config':
   import pytest as py_test
   py_test.Config.rootdir = 'root_dir'
+
   if args[0] is not None:
     py_test.Config.rootdir = args[0]
+
   return py_test.Config
 
 
@@ -79,9 +81,8 @@ def module_resource(
 def handle_id_resource(data: dict | None = None) -> dict:
   data = data or {}
 
-  # trunk-ignore(ruff/F811)
-  module = data.get('module', '')
-  module = module_resource(module=module)
+  module_ = data.get('module', '')
+  module_ = module_resource(module=module_)
 
   function_ = data.get('function', '')
   kind = type(function_).__name__.lower()
@@ -89,11 +90,11 @@ def handle_id_resource(data: dict | None = None) -> dict:
   if kind == 'function':
     function_ = function_.__name__
 
-  if hasattr(module, str(function_)):
-    function_ = getattr(module, function_, None)
+  if hasattr(module_, str(function_)):
+    function_ = getattr(module_, function_, None)
 
   data.update({
-    'module': module,
+    'module': module_,
     'function': function_,
   })
   return data

@@ -18,10 +18,12 @@ def assert_exception(
   exception: str | None = None,
 ) -> dict:
   exception = exception or {}
+
   if isinstance(exception, Exception):
     exception = exception.__class__.__name__
   elif isinstance(exception, dict):
     exception = exception.get('name', None)
+
   passed = expected == exception
   return {
     'passed': passed,
@@ -72,8 +74,10 @@ def assert_type(
   for expected_type in expected:
     for output_type in output_types:
       index = output_type.find(expected_type)
+
       if index == -1:
         continue
+
       output = expected_type
       expected = expected_type
       passed = True
@@ -100,6 +104,7 @@ def assert_substring_in_string(
   for item in expected:
     string = str(item)
     index = output.find(string)
+
     if index != -1:
       store.append(string)
 
@@ -190,6 +195,7 @@ def assert_key_value_in_dict(
 
   for key, value in expected.items():
     output_value = output.get(key, None)
+
     if value == output_value:
       store.update({key: value})
 

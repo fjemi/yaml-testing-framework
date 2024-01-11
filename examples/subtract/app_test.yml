@@ -81,8 +81,9 @@ tests:
     - method: assertions.app.assert_type
       expected:
       - dict
-    # - method: assertions.app.assert_type  # uncomment to fail test
-    #   expected: Data
+    # # Uncomment to fail test
+    # - method: assertions.app.assert_type
+    #   expected: Data  # Fails as the returned type is a dict
 - function: raise_runtime_error
   description: Raises a run time error
   tests:

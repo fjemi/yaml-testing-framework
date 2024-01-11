@@ -1,5 +1,6 @@
 environment:
   ROOT_DIR: ${ROOT_DIR}
+  PYTEST_YAML_DEBUG: ${PYTEST_YAML_DEBUG}
 
 
 schema:
