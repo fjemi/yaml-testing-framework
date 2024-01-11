@@ -35,17 +35,15 @@ class Data:
 
 def get_content_from_file(location: str | None = None) -> Any:
   location = str(location)
+  content = None
 
-  condition = os.path.isfile(location)
-  if condition is False:
-    return None
-
-  with open(
+  if os.path.isfile(location):
+    with open(
       file=location,
       mode='r',
       encoding='utf-8',
-  ) as file:
-    content = file.read()
+    ) as file:
+      content = file.read()
 
   return content
 
@@ -55,21 +53,19 @@ def get_contents(
 ) -> dict:
   store = {'directory': directory}
 
-  if not directory:
-    return store
+  if directory:
+    for file in FILES:
+      filename = file.get('name', '')
+      location = os.path.join(directory, filename)
+      location = os.path.normpath(location)
 
-  for file in FILES:
-    filename = file.get('name', '')
-    location = os.path.join(directory, filename)
-    location = os.path.normpath(location)
+      content = get_content_from_file(location=location)
 
-    content = get_content_from_file(location=location)
+      condition = file.get('type', '') in ['json', 'yaml']
+      if condition and content:
+        content = py_yaml.safe_load(content)
 
-    condition = file.get('type', '') in ['json', 'yaml']
-    if condition and content:
-      content = py_yaml.safe_load(content)
-
-    store[file.get('field')] = content
+      store[file.get('field')] = content
 
   return store
 
@@ -85,11 +81,10 @@ def get_setup_requires(pipfile_lock: dict) -> List[str]:
   packages = []
 
   for key, value in default.items():
-    if key in exclude_keys:
-      continue
-    version = value.get('version')
-    requirement = f'{key}{version}'
-    packages.append(requirement)
+    if key not in exclude_keys:
+      version = value.get('version')
+      requirement = f'{key}{version}'
+      packages.append(requirement)
 
   return packages
 
@@ -98,13 +93,11 @@ def get_python_requires(pipfile_lock: dict | None = None) -> str:
   packages = pipfile_lock.get('default')
   for name, details in packages.items():
     markers = details.get('markers', None)
-    if not markers:
-      continue
-
-    numbers = markers.replace('python_version', '').strip()
-    numbers = numbers.replace("'", '')
-    numbers = numbers.split(' ')
-    return ''.join(numbers)
+    if markers:
+      numbers = markers.replace('python_version', '').strip()
+      numbers = numbers.replace("'", '')
+      numbers = numbers.split(' ')
+      return ''.join(numbers)
 
 
 EMPTY_VALUES = [
@@ -134,7 +127,7 @@ def merge_pip_lock_and_setup_yaml(
 
 
 def main(directory: str | None = None) -> Data:
-  directory = ROOT_DIRECTORY if not directory else directory
+  directory = directory or ROOT_DIRECTORY
   data = get_contents(directory=directory)
   data = merge_pip_lock_and_setup_yaml(**data)
   return data

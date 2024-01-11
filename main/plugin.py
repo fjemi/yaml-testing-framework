@@ -50,10 +50,12 @@ def process_option_exclude_files(
   # trunk-ignore(ruff/ARG001)
   config: py_test.Config | None = None,
 ) -> List[str]:
-  if option is None:
+  if not isinstance(option, list):
+    return [option]
+
+  if not option:
     return []
-  if isinstance(option, list) is False:
-    option = [option]
+
   return option
 
 
@@ -67,12 +69,10 @@ def process_option_project_directory(
 
   option = str(option)
 
-  condition = option in CONFIG.root_paths
-  if condition:
+  if option in CONFIG.root_paths:
     return root
 
-  condition = option.find('.') == 0
-  if condition:
+  if option.find('.') == 0:
     option = os.path.join(root, option[1:])
 
   return os.path.normpath(option)
@@ -145,8 +145,7 @@ async def pytest_configure(config: py_test.Config) -> None:
 async def set_node_ids(item) -> str:
   item_callspec = getattr(item, 'callspec', None)
 
-  condition = not item_callspec
-  if condition:
+  if not item_callspec:
     return item
 
   test = item.callspec.params.get('test', None)

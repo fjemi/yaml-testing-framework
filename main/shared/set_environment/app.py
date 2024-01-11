@@ -27,8 +27,7 @@ def main(
   if True in conditions:
     return {}
 
-  condition = hasattr(module, 'CONFIG')
-  if condition is False:
+  if not hasattr(module, 'CONFIG'):
     setattr(module, CONFIG, Data_Class())
 
   config_environment = getattr(

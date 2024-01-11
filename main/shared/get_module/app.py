@@ -60,8 +60,7 @@ async def get_module_from_location(
   module: ModuleType | None = None,
 ) -> dict:
   kind = type(module).__name__.lower()
-  condition = kind == 'module'
-  if condition:
+  if kind == 'module':
     return {'module': module}
 
   location = str(location)

@@ -38,8 +38,7 @@ async def process_arguments(
   locals: dict | None = None,
   data_class: Data_Class | None = None,
 ) -> Data_Class:
-  conditions = inspect.isclass(data_class)
-  if conditions:
+  if inspect.isclass(data_class):
     data_class = data_class()
 
   for key, value in locals.items():

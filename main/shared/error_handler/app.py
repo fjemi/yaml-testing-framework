@@ -66,8 +66,7 @@ def process_arguments(locals_: dict | None = None) -> Data:
 def process_exception(exception: Exception) -> dict:
   traceback_ = []
 
-  condition = isinstance(exception, Exception)
-  if condition:
+  if isinstance(exception, Exception):
     traceback_ = traceback.format_exception(
       None,
       exception,

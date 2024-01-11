@@ -108,8 +108,7 @@ async def pass_dataclass(
   caster: Any | None = None,
 ) -> Any:
   for name in DATACLASS_TO_DICT_NAMES:
-    condition = caster.__name__ == name
-    if condition is False:
+    if caster.__name__ != name:
       continue
 
     try:

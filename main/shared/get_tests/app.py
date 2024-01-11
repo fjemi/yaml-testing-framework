@@ -98,11 +98,9 @@ async def get_content(yaml: str | list | None = None) -> dict:
     yaml = yaml[0]
 
   yaml = str(yaml)
-  condition = os.path.isfile(yaml) is False
-  if condition:
-    content = {}
+  content = {}
 
-  if not condition:
+  if os.path.isfile(yaml):
     stream = None
     with open(
         file=yaml,

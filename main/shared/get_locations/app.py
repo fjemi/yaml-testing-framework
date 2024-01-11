@@ -39,8 +39,7 @@ async def format_project_directory(
   root = os.path.normpath(ROOT_DIRECTORY)
   directory = project_directory or root
 
-  condition = directory[0] == '.'
-  if condition:
+  if directory[0] == '.':
     directory = directory[1:]
     directory = os.path.join(
       root,
@@ -292,8 +291,7 @@ async def get_yaml_locations(
   project_directory_type,
   yaml_suffix,
 ) -> dict:
-  condition = resources_folder_name not in exclude_files
-  if condition:
+  if resources_folder_name not in exclude_files:
     exclude_files.append(resources_folder_name)
 
   if project_directory_type == 'directory':
@@ -341,19 +339,18 @@ async def get_resources(
   resources: List[str] | None = None,
   locations: List[dict] | None = None,
 ) -> dict:
+  locations = locations or []
+  resources = resources or []
+
   if resources_folder_name in exclude_files:
     exclude_files.remove(resources_folder_name)
-
-  if not resources:
-    resources = []
 
   n = reversed(range(len(locations)))
 
   for i in n:
     module = locations[i].get('module', '')
 
-    condition = module in CONFIG.empty_values
-    if condition:
+    if module in CONFIG.empty_values:
       del locations[i]
       continue
 

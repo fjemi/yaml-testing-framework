@@ -116,8 +116,7 @@ async def format_location(
 async def format_data(
   data: Data_Class | dict | None,
 ) -> dict:
-  condition = dc.is_dataclass(data) is True
-  if condition:
+  if dc.is_dataclass(data):
     try:
       data = dc.asdict(data)
     except Exception as e:

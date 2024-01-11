@@ -160,8 +160,8 @@ async def call_async_target_with_packed_argument(
   target: Callable | None = None,
   exception: Exception | None = None,
   output: Any | None = None,
-) -> dict:
-  if exception is None:
+) -> dict | None:
+  if not exception:
     return output
 
   try:

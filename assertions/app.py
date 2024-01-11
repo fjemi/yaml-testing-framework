@@ -61,7 +61,7 @@ def assert_type(
 ) -> dict:
   passed = False
 
-  if isinstance(expected, list) is False:
+  if not isinstance(expected, list):
     expected = [expected]
   output_types = [
     type(output).__name__,
@@ -163,7 +163,8 @@ def assert_key_in_dict(
   expected: list | str | None = None,
 ) -> dict:
   expected = expected or []
-  if isinstance(expected, list) is False:
+
+  if not isinstance(expected, list):
     expected = [expected]
 
   store = []

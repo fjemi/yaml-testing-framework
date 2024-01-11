@@ -70,8 +70,9 @@ def assertions_resource(
 def assertion_resource(
   assertion: dict | None = None,
 ) -> CONFIG.schema.Assertion | None:
-  if assertion:
-    return CONFIG.schema.Assertion(**assertion)
+  assertion = assertion or {}
+  assertion = CONFIG.schema.Assertion(**assertion)
+  return assertion
 
 
 def method_resource(
@@ -82,12 +83,16 @@ def method_resource(
   return getattr(module, method, None)
 
 
-def verify_expected_output_resource(assertion: dict | None = None) -> dict:
-  assertion = CONFIG.schema.Assertion(**assertion)
-  assertion.method = method_resource(
+def verify_expected_output_resource(
+  assertion: dict | Data_Class | None = None,
+) -> dict:
+  if isinstance(assertion, dict):
+    assertion = CONFIG.schema.Assertion(**assertion)
+  method = method_resource(
     module=assertions,
     method=assertion.method,
   )
+  assertion.method = method
   return assertion
 
 

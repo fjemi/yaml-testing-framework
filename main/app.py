@@ -115,7 +115,7 @@ async def handle_resources(
     # Add resource to module
     parent = module
     for path in tree[:-1]:
-      if hasattr(parent, path) is False:
+      if not hasattr(parent, path):
         setattr(
           parent,
           path,

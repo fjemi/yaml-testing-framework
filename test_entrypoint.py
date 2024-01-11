@@ -18,17 +18,20 @@ class Data_Class:
   pass
 
 
-def get_ids(test: Data_Class) -> str:
+def get_ids(test: Data_Class) -> str | None:
   id_ = getattr(
     test,
     'id_short',
     None,
   )
+  if id_:
+    return id_
+
   if not id_:
     global UNNAMED_TEST_COUNT
     UNNAMED_TEST_COUNT += 1
     id_ = f'test_{UNNAMED_TEST_COUNT}'
-  return id_
+    return id_
 
 
 def verify_assertions(assertions: list | None = None) -> int | None:
