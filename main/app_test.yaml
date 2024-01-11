@@ -255,7 +255,8 @@ tests:
           a: 0
           b: 1
         assertions:
-        - method: assert_equals
+        - method: assertions.app.assert_equals
+          method_name: assertions.app.assert_equals
           cast_output: []
           exception: null
           output: 1
@@ -371,6 +372,7 @@ tests:
         exception: null
         expected: 5
         field: null
-        method: assert_equals
+        method: assertions.app.assert_equals
+        method_name: assertions.app.assert_equals
         passed: true
         cast_output: []

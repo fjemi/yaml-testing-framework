@@ -10,6 +10,9 @@ schema:
   - name: method
     type: str | None
     description: The assertion method
+  - name: method_name
+    type: str | None
+    description: The name of an assertion method
   - name: field
     type: str | None
     description: Dot-delimited path to an attribute or key of the result

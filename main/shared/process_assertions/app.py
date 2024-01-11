@@ -60,14 +60,14 @@ async def get_assertion_method(
   assertion: Data_Class | None = None,
   module: ModuleType | None = None,
 ) -> dict:
-  method_name = assertion.method
+  assertion.method_name = assertion.method
   assertion.method = get_object(
     parent=module,
     name=assertion.method,
   )
   if not assertion.method:
     assertion.method = pass_through
-    assertion.output = method_name
+    assertion.output = assertion.method_name
   return {'assertion': assertion}
 
 
@@ -83,7 +83,7 @@ async def verify_expected_output(
     arguments[key] = value
 
   result = assertion.method(**arguments)
-  assertion.method = assertion.method.__name__
+  assertion.method = assertion.method_name
   for key, value in result.items():
     setattr(assertion, key, value)
 
