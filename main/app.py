@@ -72,6 +72,7 @@ async def handle_resources(
 ) -> dict:
   resources = resources or []
   visited = []
+  locations_not_processed = []
 
   for location in resources:
     extension = os.path.splitext(location)[1]
@@ -81,6 +82,7 @@ async def handle_resources(
       location not in visited,
     ]
     if False in conditions:
+      locations_not_processed.append(location)
       continue
 
     visited.append(location)
@@ -125,6 +127,15 @@ async def handle_resources(
       parent = getattr(parent, path)
     name = tree[-1].replace('.py', '')
     setattr(parent, name, resource)
+
+  if locations_not_processed:
+    data = [{
+      'resource_locations_not_processed': locations_not_processed,
+      'module': module.__name__, }]
+    task = logger(
+      data_=data,
+      standard_output=CONFIG.environment.PYTEST_YAML_DEBUG, )
+    utils.get_task_from_event_loop(task=task)
 
   return {
     'resources': None,
