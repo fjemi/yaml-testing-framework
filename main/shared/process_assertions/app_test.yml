@@ -1,6 +1,7 @@
 todo:
 - TODO: add module route to function/method name after processing, module.function
 - TODO: add field key to assertions
+- TODO: add logic to run tests for specified functions only
 
 
 globals:
@@ -166,7 +167,8 @@ tests:
 - function: update_assertions_and_increment_i
   description: >
     Updates the assertion for the current iteration in the list of assertions
-    and increments sh`i` to move to the next iteration
+    and increments sh`i` to move to the next iteration. Tries to convert
+    the assertion expected and output fields to YAML.
   tests:
   - description: Undefined arguments
     arguments: {}
@@ -201,6 +203,39 @@ tests:
         assertions:
         - assertion_0
         - processed_assertion
+  - description: YAML conversion check
+    cast_arguments:
+    - caster: CONFIG.schema.Assertion
+      field: assertion
+    cast_output:
+    - caster: test_resources.app.update_assertions_and_increment_i_cast_output
+      field: assertions
+    arguments:
+      i: 1
+      assertion:
+        expected:
+          a: a
+        output:
+          b: b
+      assertions:
+      - assertion_0
+      - assertion_1
+    assertions:
+    - method: assertions.app.assert_equals
+      expected:
+        i: 2
+        assertions:
+        - assertion_0
+        - expected:
+            a: a
+          output:
+            b: b
+          method: null
+          method_name: null
+          field: null
+          passed: null
+          exception: null
+          cast_output: null
 - function: get_assertion_output_field
   description: >
     Sets the output of the assertion of a dot-delimited field/key of
@@ -392,6 +427,6 @@ tests:
           passed: false
           exception: null
           output: assertion method assertion_method_does_not_exist doesn't exist
-          expected: ''
+          expected: null
           field: null
           cast_output: []

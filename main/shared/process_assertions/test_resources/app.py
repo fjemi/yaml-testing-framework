@@ -104,6 +104,20 @@ def main_cast_output(assertions: list | None = None) -> list | None:
     return assertions
 
 
+def update_assertions_and_increment_i_cast_output(
+  assertions: list | None = None,
+) -> list:
+  assertions = assertions or []
+
+  n = range(len(assertions))
+  for i in n:
+    item = assertions[i]
+    if dc.is_dataclass(obj=item):
+      item = dc.asdict(item)
+      assertions[i] = item
+  return assertions
+
+
 def example() -> None:
   from invoke_pytest.app import main as invoke_pytest
 

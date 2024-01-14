@@ -4,7 +4,6 @@
 import dataclasses as dc
 
 import pytest
-import yaml
 
 
 MODULE = __file__
@@ -34,33 +33,16 @@ def get_ids(test: Data_Class) -> str | None:
     return id_
 
 
-def verify_assertions(assertions: list | None = None) -> int | None:
-  assertions = assertions or []
-
-  for assertion in assertions:
-    output = assertion.output
-    expected = assertion.expected
-
-    try:
-      output = yaml.dump(output)
-      expected = yaml.dump(expected)
-    except Exception as e:
-      _ = e
-
-    # trunk-ignore(bandit/B101)
-    assert expected == output
-
-  return 1
-
-
 @pytest.mark.parametrize(
   argnames='test',
   ids=lambda test: get_ids(test=test),
   argvalues=pytest.yaml_tests,
 )
 def test_(test: Data_Class) -> None:
-  assertions = getattr(test, 'assertions', [])
-  verify_assertions(assertions=assertions)
+  assertions = getattr(test, 'assertions', [], )
+  for assertion in assertions:
+    # trunk-ignore(bandit/B101)
+    assert assertion.expected == assertion.output
 
 
 def example() -> None:
