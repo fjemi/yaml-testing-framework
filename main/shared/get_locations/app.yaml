@@ -130,4 +130,4 @@ operations:
 - get_yaml_locations
 - get_module_locations
 # - format_module_routes
-- get_resources
+- get_resource_locations

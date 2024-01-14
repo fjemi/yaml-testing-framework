@@ -32,7 +32,7 @@ tests:
     assertions:
     - method: assertions.app.assert_equals
       expected:
-        root_directory: *ROOT
+        root_directory: does_not_exist
         project_directory: does_not_exist
         project_directory_type: ''
   - description: Directory is a list or tuple
@@ -42,7 +42,7 @@ tests:
     assertions:
     - method: assertions.app.assert_equals
       expected:
-        root_directory: *ROOT
+        root_directory: does_not_exist
         project_directory: does_not_exist
         project_directory_type: ''
   - description: Existing directory
@@ -51,7 +51,7 @@ tests:
     assertions:
     - method: assertions.app.assert_equals
       expected:
-        root_directory: *ROOT
+        root_directory: *RESOURCES
         project_directory: *RESOURCES
         project_directory_type: directory
   - description: Directory is an existing file
@@ -60,7 +60,7 @@ tests:
     assertions:
     - method: assertions.app.assert_equals
       expected:
-        root_directory: *ROOT
+        root_directory: ${ROOT_DIR}/main/shared/get_locations/test_resources
         project_directory: ${ROOT_DIR}/main/shared/get_locations/test_resources/app.py
         project_directory_type: file
   - description: Location that starts with a dot
@@ -69,7 +69,7 @@ tests:
     assertions:
     - method: assertions.app.assert_equals
       expected:
-        root_directory: *ROOT
+        root_directory: ${ROOT_DIR}
         project_directory: ${ROOT_DIR}/main/shared/get_locations/test_resources
         project_directory_type: directory
 - function: format_exclude_files
@@ -335,22 +335,25 @@ tests:
       expected: null
   - description: Module is null
     arguments:
-      module: null
+      module: location/module.py
+      root_directory: ''
     assertions:
     - method: assertions.app.assert_equals
-      expected: null
+      expected: location.module
   - description: Defined module location
     arguments:
       module: location/module.py
+      root_directory: ''
     assertions:
     - method: assertions.app.assert_equals
       expected: location.module
   - description: Location is a string 1
     arguments:
       module: /project_directory/module_route.py
+      root_directory: /project_directory
     assertions:
     - method: assertions.app.assert_equals
-      expected: .project_directory.module_route
+      expected: .module_route
 - function: get_module_locations
   description: Get the locations of modules associated with YAML test files
   tests:
@@ -403,6 +406,7 @@ tests:
       project_directory_type: directory
       project_directory: *RESOURCES
       resources_folder_name: test_resources
+      root_directory: *ROOT
     assertions:
     - method: assertions.app.assert_equals
       expected:
@@ -414,13 +418,14 @@ tests:
       project_directory_type: file
       project_directory: ${ROOT_DIR}/main/shared/get_locations/test_resources/app.py
       resources_folder_name: resources_folder_name
+      root_directory: *ROOT
     assertions:
     - method: assertions.app.assert_equals
       expected:
         locations:
         - yaml: ${ROOT_DIR}/main/shared/get_locations/test_resources/app_test.yml
           module: ${ROOT_DIR}/main/shared/get_locations/test_resources/app.py
-          module_route: main.shared.get_locations.test_resources.app
+          module_route: .main.shared.get_locations.test_resources.app
   - description: Project directory is the location of a directory
     arguments:
       yaml_suffix: _test
@@ -428,13 +433,14 @@ tests:
       project_directory_type: directory
       project_directory: *RESOURCES
       resources_folder_name: resources_folder_name
+      root_directory: *ROOT
     assertions:
     - method: assertions.app.assert_equals
       expected:
         locations:
         - yaml: ${ROOT_DIR}/main/shared/get_locations/test_resources/exclusion_pattern_test.yml
         - yaml: ${ROOT_DIR}/main/shared/get_locations/test_resources/app_test.yml
-- function: get_resources
+- function: get_resource_locations
   description: >
     Get the locations of resources or modules used during
     tests
@@ -481,7 +487,6 @@ tests:
   - description: Defined project directory
     arguments:
       project_directory: *RESOURCES
-      # project_directory: ${ROOT_DIR}/main/shared/get_locations/test_resources/app.py
       resources_folder_name: resources_folder_name
       exclude_files: []
     assertions:
@@ -489,13 +494,13 @@ tests:
       expected:
         locations:
         - module: ${ROOT_DIR}/main/shared/get_locations/test_resources/exclusion_pattern.py
-          module_route: main.shared.get_locations.test_resources.exclusion_pattern
+          module_route: .exclusion_pattern
           resources:
           - ${ROOT_DIR}/main/shared/get_locations/test_resources/resources_folder_name/resource_b.py
           - ${ROOT_DIR}/main/shared/get_locations/test_resources/resources_folder_name/resource_a.py
           yaml: ${ROOT_DIR}/main/shared/get_locations/test_resources/exclusion_pattern_test.yml
         - module: ${ROOT_DIR}/main/shared/get_locations/test_resources/app.py
-          module_route: main.shared.get_locations.test_resources.app
+          module_route: .app
           resources:
           - ${ROOT_DIR}/main/shared/get_locations/test_resources/resources_folder_name/resource_b.py
           - ${ROOT_DIR}/main/shared/get_locations/test_resources/resources_folder_name/resource_a.py

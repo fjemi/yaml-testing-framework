@@ -11,7 +11,8 @@ from get_config.app import main as get_config
 
 
 ROOT_DIRECTORY = os.path.abspath(os.curdir)
-ROOT_DIRECTORY = f'{ROOT_DIRECTORY}/'
+ROOT_DIRECTORY = os.path.normpath(ROOT_DIRECTORY)
+
 MODULE = __file__
 CONFIG = get_config(module=MODULE)
 LOCALS = locals()
@@ -36,10 +37,11 @@ async def format_project_directory(
   if kind in ITERABLE_KINDS:
     project_directory = project_directory[0]
 
-  root = os.path.normpath(ROOT_DIRECTORY)
-  directory = project_directory or root
+  root = project_directory or '.'
+  directory = project_directory or '.'
 
   if directory[0] == '.':
+    root = ROOT_DIRECTORY
     directory = directory[1:]
     directory = os.path.join(
       root,
@@ -53,6 +55,9 @@ async def format_project_directory(
     'directory' * int(os.path.isdir(directory)),
   ]
   project_directory_type = ''.join(project_directory_type)
+  if project_directory_type == 'file':
+    root = os.path.dirname(directory)
+
 
   return {
     'project_directory_type': project_directory_type,
@@ -65,15 +70,12 @@ async def format_project_directory(
 async def format_exclude_files(
   exclude_files: str | List[str] | None = None,
 ) -> dict:
-  kind = type(exclude_files).__name__.lower()
-
-  if kind == 'list':
+  if isinstance(exclude_files, list):
     exclude_files = [*exclude_files, *CONFIG.exclude_files]
-  elif kind == 'str':
+  elif isinstance(exclude_files, str):
     exclude_files = [exclude_files, *CONFIG.exclude_files]
-  elif kind == 'nonetype':
+  elif not exclude_files:
     exclude_files = CONFIG.exclude_files
-
   return {'exclude_files': exclude_files}
 
 
@@ -209,9 +211,10 @@ async def get_file_locations(
 @error_handler()
 async def get_module_route(
   module: str | None = None,
+  root_directory: str | None = None,
 ) -> str:
   route = module.replace(CONFIG.module_extension, '')
-  route = route.replace(ROOT_DIRECTORY, '')
+  route = route.replace(root_directory, '')
   route = os.path.normpath(route)
   route = route.split(os.sep)
   route = '.'.join(route)
@@ -225,6 +228,7 @@ async def get_module_locations(
   # trunk-ignore(ruff/ARG001)
   project_directory: str | None = None,
   project_directory_type: str | None = None,
+  root_directory: str | None = None,
 ) -> dict:
   conditions = [
     project_directory_type == '',
@@ -232,6 +236,8 @@ async def get_module_locations(
   ]
   if True in conditions:
     return {'locations': locations}
+  
+  root_directory = root_directory or ''
 
   n = range(len(locations))
 
@@ -246,7 +252,9 @@ async def get_module_locations(
     module_route = ''
     if index != -1:
       module = location[:index] + CONFIG.module_extension
-      module_route = get_module_route(module=module)
+      module_route = get_module_route(
+        module=module,
+        root_directory=root_directory, )
 
     locations[i].update({
       'module': module,
@@ -258,11 +266,12 @@ async def get_module_locations(
 
 @error_handler()
 async def get_yaml_locations(
-  exclude_files,
-  resources_folder_name,
-  project_directory,
-  project_directory_type,
-  yaml_suffix,
+  exclude_files: str | List[str] | None = None,
+  resources_folder_name: str | None = None,
+  project_directory: str | None = None,
+  root_directory: str | None = None,
+  project_directory_type: str | None = None,
+  yaml_suffix: str | None = None,
 ) -> dict:
   if resources_folder_name not in exclude_files:
     exclude_files.append(resources_folder_name)
@@ -298,16 +307,19 @@ async def get_yaml_locations(
         CONFIG.module_extension,
       )
 
+    module_route = get_module_route(
+        module=module,
+        root_directory=root_directory, )
     locations = [{
       'module': module,
-      'module_route': get_module_route(module=module),
+      'module_route': module_route,
       'yaml': yaml,
     }]
     return {'locations': locations}
 
 
 @error_handler()
-async def get_resources(
+async def get_resource_locations(
   resources_folder_name: str | None = None,
   exclude_files: List[str] | None = None,
   resources: List[str] | None = None,
