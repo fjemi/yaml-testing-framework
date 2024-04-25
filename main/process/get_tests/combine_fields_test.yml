@@ -1,0 +1,236 @@
+configurations:
+  resources:
+  - ${PYTEST_YAML_ROOT_DIR}/assertions/app.py
+
+
+tests:
+- function: main
+  description: Combines values from a parent and child objects
+  tests:
+  - description: Undefined child and parent
+    arguments: {}
+    assertions:
+    - method: assertions.app.check_sns
+      expected: {}
+  - description: Field is description
+    arguments:
+      high: description
+      low:
+      - description_a
+      - description_b
+      field: description
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        output:
+        - description
+        - description_a
+        - description_b
+- function: combine_levels_as_list
+  description: Returns a list containing the values for the high and low levels
+  cast_arguments:
+  - method: sns
+    field: levels
+    unpack: True
+  tests:
+  - description: Empty levels
+    arguments:
+      levels:
+        high: []
+        low: []
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        output: []
+  - description: Defined levels
+    arguments:
+      levels:
+        high: [a, b]
+        low: [c]
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        output: [a, b, c]
+- function: combine_levels_as_dict
+  description: >
+    Returns a dictionary with key/values from the low and high level, with low
+    values taking precedent over high level values.
+  cast_arguments:
+  - method: sns
+    field: levels
+    unpack: true
+  tests:
+  - description: Empty dictionaries
+    arguments:
+      levels:
+        high: {}
+        low: {}
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        output: {}
+  - description: Dictionary with defined key/values
+    arguments:
+      levels:
+        high:
+          a: a
+          c: c
+        low:
+          a: A
+          b: b
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        output:
+          a: A
+          b: b
+          c: c
+  - description: Low level value is not a dict
+    arguments:
+      levels:
+        high:
+          a: a
+          c: c
+        low: null
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        output:
+          a: a
+          c: c
+- function: combine_levels_as_low_or_high
+  description: Returns the low or high level
+  cast_arguments:
+  - method: sns
+    unpack: true
+    field: levels
+  tests:
+  - description: Undefined level values
+    arguments:
+      levels:
+        high: null
+        low: null
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        output: null
+  - description: Low and high values are defined
+    arguments:
+      levels:
+        high: high
+        low: low
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        output: low
+  - description: High value is defined
+    arguments:
+      levels:
+        high: high
+        low: null
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        output: high
+- function: combine_levels_as_high_or_low
+  description: Returns the high or low level
+  cast_arguments:
+  - method: sns
+    unpack: true
+    field: levels
+  tests:
+  - description: Undefined level values
+    arguments:
+      levels:
+        high: null
+        low: null
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        output: null
+  - description: Low and high values are defined
+    arguments:
+      levels:
+        high: high
+        low: low
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        output: high
+  - description: High value is undefined
+    arguments:
+      levels:
+        high: null
+        low: low
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        output: low
+- function: combine_levels_as_high
+  description: Returns the high value
+  cast_arguments:
+  - method: sns
+    unpack: true
+    field: levels
+  tests:
+  - description: Undefined level values
+    arguments:
+      levels:
+        high: null
+        low: null
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        output: null
+  - description: Low and high values are defined
+    arguments:
+      levels:
+        high: high
+        low: low
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        output: high
+  - description: High value is defined
+    arguments:
+      levels:
+        high: high
+        low: null
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        output: high
+- function: combine_levels_as_low
+  description: Returns the low value
+  cast_arguments:
+  - method: sns
+    unpack: true
+    field: levels
+  tests:
+  - description: Undefined level values
+    arguments:
+      levels:
+        high: null
+        low: null
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        output: null
+  - description: Low and high values are defined
+    arguments:
+      levels:
+        high: high
+        low: low
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        output: low
+  - description: Low is undefined
+    arguments:
+      levels:
+        high: high
+        low: null
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        output: null

@@ -1,0 +1,808 @@
+TODO:
+- Add test for decorated function and awaitable to ./main/app_test.yaml
+- Finalize logging and tests
+- Think of moving format_exception_and_trace to logger
+- |
+    Finish test for handle_logging. Need a spy:
+    - wrapper
+    - patch function with wrapper, wrappers has counter to keep track of times called and arguments passed in
+    - timestamp
+    - put this in the patch
+    - output should be sns with fields output, called - bool, called_with - dict, called_count - int
+    - will need the module
+
+
+resource:
+- https://stackoverflow.com/questions/5218895/python-nested-functions-variable-scoping
+
+
+configurations:
+  resources:
+  - ${PYTEST_YAML_ROOT_DIR}/assertions/app.py
+  - ${PYTEST_YAML_ROOT_DIR}/main/utils/_resources/independent.py
+
+
+tests:
+- function: convert_string_to_list
+  description: Converts a list in YAML string format to a list object
+  tests:
+  - description: Empty string
+    arguments:
+      string: ''
+    assertions:
+    - method: assertions.app.check_equals
+      expected: null
+  - description: String in YAML list format
+    arguments:
+      string: |
+        - a
+        - b
+    assertions:
+    - method: assertions.app.check_equals
+      expected:
+      - a
+      - b
+  - description: List object
+    arguments:
+      string:
+      - 1
+      - 2
+    assertions:
+    - method: assertions.app.check_equals
+      expected:
+      - 1
+      - 2
+- function: get_yaml_loader
+  description: >
+    Returns a YAML Loader (Base, Safe, or Full). Safe is default and can set the
+    environment variable PYTEST_YAML_YAML_LOADER to a loader to use
+  tests:
+  - description: SafeLoader is default
+    arguments: {}
+    assertions:
+    - method: assertions.app.check_equals
+      field: __class__.__name__
+      expected: type
+    - method: assertions.app.check_equals
+      cast_output:
+      - method: __builtins__.str
+      expected: "<class 'yaml.loader.SafeLoader'>\n..."
+  - description: Environment variable set to loader that doesn't exist
+    patches:
+    - method: value
+      route: CONFIG.environment.PYTEST_YAML_YAML_LOADER
+      value: DOES_NOT_EXIST
+    arguments: {}
+    assertions:
+    - method: assertions.app.check_equals
+      cast_output:
+      - method: __builtins__.str
+      expected: "<class 'yaml.loader.SafeLoader'>\n..."
+  - description: Environment variable set to Full
+    patches:
+    - method: value
+      route: CONFIG.environment.PYTEST_YAML_YAML_LOADER
+      value: Full
+    arguments: {}
+    assertions:
+    - method: assertions.app.check_equals
+      cast_output:
+      - method: __builtins__.str
+      expected: "<class 'yaml.loader.FullLoader'>\n..."
+- function: get_yaml_content
+  description: >
+    Returns content from a YAML file or an empty dictionary if the file does
+    not exist
+  tests:
+  - description: Location is undefined
+    arguments:
+      location: null
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        log: No YAML file at None
+    - method: assertions.app.check_equals
+      field: content
+      expected: {}
+  - description: Location does not exist
+    arguments:
+      location: location_does_not_exist
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        log: No YAML file at location_does_not_exist
+    - method: assertions.app.check_equals
+      field: content
+      expected: {}
+  - description: Location is an existing YAML file
+    arguments:
+      location: ${PYTEST_YAML_ROOT_DIR}/main/utils/_resources/independent.yaml
+    assertions:
+    - method: assertions.app.check_equals
+      field: content
+      expected:
+        hello: world
+- function: is_coroutine
+  description: Returns True if an object is a coroutine and False otherwise
+  cast_arguments:
+  - method: _resources.independent.get_function
+    field: object
+  tests:
+  - description: Object is undefined
+    arguments:
+      object: null
+    assertions:
+    - method: assertions.app.check_equals
+      expected: False
+  - description: Object is callable
+    arguments:
+      object: callable_function
+    assertions:
+    - method: assertions.app.check_equals
+      expected: False
+  - description: Object is awaitable
+    arguments:
+      object: awaitable_function
+    assertions:
+    - method: assertions.app.check_equals
+      expected: True
+- function: get_task_from_event_loop
+  description: Returns the output of an awaitable or callable function
+  cast_arguments:
+  - method: _resources.independent.get_task
+    field: task
+  tests:
+  - description: Task is undefined
+    arguments:
+      task: null
+    assertions:
+    - method: assertions.app.check_equals
+      expected: null
+  - description: Task is callable output
+    arguments:
+      task: callable_function
+    assertions:
+    - method: assertions.app.check_equals
+      expected: callable_output
+  - description: Task is awaitable output
+    arguments:
+      task: awaitable_function
+    assertions:
+    - method: assertions.app.check_equals
+      expected: awaitable_output
+- function: get_function_parameters
+  description: Returns a list containing a functions parameters
+  cast_arguments:
+  - field: function
+    method: _resources.independent.get_function
+  tests:
+  - description: Function is undefined
+    arguments:
+      function: null
+    assertions:
+    - method: assertions.app.check_exception
+      expected: AttributeError
+  - description: Function is a callable
+    arguments:
+      function: callable_function
+    assertions:
+    - method: assertions.app.check_equals
+      expected:
+      - parameter_a
+  - description: Function is a awaitable
+  #   arguments:
+  #     function: awaitable_function
+  #   assertions:
+  #   - method: assertions.app.check_equals
+  #     expected:
+  #     - parameter_a
+  #     - parameter_b
+  - description: Decorated callable
+    arguments:
+      function: decorated_callable
+    assertions:
+    - method: assertions.app.check_item_in_list
+      expected:
+      - parameter_a
+      - parameter_b
+      - parameter_c
+  - description: Decorated awaitable
+    arguments:
+      function: decorated_awaitable
+    assertions:
+    - method: assertions.app.check_item_in_list
+      expected:
+      - parameter_a
+      - parameter_b
+      - parameter_c
+- function: get_function_arguments
+  cast_arguments:
+  - field: function
+    method: _resources.independent.get_function
+  description: >
+    Returns the values of arguments from an object that are associated with a
+    list parameters
+  tests:
+  - description: Undefined arguments
+    arguments:
+      data: null
+      function: null
+    assertions:
+    - method: assertions.app.check_exception
+      expected: AttributeError
+  - description: Function is a callable and data is an empty dictionary
+    arguments:
+      data: {}
+      function: callable_function
+    assertions:
+    - method: assertions.app.check_equals
+      expected:
+        parameter_a: null
+  - description: Function is a callable and data is a non-empty dictionary
+    arguments:
+      data:
+        parameter_a: parameter_a
+      function: callable_function
+    assertions:
+    - method: assertions.app.check_equals
+      expected:
+        parameter_a: parameter_a
+  - description: Function is an awaitable and data is a non-empty dictionary
+    arguments:
+      data:
+        parameter_a: a
+      function: awaitable_function
+    assertions:
+    - method: assertions.app.check_equals
+      expected:
+        parameter_a: a
+        parameter_b: null
+  - description: >
+      Function is an awaitable and data is a simple name space with defined fields
+    cast_arguments:
+    - method: sns
+      unpack: true
+      field: data
+    arguments:
+      data:
+        parameter_a: A
+        parameter_b: B
+      function: awaitable_function
+    assertions:
+    - method: assertions.app.check_equals
+      expected:
+        parameter_a: A
+        parameter_b: B
+- function: format_output
+  description: Formats output from performing an operation as a dictionary
+  tests:
+  - description: Output is undefined
+    arguments:
+      output: null
+    assertions:
+    - method: assertions.app.check_equals
+      expected: {}
+  - description: Output is a dict
+    arguments:
+      output:
+        key: value
+    assertions:
+    - method: assertions.app.check_equals
+      expected:
+        key: value
+  - description: Output is a simple name space
+    cast_arguments:
+    - method: sns
+      unpack: true
+      field: output
+    arguments:
+      output:
+        field: value
+    assertions:
+    - method: assertions.app.check_equals
+      expected:
+        field: value
+  - description: Output is a list
+    arguments:
+      output: []
+    assertions:
+    - method: assertions.app.check_equals
+      expected: null
+- function: format_exception_and_trace
+  description: Formats an exception and its trace
+  cast_arguments:
+  - method: _resources.independent.get_exception
+    field: exception
+  tests:
+  - description: Undefined arguments
+    arguments:
+      exception: null
+    assertions:
+    - method: assertions.app.check_exception
+      expected: AttributeError
+  - description: Runtime error
+    arguments:
+      exception: runtime_error
+    assertions:
+    - method: assertions.app.check_equals
+      expected:
+        description: runtime_error
+        trace: []
+        name: RuntimeError
+  - description: Type error
+    arguments:
+      exception: type_error
+    assertions:
+    - method: assertions.app.check_equals
+      expected:
+        description: 'unsupported operand type(s) for +: ''int'' and ''str'''
+        trace:
+        - file: ${PYTEST_YAML_ROOT_DIR}/main/utils/_resources/independent.py
+          line: 63
+          name: add
+        name: TypeError
+
+# - function: get_log
+#   d
+# - function: format_log
+#   description: >
+#     Handles calling the logger where there are log messages, exceptions, or
+#     debugging is enabled
+#   tests:
+#   - description: Undefined arguments
+#     arguments: {}
+#     assertions:
+#     - method: assertions.app.check_exception
+#       expected: AttributeError
+#   - description: >
+#       Output does not contain log and is not an exception. Debug flag is not
+#       true.
+#     arguments:
+#       operation: operation
+#       arguments:
+#         a: a
+#         b: b
+#       timestamps: timestamps
+#       output: {}
+#     assertions:
+#     - method: assertions.app.check_equals
+#       expected:
+#         enabled: False
+#   - description: >
+#       Output contains a log and is not an exception. Debug flag is not true.
+#     arguments:
+#       operation: operation
+#       arguments:
+#         a: a
+#         b: b
+#       timestamps: timestamps
+#       output:
+#         log: log
+#     assertions:
+#     - method: assertions.app.check_equals
+#       expected:
+#         debug: False
+#         standard_output: False
+#         format: yaml
+#         level: info
+#         log:
+#           message: log
+#           operation: operation
+#           timestamps: timestamps
+#   - description: Log arguments and output when debug is true
+#     cast_arguments:
+#     - method: sns
+#       unpack: True
+#       field: output.log
+#     arguments:
+#       operation: operation
+#       arguments:
+#         a: a
+#         b: b
+#       timestamps:
+#         start: 1
+#         end: 2
+#         runtime_ms: 1
+#       output:
+#         c: c
+#         d: d
+#         log:
+#           message: message
+#           level: warning
+#       debug_flag: true
+#     assertions:
+#     - method: assertions.app.check_equals
+#       expected:
+#         debug: true
+#         standard_output: true
+#         format: yaml
+#         level: warning
+#         log:
+#           arguments:
+#             a: a
+#             b: b
+#           message: message
+#           operation: operation
+#           output:
+#             c: c
+#             d: d
+#           timestamps:
+#             start: 1
+#             end: 2
+#             runtime_ms: 1
+#   - description: Log arguments and output when debug is true
+#     cast_arguments:
+#     - method: sns
+#       unpack: True
+#       field: output.log
+#     arguments:
+#       operation: operation
+#       arguments:
+#         a: a
+#         b: b
+#       timestamps: timestamps
+#       output:
+#         c: c
+#         d: d
+#         log:
+#           message: message
+#           level: warning
+#       debug_flag: true
+#     assertions:
+#     - method: assertions.app.check_equals
+#       expected:
+#         debug: true
+#         standard_output: true
+#         format: yaml
+#         level: warning
+#         log:
+#           arguments:
+#             a: a
+#             b: b
+#           message: message
+#           operation: operation
+#           output:
+#             c: c
+#             d: d
+#           timestamps: timestamps
+#   - cast_arguments:
+#     - field: output.exception
+#       method: _resources.independent.get_exception
+#     description: >
+#       Output contains an exception. Debug flag is not true.
+#     arguments:
+#       operation: operation
+#       arguments:
+#         a: a
+#         b: b
+#       timestamps: timestamps
+#       output:
+#         exception: exception
+#       exception_flag: true
+#     assertions:
+#     - method: assertions.app.check_equals
+#       expected:
+#         debug: False
+#         standard_output: true
+#         format: yaml
+#         level: error
+#         log:
+#           arguments:
+#             a: a
+#             b: b
+#           exception:
+#             description: ''
+#             name: Exception
+#             trace: []
+#           operation: operation
+#           timestamps: timestamps
+
+#   # # TODO: Need a spy on the logger.main to test this function
+#   # - description: Log is an exception
+#   #   arguments:
+#   #   assertions:
+#   #   - method:
+#   #     expected:
+#   # - description: Log is a message
+#   #   arguments:
+#   #   assertions:
+#   #   - method:
+#   #     expected:
+
+- function: get_function_output
+  description: >
+    Returns the output from calling a function with an unpacked dictionary
+  cast_arguments:
+  - field: data
+    method: sns
+    unpack: true
+  - field: data.function
+    method: _resources.independent.get_function
+  tests:
+  - description: Return expected output from adding two integers
+    arguments:
+      data:
+        function: add
+        arguments:
+          a: 1
+          b: 2
+    assertions:
+    - method: assertions.app.check_sns
+      field: output
+      expected:
+        c: 3
+    - method: assertions.app.check_type
+      field: timestamps
+      expected: SimpleNamespace
+- function: update_data_fields
+  description: >
+    Updates fields in a data object with values from a dictionary type
+  cast_arguments:
+  - method: sns
+    unpack: True
+    field: data
+  tests:
+  - description: Output and data are empty dictionaries
+    arguments:
+      data:
+        output: {}
+        data: {}
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        output: {}
+        data: {}
+  - description: Output is a non-empty dictionary
+    arguments:
+      data:
+        output:
+          a: A
+          b: B
+        data: {}
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        data:
+          a: A
+          b: B
+  - description: Output is a non-empty dictionary and data is a simplenamespace
+    cast_arguments:
+    - field: data.data
+      method: sns
+      unpack: true
+    arguments:
+      data:
+        output:
+          c: C
+          d: D
+        data: {}
+    assertions:
+    - method: assertions.app.check_equals
+      field: data.__dict__
+      expected:
+        c: C
+        d: D
+- function: get_timestamp
+  description: Returns a timestamp; seconds past epoch
+  tests:
+  - description: Kind is undefined
+    arguments:
+      kind: null
+    assertions:
+    - method: assertions.app.check_type
+      expected: float
+  - description: Kind is defined as a integer
+    arguments:
+      kind: int
+    assertions:
+    - method: assertions.app.check_type
+      expected: int
+- function: get_runtime_in_ms
+  description: Returns a dict containing start,end, and run times
+  cast_arguments:
+  - field: timestamps
+    method: sns
+    unpack: True
+  tests:
+  - description: Undefined arguments
+    arguments:
+      timestamps: {}
+    assertions:
+    - method: assertions.app.check_exception
+      expected: AttributeError
+  - description: End and run times should be integers
+    arguments:
+      timestamps:
+        start: 0
+    assertions:
+    - method: assertions.app.check_type
+      field: end
+      expected: float
+    - method: assertions.app.check_type
+      field: runtime_ms
+      expected: float
+  - patches:
+    - route: get_timestamp
+      method: callable
+      value: 2
+    description: End and run times should be integers
+    arguments:
+      timestamps:
+        start: 0
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        start: 0
+        end: 2
+        runtime_ms: 2000
+- function: delete_field
+  description: Removes an attribute from an object or a key from a dictionary
+  tests:
+  - description: Remove an attribute from a simple name space
+    cast_arguments:
+    - field: parent
+      method: sns
+      unpack: true
+    arguments:
+      parent:
+        field_a: value_a
+        field_b: value_b
+      field: field_b
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        field_a: value_a
+        field_b: null
+  - description: Remove a key from a dictionary
+    arguments:
+      parent:
+        key_a: value_a
+        key_b: value_b
+      field: key_b
+    assertions:
+    - method: assertions.app.check_equals
+      expected:
+        key_a: value_a
+- function: purge_data_and_output_fields
+  description: >
+    Removes fields from data and output after an operation has been processed. 
+    Fields to remove are listed under the _cleanup key in an operation's output.
+  cast_arguments:
+  - field: data
+    method: sns
+    unpack: true
+  tests:
+  - description: Data and output are empty dictionaries
+    arguments:
+      data:
+        output: {}
+        data: {}
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        output: {}
+        data: {}
+  - description: Output contains fields to cleanup
+    arguments:
+      data:
+        output:
+          _cleanup:
+          - a
+          - c
+        data:
+          a: A
+          b: B
+          c: C
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        output: {}
+        data:
+          b: B
+  - description: >
+      Output contains fields to cleanup and data is of type simple name space
+    cast_arguments:
+    - field: data.data
+      method: sns
+      unpack: true
+    arguments:
+      data:
+        output:
+          _cleanup:
+          - 1
+          - 2
+        data:
+          1: 1
+          2: 2
+          3: 3
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        output: {}
+        data:
+          3: 3
+- function: process_operations
+  description: >
+    Performs a list of operations on data that can be represented as a
+    dictionary
+  cast_arguments:
+  - method: _resources.independent.get_locals
+    field: functions
+  tests:
+  - description: Undefined arguments
+    arguments:
+      operations: null
+      data: null
+      functions: null
+    assertions:
+    - method: assertions.app.check_exception
+      expected: TypeError
+  - description: Perform operations on a dictionary
+    arguments:
+      operations:
+      - add
+      - subtract
+      - multiply
+      data:
+        a: 0
+        b: 0
+        c: 0
+      functions: null
+    assertions:
+    - method: assertions.app.check_equals
+      expected:
+        a: 0
+        b: 0
+        c: 0
+  - cast_arguments:
+    - method: sns
+      field: data
+      unpack: true
+    description: Perform operations on a simple name space
+    arguments:
+      operations:
+      - add
+      - subtract
+      - multiply
+      data:
+        a: 1
+        b: 2
+        c: 3
+      functions: null
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        a: 6
+        b: 2
+        c: 3
+  - description: An exception occurs during an operation
+    arguments:
+      operations:
+      - add
+      - subtract
+      - multiply
+      data:
+        a: '0'
+        b: 1
+        c: '2'
+      functions: null
+    assertions:
+    - method: assertions.app.check_equals
+      cast_output:
+      - method: _resources.independent.get_exception_name
+        field: exception
+      expected:
+        a: '2'
+        b: 1
+        c: '2'
+        exception: TypeError
+  - description: Operations do not exist in dictionary of functions
+    arguments:
+      operations:
+      - does_not_exist_a
+      data: {}
+      functions: null
+    assertions:
+    - method: assertions.app.check_equals
+      field: __class__.__name__
+      expected: KeyError

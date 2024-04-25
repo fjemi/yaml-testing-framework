@@ -1,2 +1,0 @@
-environment:
-  PYTEST_YAML_DEBUG: ${PYTEST_YAML_DEBUG}

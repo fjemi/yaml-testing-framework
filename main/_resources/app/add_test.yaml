@@ -1,0 +1,21 @@
+configurations:
+  resources:
+  - ${PYTEST_YAML_ROOT_DIR}/assertions/app.py
+
+
+tests:
+- function: add
+  description: Return the result of adding two integers
+  tests:
+  - arguments:
+      a: 1
+      b: 2
+    assertions:
+    - method: assertions.app.check_equals
+      expected: 3
+  - arguments:
+      a: 1
+      b: '1'
+    assertions:
+    - method: assertions.app.check_equals
+      expected: 3

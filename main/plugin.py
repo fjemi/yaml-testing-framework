@@ -1,38 +1,28 @@
 #!.venv/bin/python3
 # -*- coding: utf-8 -*-
 
-import dataclasses as dc
 import os
 from types import ModuleType
+from types import SimpleNamespace as sns
 from typing import Any, List
 
 import pytest as py_test
-from error_handler.app import main as error_handler
-from get_config.app import main as get_config
+from utils import get_object
 
-# trunk-ignore(ruff/F401)
-from utils import app as utils
-
+from main.app import get_config
 from main.app import main as app
 
 
 MODULE = __file__
-CONFIG = get_config(module=MODULE)
+CONFIG = get_config.main()
 CONFIG.root_paths = [
   f'.{os.sep}',
   f'{os.sep}{os.sep}',
   f'.{os.sep}',
-  *CONFIG.root_paths,
-]
+  *CONFIG.root_paths, ]
 LOCALS = locals()
 
 
-@dc.dataclass
-class Data_Class:
-  pass
-
-
-@error_handler()
 def get_options(
   options: dict,
   option_names: dict,
@@ -44,22 +34,17 @@ def get_options(
   return store
 
 
-@error_handler()
 def process_option_exclude_files(
   option: dict | None = None,
   # trunk-ignore(ruff/ARG001)
   config: py_test.Config | None = None,
 ) -> List[str]:
+  option = option or []
   if not isinstance(option, list):
-    return [option]
-
-  if not option:
-    return []
-
+    option = [option]
   return option
 
 
-@error_handler(default_value='')
 def process_option_project_directory(
   option: str | None,
   config: py_test.Config,
@@ -78,15 +63,12 @@ def process_option_project_directory(
   return os.path.normpath(option)
 
 
-@error_handler()
 def get_pytest_parser(pytest_instance: ModuleType) -> py_test.Parser:
-  if not pytest_instance:
-    pytest_instance = get_pytest_instance()
+  pytest_instance = pytest_instance or get_pytest_instance()
   return pytest_instance.Parser
 
 
-@error_handler()
-async def get_pytest_instance(
+def get_pytest_instance(
   # trunk-ignore(ruff/ARG001)
   data: None = None,
 ) -> py_test:
@@ -94,8 +76,14 @@ async def get_pytest_instance(
   return instance
 
 
-@error_handler()
-async def add_args_and_ini_options_to_parser(
+# def pytest_terminal_summary(terminalreporter, exitstatus, config):
+#     # terminalreporter.section("My session")
+#     # terminalreporter.write("My message")
+#     terminalreporter.currentfspath = 1
+#     terminalreporter.ensure_newline()
+
+
+def add_args_and_ini_options_to_parser(
   parser: py_test.Parser,
 ) -> py_test.Parser:
   for argument in CONFIG.options:
@@ -111,13 +99,11 @@ async def add_args_and_ini_options_to_parser(
   return parser
 
 
-@error_handler()
-async def pytest_addoption(parser: py_test.Parser) -> None:
+def pytest_addoption(parser: py_test.Parser) -> None:
   add_args_and_ini_options_to_parser(parser=parser)
 
 
-@error_handler()
-async def pass_through(
+def pass_through(
   option: Any | None = None,
   # trunk-ignore(ruff/ARG001)
   config: py_test.Config | None = None,
@@ -125,8 +111,7 @@ async def pass_through(
   return option
 
 
-@error_handler()
-async def pytest_configure(config: py_test.Config) -> None:
+def pytest_configure(config: py_test.Config) -> None:
   data = {}
 
   names = [item['args'] for item in CONFIG.options]
@@ -141,20 +126,13 @@ async def pytest_configure(config: py_test.Config) -> None:
   py_test.yaml_tests = py_test.yaml_tests or []
 
 
-@error_handler()
-async def set_node_ids(item) -> str:
-  item_callspec = getattr(item, 'callspec', None)
-
-  if not item_callspec:
-    return item
-
-  test = item.callspec.params.get('test', None)
-  kind = type(test).__name__.lower()
-  if kind in CONFIG.null_types:
-    return item
-
-  id_ = f'{test.module_route}.{test.function}'
-  item._nodeid = id_.strip()
+def set_node_ids(item) -> str:
+  if isinstance(item, dict):
+    item = sns(**item)
+  id_ = get_object.main(
+    parent=item,
+    route='callspec.params.test.id_short', )
+  item._nodeid = str(id_).strip()
   return item
 
 
@@ -174,7 +152,7 @@ def format_report_nodeid(nodeid: str) -> str:
   if index != -1:
     nodeid = nodeid[:index]
 
-  match = '::test_['
+  match = 'test_['
   index = nodeid.find(match)
   if index != -1:
     nodeid = nodeid[index + len(match):]
@@ -182,12 +160,11 @@ def format_report_nodeid(nodeid: str) -> str:
   return nodeid.strip()
 
 
-@error_handler()
-async def example() -> None:
-  from invoke_pytest.app import main as invoke_pytest
+def examples() -> None:
+  from utils import invoke_testing_method
 
-  invoke_pytest(project_directory=MODULE)
+  invoke_testing_method.main()
 
 
 if __name__ == '__main__':
-  example()
+  examples()

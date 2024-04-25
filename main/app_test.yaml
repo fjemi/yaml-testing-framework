@@ -1,378 +1,690 @@
-todo:
-- TODO: Add support for user defined logic (example, run_test_for_*) following the example for assertions
-- TODO: Add logic for testing APIs
-- TODO: Make timestamps a list and append timestamp at each logical operation
-- TODO: Add switcher for unpacking based on value and caster in 'execute_test'
-- TODO: Add logic for safe loading or regular loading data from yaml files -> configuration safe_load=true
-- TODO: Add logic to exclude specified modules from being imported as resources; help prevent errors caused by circular references
-- TODO: Add wrapper logic back in for external libraries
-- TODO: Consolidate duplicate code for sync and async functions -> https://stackoverflow.com/questions/27290656/should-i-use-two-asyncio-event-loops-in-one-program/27298880#27298880
+TODO:
+- Add support for user defined logic (example, run_test_for_*) following the example for assertions
+- Add logic for testing APIs
+- Make timestamps a list and append timestamp at each logical operation
+- Add switcher for unpacking based on value and caster in 'execute_test'
+- Add logic for safe loading or regular loading data from yaml files -> configuration safe_load=true
+- Add logic to exclude specified modules from being imported as resources; help prevent errors caused by circular references
+- Add wrapper logic back in for external libraries
+- Consolidate duplicate code for sync and async functions -> https://stackoverflow.com/questions/27290656/should-i-use-two-asyncio-event-loops-in-one-program/27298880#27298880
+- tests as the root key for all tests instead of functions
 
 
-globals:
+configurations:
   resources:
-  - ${ROOT_DIR}/assertions/app.py
+  - ${PYTEST_YAML_ROOT_DIR}/assertions/app.py
+  - ${PYTEST_YAML_ROOT_DIR}/main/_resources/app/app.py
 
 
 tests:
-- function: handle_module
-  description: >
-    Returns the module at a specified
-    location
-  tests:
-  - description: Module location is undefined
-    arguments:
-      module: null
-      module_route: module_route
-    assertions:
-    - method: assertions.app.assert_equals
-      expected:
-        module: ''
-  - description: Module location doesn't exist
-    arguments:
-      module: module
-      module_route: module_route
-    assertions:
-    - method: assertions.app.assert_equals
-      expected:
-        module: ''
-  - description: >
-      Module argument is a list containing the
-      an existing location
-    arguments:
-      module:
-      - ${ROOT_DIR}/main/test_resources/app/app.py
-      module_route: .main.test_resources.app
-    assertions:
-    - method: assertions.app.assert_type
-      field: module
-      expected: module
-    - method: assertions.app.assert_equals
-      field: module.__name__
-      expected: .main.test_resources.app
-  - description: Module location exists
-    arguments:
-      module: ${ROOT_DIR}/main/test_resources/app/app.py
-      module_route: .main.test_resources.app
-    assertions:
-    - method: assertions.app.assert_type
-      field: module
-      expected: module
-    - method: assertions.app.assert_equals
-      field: module.__name__
-      expected: .main.test_resources.app
-- function: handle_resources
-  description: Loads resource modules into the module to test
-  cast_arguments:
-  - caster: test_resources.app.app.module_resource
-    field: module
-  tests:
-  - description: Undefined arguments
-    arguments:
-      module: null
-      resources: null
-    assertions:
-    - method: assertions.app.assert_equals
-      expected:
-        resources: null
-        module: null
-  - description: >
-      Defined arguments. Resources is a list containing the locations of an
-      existing modules, a non-existing module, and a non-python module
-    arguments:
-      module: module
-      resources:
-      - does_not_exist.py
-      - ${ROOT_DIR}/main/test_resources/app/example_b.js
-      - ${ROOT_DIR}/main/test_resources/app/example_b.py
-    assertions:
-    - method: assertions.app.assert_equals
-      field: resources
-      expected: null
-    - method: assertions.app.assert_type
-      field: module
-      expected: module
-    - method: assertions.app.assert_equals
-      field: module.__name__
-      expected: main.test_resources.app.module
-    - method: assertions.app.assert_type
-      field: module.example_b
-      expected: module
-    - method: assertions.app.assert_equals
-      field: module.example_b.__file__
-      expected: ${ROOT_DIR}/main/test_resources/app/example_b.py
-- function: get_function_output
-  description: Returns the result of running a function with arguments
-  cast_arguments:
-  - caster: test_resources.app.app.get_function_output_resource
-  tests:
-  - description: Undefined arguments
-    arguments:
-      function: null
-      arguments: null
-    assertions:
-    - method: assertions.app.assert_equals
-      field: output
-      expected: null
-    - method: assertions.app.assert_type
-      field: exception
-      expected: TypeError
-  - description: Defined arguments
-    arguments:
-      function: function
-      arguments: {}
-    assertions:
-    - method: assertions.app.assert_equals
-      expected:
-        exception: null
-        output: output
-- function: get_function
-  description: Returns an existing function to test
-  cast_arguments:
-  - caster: test_resources.app.app.module_resource
-    field: module
-  tests:
-  - description: Undefined arguments
-    arguments: {}
-    assertions:
-    - method: assertions.app.assert_equals
-      expected:
-        function: null
-  - description: Defined arguments
-    arguments:
-      function: example_function
-      module: example_a
-      module_route: module_route
-    assertions:
-    - method: assertions.app.assert_type
-      field: function
-      expected: function
-    - method: assertions.app.assert_equals
-      field: function.__name__
-      expected: example_function
-- function: handle_id
-  description: Returns the ID of a test
-  cast_arguments:
-  - caster: test_resources.app.handle_id_resource
-  tests:
-  - description: Undefined arguments
-    arguments:
-      function: null
-      module: null
-      description: description
-      # id: id
-    assertions:
-    - method: assertions.app.assert_equals
-      expected:
-        module: ''
-        function: ''
-        description:
-        - description
-  - description: Defined arguments
-    arguments:
-      function: example_function
-      module: module
-      description:
-      - description_a
-      - description_b
-      # id: id
-    assertions:
-    - method: assertions.app.assert_equals
-      expected:
-        module: module
-        function: example_function
-        description:
-        - description_a
-        - description_b
-- function: run_test_for_function
-  description: >
-    Returns the result of running test
-    data for a function
-  cast_arguments:
-  - caster: CONFIG.schema.Test
-    field: test
-    unpack: true
-  - caster: test_resources.app.app.test_resource
-    field: test
-  cast_output:
-  - caster: test_resources.app.app.dc.asdict
-  tests: &RUN_TEST_FOR_FUNCTION_TESTS
-  - description: Undefined arguments
-    arguments: {}
-    assertions:
-    - method: assertions.app.assert_equals
-      cast_output:
-      - caster: __builtins__.str
-        field: exception
-      expected:
-        arguments: null
-        assertions: []
-        cast_arguments: null
-        cast_group: null
-        cast_output: null
-        description: []
-        environment: null
-        exception: '''NoneType'' object is not callable'
-        exclude: null
-        function: ''
-        function_name: null
-        id: null
-        id_long: null
-        id_numeric: null
-        id_short: null
-        module: ''
-        module_route: null
-        n: null
-        output: null
-        patches: null
-        project_directory: null
-        resources: null
-        result: null
-        tests: null
-        timestamp: null
-        yaml: null
-  - description: Defined arguments
-    arguments:
-      test:
-        project_directory: ${ROOT_DIR}/main/test_resources/app/add/app.py
-        module: ${ROOT_DIR}/main/test_resources/app/add/app.py
-        yaml: ${ROOT_DIR}/main/test_resources/app/add/app_test.yaml
-        function: add
-        function_name: add
-        module_route: .main.test_resources.app.add.app
-        arguments:
-          a: 0
-          b: 1
-        resources:
-        - ${ROOT_DIR}/assertions/app.py
-        assertions:
-        - method: assertions.app.assert_equals
-          expected: 1
-    assertions:
-    - method: assertions.app.assert_equals
-      expected:
-        arguments:
-          a: 0
-          b: 1
-        assertions:
-        - method: assertions.app.assert_equals
-          method_name: assertions.app.assert_equals
-          cast_output: []
-          exception: null
-          output: 1
-          expected: 1
-          passed: true
-          field: null
-        cast_arguments: null
-        cast_group: null
-        cast_output: null
-        description: []
-        environment: null
-        exception: null
-        exclude: null
-        function: add
-        function_name: add
-        id: null
-        id_long: null
-        id_numeric: null
-        id_short: null
-        module: ${ROOT_DIR}/main/test_resources/app/add/app.py
-        module_route: .main.test_resources.app.add.app
-        n: null
-        output: 1
-        patches: null
-        project_directory:  ${ROOT_DIR}/main/test_resources/app/add/app.py
-        resources: null
-        result: null
-        tests: null
-        timestamp: null
-        yaml: ${ROOT_DIR}/main/test_resources/app/add/app_test.yaml
-- function: run_test_handler
-  description: Runs a list of tests
-  cast_arguments:
-  - caster: CONFIG.schema.Test
-    field: test
-    unpack: true
-  - caster: test_resources.app.app.test_resource
-    field: test
-  cast_output:
-  - caster: test_resources.app.app.dc.asdict
-  tests:
-  - *RUN_TEST_FOR_FUNCTION_TESTS
-- function: format_timestamp
-  description: Formats a timestamp as a list of timestamps
-  tests:
-  - description: Undefined timestamp argument
-    arguments: {}
-    assertions:
-    - method: assertions.app.assert_type
-      field: timestamp
-      expected: list
-    - method: assertions.app.assert_length
-      field: timestamp
-      expected: 1
-  # Think about patching time.time() to return 'timestamp' for better test
-  - description: timestamp argument is an integer
-    arguments:
-      timestamp: 1111
-    assertions:
-    - method: assertions.app.assert_type
-      field: timestamp
-      expected: list
-    - method: assertions.app.assert_length
-      expected: 2
-      field: timestamp
-    - method: assertions.app.assert_item_in_list
-      field: timestamp
-      expected: 1111
-  - description: timestamp argument is an list
-    arguments:
-      timestamp:
-      - 1111
-      - 1234
-    assertions:
-    - method: assertions.app.assert_type
-      field: timestamp
-      expected: list
-    - method: assertions.app.assert_length
-      field: timestamp
-      expected: 3
-    - method: assertions.app.assert_item_in_list
-      field: timestamp
-      expected: 1111
-    - method: assertions.app.assert_item_in_list
-      field: timestamp
-      expected: 1234
 - function: main
   description: >
     Main module of this application. Returns the results of running tests
   cast_output:
-  - caster: test_resources.app.app.main_resource
+  - method: _resources.app.app.list_sns_to_list_dict
   tests:
-  - arguments:
-      project_directory: ${ROOT_DIR}/main/test_resources/app/add
+  - description: Results from running tests associated with a module
+    arguments:
+      project_directory: ${PYTEST_YAML_ROOT_DIR}/main/_resources/app/add.py
       yaml_suffix: _test
       resources_folder_name: resources_folder_name
-      timestamp: timestamp
+      resources:
+      - ${PYTEST_YAML_ROOT_DIR}/assertions/app.py
     assertions:
-    - method: assertions.app.assert_type
-      expected: dict
-    - method: assertions.app.assert_equals
-      field: arguments
+    - method: assertions.app.check_equals
       expected:
-        a: 0
-        b: 5
-    - method: assertions.app.assert_equals
-      field: output
-      expected: 5
-    - method: assertions.app.assert_equals
-      field: assertions
-      expected:
-      - output: 5
-        exception: null
-        expected: 5
-        field: null
-        method: assertions.app.assert_equals
-        method_name: assertions.app.assert_equals
+      - expected: '3
+      
+          ...'
+        id: ' .main._resources.app.add.add - 0.1 - Return the result of adding two integers '
+        id_short: .main._resources.app.add.add
+        log: '[]'
+        method: check_equals
+        method_name: assertions.app.check_equals
+        module: null
+        output: '!!python/object/apply:builtins.TypeError
+
+          - ''unsupported operand type(s) for +: ''''int'''' and ''''str'''''''
+        passed: false
+      - expected: 3
+        id: ' .main._resources.app.add.add - 0.0 - Return the result of adding two integers '
+        id_short: .main._resources.app.add.add
+        log: null
+        method: check_equals
+        method_name: assertions.app.check_equals
+        module: null
+        output: 3
         passed: true
-        cast_output: []
+# - function: handle_id
+#   description: Returns the ID of a test
+#   tests:
+#   - description: Undefined arguments
+#     arguments: {}
+#     assertions:
+#     - method: assertions.app.check_sns
+#       expected:
+#         id: ' None.None - None '
+#         id_short: None.None
+#         log: Generated test id for None.None
+#     - method: assertions.app.check_type
+#       expected: SimpleNamespace
+#   - description: Defined arguments
+#     arguments:
+#       function: function
+#       module_route: module_route
+#       description:
+#       - description_a
+#       - description_b
+#       key: key
+#     assertions:
+#     - method: assertions.app.check_sns
+#       expected:
+#         id: ' module_route.function - key - description_b '
+#         id_short: module_route.function
+#         log: Generated test id for module_route.function
+# - function: handle_module
+#   description: Returns the module at a specified location
+#   tests:
+#   - description: Undefined arguments
+#     arguments: {}
+#     assertions:
+#     - method: assertions.app.check_sns
+#       expected:
+#         module: null
+#     - method: assertions.app.check_sns
+#       field: log
+#       expected:
+#         message: No module at location None
+#         level: warning
+#   - description: Module does not exist at location
+#     arguments:
+#       module: module_location_does_not_exist
+#       module_location: module_location_does_not_exist
+#     assertions:
+#     - method: assertions.app.check_sns
+#       expected:
+#         module: null
+#     - method: assertions.app.check_sns
+#       field: log
+#       expected:
+#         message: No module at location module_location_does_not_exist
+#         level: warning
+#   - description: Module exists at the location
+#     arguments:
+#       module: ${PYTEST_YAML_ROOT_DIR}/main/_resources/app/app.py
+#       module_route: .main._resources.app.app
+#     assertions:
+#     - method: assertions.app.check_module
+#       field: module
+#       expected:
+#         location: ${PYTEST_YAML_ROOT_DIR}/main/_resources/app/app.py
+# - function: get_resource_route
+#   description: >
+#     Get the route for a resource in a module based on resource and module's
+#     locations
+#   tests:
+#   - description: Undefined arguments
+#     arguments:
+#       module: null
+#       resource: null
+#     assertions:
+#     - method: assertions.app.check_exception
+#       expected: TypeError
+#   - description: Defined arguments
+#     arguments:
+#       module: module.py
+#       resource: resource.py
+#     assertions:
+#     - method: assertions.app.check_equals
+#       expected: resource
+#   - description: Resource and module in shared directory
+#     arguments:
+#       module: directory/module.py
+#       resource: directory/resource.py
+#     assertions:
+#     - method: assertions.app.check_equals
+#       expected: resource
+#   - description: Module in sub directory of resource's directory
+#     arguments:
+#       module: directory/sub_directory/module.py
+#       resource: directory/resource.py
+#     assertions:
+#     - method: assertions.app.check_equals
+#       expected: resource
+#   - description: Module and resource are in different directories
+#     arguments:
+#       module: directory_a/module.py
+#       resource: directory_b/resource.py
+#     assertions:
+#     - method: assertions.app.check_equals
+#       expected: directory_b.resource
+#   - description: Resource in sub directory of module's directory
+#     arguments:
+#       module: directory/module.py
+#       resource: directory/sub_directory/resource.py
+#     assertions:
+#     - method: assertions.app.check_equals
+#       expected: sub_directory.resource
+# - function: handle_resources
+#   description: Loads resource modules into the module to test
+#   cast_arguments:
+#   - method: _resources.app.app.get_module_wrapper
+#     field: module
+#   tests:
+#   - description: Undefined arguments
+#     arguments: {}
+#     assertions:
+#     - method: assertions.app.check_sns
+#       expected:
+#         module: null
+#         _cleanup:
+#         - resources
+#   - description: >
+#       Resources is a list containing the locations of existing python and
+#       javascript modules, and the location of a non-existing module
+#     arguments:
+#       module: ${PYTEST_YAML_ROOT_DIR}/main/_resources/app/module.py
+#       resources:
+#       - does_not_exist.py
+#       - ${PYTEST_YAML_ROOT_DIR}/main/_resources/app/resource.js
+#       - ${PYTEST_YAML_ROOT_DIR}/main/_resources/app/resource.py
+#     assertions:
+#     - method: assertions.app.check_sns
+#       expected:
+#         _cleanup:
+#         - resources
+#     - method: assertions.app.check_sns
+#       field: log
+#       expected:
+#         level: warning
+#         standard_output: true
+#         resources_ignored:
+#         - does_not_exist.py
+#         - ${PYTEST_YAML_ROOT_DIR}/main/_resources/app/resource.js
+#     - method: assertions.app.check_module
+#       field: module
+#       expected:
+#         location: ${PWD}/main/_resources/app/module.py
+#     # Verify that the resource was added to the module
+#     - method: assertions.app.check_module
+#       field: module.resource
+#       expected:
+#         location: ${PYTEST_YAML_ROOT_DIR}/main/_resources/app/resource.py
+# - function: handle_casting_arguments
+#   description: Handles casting arguments used to call test function
+#   cast_arguments:
+#   - method: _resources.app.app.get_module_wrapper
+#     field: module
+#   tests:
+#   - description: Undefined arguments
+#     arguments:
+#       cast_arguments: null
+#       module: ${PYTEST_YAML_ROOT_DIR}/main/_resources/app/app.py
+#       arguments: arguments
+#     assertions:
+#     - method: assertions.app.check_sns
+#       expected:
+#         _cleanup:
+#         - cast_arguments
+#         arguments: arguments
+#   - description: Cast arguments is empty
+#     arguments:
+#       cast_arguments: []
+#       module: ${PYTEST_YAML_ROOT_DIR}/main/_resources/app/app.py
+#       arguments: arguments
+#     assertions:
+#     - method: assertions.app.check_sns
+#       expected:
+#         _cleanup:
+#         - cast_arguments
+#         arguments: arguments
+#   - description: Cast string arguments as integer
+#     arguments:
+#       cast_arguments:
+#       - method: __builtins__.int
+#       module: ${PYTEST_YAML_ROOT_DIR}/main/_resources/app/app.py
+#       arguments: '0000'
+#     assertions:
+#     - method: assertions.app.check_sns
+#       expected:
+#         _cleanup:
+#         - cast_arguments
+#         arguments: 0
+#   - description: Cast specific key/value in dictionary
+#     arguments:
+#       cast_arguments:
+#       - method: __builtins__.int
+#         field: key
+#       module: ${PYTEST_YAML_ROOT_DIR}/main/_resources/app/app.py
+#       arguments:
+#         key: '0000'
+#     assertions:
+#     - method: assertions.app.check_sns
+#       expected:
+#         _cleanup:
+#         - cast_arguments
+#         arguments:
+#           key: 0
+# - function: get_function
+#   description: Returns an existing function to test
+#   cast_arguments:
+#   - method: _resources.app.app.get_module_wrapper
+#     field: module
+#   tests:
+#   - description: Undefined arguments
+#     arguments:
+#       function: null
+#       module: ${PWD}/main/_resources/app/module.py
+#     assertions:
+#     - method: assertions.app.check_sns
+#       expected:
+#         function_name: None
+#     - method: assertions.app.check_sns
+#       field: log
+#       expected:
+#         log: Could not retrieve None from ${PYTEST_YAML_ROOT_DIR}/main/_resources/app/module.py
+#         level: warning
+#         standard_output: true
+#   - description: Defined arguments
+#     arguments:
+#       function: callable
+#       module: ${PWD}/main/_resources/app/module.py
+#     assertions:
+
+#     - method: assertions.app.check_function
+#       field: function
+#       expected:
+#         location: ${PWD}/main/_resources/app/module.py
+#         name: callable
+#     - method: assertions.app.check_sns
+#       expected:
+#         function_name: callable
+# - function: get_function_output_pack_arguments
+#   description: Return result of calling a function with packed arguments
+#   cast_arguments:
+#   - field: function
+#     method: _resources.app.app.get_resource
+#   tests: &GET_FUNCTION_OUTPUT_PACK_ARGUMENTS_TESTS
+#   - description: Return output when exception is undefined
+#     arguments:
+#       exception: null
+#       function: callable
+#       arguments: {}
+#       output: OUTPUT
+#     assertions:
+#     - method: assertions.app.check_sns
+#       expected:
+#         output: OUTPUT
+#   - description: Call function when exception is defined
+#     arguments:
+#       exception: exception
+#       function: add
+#       arguments:
+#         a: 1
+#         b: 1
+#     assertions:
+#     - method: assertions.app.check_sns
+#       expected:
+#         output: 2
+#   - description: Function call results in exception
+#     arguments:
+#       exception: exception
+#       function: add
+#       arguments:
+#         data:
+#           a: 1
+#           b: 1
+#     assertions:
+#     - method: assertions.app.check_exception
+#       field: output
+#       expected: TypeError
+#     - method: assertions.app.check_exception
+#       field: exception
+#       expected: TypeError
+#   - description: Function is an awaitable
+#     arguments:
+#       exception: exception
+#       function: subtract
+#       arguments:
+#         a: 1
+#         b: 1
+#     assertions:
+#     - method: assertions.app.check_sns
+#       expected:
+#         output: 0
+
+
+
+#     # - method: assertions.app.check_exception
+#     #   field: output
+#     #   expected: TypeError
+#     # - method: assertions.app.check_exception
+#     #   field: exception
+#     #   expected: TypeError
+# - function: get_function_output_unpack_arguments
+#   description: Calls a function with an unpacked dictionary as arguments
+#   cast_arguments:
+#   - method: _resources.app.app.get_resource
+#     field: function
+#   tests: &GET_FUNCTION_OUTPUT_UNPACK_ARGUMENTS_TESTS
+#   - description: Undefined arguments
+#     arguments: {}
+#     assertions:
+#     - method: assertions.app.check_sns
+#       field: log
+#       expected:
+#         level: error
+#     - method: assertions.app.check_exception
+#       field: log.error
+#       expected: TypeError
+#     - method: assertions.app.check_exception
+#       field: output
+#       expected: TypeError
+#     # - method: assertions.app.check_exception
+#     #   field: exception
+#     #   expected: TypeError
+#   - description: Call function with unpacked dict
+#     arguments:
+#       function: multiply
+#       arguments:
+#         a: 1
+#         b: 1
+#     assertions:
+#     - method: assertions.app.check_sns
+#       expected:
+#         output: 1
+#   - description: Call function with unpacked list
+#     arguments:
+#       function: multiply
+#       arguments:
+#       - 1
+#       - 1
+#     assertions:
+#     - method: assertions.app.check_sns
+#       expected:
+#         output: 1
+#   - description: >
+#       Argument is iterable that does not reconcile with function parameters
+#     arguments:
+#       function: multiply
+#       arguments: [1, 2, 3]
+#     assertions:
+#     - method: assertions.app.check_sns
+#       field: log
+#       expected:
+#         level: error
+#     - method: assertions.app.check_exception
+#       field: output
+#       expected: TypeError
+# - function: get_function_output
+#   description: Returns the result of running a function with arguments
+#   cast_arguments:
+#   - method: _resources.app.app.get_resource
+#     field: function
+#   tests:
+#   - description: Arguments is an empty dictionary
+#     arguments:
+#       function: add
+#       arguments:
+#         data:
+#           a: 0
+#           b: 1
+#     assertions:
+#     - method: assertions.app.check_sns
+#       expected:
+#         output: 1
+#   - description: Arguments is an empty dictionary
+#     arguments:
+#       function: multiply
+#       arguments:
+#         a: 3
+#         b: 4
+#     assertions:
+#     - method: assertions.app.check_sns
+#       expected:
+#         output: 12
+#   - description: Arguments is an empty list
+#     arguments:
+#       function: subtract
+#       arguments:
+#         data:
+#           b: 3
+#           a: 1
+#     assertions:
+#     - method: assertions.app.check_sns
+#       expected:
+#         output: 2
+#   - description: Arguments is a dict to unpack
+#     arguments:
+#       function: multiply
+#       arguments:
+#         a: 2
+#         b: 2
+#     assertions:
+#     - method: assertions.app.check_sns
+#       expected:
+#         output: 4
+#   - description: Arguments is not a dictionary or iterable
+#     arguments:
+#       function: multiply
+#       arguments:
+#       - 0
+#       - 1
+#     assertions:
+#     - method: assertions.app.check_sns
+#       expected:
+#         output: 0
+# - function: handle_casting_output
+#   description: Handles casting the output from calling the function to test
+#   cast_arguments:
+#   - method: _resources.app.app.get_module_wrapper
+#     field: module
+#   tests:
+#   - description: Undefined arguments
+#     arguments:
+#       cast_output: null
+#       module: ${PYTEST_YAML_ROOT_DIR}/main/_resources/app/app.py
+#       output: null
+#     assertions:
+#     - method: assertions.app.check_sns
+#       expected:
+#         _cleanup:
+#         - cast_output
+#         output: null
+#   - description: Cast output is an empty list
+#     arguments:
+#       cast_output: []
+#       module: ${PYTEST_YAML_ROOT_DIR}/main/_resources/app/app.py
+#       output: output
+#     assertions:
+#     - method: assertions.app.check_sns
+#       expected:
+#         _cleanup:
+#         - cast_output
+#         output: output
+#   - description: Cast output as a string
+#     arguments:
+#       cast_output:
+#       - method: __builtins__.str
+#       module: ${PYTEST_YAML_ROOT_DIR}/main/_resources/app/app.py
+#       output: 1
+#     assertions:
+#     - method: assertions.app.check_sns
+#       expected:
+#         _cleanup:
+#         - cast_output
+#         output: '1'
+#   - description: Cast specific field in output of type simple name space
+#     cast_arguments:
+#     - method: sns
+#       unpack: true
+#       field: output
+#     arguments:
+#       cast_output:
+#       - method: __builtins__.int
+#         field: key
+#       module: ${PYTEST_YAML_ROOT_DIR}/main/_resources/app/app.py
+#       output:
+#         key: '0000'
+#     assertions:
+#     - method: assertions.app.check_sns
+#       field: output
+#       expected:
+#         key: 0
+# - function: run_test_for_function
+#   description: >
+#     Returns assertions from performing operations needed to process a test for a function
+#   cast_arguments:
+#   - method: sns
+#     field: test
+#     unpack: true
+#   # - method: _resources.app.app.get_module_wrapper
+#   #   field: test.module
+#   cast_output:
+#   - method: _resources.app.app.list_sns_to_list_dict
+#   tests:
+#   - description: Undefined test results in empty list
+#     arguments: {}
+#     assertions:
+#     - method: assertions.app.check_equals
+#       expected: []
+#   - description: Defined test returns a list containing assertions
+#     arguments:
+#       test:
+#         project_directory: ${PYTEST_YAML_ROOT_DIR}/main/_resources/app/add.py
+#         module: ${PYTEST_YAML_ROOT_DIR}/main/_resources/app/add.py
+#         yaml: ${PYTEST_YAML_ROOT_DIR}/main/_resources/app/add.yaml
+#         function: add
+#         function_name: add
+#         module_route: .main._resources.app.add.app
+#         key: 0.0
+#         arguments:
+#           a: 0
+#           b: 11
+#         resources:
+#         - ${PYTEST_YAML_ROOT_DIR}/assertions/app.py
+#         assertions:
+#         - method: assertions.app.check_equals
+#           expected: 11
+#     assertions:
+#     - method: assertions.app.check_equals
+#       cast_output:
+#       - method: _resources.app.app.list_sns_to_list_dict
+#       expected:
+#       - cast_output: null
+#         expected: 11
+#         field: null
+#         id: ' .main._resources.app.add.app.add - 0.0 '
+#         id_short: .main._resources.app.add.app.add
+#         method: check_equals
+#         method_name: assertions.app.check_equals
+#         module: null
+#         output: 11
+#         passed: true
+# - function: run_test_handler
+#   description: Handles running tests of various kinds
+#   cast_arguments:
+#   - method: _resources.app.app.list_dict_to_list_sns
+#     field: tests
+#   tests:
+#   - description: Undefined arguments
+#     arguments: {}
+#     assertions:
+#     - method: assertions.app.check_sns
+#       expected:
+#         store: []
+#   - description: Content contains a single test for a function
+#     arguments:
+#       tests:
+#       - resources:
+#         - ${PYTEST_YAML_ROOT_DIR}/assertions/app.py
+#         module: ${PYTEST_YAML_ROOT_DIR}/main/_resources/app/add.py
+#         function: add
+#         description: Return the result of adding two integers
+#         arguments:
+#           a: 1
+#           b: 1
+#         assertions:
+#         - method: assertions.app.check_equals
+#           expected: 2
+#         yaml: ${PYTEST_YAML_ROOT_DIR}/main/_resources/app/add_test.yaml
+#         project_directory: ${PYTEST_YAML_ROOT_DIR}/main/_resources/app/add.py
+#         module_route: app.add.app
+#         key: 0.0
+#     assertions:
+#     - method: assertions.app.check_sns
+#       cast_output:
+#       - method: _resources.app.app.list_sns_to_list_dict
+#         field: store
+#       expected:
+#         store:
+#         - cast_output: null
+#           expected: 2
+#           field: null
+#           id: ' app.add.app.add - 0.0 - Return the result of adding two integers '
+#           id_short: app.add.app.add
+#           method: check_equals
+#           method_name: assertions.app.check_equals
+#           module: null
+#           output: 2
+#           passed: true
+# - function: run_tests
+#   description: >
+#     Performs a number of operations to process content or tests defined in
+#     YAML files provided the locations of a YAML, module, and resource files
+#   cast_arguments:
+#   - method: _resources.app.app.list_dict_to_list_sns
+#     field: locations
+#   tests:
+#   - description: Locations is an empty dictionary
+#     arguments:
+#       locations: []
+#     assertions:
+#     - method: assertions.app.check_sns
+#       field: log
+#       expected:
+#         message: No tests collected
+#         level: warning
+#         standard_output: true
+#   - description: Location of files associated with an "add" module
+#     arguments:
+#       locations:
+#       - module: ${PYTEST_YAML_ROOT_DIR}/main/_resources/app/add.py
+#         module_route: add.app.app
+#         yaml: ${PYTEST_YAML_ROOT_DIR}/main/_resources/app/add_test.yaml
+#         resources:
+#         - ${PYTEST_YAML_ROOT_DIR}/assertions/app.py
+#         - ${PYTEST_YAML_ROOT_DIR}/main/_resources/app/add/resources_folder_name/app.py
+#         project_directory: ${PYTEST_YAML_ROOT_DIR}/main/_resources/app/add/resources_folder_name/app.py
+#     assertions:
+#     - method: assertions.app.check_sns
+#       cast_output:
+#       - field: tests
+#         method: _resources.app.app.list_sns_to_list_dict
+#       expected:
+#         tests:
+#         - cast_output: null
+#           expected: 3
+#           field: null
+#           id: ' add.app.app.add - 0.0 - Return the result of adding two integers '
+#           id_short: add.app.app.add
+#           method: check_equals
+#           method_name: assertions.app.check_equals
+#           module: null
+#           output: 3
+#           passed: true
+#         - cast_output: null
+#           expected: '3
+
+#             ...'
+#           field: null
+#           id: ' add.app.app.add - 0.1 - Return the result of adding two integers '
+#           id_short: add.app.app.add
+#           log: '[]'
+#           method: check_equals
+#           method_name: assertions.app.check_equals
+#           module: null
+#           output: '!!python/object/apply:builtins.TypeError
+
+#             - ''unsupported operand type(s) for +: ''''int'''' and ''''str'''''''
+#           passed: false

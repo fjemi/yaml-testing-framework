@@ -1,0 +1,23 @@
+environment:
+  PYTEST_YAML_DEBUG: ${PYTEST_YAML_DEBUG}
+
+
+empty_values:
+- None
+- null
+- []
+- {}
+- ''
+- '[]'
+- '{}'
+
+
+yaml_extensions:
+- .yaml
+- .yml
+
+
+main_operations:
+- add_configurations_to_root_node
+- get_expanded_nodes
+- remove_roots_of_expanded_nodes

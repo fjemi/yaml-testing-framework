@@ -1,272 +1,15 @@
+TODO:
+- add logic to run tests for specified functions only
+
+
+resources:
+- https://stackoverflow.com/questions/5067604/determine-function-name-from-within-that-function-without-using-traceback
+
+
 environment:
-  ROOT_DIR: ${ROOT_DIR}
+  PYTEST_YAML_ROOT_DIR: ${PYTEST_YAML_ROOT_DIR}
   PYTEST_YAML_DEBUG: ${PYTEST_YAML_DEBUG}
 
-
-schema:
-- &TREE
-  cls_name: Tree
-  description: Using a tree to add resource modules to the module to test
-  slots: False
-  fields:
-  - name: resource
-    type: Any | None
-    description: Resource module to import into the module to test
-    default: null
-  - name: module
-    type: Any | None
-    description: The module to test
-    default: null
-- &CAST
-  cls_name: Cast
-  description: Store data for casting a function's arguments or output
-  slots: False
-  fields:
-  - name: value
-    type: str | Any | None
-    description: Value to cast
-    default: null
-  - name: name
-    type: str | None
-    description: Dot-delimited path to the cast object
-    default: ''
-  - name: module
-    type: ModuleType | None
-    description: Module containing the cast object
-    default: null
-  - name: unpack
-    type: bool
-    description: Flag for unpacking dictionaries, lists, or tuples when casting
-    default: true
-- &ASSERTION
-  # TODO: change the field name `name` to `value`
-  cls_name: Assertion
-  description: Store data for processing test assertions
-  fields:
-  - name: method
-    type: str | None
-    description: The assertion method
-  - name: method_name
-    type: str | None
-    description: The name of an assertion method
-  - name: field
-    type: str | None
-    default: ''
-    description: Dot-delimited path to an attribute or key of the result
-  - name: expected
-    type: Any | None
-    description: Expected output from executing a function
-  - name: output
-    type: Any | None
-    description: Output from the function to verify
-  - name: cast_output
-    type: list | None
-    description: Casts to perform on the output before verifying expected output
-  - name: passed
-    type: bool | None
-    default: false
-    description: Flag indicating whether a test was passed or not
-- &OUTPUTS
-  # TODO: change the field name `name` to `value`
-  cls_name: Outputs
-  description: Store the result of calling a function
-  fields:
-  - name: result
-    type: Any | None
-    description: Result from running a function with arguments
-    default: null
-  - name: exception
-    type: Exception | None
-    default: null
-    description: Exception that occurred from running the function
-- &OPERATIONS
-  cls_name: Operations
-  description: Store data for performing operations on data
-  slots: False
-  fields:
-  - name: parameters
-    type: dict | None
-    description: A function's parameters
-    default: null
-  - name: results
-    type: dict | None
-    description: The result of calling a function
-    default: {}
-  - name: fields
-    type: dict | None
-    description: Parameters/arguments to pass to functions
-    default: {}
-  - name: function
-    type: Callable | None
-    description: A function to call
-    default: null
-- &TEST
-  cls_name: Test
-  description: Contains all of the fields needed to collate and run a test
-  slots: true
-  fields:
-  - name: resources
-    type: str | list | None
-    description: Path to a directory containing resources to use for tests
-    default: ''
-  - name: exclude
-    type: str | list | None
-    description: Functions to exclude from testing and coverage
-    default: []
-  - name: module
-    type: Any | None
-    description: A module or the location to a module in the file system
-    default: null
-  - name: function
-    type: str | None
-    description: Name of the function to test
-    default: ''
-  - name: function_name
-    type: str | None
-    description: Name of the function to test
-    default: ''
-  - name: cast_arguments
-    description: Cast whole or parts of a function's arguments
-    type: List[dict | Cast] | None
-    default: []
-  - name: cast_output
-    description: Cast whole or parts of a function's result
-    type: List[dict | Cast] | None
-    default: []
-  - name: description
-    type: str | None
-    description: Description for a module, test, or case
-    default: ''
-  - name: patches
-    type: list | None
-    description: List containing info on objects to patch
-    default: ''
-  - name: environment
-    type: dict | None
-    default: {}
-    description: Environment variables to use for tests
-  - name: arguments
-    type: dict | None
-    default: {}
-    description: Keyword arguments to pass to functions
-  - name: assertions
-    type: list | None
-    default: []
-    description: >
-      A list of assertions and expected results to verify against
-      the actual result
-  - name: yaml
-    type: str | None
-    description: Path to a YAML test file
-  - name: exception
-    type: dict | None
-    default: {}
-    description: Store any exceptions that occur when runninng a function
-  - name: result
-    type: Any | None
-    default: {}
-    description: Store results of running the function
-  - name: output
-    type: Any | None
-    default: null
-    description: Store results of running the function
-  - name: project_directory
-    type: str | None
-    default: null
-    description: Location of the project's working directory
-  # Order matters
-  # IDs are formatted last
-  - name: id
-    type: str | None
-    default: null
-    description: Unique long ID assigned to each tests
-  - name: id_numeric
-    type: str | None
-    default: null
-    description: Unique numeric ID assigned to each tests
-  - name: id_long
-    type: str | None
-    default: ''
-    description: Unique short ID assigned to each tests
-  - name: id_short
-    type: str | None
-    default: ''
-    description: Unique ID assigned to each tests
-  - name: cast_group
-    type: list | None
-    default: []
-    description: >
-      Keep track of which group, arguments of result,
-      to cast
-  - name: module_route
-    type: str | None
-    description: Location of a module in the file system
-    default: ''
-  - name: n
-    type: int | None
-    description: Store the length of an object
-    default: 0
-  - name: timestamp
-    type: int | None
-    description: A timestamp represented as a integer
-    default: null
-  - name: tests
-    type: list | None
-    description: A list of tests to run
-    default: null
-- &DATA
-  cls_name: Data
-  description: Store data used by the functions in a module
-  slots: true
-  fields:
-  - name: project_directory
-    type: str | None
-    description: The directory containing files to test or path to a module or
-      YAML file to test
-    default: null
-  - name: exclude_files
-    type: str | list | None
-    description: Patterns to match to files for excluding files from testing
-    default: null
-  - name: include_files
-    type: str | list | None
-    description: Patterns to match to files for including files from testing
-    default: null
-  - name: exclude_functions
-    type: str | list | None
-    description: Functions to exclude from testing
-    default: null
-  - name: include_functions
-    type: str | list | None
-    description: Functions to filter or include for testing
-    default: null
-  - name: resources_folder_name
-    type: str | None
-    description: The name of folders containing resource modules
-    default: null
-  - name: yaml_suffix
-    type: str | None
-    description: Suffix for YAML files containing tests
-    default: null
-  - name: timestamp
-    type: str | list | None
-    description: Seconds since epoch
-    default: null
-  - name: locations
-    type: dict | None
-    description: The locations of modules, YAML files, and resources
-    default: null
-  - name: resources
-    type: list | None
-    description: >
-      A list of resource module locations.
-      The modules are used for all tests
-    default: []
-  - name: 'n'  # yamllint disable-line rule:quoted-strings
-    type: int | None
-    description: The number of items or iterations to perform
-    default: null
-  
 
 function_output_fields:
 - result
@@ -324,19 +67,41 @@ test_kinds:
 # Order of operations for testing functions
 # and the fields/values of an object that are
 # required to run functions
-function_operations:
-# - format_timestamp
+run_test_for_functions_operations:
+- handle_id
 - handle_module
 - handle_resources
 - set_environment
 - process_patches
+- handle_casting_arguments
 - get_function
-- process_casts_for_arguments
 - get_function_output
-- process_casts_for_output
+- handle_casting_output
 - process_assertions
-- handle_id
+
+
+run_tests_operations:
+- get_tests
+- run_test_handler
+# - post_processing
 
 
 main_operations:
 - get_locations
+- run_tests
+
+
+unpack_kinds:
+- iterable
+- dict
+- list
+- tuple
+
+
+# get_function_output_operations:
+#   dict:
+#   - get_function_output_for_dict_or_iterable
+#   iterable:
+#   - get_function_output_for_dict_or_iterable
+#   other:
+#   - get_function_output_for_other

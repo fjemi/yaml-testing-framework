@@ -2,272 +2,46 @@
 # -*- coding: utf-8 -*-
 
 import os
-import time
 from types import ModuleType
-from typing import Callable, List
-
-from error_handler.app import main as error_handler
-from get_config.app import main as get_config
+from types import SimpleNamespace as sns
+from typing import Any, Callable, Iterable, List
 
 # trunk-ignore(ruff/F401)
-from get_locations.app import main as get_locations
-from get_module.app import main as get_module
-from get_tests.app import main as get_tests
-from logger.app import main as logger
+from process.assertions import main as process_assertions
+from process.casts import app as casts
 
 # trunk-ignore(ruff/F401)
-from process_assertions.app import main as process_assertions
+from process.environment import main as set_environment
 
 # trunk-ignore(ruff/F401)
-from process_casts import app as process_casts
-from process_casts.app import (
-  # trunk-ignore(ruff/F401)
-  process_casts_for_arguments,  #
-  # trunk-ignore(ruff/F401)
-  process_casts_for_output,
+from process.get_tests.app import main as get_tests
+
+# trunk-ignore(ruff/F401)
+from process.locations import main as get_locations
+
+# trunk-ignore(ruff/F401)
+from process.patches import main as process_patches
+from utils import (
+  get_config,
+  get_module,
+  get_object,
+  independent,
+  logger,
+  schema,
+  set_object,
 )
-
-# trunk-ignore(ruff/F401)
-from process_patches.app import main as process_patches
-from run_multiple_threads.app import main as run_multiple_threads
-
-# trunk-ignore(ruff/F401)
-from set_environment.app import main as set_environment
-from utils import app as utils
-from utils.app import Data_Class
 
 
 MODULE = __file__
-CONFIG = get_config(module=MODULE)
+CONFIG = get_config.main()
 LOCALS = locals()
 
-
-@error_handler()
-async def handle_module(
-  module: str | list | None = None,
-  module_route: str | None = None,
-) -> dict:
-  if isinstance(module_route, list):
-    module_route = module_route[0]
-
-  if isinstance(module, list):
-    module = module[0]
-
-  module = get_module(
-    location=module,
-    name=module_route,
-    pool=False,
-  )
-
-  if module is None:
-    module = ''
-
-  return {'module': module}
+MODULE_EXTENSION = '.py'
+LOGGING_ENABLED = True
+TEST_IDS = {}
 
 
-@error_handler()
-async def handle_resources(
-  module: ModuleType | None = None,
-  resources: List[str] | None = None,
-) -> dict:
-  resources = resources or []
-  visited = []
-  locations_not_processed = []
-
-  for location in resources:
-    extension = os.path.splitext(location)[1]
-    conditions = [
-      os.path.exists(location),
-      extension in CONFIG.module_extensions,
-      location not in visited,
-    ]
-    if False in conditions:
-      locations_not_processed.append(location)
-      continue
-
-    visited.append(location)
-
-    resource = get_module(
-      location=location,
-      pool=False,
-    )
-
-    routes = {
-      'module': module.__file__,
-      'resource': resource.__file__,
-    }
-    for key, value in routes.items():
-      value_ = os.path.normpath(value)
-      value_ = value_.split(os.sep)
-      routes[key] = value_
-    # Get the tree or dot-delimited path to the resource
-    tree = CONFIG.schema.Tree(**routes)
-
-    start = 0
-    n = range(len(tree.resource))
-
-    for i in n:
-      if not tree.resource[i]:
-        continue
-
-      if tree.resource[i] != tree.module[i]:
-        start = i
-        break
-
-    tree = tree.resource[start:]
-    # Add resource to module
-    parent = module
-    for path in tree[:-1]:
-      if not hasattr(parent, path):
-        setattr(
-          parent,
-          path,
-          Data_Class(),
-        )
-      parent = getattr(parent, path)
-    name = tree[-1].replace('.py', '')
-    setattr(parent, name, resource)
-
-  if locations_not_processed:
-    data = [{
-      'resource_locations_not_processed': locations_not_processed,
-      'module': module.__name__, }]
-    task = logger(
-      data_=data,
-      standard_output=CONFIG.environment.PYTEST_YAML_DEBUG, )
-    utils.get_task_from_event_loop(task=task)
-
-  return {
-    'resources': None,
-    'module': module,
-  }
-
-
-@error_handler()
-async def get_function_output(
-  function: Callable | None = None,
-  arguments: dict | None = None,
-) -> dict:
-  output = None
-  exception = None
-  arguments = arguments or {}
-
-  try:
-    output = function(**arguments)
-    output = utils.get_task_from_event_loop(task=output)
-  except Exception as e:
-    exception = utils.get_task_from_event_loop(task=e)
-
-  return {
-    'exception': exception,
-    'output': output,
-  }
-
-
-@error_handler()
-async def get_function(
-  function: str | None = None,
-  module: ModuleType | None = None,
-  module_route: str | None = None,
-) -> dict | None:
-  function_ = function or ''
-
-  kind = type(module_route).__name__.lower()
-  if kind == 'list':
-    module_route = module_route[-1]
-  elif kind == 'nonetype':
-    module_route = ''
-
-  data = [{'function': function_, 'module': module_route}]
-  task = logger(
-    data_=data,
-    standard_output=CONFIG.environment.PYTEST_YAML_DEBUG, )
-  utils.get_task_from_event_loop(task=task)
-
-  function_ = getattr(
-    module,
-    function_,
-    None,
-  )
-  return {'function': function_}
-
-
-@error_handler()
-async def handle_id(
-  function: Callable | None = None,
-  module: ModuleType | None = None,
-  description: str | list | None = None,
-) -> dict:
-  function_ = function
-  kind = type(function_).__name__.lower()
-  if kind == 'function':
-    function_ = function_.__name__
-  function_ = function_ or ''
-
-  kind = type(module).__name__.lower()
-  if kind == 'module':
-    module = module.__file__
-  module = module or ''
-
-  kind = type(description).__name__.lower()
-  if kind not in ['list', 'nonetype']:
-    description = [description]
-  elif kind == 'nonetype':
-    description = []
-
-  return {
-    'module': module,
-    'function': function_,
-    'description': description,
-  }
-
-
-@error_handler()
-async def run_test_for_function(
-  test: Data_Class | None = None,
-) -> Data_Class:
-  return utils.process_operations(
-    operations=CONFIG.function_operations,
-    functions=LOCALS,
-    data=test,
-  )
-
-
-@error_handler()
-async def run_test_handler(
-  test: Data_Class | None = None,
-) -> Data_Class:
-  for kind in CONFIG.test_kinds:
-    if isinstance(test, dict):
-      test = test.get('test', {})
-      test = test or {}
-
-    if getattr(test, kind) in CONFIG.empty_values:
-      continue
-
-    handler = f'run_test_for_{kind}'
-    handler = LOCALS[handler]
-    return handler(test=test)
-
-
-def format_timestamp(timestamp: int | List[int] | None = None) -> dict:
-  kind = type(timestamp).__name__.lower()
-
-  if kind == 'int':
-    timestamp = [
-      timestamp,
-      int(time.time()),
-    ]
-  elif kind == 'list':
-    timestamp.append(int(time.time()))
-  elif kind == 'nonetype':
-    timestamp = [int(time.time())]
-
-  return {'timestamp': timestamp}
-
-
-@error_handler()
-async def main(
+def main(
   project_directory: str | None = None,
   exclude_files: str | List[str] | None = None,
   include_files: str | List[str] | None = None,
@@ -276,45 +50,302 @@ async def main(
   resources_folder_name: str | None = None,
   resources: str | list | None = None,
   yaml_suffix: str | None = None,
-  timestamp: int | None = None,
+  logging_enabled: bool | None = None,
 ) -> list:
-  timestamp = int(time.time()) if not timestamp else timestamp
+  timestamp = independent.get_timestamp()
+  logger.create_logger(
+    logging_enabled=logging_enabled,
+    project_directory=project_directory, )
 
-  data = utils.process_arguments(
-    data_class=CONFIG.schema.Data,
-    locals=locals(),
-  )
-  data = utils.process_operations(
+  # data = locations.main(**locals())
+  data = schema.get_model(name='main.app.Data', data=locals())
+
+  data = independent.process_operations(
     operations=CONFIG.main_operations,
     functions=LOCALS,
-    data=data,
-  )
-
-  store = []
-
-  n = range(len(data.locations))
-  for i in n:
-    data.tests = get_tests(**data.locations[i])
-    data.tests = data.tests or []
-    data.tests = run_multiple_threads(
-      target=run_test_handler,
-      kwargs=data.tests.get(
-        'tests',
-        [],
-      ),
-    )
-    data.tests = data.tests or []
-    store.extend(data.tests)
-
-  return store
+    data=data, )
+  if not hasattr(data, 'tests'):
+    data.tests = []
+  return data.tests
 
 
-@error_handler()
-async def example() -> None:
-  from invoke_pytest.app import main as invoke_pytest
+def handle_id(
+  module_route: str | None = None,
+  function: str | None = None,
+  description: str | List[str] | None = None,
+  key: str | None = None,
+) -> sns:
+  id_short = f'{module_route}.{function}'
+  id_ = f' {id_short} - {key} '
 
-  invoke_pytest(project_directory=MODULE)
+  description = description or []
+  if isinstance(description, list) and len(description) > 0:
+    description = description[-1]
+  if len(description) > 0:
+    description = f'- {description} '
+    id_ = id_ + description
+
+  log = f'Generated test id for {id_short}'
+  return sns(
+    id=id_,
+    id_short=id_short,
+    log=log, )
+
+
+def handle_module(
+  module: str | None = None,
+  module_location: str | None = None,
+  module_route: List[str] | str | None = None,
+  key: str | None = None,
+) -> sns:
+  module = get_module.main(
+    location=module,
+    name=module_route,
+    key=key,
+    pool=False, )
+
+  log = None
+  if not isinstance(module, ModuleType):
+    log = sns(
+      message=f'No module at location {module_location}',
+      location=__file__,
+      operation='handle_module',
+      level='warning', )
+
+  return sns(module=module, log=log)
+
+
+def get_resource_route(
+  resource: str,
+  module: str,
+) -> str:
+  routes = sns(resource=resource, module=module)
+  for key, value in routes.__dict__.items():
+    value_ = os.path.normpath(str(value))
+    value_ = value_.split(os.sep)
+    setattr(routes, key, value_)
+
+  start = 0
+  for i, item in enumerate(routes.resource):
+    if item != routes.module[i]:
+      start = i
+      break
+
+  routes = routes.resource[start:]
+  routes[-1] = routes[-1].replace(MODULE_EXTENSION, '')
+  return '.'.join(routes)
+
+
+def handle_resources(
+  module: ModuleType | None = None,
+  resources: List[str] | str | None = None,
+) -> sns:
+  resources = resources or []
+  visited = []
+  ignored = []
+
+  for location in resources:
+    if location in visited:
+      continue
+    visited.append(location)
+
+    extension = os.path.splitext(location)[1]
+    if False in [
+      os.path.exists(location),
+      extension in CONFIG.module_extensions,
+    ]:
+      ignored.append(location)
+      continue
+
+    resource = get_module.main(
+      location=location,
+      pool=False, )
+    if not isinstance(resource, ModuleType):
+      ignored.append(location)
+      continue
+    route = get_resource_route(
+      module=module.__file__,
+      resource=resource.__file__, )
+    module = set_object.main(
+      parent=module,
+      value=resource,
+      route=route, )
+
+  log = None
+  if ignored:
+    log = sns(
+      resources_ignored=ignored,
+      level='warning',
+      standard_output=True, )
+
+  return sns(module=module, _cleanup=['resources'], log=log)
+
+
+def get_function(
+  function: str | None = None,
+  module: ModuleType | None = None,
+) -> sns:
+  if isinstance(function, Callable):
+    return sns()
+
+  function_ = get_object.main(parent=module, name=function)
+  if isinstance(function_, Callable):
+    return sns(function=function_, function_name=function)
+
+  location = getattr(module, '__file__', None)
+  log = sns(
+    error=f'Could not retrieve {function} from {location}',
+    level='error', )
+  return sns(log=log)
+
+
+def handle_casting_arguments(
+  cast_arguments: list | None = None,
+  module: ModuleType | None = None,
+  arguments: dict | None = None,
+) -> sns:
+  arguments = casts.main(
+    casts=cast_arguments,
+    module=module,
+    object=arguments, )
+  return sns(arguments=arguments, _cleanup=['cast_arguments'])
+
+
+def get_function_output(
+  arguments: sns | dict | None = None,
+  function: Callable | None = None,
+) -> sns:
+  if isinstance(arguments, sns):
+    arguments = arguments.__dict__
+
+  kind = type(arguments).__name__.lower()
+  handler = 'unpack'
+  if kind not in CONFIG.unpack_kinds:
+    handler = 'pack'
+  handler = f'get_function_output_{handler}_arguments'
+  handler = LOCALS[handler]
+  return handler(function=function, arguments=arguments)
+
+
+def get_function_output_unpack_arguments(
+  function: Callable | None = None,
+  arguments: dict | Iterable | None = None,
+) -> sns:
+  output = None
+
+  try:
+    if isinstance(arguments, dict):
+      output = function(**arguments)
+    elif isinstance(arguments, list | tuple):
+      output = function(*arguments)
+    else:
+      output = function(arguments)
+  except Exception as e:
+    output = e
+  finally:
+    output = independent.get_task_from_event_loop(task=output)
+
+  log = None
+  exception = None
+  if isinstance(output, Exception):
+    log = sns(error=output, level='error')
+    exception = output
+
+  return sns(
+    output=output,
+    log=log,
+    exception=exception, )
+
+
+def get_function_output_pack_arguments(
+  function: Callable | None = None,
+  arguments: Any | None = None,
+  exception: Exception | None = None,
+  output: Any | None = None,
+) -> sns:
+  data = sns(output=output)
+
+  if not exception:
+    return data
+
+  try:
+    data.output = function(arguments)
+  except Exception as e:
+    print(e)
+    data.output = e
+  finally:
+    data.output = independent.get_task_from_event_loop(task=data.output)
+
+  if isinstance(data.output, Exception):
+    data.exception = data.output
+    message = f'{type(data.exception).__name__} occurred calling the function'
+    data.log = sns(level='warning', message=message)
+  return data
+
+
+def handle_casting_output(
+  cast_output: list | None = None,
+  module: ModuleType | None = None,
+  output: dict | None = None,
+) -> sns:
+  output = casts.main(
+    casts=cast_output,
+    module=module,
+    object=output, )
+  return sns(output=output, _cleanup=['cast_output'])
+
+
+def run_test_for_function(test: sns | None = None) -> sns:
+  test = independent.process_operations(
+    operations=CONFIG.run_test_for_functions_operations,
+    functions=LOCALS,
+    data=test, )
+  return test.assertions
+
+
+def run_test_handler(tests: list | None = None) -> sns:
+  tests = tests or []
+  results = []
+
+  for test in reversed(tests):
+    target = ''
+    for test_kind in CONFIG.test_kinds:
+      if test_kind in test.__dict__:
+        target = f'run_test_for_{test_kind}'
+        break
+    target = LOCALS.get(target)
+    result = target(test)
+    results.extend(result)
+
+  return sns(tests=results)
+
+
+def run_tests(locations: List[sns] | None = None) -> sns:
+  tests = []
+
+  for i, item in enumerate(locations):
+    result = independent.process_operations(
+      operations=CONFIG.run_tests_operations,
+      functions=LOCALS,
+      data=item, )
+    tests.extend(result.tests)
+
+  log = None
+  if not tests:
+    log = sns(
+      message='No tests collected',
+      level='warning',
+      standard_output=True, )
+
+  return sns(tests=tests, log=log)
+
+
+def examples() -> None:
+  from utils import invoke_testing_method
+
+  invoke_testing_method.main(location=MODULE)
+  # invoke_testing_method.main(location='.')
 
 
 if __name__ == '__main__':
-  example()
+  examples()

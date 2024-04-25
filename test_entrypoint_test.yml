@@ -1,53 +1,46 @@
-todo:
-- TODO: Incorporate the numeric id generated when collating tests ex. 0.1.1 with get_id function
-- TODO: Pass excluded functions and modules to coverage
-- TODO: Move some logic to plugin.py so that all that is needed is to import function test_
+TODO:
+- Pass excluded functions and modules to coverage
+- Move some logic to plugin.py so that all that is needed is to import function test_
 
 
-globals:
-  exclude_functions:
-  - test_
+configurations:
+  # Todo: Is there a way to link these patterns with coverage
+  # exclude_functions_patterns:
+  # - test_
+  # exclude_resources_patterns:
+  # - blank
+  # filter_functions_patterns:
+  # - blank
+  # filter_resources_patterns:
   resources:
-  - ${ROOT_DIR}/assertions/app.py
+  - ${PYTEST_YAML_ROOT_DIR}/_resources/test_entrypoint/app.py
+  - ${PYTEST_YAML_ROOT_DIR}/assertions/app.py
 
 
 tests:
-- function: get_ids
+- function: get_test_id
   description: >
     Returns the id for a test or creates one if the id does not exist.
   cast_arguments:
-  - field: test
-    caster: test_resources.test_entrypoint.app.test_resource
+  - method: sns
+    field: val
+    unpack: true
   tests:
   - arguments:
-      test:
-        id_short: null
+      val:
+        id: null
     assertions:
-    - method: assertions.app.assert_equals
-      expected: test_1
+    - method: assertions.app.check_equals
+      expected: null
   - arguments:
-      test:
-        id_short: id_short
+      val:
+        id: id_b
     assertions:
-    - method: assertions.app.assert_equals
-      expected: id_short
-  - patches:
-    - name: UNNAMED_TEST_COUNT
-      value: 1
-      method: value
-    arguments:
-      test:
-        id_short: null
+    - method: assertions.app.check_equals
+      expected: id_b
+  - arguments:
+      val:
+        id: id_a
     assertions:
-    - method: assertions.app.assert_equals
-      expected: test_2
-  - patches:
-    - name: UNNAMED_TEST_COUNT
-      value: 3
-      method: value
-    arguments:
-      test:
-        id_short: null
-    assertions:
-    - method: assertions.app.assert_equals
-      expected: test_4
+    - method: assertions.app.check_equals
+      expected: id_a

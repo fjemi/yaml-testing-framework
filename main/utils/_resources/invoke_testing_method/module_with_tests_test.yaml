@@ -1,0 +1,18 @@
+configurations:
+  resources:
+  - ${PYTEST_YAML_ROOT_DIR}/assertions/app.py
+
+
+tests:
+- function: hello_world
+  description: Returns a greeting
+  tests:
+  - arguments: {}
+    assertions:
+    - method: assertions.app.check_equals
+      expected: Hello World
+  - arguments:
+      name: Earth
+    assertions:
+    - method: assertions.app.check_equals
+      expected: Hello Earth

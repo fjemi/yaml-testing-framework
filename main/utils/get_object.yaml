@@ -1,0 +1,10 @@
+kinds:
+- dict
+- object
+
+
+undefined:
+- ''
+- .
+- None
+- null

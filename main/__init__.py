@@ -8,10 +8,9 @@ import nest_asyncio
 
 
 MODULE = __file__
-DIRECTORIES = {
-  'main': '',
-  'shared': 'shared',
-}
+DIRECTORIES = dict(main='')
+
+EXCLUDE_DIRECTORIES = ['.ignore', '__pycache__', ]
 
 
 def allow_nested_event_loops(
@@ -22,17 +21,14 @@ def allow_nested_event_loops(
   return 1
 
 
-def add_directories_to_pythonpath(
-  # trunk-ignore(ruff/ARG001)
-  directories: None = None,
-) -> int:
+def add_directories_to_pythonpath(directories: None = None) -> int:
   directories = directories or DIRECTORIES
   root = os.path.dirname(__file__)
 
   for key, value in directories.items():
-    branch = os.path.join(root, value)
-    if branch not in sys.path:
-      sys.path.append(branch)
+    path = os.path.join(root, value)
+    if path not in sys.path:
+      sys.path.append(path)
 
   return 1
 
@@ -41,11 +37,11 @@ allow_nested_event_loops()
 add_directories_to_pythonpath()
 
 
-def example() -> None:
-  from invoke_pytest.app import main as invoke_pytest
+def examples() -> None:
+  from utils import invoke_testing_method
 
-  invoke_pytest(module=MODULE)
+  invoke_testing_method.main()
 
 
 if __name__ == '__main__':
-  example()
+  examples()

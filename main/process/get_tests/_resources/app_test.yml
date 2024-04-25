@@ -1,0 +1,10 @@
+configurations:
+  resources: resource_configuration
+
+
+tests:
+- description: description_a
+- description: description_b
+  tests:
+  - description: description_b0
+  - description: description_b1

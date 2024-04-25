@@ -1,0 +1,35 @@
+a: a
+b:
+- b0
+- b1
+c:
+  d: e
+environment:
+  A: A
+  B: B
+  C: C
+  D: D
+schema:
+  Example: &EXAMPLE
+    description: An example scheme
+    fields:
+    - name: str
+      type: str
+      description: An example of a string field
+      default: ''
+    - name: int
+      type: int
+      description: An example of an integer field
+      default: 0
+    - name: list
+      type: int
+      description: An example of an list field with default items
+      default:
+      - a
+      - b
+    - name: dict
+      type: int
+      description: An example of an list field with default items
+      default:
+        key: value
+

@@ -5,11 +5,11 @@ import dataclasses as dc
 import os
 from typing import Any, List
 
-import yaml as py_yaml
-from setuptools import setup
+import yaml as pyyaml
+import setuptools
 
 
-ROOT_DIRECTORY = os.path.dirname(__file__)
+PYTEST_YAML_ROOT_DIRECTORY = os.path.dirname(__file__)
 
 FILES = '''
 - name: Pipfile.lock
@@ -22,7 +22,7 @@ FILES = '''
   field: long_description
   type: file
 '''
-FILES = py_yaml.safe_load(FILES)
+FILES = pyyaml.safe_load(FILES)
 
 
 @dc.dataclass
@@ -63,23 +63,26 @@ def get_contents(
 
       condition = file.get('type', '') in ['json', 'yaml']
       if condition and content:
-        content = py_yaml.safe_load(content)
+        content = pyyaml.safe_load(content)
 
       store[file.get('field')] = content
 
   return store
 
 
-def get_setup_requires(pipfile_lock: dict) -> List[str]:
-  default = pipfile_lock.get('default')
+def get_setup_requires(
+  pipfile_lock: dict | None = None,
+) -> List[str]:
+  pipfile_lock = pipfile_lock or {}
+  default = pipfile_lock.get('default', {})
   exclude_keys = [
     'coverage',
     'iniconfig',
     'packaging',
     'pluggy',
   ]
-  packages = []
 
+  packages = []
   for key, value in default.items():
     if key not in exclude_keys:
       version = value.get('version')
@@ -127,7 +130,7 @@ def merge_pip_lock_and_setup_yaml(
 
 
 def main(directory: str | None = None) -> Data:
-  directory = directory or ROOT_DIRECTORY
+  directory = directory or PYTEST_YAML_ROOT_DIRECTORY
   data = get_contents(directory=directory)
   data = merge_pip_lock_and_setup_yaml(**data)
   return data
@@ -135,4 +138,4 @@ def main(directory: str | None = None) -> Data:
 
 if __name__ == '__main__':
   data = main()
-  setup(**data)
+  setuptools.setup(**data)

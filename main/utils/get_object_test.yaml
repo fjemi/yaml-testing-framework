@@ -1,0 +1,142 @@
+resources:
+- https://www.w3schools.com/python/ref_func_slice.asp
+
+
+configurations:
+  resources:
+  - ${PYTEST_YAML_ROOT_DIR}/assertions/app.py
+  - ${PYTEST_YAML_ROOT_DIR}/main/utils/_resources/get_object.py
+
+
+tests:
+- function: main
+  description: >
+    Retrieves a child object from a parent object given the dot delimited route
+    to the object
+  tests:
+  - description: Parent is undefined
+    arguments:
+      parent: null
+      name: null
+    assertions:
+    - method: assertions.app.check_equals
+      expected: null
+  - description: Name is not a string
+    arguments:
+      parent: parent
+      name: []
+    assertions:
+    - method: assertions.app.check_equals
+      expected: parent
+  - description: Parent is a module and child is route to builtins function str
+    cast_arguments:
+    - method: _resources.get_object.get_module_wrapper
+      field: parent
+    arguments:
+      parent: ${PYTEST_YAML_ROOT_DIR}/main/utils/_resources/get_object.py
+      route: __builtins__.str
+    assertions:
+    - method: assertions.app.check_equals
+      field: __name__
+      expected: str
+- function: slice_iterable
+  description: Returns a slice of an iterable
+  tests:
+  - description: Undefined arguments
+    arguments: {}
+    assertions:
+    - method: assertions.app.check_exception
+      expected: TypeError
+  - description: Parent is an string. Return char at index 1
+    arguments:
+      parent: parent
+      child: 1
+    assertions:
+    - method: assertions.app.check_equals
+      expected: p
+  - description: Parent is an string. Return chars from index to ending
+    arguments:
+      parent: parent
+      child: 2|
+    assertions:
+    - method: assertions.app.check_equals
+      expected: rent
+  - description: Parent is a list. Return items between indices 2 and 3
+    arguments:
+      parent:
+      - a
+      - b
+      - c
+      - d
+      child: 1|3
+    assertions:
+    - method: assertions.app.check_equals
+      expected:
+      - b
+      - c
+- function: get_child_object
+  description: Returns the value of child within a parent object
+  tests:
+  - description: Undefined arguments
+    arguments: {}
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        parent: null
+        child: null
+  - description: Parent is an string. Return char at index 1
+    arguments:
+      parent: parent
+      child: 1
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        parent: p
+        child: null
+  - description: Parent is an string. Return chars from index to ending
+    arguments:
+      parent: parent
+      child: 2|
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        parent: rent
+        child: null
+  - description: Parent is a list. Return items between indices 2 and 3
+    arguments:
+      parent:
+      - a
+      - b
+      - c
+      - d
+      child: 1|3
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        parent:
+        - b
+        - c
+        child: null
+  - description: Parent is a dict
+    arguments:
+      parent:
+        key: value
+      child: key
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        parent: value
+        child: null
+  - description: Parent is a simple name space
+    cast_arguments:
+    - method: _resources.get_object.parent_to_sns
+      field: parent
+    arguments:
+      parent:
+        field: value
+      child: field
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        parent: value
+        child: null

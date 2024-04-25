@@ -1,0 +1,323 @@
+configurations:
+  resources:
+  - ${PYTEST_YAML_ROOT_DIR}/assertions/app.py
+  - ${PYTEST_YAML_ROOT_DIR}/main/utils/_resources/get_config/app.py
+
+
+tests:
+- function: main
+  description: Returns configurations for a module
+  tests:
+  - description: Module location is set
+    arguments:
+      module: ${PYTEST_YAML_ROOT_DIR}/main/utils/_resources/get_config/app.py
+      config: null
+      environment: null
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        a: a
+        b:
+        - b0
+        - b1
+        c:
+          d: e
+    - method: assertions.app.check_sns
+      field: environment
+      expected:
+        A: A
+        B: B
+        C: C
+        D: D
+    - method: assertions.app.check_sns
+      field: schema
+      expected: {}
+    - method: assertions.app.check_sns
+      field: schema.Example
+      expected:
+        str: ''
+        int: 0
+        list:
+        - a
+        - b
+        dict:
+          key: value
+  - description: YAML location is set
+    arguments:
+      module: null
+      config: ${PYTEST_YAML_ROOT_DIR}/main/utils/_resources/get_config/app.yaml
+      environment: null
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        a: a
+        b:
+        - b0
+        - b1
+        c:
+          d: e
+    - method: assertions.app.check_sns
+      field: environment
+      expected:
+        A: A
+        B: B
+        C: C
+        D: D
+- function: format_config_location
+  description: >
+    Returns the location of a config YAML file associated with a module or
+    a defined YAML file
+  tests:
+  - description: Undefined arguments
+    arguments:
+      module: null
+      config: null
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        config: None
+    - method: assertions.app.check_sns
+      field: log
+      expected:
+        level: error
+        message:
+        - No config YAML file
+        - module: None
+          config: None
+  - description: Config location is set
+    arguments:
+      config: ${PYTEST_YAML_ROOT_DIR}/main/utils/_resources/get_config/app.yaml
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        config: ${PYTEST_YAML_ROOT_DIR}/main/utils/_resources/get_config/app.yaml
+  - description: Module locations is set
+    arguments:
+      module: ${PYTEST_YAML_ROOT_DIR}/main/utils/_resources/get_config/app.py
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        config: ${PYTEST_YAML_ROOT_DIR}/main/utils/_resources/get_config/app.yaml
+- function: get_yaml_content_wrapper
+  description: Returns the content of a YAML file a location
+  tests:
+  - description: Undefined arguments
+    arguments:
+      location: null
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        content: {}
+  - description: YAML location does not exist
+    arguments:
+      location: yaml
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        content: {}
+  - description: YAML location exists
+    arguments:
+      location: ${PYTEST_YAML_ROOT_DIR}/main/utils/_resources/get_config/app.yaml
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        content:
+          a: a
+          b:
+          - b0
+          - b1
+          c:
+            d: e
+          environment:
+            A: A
+            B: B
+            C: C
+            D: D
+          schema:
+            Example:
+              description: An example scheme
+              fields:
+              - name: str
+                type: str
+                description: An example of a string field
+                default: ''
+              - name: int
+                type: int
+                description: An example of an integer field
+                default: 0
+              - name: list
+                type: int
+                description: An example of an list field with default items
+                default:
+                - a
+                - b
+              - name: dict
+                type: int
+                description: An example of an list field with default items
+                default:
+                  key: value
+- function: get_content_from_files
+  description: Returns config and environment content from YAML locations
+  tests:
+  - description: Undefined arguments
+    arguments:
+      environment: null
+      config: null
+    assertions:
+    - method: assertions.app.check_sns
+      field: log
+      expected:
+        level: warning
+        message:
+        - environment: No YAML file at None
+        - schema: No YAML file at None
+        - config: No YAML file at None
+    - method: assertions.app.check_sns
+      field: content
+      expected:
+        config: {}
+        environment: {}
+  - description: Defined environment and config locations
+    arguments:
+      environment: ${PYTEST_YAML_ROOT_DIR}/main/utils/_resources/get_config/environment.yml
+      config: ${PYTEST_YAML_ROOT_DIR}/main/utils/_resources/get_config/config.yml
+    assertions:
+    - method: assertions.app.check_sns
+      field: log
+      expected:
+        level: warning
+        message:
+        - schema: No YAML file at None
+    - method: assertions.app.check_sns
+      field: content
+      expected:
+        config:
+          config: config
+        environment:
+          environment: environment
+- function: format_specified_content_keys
+  description: Sets environment as a SimpleNamespace within config data
+  cast_arguments:
+  - method: _resources.get_config.app.format_environment_content_cast_arguments
+    field: content
+  tests:
+  - description: Undefined arguments
+    arguments:
+      content: null
+    assertions:
+    - method: assertions.app.check_equals
+      field: content.config.schema.__dict__
+      expected: {}
+    - method: assertions.app.check_equals
+      field: content.config.environment.__dict__
+      expected: {}
+  - description: Empty values for specified keys
+    arguments:
+      content:
+        config:
+          environment: {}
+          schema: {}
+    assertions:
+    - method: assertions.app.check_type
+      field: content.config.environment
+      expected: SimpleNamespace
+    - method: assertions.app.check_type
+      field: content.config.schema
+      expected: SimpleNamespace
+  - description: Non-empty values for specified keys
+    arguments:
+      content:
+        config:
+          environment:
+            a: a
+            b: b
+          schema:
+            A:
+              fields:
+              - name: a0
+                default: a0
+            B:
+              fields:
+              - name: b0
+                default: b0
+              - name: b1
+                default: b1
+    assertions:
+    - method: assertions.app.check_sns
+      field: content.config.environment
+      expected:
+        a: a
+        b: b
+    - method: assertions.app.check_type
+      field: content.config.schema
+      expected: SimpleNamespace
+    - method: assertions.app.check_sns
+      field: content.config.schema.A
+      expected:
+        a0: a0
+    - method: assertions.app.check_sns
+      field: content.config.schema.B
+      expected:
+        b0: b0
+        b1: b1
+- function: format_environment_content
+  description: >
+    Formats the environment configuration. Sets variables not previously
+    expand to null.
+  tests:
+  - description: Undefined arguments
+    arguments: {}
+    assertions:
+    - method: assertions.app.check_exception
+      expected: AttributeError
+  - description: Defined arguments
+    arguments:
+      value:
+        a: A
+        b: $B
+        c: ${PYTEST_YAML_ROOT_DIR}
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        a: A
+        b: null
+        c: ${PYTEST_YAML_ROOT_DIR}
+- function: format_schema_content
+  description: >
+    Formats the environment configuration. Sets variables not previously
+    expand to null.
+  tests:
+  - description: Undefined arguments
+    arguments: {}
+    assertions:
+    - method: assertions.app.check_equals
+      field: __dict__
+      expected: {}
+    - method: assertions.app.check_type
+      expected: SimpleNamespace
+  - description: Defined arguments
+    arguments:
+      value:
+        a:
+          fields:
+          - name: b
+            default: b
+          - name: c
+            default: c
+        b:
+          fields:
+          - name: a
+            default: 1
+          - name: b
+            default: 2
+    assertions:
+    - method: assertions.app.check_sns
+      field: a
+      expected:
+        b: b
+        c: c
+    - method: assertions.app.check_sns
+      field: b
+      expected:
+        a: 1
+        b: 2
