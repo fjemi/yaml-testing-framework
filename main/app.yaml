@@ -1,0 +1,107 @@
+TODO:
+- add logic to run tests for specified functions only
+
+
+resources:
+- https://stackoverflow.com/questions/5067604/determine-function-name-from-within-that-function-without-using-traceback
+
+
+environment:
+  PYTEST_YAML_ROOT_DIR: ${PYTEST_YAML_ROOT_DIR}
+  PYTEST_YAML_DEBUG: ${PYTEST_YAML_DEBUG}
+
+
+function_output_fields:
+- result
+- exception
+
+
+cast_groups:
+- arguments
+- result
+
+
+module_extensions:
+- .py
+
+
+order_of_operations:
+  set_configs: null
+  get_file_paths:
+  - get python file paths
+  - get associated yaml paths
+  - get paths of test resources
+  format_yaml_content: null
+
+
+exclude_lines: []
+
+
+exclude_files:
+- .venv
+- .eggs
+- build
+- __pycache__
+
+
+locations:
+- module
+- yaml
+- resources
+
+
+empty_values:
+- None
+- null
+- '[]'
+- []
+- ''
+- '{}'
+- {}
+
+
+test_kinds:
+- function
+
+
+# Order of operations for testing functions
+# and the fields/values of an object that are
+# required to run functions
+run_test_for_functions_operations:
+- handle_id
+- handle_module
+- handle_resources
+- set_environment
+- process_patches
+- handle_casting_arguments
+- get_function
+- get_function_output
+- handle_casting_output
+- process_assertions
+
+
+run_tests_operations:
+- get_tests
+- run_test_handler
+# - post_processing
+
+
+main_operations:
+- get_locations
+- run_tests
+
+
+unpack_kinds:
+- iterable
+- dict
+- list
+- tuple
+
+
+# get_function_output_operations:
+#   dict:
+#   - get_function_output_for_dict_or_iterable
+#   iterable:
+#   - get_function_output_for_dict_or_iterable
+#   other:
+#   - get_function_output_for_other

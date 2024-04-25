@@ -1,0 +1,150 @@
+resources:
+- https://stackoverflow.com/questions/19009932/import-arbitrary-python-source-file-python-3-3
+
+
+configurations:
+  resources:
+  - ${PYTEST_YAML_ROOT_DIR}/main/utils/_resources/get_module.py
+  - ${PYTEST_YAML_ROOT_DIR}/assertions/app.py
+
+
+tests:
+- function: format_module_name
+  description: >
+    Returns the name of the module. Creates the name for the module's location
+    if the name doesn't exist
+  tests:
+  - description: Location is defined
+    arguments:
+      location: /main/utils/_resources/get_module.py
+      name: null
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        name: .main.utils._resources.get_module_1
+  - description: Name is defined
+    arguments:
+      name: name.py
+      location: null
+      pool: false
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        name: name_1
+  - description: Name is defined and pool is true
+    arguments:
+      name: name.py
+      location: null
+      pool: true
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        name: name
+  - description: Name and location are undefined
+    arguments:
+      name: null
+      location: null
+      pool: false
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        name: app_1
+  - description: Name and location are undefined. Pool is true.
+    arguments:
+      name: null
+      location: null
+      pool: true
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        name: app
+- function: get_module_from_location
+  description: Get the module at a given file path
+  tests:
+  - description: Module location doesn't exist
+    arguments:
+      location: DOES_NOT_EXIST/app.py
+    assertions:
+    - method: assertions.app.check_sns
+      expected:  {}
+  - description: Module is defined
+    arguments:
+      module: module
+    assertions:
+    - method: assertions.app.check_sns
+      expected: {}
+  - description: Module is undefined and the module location exist
+    arguments:
+      name: app
+      location: ${PYTEST_YAML_ROOT_DIR}/main/utils/_resources/get_module.py
+    assertions:
+    - method: assertions.app.check_module
+      field: module
+      expected:
+        location: ${PYTEST_YAML_ROOT_DIR}/main/utils/_resources/get_module.py
+- function: get_module_from_pool
+  tests:
+  - description: Returns a new instance of the module
+    arguments:
+      pool: false
+      location: location
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        module: null
+  - description: Returns a module in the pool
+    arguments:
+      location: location
+      pool: True
+    patches:
+    - method: value
+      route: POOL
+      value:
+        location: module_from_pool
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        module: module_from_pool
+- function: add_module_to_pool
+  description: Adds the module and module location as to the pool as key/value pair
+  tests:
+  - description: Add defined location and module to pool
+    arguments:
+      location: location
+      module: module
+      pool: false
+    assertions:
+    - method: assertions.app.check_sns
+      expected: {}
+  - description: Do not add module to pool
+    arguments:
+      location: location
+      module: module
+      pool: true
+    assertions:
+    - method: assertions.app.check_sns
+      expected: {}
+- function: main
+  description: Orchestrates execution of functions within the module
+  tests:
+  - description: Get module at location
+    arguments:
+      pool: false
+      location: ${PYTEST_YAML_ROOT_DIR}/main/utils/_resources/get_module.py
+      name: app
+    assertions:
+    - method: assertions.app.check_module
+      expected:
+        location: ${PYTEST_YAML_ROOT_DIR}/main/utils/_resources/get_module.py
+  - description: Get module from pool
+    patches:
+    - route: POOL
+      method: value
+      value:
+        location: module
+    arguments:
+      pool: true
+      location: location
+    assertions:
+    - method: assertions.app.check_equals
+      expected: module

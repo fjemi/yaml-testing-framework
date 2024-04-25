@@ -1,474 +1,424 @@
-# Pytest YAML
+# YAML Testing Framework
 
-Pytest-YAML is a Pytest plugin for creating and running tests defined in YAML files. The plugin aims provide a zero-low code framework that simplifies testing code in Python. 
+A simple, low-code framework for unit testing in Python with tests are defined in YAML files.
 
-Supports:
-- Data-driven testing
-- Functional programming
-- Patching objects
-- Casting function arguments and results
-- Multithreaded test executions
+## Features
 
--------------
 
-## Setup
+## Requirements
 
-### Install
+Python 3.7+
 
-The plugin can be installed from github <!-- or pypi using `pip` -->
 
-#### From GitHub
-With `pipenv`:
-```console
-pipenv install git+https://github.com/fjemi/pytest-yaml#egg=pytest-yaml
-```
+## Installation
 
-With `pip`: 
-```console
-pip install git+https://github.com/fjemi/pytest-yaml
-```
-
-<!-- #### From PyPi
 ```bash
-pip install pytest-yaml
-``` -->
+pip install yaml-testing-framework
+```
 
-### Create Entrypoint File
 
-Create the file, `test_entrypoint.py`, with the content below and place it in the project's root directory. It is used to collect and execute tests defined in YAML files.
+## Example
 
-This file is needed to:
-- invoke `pytest`
-- use the `pytest-yaml` plugin in order to collect and execute YAML defined tests
-- pass collected tests as arguments to a parameterized test function.
 
+Create the files
+- `test_entrypoint.py` - uses pytest to collect and run tests
 ```python
-# test_entrypoint.py
+from types import SimpleNamespace as sns
 
-import sys
 import pytest
 
 
-@pytest.mark.parametrize(
-  argnames='test',
-  argvalues=pytest.yml_tests,
-  ids=lambda test: format_ids(test=test), )
-def test_case(test: 'app.main.Test') -> None:
-  if test.exception and test.assertions != test.result:
-    print(test.exception.args)
-  assert test.assertions == test.result
+@pytest.mark.parametrize(argnames='test', argvalues=pytest.yaml_tests)
+def test_(test: sns) -> None:
+  assert test.expected == test.output
 ```
 
-### Configure Pytest-YAML
-  
-The plugin can be configured within the pytest settings of a configuration file, such as a `pytest.ini`, or in the console when invoking pytest. The configurations are
-- `project-path` - Absolute path to the directory containing the python files or to a python file.
-- `exclude-match` - A list of string. If a python file has one of the strings in it's path, it will be excluded from being collected for testing.
-
-#### Configure in pytest.ini
-
-```
-; pytest.ini
-
-[pytest]
-project-path = project_folder/
-exclude_match =
-  matching
-  files
-  to
-  exclude
-```
-
-#### Configure in Console
-
-```console
-$ pytest --project-path=project_folder/ --exclude_match matching files to exclude
-```
-
-## A Quick Example
-
-In this example we create two files:
-- `add.py` - Contains a simple function to add two numbers. This is the function we will test.
-- `add_test.yml` - Contains the data for two tests, **Add two integers** and **Add two floats**, that we will use to test the function. For both tests we define arguments, `a` and `b`, to pass to the `add` function; and assert that the result from the function equals an expected value and is of an expected type
-
-
+- `assertions.py` - contains logic for verifying the output from a function
 ```python
-# add.py
+from types import SimpleNamespace as sns
+from typing import Any
 
-def add(a, b):
-  return a + b
+
+ equals(expected: Any, output: Any) -> sns:
+  passed = expected == output
+  return sns(**locals())
 ```
 
-```yaml
-# add_test.yml
+- `add.py` - contains the function to test
+```python
+  def main(a: int, b: int) -> int:
+    return a + b
+```
 
-functions:
-- name: add
-  description: Returns the result of adding two numbers
+- `add_test.yaml` - contains tests for the function
+```yaml
+configurations:
+  resources:
+  - assertions.py
+
+tests:
+- function: main
   tests:
-  - description: Add two integers
-    arguments:
+  - arguments:
+      a: 1
+      b: 1
+    assertions:
+    - method: assertions.equals
+      expected: 2
+  - arguments:
       a: 1
       b: 2
     assertions:
-    - equals: 3
-    - type: 
-      - int
-  - description: Add two floats
-    arguments:
-      a: 1.5
-      b: 2.5
+    - method: assertions.equals
+      expected: 3
+  - arguments:
+      a: 1
+      b: '1'
     assertions:
-    - equals: 4
-    - type: 
-      - float
+    - method: assertions.equals
+      field: 2
 ```
 
-Then execute the following command in the console to collect and run the tests:
+Execute the following command in your command line to run the tests.
+```bash
+pytest --project-directory=add.py
+```
+
+
+## Configuration
+
+The app can be configured within the pytest settings of a configuration file,
+ such as a `pytest.ini`, or in the console when invoking pytest. The
+ configurations are
+
+| Field | Type | Description | Default |
+| - | - | - | - |
+| project-directory | str | Location of a directory containing files or an an individual module or YAML file to test. | . |
+| exclude-files | str \| list| A list of patterns. Exclude files from testing that match a specified pattern . | [] |
+| resources | str \| list | The locations of modules to use as resources during tests | [] |
+| resources_folder_name | str | Name of folders containing resources to use for tests| _resources |
+| yaml-suffix | str | Suffix in the names of YAML files containing tests | _test |
+
+
+#### Configure pytest.ini
+
+
+```ini
+[pytest]
+project-directory = .
+exclude_files =
+  matching
+  patterns
+  to
+  exclude
+resources =
+  resource_location_a
+  resource_location_b
+resources_folder_name = _resources
+yaml_suffix = _test
+```
+
+#### Configure command line command
 
 ```console
-pytest --project-path=/home/olufemij/example --exclude-match test_app.py -vvv
+pytest \
+--project-directory=.app.py \
+--exclude_files matching patterns to exclude \
+--resources resource_location_a resource_location_b \
+--resource-folder-name _resources \
+--yaml-suffix _test
 ```
 
-Here we see the results of the tests. Two tests were collected, **Add two integers** and **Add two floats**, and both passed.
 
-![Alt text](./static/example_result.png?raw=true "Title")
+## YAML Test Files
+
+Tests are defined in YAML files with the top level keys picked up by the app
+being:
+- `configurations` - Configurations to be used locally for each test in the YAML files
+- `tests` - Configurations used for multiple of individual tests.
 
 
-## Creating Test Files
+### Expanding and Collating Tests
+
+Using the app we can define configurations for tests at various levels
+(configurations, tests, nested tests), expand those configurations to lower
+configurations, and collate individual tests. This allows us to reuse
+configurations and reduce the duplication of content across a YAML file. This is
+similar to [anchors](https://yaml.org/spec/1.2.2/#anchors-and-aliases) in YAML,
+which we can take advantage, along with the other features available in YAML.
+
+#### Example
+
+This is an abstract example of the expanding/collating configurations done by
+the app, where the configurations for tests are comprised of:
+- `config_a` - a list
+- `config_b` - an object
+- `config_c` - a string
+- `config_d` - null
+
+In this example, we set these configurations at various levels, globally, tests,
+and nested tests; and the expanded/collated results are three individual tests
+containing various values for each configuration.
+
+```yaml
+# Defined
+
+configurations:
+  config_a:
+  - A
+  config_b:
+    b: B
+  config_c: C
+
+
+tests:
+- config_a:
+  - B
+- config_b:
+    c: C
+  tests:
+  - config_a:
+    - C
+    config_c: C0
+  - config_d: D
+    tests:
+    - config_a:
+      - B
+      config_b:
+        b: B0
+```
+
+```yaml
+# Expanded
+
+tests:
+- config_a: # test 1
+  - A
+  - B  # Appended item
+  config_b:
+    b: B
+  config_c: C
+  config_d: null  # Standard test config not defined
+- config_a: # test 2
+  - A
+  - C  # Appended item
+  config_b:
+    b: B
+    c: C  # Added key/value
+  config_c: C0  # Replace string
+  config_d: null
+- config_a: # test 3
+  - A
+  config_b:
+    b: B0  # Updated key/value pair
+    c: C
+  config_c: C
+  config_d: D  # Standard test config defined
+```
+
 
 ### Schema
 
-```yaml
-functions:
-- name: 
-    type: string
-    description: The name of the function
-    example: add
-  description: 
-    type: string
-    description: A description of the function
-    example: add two numbers
-    nullable: True
-  patch: 
-    type: array[Patch]
-    description: A list of objects and values to patch
-    nullable: True
-  cast_arguments: 
-    description: Cast keyword arguments before passing them to the function 
-    type: object
-    examples:
-      'Cast argument `a` to an integer':
-        value:
-          a: int
-      'Cast argument `a` to an float':
-        value:
-          b: float
-    nullable: True
-  cast_result: string
-  assertions: Array[Assertion]
-  tests: array[Test]
+Details for configurations or fields of an actual test are defined below. These
+fields can be defined globally or at different test levels.
+
+| Field | Type | Description | Expand Action |
+| - | - | - | - |
+| function | str | Name of function to test | replace |
+| environment | dict | Environment variables used by functions in a module | update |
+| description | str \| list | Additional details about the module, function, or test | append |
+| resources | str \| list | Resources or modules to use during test | append |
+| patches | dict \| list | Objects in a module to patch for tests | append |
+| cast_arguments | dict \| list | Convert function arguments to other data types | append |
+| cast_output | dict \| list | Convert function output to other data types | append |
+| assertions | dict \| list | Verifies the output of functions | append |
+| tests | dict \| list | Nested configurations that get expanded into individual tests | append |
 
 
-```
+## Resources
+
+Resources represent the location of modules to import and use during tests. Resources can be defined globally when configuring the app, or at the module or test levels  under the key `resources` in a YAML file.
 
 ```yaml
-functions:
-- name: string
-  description: string
-  patch: array[Patch]
-  cast_arguments: object
-  cast_result: string
-  assertions: Array[Assertion]
-  tests: array[Test]
+configurations:
+  resources:  # module level definition
+  - resource_a.py
+
+tests:
+- resources:  # test level definition
+  - resource_b.py
 ```
 
-#### Test
+Resources are defined at various levels are aggregated into a single list for each test. Each resource listed is imported into the module to test, and is accessible from the module using dot notation based on the locations of the resource and module: `[module_name].[resource_name]`.
 
-### Test Resources
-
-We can create a folder name `test_resources` in the same directory as a test file and add additional resources needed to run a test. 
-
-#### Python Files
-
-Python modules placed in `test_resources` will automatically be imported into the module being tested, and we can access the objects within module in the YAML test files: `test_resources.module_name.object_name`.
-
-##### Example
-
-In this example we create module `app.py` as a test resource, and use the dataclass in the module to cast arguments we will pass to the function when testing.
-
-```python
-# ./example/test_resources/app.py
-
-import dataclasses as dc
+**Note**: Since resource modules are imported into the module to test, there is
+a risk that attributes of the modules to test can be overwritten. To avoid this
+it is important to pick unique names for resource folders or structure your
+project in a way to avoid naming conflicts.
 
 
-@dc.dataclass
-class Data
-  a: int
-  b: int
-```
 
-```yaml
-# ./example/app_test.yml
+## Assertions
 
-functions:
-- ...
-  arguments:
-    data:
-      a: 0
-      b: 0
-  cast_arguments: 
-    data: test_resources.app.Data
-```
+### Methods
 
-### Patch
-
-We can patch objects within a function's module prior to running tests. Patches can be defined for all of the tests associated with a function or an individual tests, and we can have different patches of the same object for individual tests with interference
-
-There are four types of patches:
-
-- **value** - A value to return when the patched object is used.
-- **return_value** - A value to return when the patched object is called as function.
-- **side_effect_list** - A list of values to call based off of the number of times the object is called. Returns the item at index `n - 1` of the list for the `nth` call of the object. Reverts to index 0 when number of calls exceeds the length of the list.
-- **side_effect_dict** - A dictionary of key, values for to patch an object with. When the patched object is called with a key, the key's associated value is returned
+We can define methods to compare expected and actual output from a function being tested. Methods should have the parameters `expected` and `output`, and return a **SimpleNamespace** object containing `expected`, `output`, `passed` (a boolean indicating whether the assertion passed or failed). Methods can also be reused between tests.
 
 #### Example
 
-In this example we will patch Python's built in `os` module within the module we want to test, `app.py`.
+Here we define a method for verifying that a function's output is of the correct type.
 
 ```python
-# app.py
+from types import SimpleNamespace as sns
+from typing import Any
 
-import os
+
+def check_type(
+  output: Any,
+  expected: str,
+) -> sns:
+  passed = expected == type(output).__name__
+  return sns(**locals())
 ```
 
-```yaml
-# app_test.yml
+### Schema
 
-function:
+Assertions are defined in YAML test files under the key `assertions`, and a
+single assertion has the following fields:
+
+| Field | Type | Description | Default |
+| - | - | - | - |
+| method | str | Function or method used to verify the result of test | pass_through |
+| expected | Any | The expected output of the function | null |
+| field | str | Sets the output to a dot-delimited route to an attribute or key within the output. | null |
+| cast_output | dict \| list | Converts output or an attribute or key in the output before processing an assertion method | null |
+
+
+And single test can have multiple assertions
+
+```yaml
+tests:
+- assertions:
+  - method: method_1
+    expected: expected_1
+    field: null
+    cast_output: []
+  - method: method_2
+    expected: expected_2
+    field: null
+    cast_output: []
+```
+
+## Cast arguments and output
+
+We can convert arguments passed to functions and output from functions to other data types. To do this we define cast objects and list them under the keys `cast_arguments` and `cast_output` for tests or `cast_output` for assertions.
+
+### Schema
+
+The following fields make up a cast object:
+
+| Field | Description | Default |
+| ----- | ----------- | ------- |
+| method | Dot-delimited route to a function or object to cast a value to| null |
+| field | Dot-delimited route to a field, attribute, or key of an object. When set the specified field of the object is cast | null |
+| unpack | Boolean indicating whether to unpack an object when casting| False |
+
+```yaml
+tests:
+- cast_arguments:
+  - method: method_0
+    field: field_0
+    unpack: false
+  - method: method_1
+    field: field_1
+    unpack: false
+    ...
+  assertions:
+  - cast_output:
+    - method: method_2
+      field: field_2
+      unpack: false
   ...
-  patch:
-  - object: os.value
-    value: function_level_value
-  - object: os.return_value
-    return_value: return_value
-  - object: os.side_effect_list
-    side_effect_list: 
-    - side_effect_1
-    - side_effect_2
-  - object: os.side_effect_dict
-    side_effect_dict: 
-      key_1: side_effect_1
-      key_2: side_effect_2
-  tests:
-  - description: override function level patch
-    patch:
-      object: os.value
-      value: overrides_function_level_patch
-    ...
-  - description: use function level patches
-    ...
 ```
 
-When these two tests are run, if the patched objects are used the result will be
+## Patches
 
-```python
-# test: override function level patch
+We can patch objects in the module to test before running tests, and since tests are run in individual threads we can different patches for the same object without interference between tests.
 
-value = os.value
-print(value)
-# prints `overrides_function_level_patch`
+### Methods
 
-value = os.return_value()
-print(value)
-# prints `return value`
+There are four patch methods:
 
-values = [
-  os.side_effect_list(),
-  os.side_effect_list(),
-  os.side_effect_list(), ]
-print(values)
-# prints `[side_effect_1, side_effect_2, side_effect_1]`
+- `value` - A value to return when the patched object is used.
+- `callable` - A value to return when the patched object is called as function.
+- `side_effect_list` - A list of values to call based off of the number of
+times the object is called. Returns the item at index `n - 1` of the list for
+the `nth` call of the object. Reverts to index 0 when number of calls exceeds
+the length of the list.
+- `side_effect_dict` - A dictionary of key, values for to patch an object
+with. When the patched object is called with a key, the key's associated value
+is returned
 
+### Schema
 
-# test: use function level patches
+Patches are defined at a list of objects in YAML test files under the key
+`patches`, and a single patch object has the following fields:
 
-value = os.value
-print(value)
-# prints `function_level_value`
-
-values = 
-  [os.side_effect_dict('key_1'),
-  os.side_effect_dict('key_2'), ]
-print(values)
-prints `[side_effect_2, side_effect_1]`
-```
-
-### Casting
-
-We can cast arguments before passing them to a function or cast the result of executing the function. Similar to patching, casting can be set at the function and individual test levels.
-
-#### Example
-
-```python
-# ./example/add.py
-
-def add(a, b):
-  return a + b
-```
-
-```yaml
-# ./example/add_test.py
-
-functions:
-- name: add
-  cast_arguments:
-    a: str
-    b: str
-  cast_result: int
-  tests:
-  - description: override function level casting
-    cast_arguments:
-      a: int
-      b: int
-    arguments:
-      a: 0
-      b: 1
-    cast_result: str
-    assertions:
-      equals: '01'
-  - description: use function level casting
-    arguments: 
-      a: 1
-      b: 2
-    assertions:
-      equals: 12
-```
-
-### Assertions
-
-For each test we can define one or more "pseudo" assertions. Each pseudo assertion is a dictionary with the key being a function and the value being the expected result from the test function: `{assertion_name: expected_value}`. The pseudo assertion function processes the actual result from the test function, and returns a dictionary that is added to a list of results. The actual "assertion" that is picked up by pytest is carried out in the `test_entrypoint.py` file, where we assert that the the test assertions are equal to the tests results (results from pseudo assertions).
-
-Assertions:
-- equals - Checks that the expected result equals the actual result. This can include the test function resulting in an error.
-- type - Check that the expected result's type equals the actual result's type
-- has_attributes: Check that the actual resulting object has defined attributes and values
-- has_keys: Check that the actual resulting dictionary has defined keys and values
-
-#### Example
-
-In this example we define two functions: one for adding two numbers and the other for adding two numbers in a dataclass. We use all of the assertions listed above in one or more of the tests.
-
-```python
-# add.py
-
-import dataclasses as dc
-
-
-@dc.dataclass
-class Data:
-  a: int
-  b: int
-  result: int | None = None
-
-
-def add_numbers(a, b):
-  return a + b
-
-
-def add_numbers_in_dataclass(data):
-  data.result = data.a + data.b
-  return data
-```
-
-```yaml
-# add_test.yml
-
-functions:
-- name: add_numbers
-  description: Returns the result of adding two numbers
-  tests:
-  - description: Result of adding two numbers
-    arguments:
-      a: 1
-      b: 2
-    assertions:
-    - equals: 3
-    - type: 
-      - int
-  - description: Result should be an type error
-    arguments:
-      a: 1
-      b: string
-    assertions:
-    - equals: TypeError
-- name: add_numbers_in_dataclass
-  description: Returns a dataclass with the result of adding two numbers
-  tests:
-  - description: Result should have the correct attribute/value and type
-    arguments:
-      data:
-        a: 1
-        b: 2
-    cast_arguments:
-      data: 
-      - Data
-    assertions:
-    - has_attributes:
-        result: 3
-    - type: 
-      - Data
-  - description: Result should have the correct key/value and type
-    arguments:
-      data:
-        a: 1
-        b: 2
-    cast_arguments:
-      data: 
-      - Data
-    cast_result: dict
-    assertions:
-    - has_keys:
-        result: 3
-    - type: 
-      - dict
-```
-
+| Field | Type | Description | Default |
+| - | - | - | - |
+| method | str | One of the four patch methods defined above | null |
+| value | Any | The value the patched object should return when called or used | null
+| name | str | The dot-delimited route to the object we wish to patch, in the module to test | null |
 
 
 ```yaml
-# add_test.yml
-
-functions:
-- name: add_numbers
-  ...
-  tests:
-  - description: Result of adding two numbers
-    ...
-    result:
-    - equals: 3
-    - type: 
-      - int
-  - description: Result should be an type error
-    ...
-    results:
-    - equals: TypeError
-- name: add_numbers_in_dataclass
-  ...
-  tests:
-  - description: Result should have the correct attribute/value and type
-    ...
-    results:
-    - has_attributes:
-        result: 3
-    - type: 
-      - Data
-  - description: Result should have the correct key/value and type
-    ...
-    results:
-    - has_keys:
-        result: 3
-    - type: 
-      - dict
+tests:
+- patches:
+  - method: value
+    value: value
+    name: name
 ```
+
+
+## Environment
+
+For modules containing a global variable `CONFIG`, we can perform tests using different environment variables by the variables as adding key/value pairs under the key `set_environment` in YAML files. The environment variables are accessible from `CONFIG.environment.[name]`, where `[name]` is the name of the variable.
+
+### Example
+
+```yaml
+configurations:
+  set_environment:
+    NAME_A: a
+    NAME_C: c
+  
+
+tests:
+- set_environment:
+    NAME_A: A
+    NAME_B: b
+```
+
+
+## Advanced example
+
+Create the files
+- 
+
+
+
+
+
+
+<br>
+<a
+  href="https://www.buymeacoffee.com/olufemijemo"
+  target="_blank"
+>
+  <img
+    src="https://cdn.buymeacoffee.com/buttons/default-orange.png"
+    alt="Buy Me A Coffee"
+    height="41"
+    width="174"
+  >
+</a>

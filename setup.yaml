@@ -1,0 +1,29 @@
+author: Olufemi Jemilohun
+author_email: olufemi.jemilohun@gmail.com
+description: A testing framework where tests are defined in YAML files
+long_description: null
+classifiers:
+- 'Framework :: Pytest'
+- 'Programming Language :: Python'
+- 'Topic :: Software Development :: Testing'
+- 'Programming Language :: Python :: 3.7'
+license: MIT license
+include_package_data: True
+keywords:
+- pytest
+- yaml
+- testing
+name: yaml-testing-framework
+packages:
+- main
+url: https://github.com/fjemi/yaml-testing-framework
+version: '0.2.0'  # yamllint disable-line rule:quoted-strings
+zip_safe: True
+setup_requires:
+- setuptools>=61.0
+- pyyaml==6.0
+extras_require: {}
+python_requires: null
+entry_points:
+  pytest11:
+  - yaml-testing-framework = main.plugin

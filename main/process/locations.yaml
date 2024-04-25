@@ -1,0 +1,61 @@
+environment:
+  PYTEST_YAML_ROOT_DIR: ${PYTEST_YAML_ROOT_DIR}
+  PYTEST_YAML_DEBUG: ${PYTEST_YAML_DEBUG}
+
+
+exclude_files:
+- .venv
+- .eggs
+- build
+- .ignore
+- __pycache__
+- .pyc
+- .trunk
+
+
+yaml_suffix: _test
+
+
+exclude_functions: []
+
+
+resources_folder_name: _resources
+
+
+yaml_extensions:
+- .yaml
+- .yml
+
+
+module_extension: .py
+
+
+root_locations:
+- .
+- ./
+- /
+- //
+- ''
+- None
+- null
+
+
+empty_values:
+- null
+- None
+- ''
+- 0
+- '0'
+- False
+- 'false'
+- 'False'
+
+
+main_operations:
+- format_paths
+- format_yaml_suffix
+- format_resources_folder_name
+- format_exclude_files
+- get_module_and_yaml_location_when_path_kind_is_file
+- get_module_and_yaml_location_when_path_kind_is_directory
+- get_location_of_resources

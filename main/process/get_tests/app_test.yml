@@ -1,0 +1,330 @@
+configurations:
+  resources:
+  - ${PYTEST_YAML_ROOT_DIR}/main/process/get_tests/_resources/app.py
+  - ${PYTEST_YAML_ROOT_DIR}/assertions/app.py
+
+
+tests:
+- function: main
+  description: >
+    Returns a list of tests from data collected from data in YAML files
+  tests:
+  - description: Undefined arguments
+    arguments: {}
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        tests: []
+
+  - description: Defined arguments
+    arguments:
+      yaml: ${PYTEST_YAML_ROOT_DIR}/main/process/get_tests/_resources/app_test.yml
+      module: ${PYTEST_YAML_ROOT_DIR}/main/process/get_tests/_resources/app.py
+      module_route: ${PYTEST_YAML_ROOT_DIR}/main/process/get_tests/_resources/app.py
+      resources:
+      - ${PYTEST_YAML_ROOT_DIR}/main/process/get_tests/_resources/resource.py
+    cast_output:
+    - method: assertions.app.check_equals
+      expected:
+        tests:
+        - arguments: {}
+          assertions: []
+          cast_arguments: []
+          cast_output: []
+          description:
+          - description_a
+          environment: {}
+          exclude_functions: []
+          exclude_resources: []
+          function: null
+          function_name: null
+          id: null
+          id_long: null
+          id_short: null
+          key: null
+          module: ${PYTEST_YAML_ROOT_DIR}/main/process/get_tests/_resources/app.py
+          module_location: null
+          module_route: ${PYTEST_YAML_ROOT_DIR}/main/process/get_tests/_resources/app.py
+          output: null
+          patches: []
+          resources:
+          - ${PYTEST_YAML_ROOT_DIR}/main/process/get_tests/_resources/resource.py
+          - resource_configuration
+          tests: null
+          yaml: ${PYTEST_YAML_ROOT_DIR}/main/process/get_tests/_resources/app_test.yml
+        - arguments: {}
+          assertions: []
+          cast_arguments: []
+          cast_output: []
+          description:
+          - description_b
+          - description_b0
+          environment: {}
+          exclude_functions: []
+          exclude_resources: []
+          function: null
+          function_name: null
+          id: null
+          id_long: null
+          id_short: null
+          key: '0.0'
+          module: ${PYTEST_YAML_ROOT_DIR}/main/process/get_tests/_resources/app.py
+          module_location: null
+          module_route: ${PYTEST_YAML_ROOT_DIR}/main/process/get_tests/_resources/app.py
+          output: null
+          patches: []
+          resources:
+          - ${PYTEST_YAML_ROOT_DIR}/main/process/get_tests/_resources/resource.py
+          - resource_configuration
+          tests: null
+          yaml: ${PYTEST_YAML_ROOT_DIR}/main/process/get_tests/_resources/app_test.yml
+        - arguments: {}
+          assertions: []
+          cast_arguments: []
+          cast_output: []
+          description:
+          - description_b
+          - description_b1
+          environment: {}
+          exclude_functions: []
+          exclude_resources: []
+          function: null
+          function_name: null
+          id: null
+          id_long: null
+          id_short: null
+          key: '0.1'
+          module: ${PYTEST_YAML_ROOT_DIR}/main/process/get_tests/_resources/app.py
+          module_location: null
+          module_route: ${PYTEST_YAML_ROOT_DIR}/main/process/get_tests/_resources/app.py
+          output: null
+          patches: []
+          resources:
+          - ${PYTEST_YAML_ROOT_DIR}/main/process/get_tests/_resources/resource.py
+          - resource_configuration
+          tests: null
+          yaml: ${PYTEST_YAML_ROOT_DIR}/main/process/get_tests/_resources/app_test.yml
+- function: get_configurations_and_tests
+  description: >
+    Returns the contents of a YAML file or an empty dictionary if the file
+    does not exist
+  tests:
+  - description: Undefined arguments
+    arguments: {}
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        configurations: {}
+        tests: []
+  - description: YAML location does not exist
+    arguments:
+      yaml: location/does/not/exist.yaml
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        configurations: {}
+        tests: []
+  - description: YAML location does exist
+    arguments:
+      yaml: ${PYTEST_YAML_ROOT_DIR}/main/process/get_tests/_resources/app_test.yml
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        configurations:
+          resources: resource_configuration
+        tests:
+        - description: description_a
+        - description: description_b
+          tests:
+          - description: description_b0
+          - description: description_b1
+- function: format_locations
+  description: Formats locations as a simple name space
+  tests:
+  - description: Undefined arguments
+    arguments: {}
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        module: null
+        module_route: null
+        module_location: null
+        yaml: null
+        resources: null
+    - method: assertions.app.check_sns
+      field: locations
+      expected:
+        module: null
+        module_route: null
+        module_location: null
+        yaml: null
+        resources: null
+  - description: Defined arguments
+    arguments:
+      module: module
+      module_route: module_route
+      module_location: module_location
+      yaml: yaml
+      resources: resources
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        module: null
+        module_route: null
+        module_location: null
+        yaml: null
+        resources: null
+    - method: assertions.app.check_sns
+      field: locations
+      expected:
+        module: module
+        module_route: module_route
+        module_location: module_location
+        yaml: yaml
+        resources: resources
+- function: add_locations_to_configurations
+  description: >
+    Adds module, yaml, resources, and other location data to global config data
+  cast_arguments:
+  - field: locations
+    method: sns
+    unpack: true
+  tests:
+  - description: Empty arguments
+    arguments:
+      configurations: {}
+      locations: {}
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        locations: null
+        configurations: {}
+  - description: Defined arguments
+    arguments:
+      configurations:
+        resources: configurations
+      locations:
+        module: module
+        module_route: module_route
+        module_location: module_location
+        yaml: yaml
+        resources: resources
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        locations: null
+        configurations:
+          module: module
+          module_route: module_route
+          module_location: module_location
+          yaml: yaml
+          resources:
+          - resources
+          - configurations
+- function: get_expanded_nodes
+  description: >
+    Adds configurations to root nodes and expands data in roots to nested nodes
+  cast_output:
+  - method: _resources.app.sns_to_dict
+    field: tests
+  tests:
+  - description: Empty arguments
+    arguments:
+      configurations: {}
+      tests: []
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        tests: []
+  - description: One node with no nested nodes
+    arguments:
+      configurations: {}
+      tests:
+      - description: description_a
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        tests:
+        - arguments: {}
+          assertions: []
+          cast_arguments: []
+          cast_output: []
+          description:
+          - description_a
+          environment: {}
+          exclude_functions: []
+          exclude_resources: []
+          function: null
+          function_name: null
+          id: null
+          id_long: null
+          id_short: null
+          key: null
+          module: null
+          module_location: null
+          module_route: null
+          output: null
+          patches: []
+          resources: []
+          tests: null
+          yaml: null
+  - description: Single node with nested nodes
+    arguments:
+      configurations: {}
+      tests:
+      - description: root
+        tests:
+        - description: nested_0
+        - description: nested_1
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        tests:
+        - arguments: {}
+          assertions: []
+          cast_arguments: []
+          cast_output: []
+          description:
+          - root
+          - nested_0
+          environment: {}
+          exclude_functions: []
+          exclude_resources: []
+          function: null
+          function_name: null
+          id: null
+          id_long: null
+          id_short: null
+          key: '0.0'
+          module: null
+          module_location: null
+          module_route: null
+          output: null
+          patches: []
+          resources: []
+          tests: null
+          yaml: null
+        - arguments: {}
+          assertions: []
+          cast_arguments: []
+          cast_output: []
+          description:
+          - root
+          - nested_1
+          environment: {}
+          exclude_functions: []
+          exclude_resources: []
+          function: null
+          function_name: null
+          id: null
+          id_long: null
+          id_short: null
+          key: '0.1'
+          module: null
+          module_location: null
+          module_route: null
+          output: null
+          patches: []
+          resources: []
+          tests: null
+          yaml: null

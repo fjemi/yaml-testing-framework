@@ -1,0 +1,61 @@
+environment:
+  PYTEST_YAML_ROOT_DIR: ${PYTEST_YAML_ROOT_DIR}
+  PYTEST_YAML_DEBUG: ${PYTEST_YAML_DEBUG}
+
+
+empty_values:
+- []
+- {}
+- null
+- ''
+- None
+- '[]'
+- '{}'
+
+
+convert_fields_to_yaml:
+- expected
+- output
+
+
+add_assertion_fields:
+- output
+- module
+- id
+- id_short
+
+
+schema:
+  Assertion: &ASSERTION
+    descrip ntion: Store data needed to process an assertion form a test
+    fields:
+    - name: method
+      type: str
+      description: The assertion method
+    - name: method_name
+      type: str
+      description: The name of an assertion method
+    - name: field
+      type: str
+      description: Dot-delimited path to an attribute or key of the result
+    - name: expected
+      type: Any
+      description: Expected value
+    - name: output
+      type: Any
+      description: Output from the function to verify
+    - name: cast_output
+      type: list
+      description: Casts to perform on the output before verifying expected output
+    - name: passed
+      type: bool
+      default: false
+      description: Flag indicating whether a test was passed or not
+
+
+main_operations:
+- get_assertion_method
+- reset_output_value
+- cast_output
+- get_assertion_result
+- handle_failed_assertion

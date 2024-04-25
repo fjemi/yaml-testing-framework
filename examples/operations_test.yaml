@@ -1,0 +1,336 @@
+TODO:
+- add resource_suffix for files. use this instead of directory. If filename_resource.module_extension exists add it to the module
+- if resource is a directory, then add list of modules in directory to resources
+
+
+configurations:
+  resources:
+  - ${PYTEST_YAML_ROOT_DIR}/assertions/app.py
+  - ${PYTEST_YAML_ROOT_DIR}/examples/operations_resource.py
+
+
+tests:
+- function: main
+  description: >
+    Returns two numbers a, b and the result of performing an arithmetic
+    operation on them
+  tests:
+  - description: Add string and integer
+    arguments:
+      a: 1
+      b: '1'
+      method: subtract
+    assertions:
+    - method: assertions.app.check_exception
+      expected: TypeError
+    - method: assertions.app.check_equals
+      field: __class__.__name__
+      expected: TypeError
+  - description: Add two integers
+    arguments:
+      a: 1
+      b: 1
+      method: add
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        a: 1
+        b: 1
+        result: 2
+        method: add
+    - method: assertions.app.check_equals
+      cast_output:
+      - method: __builtins__.str
+      expected: namespace(a=1, b=1, method='add', result=2)
+    - method: assertions.app.check_equals
+      field: result
+      expected: 2
+  - description: Method does not exist
+    arguments:
+      a: 1
+      b: 1
+      method: multiply
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        a: 1
+        b: 1
+        result: Method does not exist
+        method: multiply
+  # # Assertion fails when uncommented
+  # - description: Assertion fails
+  #   arguments:
+  #     a: 1
+  #     b: 1
+  #     method: subtract
+  #   assertions:
+  #   - method: assertions.app.check_sns
+  #     expected:
+  #       a: 1
+  #       b: 1
+  #       result: 2
+  #       method: subtract
+  - description: Patch constant and cast output to return a number's inverse
+    patches:
+    - method: value
+      value: 10
+      route: CONSTANT
+    arguments:
+      method: constant
+    cast_output:
+    - method: operations_resource.inverse
+      field: result
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        result: 0.1
+        method: constant
+- function: do_nothing
+  tests:
+  - description: Returns two numbers a, b and an undefined result
+    cast_arguments:
+    - method: sns
+      field: data
+      unpack: true
+    arguments:
+      data:
+        a: a
+        b: b
+        method: method_name
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        a: a
+        b: b
+        result: Method does not exist
+        method: method_name
+  - description: Return object passed into the function
+    arguments:
+      data: data
+    assertions:
+    - method: assertions.app.check_equals
+      expected: data
+  - description: Patch a function as a side effect dict
+    patches:
+    - value:
+        a: A
+        b: B
+      method: side_effect_dict
+      route: do_nothing
+    tests:
+    - description: Example 1
+      arguments:
+        a: a
+        c: c
+      assertions:
+      - method: assertions.app.check_equals
+        expected:
+          a: A
+          c: c
+    - description: Example 2
+      arguments:
+        b: b
+        d: D
+      assertions:
+      - method: assertions.app.check_equals
+        expected:
+          b: B
+          d: D
+- function: add
+  description: Returns two numbers a, b and their sum
+  cast_arguments:
+  - method: sns
+    field: data
+    unpack: true
+  tests:
+  - arguments:
+      data:
+        a: 1
+        b: 2
+        method: add
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        a: 1
+        b: 2
+        result: 3
+        method: add
+  - arguments:
+      data:
+        a: -1
+        b: -2
+        method: add
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        a: -1
+        b: -2
+        result: -3
+        method: add
+  - arguments:
+      data:
+        a: 0
+        b: 0
+        method: add
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        a: 0
+        b: 0
+        result: 0
+        method: add
+- function: subtract
+  description: Return two numbers a, b and their difference
+  cast_arguments:
+  - method: sns
+    field: data
+    unpack: true
+  tests:
+  - arguments:
+      data:
+        a: 1
+        b: 2
+        method: subtract
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        a: 1
+        b: 2
+        result: -1
+        method: subtract
+  - arguments:
+      data:
+        a: -1
+        b: -2
+        method: subtract
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        a: -1
+        b: -2
+        result: 1
+        method: subtract
+  - arguments:
+      data:
+        a: 0
+        b: 0
+        method: subtract
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        a: 0
+        b: 0
+        result: 0
+        method: subtract
+- function: constant
+  description: Returns a constant value (global variable) for every input.
+  cast_arguments:
+  - method: sns
+    unpack: true
+    field: data
+  tests:
+  - description: Result is 0 when a, b are undefined
+    arguments:
+      data:
+        method: constant
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        a: null
+        b: null
+        result: 0
+  - description: Result is 0 when a, b are defined
+    arguments:
+      data:
+        a: 3
+        b: 3
+        method: constant
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        a: 3
+        b: 3
+        result: 0
+  - description: Patch constant as 1
+    patches:
+    - method: value
+      value: 1
+      route: CONSTANT
+    tests:
+    - description: Passes test
+      arguments:
+        data:
+          method: constant
+      assertions:
+      - method: assertions.app.check_sns
+        expected:
+          a: null
+          b: null
+          result: 1
+    # # Fails when uncommented
+    # - description: Fails test
+    #   arguments:
+    #     data:
+    #       method: constant
+    #   assertions:
+    #   - method: assertions.app.check_sns
+    #     expected:
+    #       a: null
+    #       b: null
+    #       result: 2
+  - description: Patch constant as side effect list
+    patches:
+    - method: side_effect_list
+      value:
+      - uno
+      - dos
+      - tres
+      route: CONSTANT
+    arguments: {}
+    assertions:
+    - method: assertions.app.check_function_output
+      field: result
+      expected:
+        arguments:
+        - {}
+        - {}
+        - {}
+        - {}
+        output:
+        - uno
+        - dos
+        - tres
+        - uno
+- function: factorial
+  cast_arguments:
+  - method: sns
+    unpack: true
+    field: data
+  description: >
+    Returns the product of the positive integers less than or equal to an
+    integer a
+  tests:
+  - description: Return the factorial of 5
+    arguments:
+      data:
+        a: 5
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        a: 5
+        result: 120
+  - description: >
+      Patch function to return sum of positive integers less than or equal to
+      an integer a
+    patches:
+    - route: factorial
+      callable_route: operations_resource.sum_patch
+      method: callable
+    arguments:
+      data:
+        a: 5
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        a: 5
+        result: 15

@@ -1,0 +1,52 @@
+schema:
+  Kinds: &KINDS
+    description: Paths to a python and associated resources for testing
+    fields:
+    - name: parent
+      type: str
+      default: None
+      description: Parent object
+    - name: child
+      type: str
+      default: ''
+      description: Child of the parent object
+
+
+empty_values:
+- ''
+- None
+- '[]'
+- '{}'
+- null
+- []
+- {}
+
+
+levels:
+- high
+- low
+
+
+combine_fields_as:
+  description: list
+  cast_output: list
+  cast_arguments: list
+  assertions: list
+  patches: list
+  resources: list
+  exclude_resources: list
+  exclude_functions: list
+  environment: dict
+  arguments: dict
+  # Choose low level if not null else high level
+  function: low_or_high
+  function_name: low_or_high
+  # Choose high level
+  project_directory: high
+  module: high
+  module_route: high
+  module_location: high
+  yaml: high
+  key: high
+  # Choose low level
+  tests: low

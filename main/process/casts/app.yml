@@ -1,0 +1,57 @@
+environment:
+  PYTEST_YAML_DEBUG: ${PYTEST_YAML_DEBUG}
+
+
+unpack_kinds:
+- list
+- tuple
+- dict
+- module
+- dataclass
+- nonetype
+
+
+object_kinds:
+- list
+- dict
+- module
+- dataclass
+- nonetype
+
+
+casted_object_kinds:
+- list
+- dict
+- module
+- dataclass
+- nonetype
+
+
+caster_kinds:
+- dataclass
+- function
+- callable
+- type
+- nonetype
+
+
+empty_values:
+- null
+- None
+- []
+- '[]'
+- {}
+- '{}'
+- ''
+- False
+- 'False'
+- 'false'
+- 0
+- '0'
+
+
+main_operations:
+- get_cast_method
+- get_temp_object
+- handle_casting
+- reset_object

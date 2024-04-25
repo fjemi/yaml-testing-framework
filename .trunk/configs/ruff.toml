@@ -1,0 +1,57 @@
+# Max number of characters per line
+line-length = 80
+tab-size = 2
+
+# Assume python 3.7
+target-version = 'py37'
+
+src = ['.']
+
+respect-gitignore = true
+
+
+# Include file path's with matching patterns
+extend-exclude = ['*ignore*/*.py', '*.ignore*/*.py']
+
+# Enable codes
+select = [
+  'E',   # flake8
+  'F',   # flake8
+  'W',   # flake8
+  "ARG", # flake8-unused-arguments
+  'PL',  # pylint
+  'RUF', # ruff
+  'I',   # isort
+]
+
+# Allow autofix for all enabled rules
+fixable = [
+  'I', # isort
+]
+
+# Skip rules
+extend-ignore = [
+  'PLW0602', # Using global but no assignment is done
+  'PLW0603', # Using the global statement to update
+  'E101',    # Indentation
+]
+
+
+[format]
+# Use single quotes for non-triple-quoted strings.
+quote-style = "single"
+
+# Indent with spaces, rather than tabs.
+indent-style = "space"
+
+
+[isort]
+lines-after-imports = 2
+
+
+[pylint]
+max-args = 10
+
+
+[mccabe]
+max-complexity = 10

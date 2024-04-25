@@ -1,0 +1,180 @@
+configurations:
+  resources:
+  - ${PYTEST_YAML_ROOT_DIR}/assertions/app.py
+  - ${PYTEST_YAML_ROOT_DIR}/main/process/casts/app_resource.py
+
+
+tests:
+- function: main
+  description: Returns the resulting of casting an object
+  tests:
+  - description: Undefined arguments
+    arguments: {}
+    assertions:
+    - method: assertions.app.check_equals
+      expected: null
+  - cast_arguments:
+    - method: app_resource.module_resource
+      field: module
+    tests:
+    - description: Cast string as integer
+      arguments:
+        module: ${PYTEST_YAML_ROOT_DIR}/main/process/casts/app_resource.py
+        casts:
+        - method: __builtins__.int
+        object: '1111'
+      assertions:
+      - method: assertions.app.check_equals
+        expected: 1111
+    - description: Cast dict as simple name space
+      arguments:
+        module: ${PYTEST_YAML_ROOT_DIR}/main/process/casts/app_resource.py
+        casts:
+        - method: cast_dict_as_sns
+        object:
+          key: value
+      assertions:
+      - method: assertions.app.check_sns
+        expected:
+          key: value
+    - description: Cast list into string with unpacking
+      arguments:
+        module: ${PYTEST_YAML_ROOT_DIR}/main/process/casts/app_resource.py
+        casts:
+        - method: cast_list_to_string
+          unpack: true
+        object: [a, b, c]
+      assertions:
+      - method: assertions.app.check_equals
+        expected: abc
+- function: get_cast_method
+  description: >
+    Returns a casting method and name if the method exists in a module.
+    Otherwise, returns the name and a log
+  cast_arguments:
+  - field: module
+    method: app_resource.module_resource
+  tests:
+  - description: Undefined data
+    arguments: {}
+    assertions:
+    - method: assertions.app.check_equals
+      field: log.__dict__
+      expected:
+        level: error
+        message: Method None not in module located at None
+  - description: Return the str class from builtins
+    arguments:
+      method: __builtins__.str
+      module: ${PYTEST_YAML_ROOT_DIR}/main/process/casts/app_resource.py
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        method_name: __builtins__.str
+    - method: assertions.app.check_equals
+      field: method.__name__
+      expected: str
+  - description: Return the int class from builtins
+    arguments:
+      method: __builtins__.int
+      module: ${PYTEST_YAML_ROOT_DIR}/main/process/casts/app_resource.py
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        method_name: __builtins__.int
+    - method: assertions.app.check_equals
+      field: method.__name__
+      expected: int
+  - description: >
+      Return function sh`pass_through` from the module sh`resources.py` in the
+      resources directory
+    arguments:
+      method: pass_through
+      module: ${PYTEST_YAML_ROOT_DIR}/main/process/casts/app_resource.py
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        method_name: pass_through
+    - method: assertions.app.check_function
+      field: method
+      expected:
+        name: pass_through
+        location: ${PYTEST_YAML_ROOT_DIR}/main/process/casts/app_resource.py
+  - description: Method not in module
+    arguments:
+      method: does_not_exist
+      module: ${PYTEST_YAML_ROOT_DIR}/main/process/casts/app_resource.py
+    assertions:
+    - method: assertions.app.check_sns
+      field: log
+      expected:
+        message: Method does_not_exist not in module located at ${PYTEST_YAML_ROOT_DIR}/main/process/casts/app_resource.py
+        level: error
+- function: get_temp_object
+  description: Set a temporary object as the object to cast or field within it
+  tests:
+  - description: Undefined arguments
+    arguments: {}
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        temp_object: null
+  - description: Field is undefined and object is defined
+    arguments:
+      object: object
+      field: null
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        temp_object: object
+  - description: Object is a dict and field is an existing key
+    arguments:
+      object:
+        key: value
+      field: key
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        temp_object: value
+- function: reset_object
+  description: Sets temp object as the object or a field within the object
+  tests:
+  - description: Undefined arguments
+    arguments: {}
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        None: null
+  - description: Set object as temp object
+    arguments:
+      temp_object: temp_object
+      object: object
+      field: null
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        object: temp_object
+        temp_object: null
+  - description: Set object a non-existing field as temp object
+    arguments:
+      temp_object: temp_object
+      object: {}
+      field: key
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        object:
+          key: temp_object
+        temp_object: null
+  - description: Set object an existing field as temp object
+    arguments:
+      temp_object: temp_object
+      object:
+        key: value
+      field: key
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        object:
+          key: temp_object
+        temp_object: null

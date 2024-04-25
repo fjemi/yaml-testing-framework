@@ -1,0 +1,46 @@
+resources:
+- https://stackoverflow.com/questions/46827007/runtimeerror-this-event-loop-is-already-running-in-python
+- https://pypi.org/project/nest-asyncio/
+- https://stackoverflow.com/questions/3108285/in-python-script-how-do-i-set-pythonpath
+
+
+configurations:
+  resources:
+  - ${PYTEST_YAML_ROOT_DIR}/main/_resources/__init___resource.py
+  - ${PYTEST_YAML_ROOT_DIR}/assertions/app.py
+
+
+tests:
+- function: allow_nested_event_loops
+  description: Allows asyncio event loop to be nested
+  arguments: {}
+  assertions:
+  - method: assertions.app.check_equals
+    expected: 1
+- function: allow_nested_event_loops
+  description: Allows asyncio event loop to be nested
+  arguments:
+    data: null
+  assertions:
+  - method: assertions.app.check_equals
+    expected: 1
+- function: add_directories_to_pythonpath
+  description: Adds directories to the PYTHONPATH
+  tests:
+  - arguments: {}
+    assertions:
+    - method: assertions.app.check_equals
+      expected: 1
+  # TODO: Figure out how to get this test to pass
+  # - description:  Defined arguments
+  #   arguments:
+  #     directories:
+  #       example_0: /example_0
+  #       example_1: /example_1/example_0
+  #   cast_output:
+  #   - method: test_resources.init.app.get_sys_path
+  #   assertions:
+  #   - method: assertions.app.check_list_contains_item
+  #     expected:
+  #     - /example_0
+  #     - /example_1/example_0

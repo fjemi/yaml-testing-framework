@@ -1,0 +1,981 @@
+TODO:
+- Check if the "contains" assertions can be combined to reduce duplication of code
+- Need assertion for string/regex
+
+
+resources:
+- https://stackoverflow.com/questions/4081819/why-does-python-inspect-isclass-think-an-instance-is-a-class
+
+
+configurations:
+  resources:
+  - ${PYTEST_YAML_ROOT_DIR}/assertions/app_resource.py
+
+
+tests:
+- function: check_sns
+  description: >
+    Verify the output is a SimpleNamespace object and contains specified
+    fields and values
+  cast_arguments:
+  - method: app_resource.check_sns_resource
+    field: output
+  tests:
+  - description: Output is not a SimpleNamespace or expected is not a dict
+    arguments:
+      output: null
+      expected: expected
+    assertions:
+    - method: check_sns
+      expected:
+        output:
+        - Output is of type NoneType
+        - Expected is of type str
+        passed: false
+        expected: expected
+  - description: SimpleNamespace should contain expected fields and values
+    arguments:
+      output:
+        a: a
+        b: b
+        c: c
+      expected:
+        a: a
+        b: b
+    assertions:
+    - method: check_sns
+      expected:
+        output:
+          a: a
+          b: b
+        passed: true
+        expected:
+          a: a
+          b: b
+  - description: >
+      SimpleNamespace should does not contain expected fields and values
+    arguments:
+      output:
+        a: a
+      expected:
+        a: a
+        d: d
+    assertions:
+    - method: check_sns
+      expected:
+        output:
+          a: a
+          d: null
+        passed: false
+        expected:
+          a: a
+          d: d
+- function: check_exception
+  description: >
+    Verifies that an exception was raised. Checks for the name of the exception
+    (TypeError, RuntimeError, etc)
+  cast_arguments:
+  - method: app_resource.check_exception_resource
+    field: output
+  tests:
+  - description: Output is not an Exception or expected is not a str
+    arguments: {}
+    assertions:
+    - method: check_sns
+      expected:
+        expected: null
+        passed: false
+        output:
+        - Output is of type NoneType
+        - Expected is of type NoneType
+  - description: Output is a type error
+    arguments:
+      output: TypeError
+      expected: TypeError
+    assertions:
+    - method: check_sns
+      expected:
+        output: TypeError
+        passed: true
+        expected: TypeError
+  - description: Output is a runtime error
+    arguments:
+      output: RuntimeError
+      expected: RuntimeError
+    assertions:
+    - method: check_sns
+      expected:
+        output: RuntimeError
+        passed: true
+        expected: RuntimeError
+- function: check_module
+  description: Verify that the output is a module
+  cast_arguments:
+  - method: app_resource.check_module_resource
+    field: output
+  tests:
+  - description: Undefined arguments
+    arguments: {}
+    assertions:
+    - method: check_sns
+      expected:
+        output: Output is a NoneType not a module
+        expected: null
+        passed: false
+  - description: Expected is not a dict
+    arguments:
+      output: module
+      expected: expected
+    assertions:
+    - method: check_sns
+      expected:
+        output: Expected is a str not a dict
+        expected: expected
+        passed: false
+  - description: Output is a module
+    arguments:
+      output: module
+      expected:
+        location: ${PYTEST_YAML_ROOT_DIR}/assertions/module_resource.py
+    assertions:
+    - method: check_sns
+      expected:
+        output:
+          location: ${PYTEST_YAML_ROOT_DIR}/assertions/module_resource.py
+        expected:
+          location: ${PYTEST_YAML_ROOT_DIR}/assertions/module_resource.py
+        passed: true
+  - description: Output is the builtins module
+    arguments:
+      output: builtins
+      expected:
+        location: null
+    assertions:
+    - method: check_sns
+      expected:
+        output:
+          location: null
+        expected:
+          location: null
+        passed: true
+- function: check_equals
+  description: Verifies that the output and expected out are equal
+  tests:
+  - arguments: {}
+    assertions:
+    - method: check_sns
+      expected:
+        output: null
+        expected: null
+        passed: true
+  - arguments:
+      expected: 1
+      output: 1
+    assertions:
+    - method: check_sns
+      expected:
+        output: 1
+        expected: 1
+        passed: true
+  - arguments:
+      expected: true
+      output: false
+    assertions:
+    - method: check_sns
+      expected:
+        output: false
+        expected: true
+        passed: false
+- function: check_function
+  description: >
+    Verify that the output is function; check the function's name and
+    parent module
+  cast_arguments:
+  - field: output
+    method: app_resource.check_function_resource
+  tests:
+  - description: Output is not a function
+    arguments:
+      output: output
+      expected: null
+    assertions:
+    - method: check_sns
+      expected:
+        passed: False
+        output: Output is of type str not Callable
+        expected: null
+  - description: Expected is not a dict
+    arguments:
+      output: callable
+      expected: expected
+    assertions:
+    - method: check_sns
+      expected:
+        passed: False
+        output: Expected is of type str not dict
+        expected: expected
+  - description: Output is a function
+    arguments:
+      output: callable
+      expected:
+        name: callable
+        location: ${PYTEST_YAML_ROOT_DIR}/assertions/app_resource.py
+    assertions:
+    - method: check_sns
+      expected:
+        passed: true
+        output:
+          name: callable
+          location: ${PYTEST_YAML_ROOT_DIR}/assertions/app_resource.py
+        expected:
+          name: callable
+          location: ${PYTEST_YAML_ROOT_DIR}/assertions/app_resource.py
+  - description: Output is an awaitable function
+    arguments:
+      output: coroutine
+      expected:
+        name: coroutine
+        location: ${PYTEST_YAML_ROOT_DIR}/assertions/app_resource.py
+    assertions:
+    - method: check_sns
+      expected:
+        passed: true
+        output:
+          name: coroutine
+          location: ${PYTEST_YAML_ROOT_DIR}/assertions/app_resource.py
+        expected:
+          name: coroutine
+          location: ${PYTEST_YAML_ROOT_DIR}/assertions/app_resource.py
+  # # Todo: Finish this test
+  # - description: Output is a decorated function
+  #   arguments:
+  #     output: wrapped
+  #     expected:
+  #       name: wrapped
+  #       location: ${PYTEST_YAML_ROOT_DIR}/assertions/app.py
+  #   assertions:
+  #   - method: check_sns
+  #     expected:
+  #       passed: true
+  #       output:
+  #         name: wrapped
+  #         location: ${PYTEST_YAML_ROOT_DIR}/assertions/app.py
+  #       expected:
+  #         name: wrapped
+  #         location: ${PYTEST_YAML_ROOT_DIR}/assertions/app.py
+- function: check_dataclass
+  description: >
+    Verify that the output is a dataclass; check name and specified fields and
+    values
+  cast_arguments:
+  - field: output
+    method: app_resource.check_dataclass_resource
+  tests:
+  - description: Output is not a dataclass
+    arguments:
+      output: null
+      expected: null
+    assertions:
+    - method: check_sns
+      expected:
+        passed: False
+        output:
+        - Output is of type NoneType
+        - Expected is of type NoneType
+        expected: null
+  - description: Expected is not a dict
+    arguments:
+      output: dataclass
+      expected: null
+    assertions:
+    - method: check_sns
+      expected:
+        passed: False
+        output:
+        - Output is of type Data_Class
+        - Expected is of type NoneType
+        expected: null
+  - description: Output is a dataclass
+    arguments:
+      output: dataclass
+      expected:
+        name: Data_Class
+        fields:
+          a: a
+          b: b
+    assertions:
+    - method: check_sns
+      expected:
+        passed: true
+        output:
+          name: Data_Class
+          fields:
+            a: a
+            b: b
+        expected:
+          name: Data_Class
+          fields:
+            a: a
+            b: b
+  - description: Output is a dataclass but doesn't have specified fields
+    arguments:
+      output: dataclass
+      expected:
+        name: Data_Class
+        fields:
+          a: a
+          b: b
+          c: c
+    assertions:
+    - method: check_sns
+      expected:
+        passed: false
+        output:
+          name: Data_Class
+          fields:
+            a: a
+            b: b
+        expected:
+          name: Data_Class
+          fields:
+            a: a
+            b: b
+            c: c
+- function: check_class
+  description: >
+    Verify that the output is a class. Check the name of the class and specified
+    fields and values
+  cast_arguments:
+  - method: app_resource.check_class_resource
+    field: output
+  tests:
+  - description: Output or expected are not correct types
+    arguments:
+      output: null
+      expected: null
+    assertions:
+    - method: check_sns
+      expected:
+        passed: False
+        expected: null
+        output:
+        - Output is of type NoneType
+        - Expected is of type NoneType
+  - description: Output is an instantiated class
+    arguments:
+      output: class_
+      expected:
+        name: Class
+        fields:
+          a: a
+          b: b
+    assertions:
+    - method: check_sns
+      expected:
+        passed: true
+        expected:
+          name: Class
+          fields:
+            a: a
+            b: b
+        output:
+          name: Class
+          fields:
+            a: a
+            b: b
+  - description: Output is a non-instantiated class
+    arguments:
+      output: Class
+      expected:
+        name: type
+        fields: {}
+    assertions:
+    - method: check_sns
+      expected:
+        passed: true
+        expected:
+          name: type
+          fields: {}
+        output:
+          name: type
+          fields: {}
+- function: check_length
+  description: Verify that the length of an object is as specified
+  tests:
+  - description: Output is undefined
+    arguments:
+      output: null
+      expected: 0
+    assertions:
+    - method: check_sns
+      expected:
+        expected: 0
+        passed: False
+        output:
+        - Output is of type NoneType
+        - Expected is of type int
+  - description: Output is an empty string
+    arguments:
+      expected: 0
+      output: ''
+    assertions:
+    - method: check_sns
+      expected:
+        output: 0
+        expected: 0
+        passed: true
+  - description: Output is an empty list
+    arguments:
+      expected: 0
+      output: []
+    assertions:
+    - method: check_sns
+      expected:
+        output: 0
+        expected: 0
+        passed: true
+  - description: Output is a non-empty list
+    arguments:
+      expected: 3
+      output:
+      - a
+      - b
+      - c
+    assertions:
+    - method: check_sns
+      expected:
+        output: 3
+        expected: 3
+        passed: true
+  - description: Expected length doesn't match the number of items in a list
+    arguments:
+      expected: 2
+      output:
+      - a
+      - b
+      - c
+    assertions:
+    - method: check_sns
+      expected:
+        output: 3
+        expected: 2
+        passed: false
+- function: check_type
+  description: Verify that the output is of a certain type
+  tests:
+  - description: Expected is not a string or list of strings
+    arguments: {}
+    assertions:
+    - method: check_sns
+      expected:
+        output:
+        - Output is of type NoneType
+        - Expected is of type NoneType
+        expected: null
+        passed: false
+  - description: Output is a string and a str object is expected
+    arguments:
+      expected: str
+      output: string
+    assertions:
+    - method: check_sns
+      expected:
+        expected: str
+        output: str
+        passed: true
+  - description: Output is an int and an int or float object is expected
+    arguments:
+      expected:
+      - int
+      - float
+      output: 1
+    assertions:
+    - method: check_sns
+      expected:
+        expected: int
+        output: int
+        passed: true
+  - description: Output is a float and an int or float object is expected
+    arguments:
+      expected:
+      - int
+      - float
+      output: 1.1
+    assertions:
+    - method: check_sns
+      expected:
+        expected: float
+        output: float
+        passed: true
+  - description: Output is a dict, which is not an expected type
+    arguments:
+      expected:
+      - int
+      - float
+      - list
+      output: {}
+    assertions:
+    - method: check_sns
+      expected:
+        expected:
+        - int
+        - float
+        - list
+        output:
+        - dict
+        - <class 'dict'>
+        passed: false
+- function: check_substring_in_string
+  description: Verify that a string contains a substring or list of substrings
+  tests:
+  - description: Output is not a string, or expected string or list of strings
+    arguments: {}
+    assertions:
+    - method: check_sns
+      expected:
+        expected: null
+        output:
+        - Output is of type NoneType
+        - Expected is of type NoneType
+        passed: false
+  - description: Excepted is not a substring of output
+    arguments:
+      output: output
+      expected: expected
+    assertions:
+    - method: check_sns
+      expected:
+        expected:
+        - expected
+        output: []
+        passed: false
+  - description: Output is a string that contains a list of expected substrings
+    arguments:
+      output: abc
+      expected:
+      - a
+      - b
+      - c
+    assertions:
+    - method: check_sns
+      expected:
+        expected:
+        - a
+        - b
+        - c
+        output:
+        - a
+        - b
+        - c
+        passed: true
+  - description: Output is a string that contains a list of expected substrings
+    arguments:
+      output: substring
+      expected:
+      - sub
+      - string
+    assertions:
+    - method: check_sns
+      expected:
+        expected:
+        - sub
+        - string
+        output:
+        - sub
+        - string
+        passed: true
+- function: check_item_in_list
+  description: Verify that a list contains an item or list of items
+  tests:
+  - description: Output is not a list or tuple
+    arguments:
+      output: {}
+      expected: null
+    assertions:
+    - method: check_sns
+      expected:
+        passed: False
+        output:
+        - Output is of type dict
+        - Expected is of type NoneType
+        expected: null
+  - description: Expected item not in output list
+    arguments:
+      output:
+      - item_0
+      - item_1
+      expected: item
+    assertions:
+    - method: check_sns
+      expected:
+        passed: False
+        output: []
+        expected:
+        - item
+  - description: Output list contains expected item
+    arguments:
+      output:
+      - item_0
+      - item_1
+      expected: item_0
+    assertions:
+    - method: check_sns
+      expected:
+        passed: true
+        output:
+        - item_0
+        expected:
+        - item_0
+  - description: List of expected items in output list
+    arguments:
+      output:
+      - item_0
+      - item_1
+      expected:
+      - item_0
+      - item_1
+    assertions:
+    - method: check_sns
+      expected:
+        passed: true
+        output:
+        - item_0
+        - item_1
+        expected:
+        - item_0
+        - item_1
+- function: check_list_contains_item
+  description: Verify that a function's output is within a list of items
+  tests:
+  - description: Expected is not a list or tuple
+    arguments: {}
+    assertions:
+    - method: check_sns
+      expected:
+        output:
+        - Output is of type NoneType
+        - Expected is of type NoneType
+        expected: null
+        passed: false
+  - description: Output not in list of expected values
+    arguments:
+      output: output
+      expected:
+      - expected
+    assertions:
+    - method: check_sns
+      expected:
+        passed: False
+        output:
+        - output
+        expected: []
+  - description: Output value in list of expected values
+    arguments:
+      output: expected
+      expected:
+      - expected
+    assertions:
+    - method: check_sns
+      expected:
+        passed: true
+        output:
+        - expected
+        expected:
+        - expected
+  - description: Output values in list of expected values
+    arguments:
+      output:
+      - output_0
+      - output_1
+      expected:
+      - output_0
+      - output_1
+      - output_3
+    assertions:
+    - method: check_sns
+      expected:
+        passed: true
+        output:
+        - output_0
+        - output_1
+        expected:
+        - output_0
+        - output_1
+- function: check_key_in_dict
+  description: Verify that a dictionary contains a key or keys
+  tests:
+  - description: Output is not a dictionary
+    arguments: {}
+    assertions:
+    - method: check_sns
+      expected:
+        expected: null
+        output:
+        - Output is of type NoneType
+        - Expected is of type NoneType
+        passed: false
+  - description: Output dict contains expected key
+    arguments:
+      output:
+        a: a
+        b: b
+      expected: a
+    assertions:
+    - method: check_sns
+      expected:
+        expected:
+        - a
+        output:
+        - a
+        passed: true
+  - description: Output does not contain an expected key
+    arguments:
+      output:
+        a: a
+        b: b
+      expected:
+      - a
+      - c
+    assertions:
+    - method: check_sns
+      expected:
+        expected:
+        - a
+        - c
+        output:
+        - a
+        passed: false
+  - description: Output contains expected keys
+    arguments:
+      output:
+        a: a
+        b: b
+        c: c
+      expected:
+      - a
+      - b
+    assertions:
+    - method: check_sns
+      expected:
+        expected:
+        - a
+        - b
+        output:
+        - a
+        - b
+        passed: true
+- function: check_range
+  description: Verify that the output is a range object
+  cast_arguments:
+  - method: app_resource.check_range_resource
+    field: output
+  tests:
+  - description: Output is not a range object or expected not a dict
+    arguments: {}
+    assertions:
+    - method: check_sns
+      expected:
+        passed: false
+        expected: null
+        output:
+        - Output is of type NoneType
+        - Expected is of type NoneType
+  - description: Output is a range that starts at 0 and stops at 3
+    arguments:
+      output:
+        start: 0
+        stop: 3
+      expected:
+        start: 0
+        stop: 3
+    assertions:
+    - method: check_sns
+      expected:
+        expected:
+          start: 0
+          stop: 3
+        output:
+          start: 0
+          stop: 3
+        passed: true
+  - description: >
+      Output is a range but expected start/stop do not align with output
+    arguments:
+      output:
+        start: 0
+        stop: 3
+      expected:
+        start: 0
+        stop: 1
+    assertions:
+    - method: check_sns
+      expected:
+        expected:
+          start: 0
+          stop: 1
+        output:
+          start: 0
+          stop: 3
+        passed: false
+  # - description:
+  #   arguments:
+  #   assertions:
+- function: check_key_value_in_dict
+  description: Verify that a dictionary contains key/value pairs
+  tests:
+  - description: Output or expected is not of type dict
+    arguments: {}
+    assertions:
+    - method: check_sns
+      expected:
+        passed: False
+        expected: null
+        output:
+        - Output is of type NoneType
+        - Expected is of type NoneType
+  - description: Output contains expected key/value pair
+    arguments:
+      output:
+        a: a
+        b: b
+      expected:
+        a: a
+    assertions:
+    - method: check_sns
+      expected:
+        expected:
+          a: a
+        output:
+          a: a
+        passed: true
+  - description: Output does not contain expected key/value pair
+    arguments:
+      output:
+        a: a
+        b: b
+      expected:
+        c: c
+    assertions:
+    - method: check_sns
+      expected:
+        expected:
+          c: c
+        output:
+          c: null
+        passed: false
+  - description: Output contains expected key/value pairs
+    arguments:
+      output:
+        a: a
+        b: b
+        c: c
+      expected:
+        a: a
+        b: b
+    assertions:
+    - method: check_sns
+      expected:
+        expected:
+          a: a
+          b: b
+        output:
+          a: a
+          b: b
+        passed: true
+- function: check_thread
+  description: Verify that the output is of type threading.Thread
+  cast_arguments:
+  - method: app_resource.check_thread_resource
+    field: output
+  tests:
+  - description: Output is not of type thread or expected is not a dict
+    arguments: {}
+    assertions:
+    - method: check_sns
+      expected:
+        passed: False
+        expected: null
+        output:
+        - Output is of type NoneType
+        - Expected is of type NoneType
+  - description: Output is a thread
+    arguments:
+      output: thread
+      expected:
+        target_name: target
+    assertions:
+    - method: check_sns
+      expected:
+        passed: true
+        expected:
+        - target_name: target
+        output:
+        - target_name: target
+- function: check_function_output
+  description: Verify the output from calling a function
+  cast_arguments:
+  - method: app_resource.check_function_output_resource
+    field: output
+  tests:
+  - description: Arguments are undefined
+    arguments: {}
+    assertions:
+    - method: check_sns
+      expected:
+        passed: false
+        expected: null
+        output:
+        - Output is of type NoneType
+        - Expected is of type NoneType
+  - description: Function with single argument and output
+    arguments:
+      output: hello_world
+      expected:
+        arguments:
+        - {}
+        output:
+        - Hello world
+    assertions:
+    - method: check_sns
+      expected:
+        passed: true
+        expected:
+        - Hello world
+        output:
+        - Hello world
+  - description: Function with multiple arguments and outputs
+    arguments:
+      output: hello_world
+      expected:
+        arguments:
+        - name: mars
+        - name: earth
+        output:
+        - Hello mars
+        - Hello world
+    assertions:
+    - method: check_sns
+      expected:
+        passed: false
+        expected:
+        - Hello mars
+        - Hello world
+        output:
+        - Hello mars
+        - Hello earth
+  - description: Awaitable function with multiple arguments and outputs
+    arguments:
+      output: hello_earth
+      expected:
+        arguments:
+        - null
+        output:
+        - Hello earth
+    assertions:
+    - method: check_sns
+      expected:
+        passed: true
+        expected:
+        - Hello earth
+        output:
+        - Hello earth

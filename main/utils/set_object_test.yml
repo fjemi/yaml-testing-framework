@@ -1,0 +1,411 @@
+configurations:
+  resources:
+  - ${PYTEST_YAML_ROOT_DIR}/assertions/app.py
+  - ${PYTEST_YAML_ROOT_DIR}/main/utils/_resources/set_object.py
+
+
+tests:
+- function: main
+  description: >
+    Set the value of child objects in their parents following the path of a
+    dot-delimited route from bottom to top
+  tests:
+  - description: Undefined arguments
+    arguments: {}
+    assertions:
+    - method: assertions.app.check_equals
+      expected: null
+  - description: Route is an empty string
+    arguments:
+      parent: parent
+      value: null
+      route: ''
+    assertions:
+    - method: assertions.app.check_equals
+      expected: parent
+  - description: Route to a value in a dict
+    arguments:
+      parent:
+        key: value
+      value: new_value
+      route: key
+    assertions:
+    - method: assertions.app.check_equals
+      expected:
+        key: new_value
+  - description: Route to a non-existing value in a nested dick
+    arguments:
+      parent:
+        key:
+          key_a: value_a
+      value: value_b
+      route: key.key_b
+    assertions:
+    - method: assertions.app.check_equals
+      expected:
+        key:
+          key_a: value_a
+          key_b: value_b
+  - description: Parent is undefined. Value and route are defined.
+    arguments:
+      parent: null
+      value: value
+      route: field
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        field: value
+- function: get_route_values
+  description: >
+    Returns a list of simple name space objects containing the name and value of
+    child objects along a dot-delimited route
+  cast_output:
+  - method: _resources.set_object.list_sns_to_list_dict
+    field: objects
+  tests:
+  - description: Undefined arguments
+    arguments:
+      parent: null
+      route: null
+      value: null
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        route: null
+        objects:
+        - name: root
+          value: null
+  - description: Route is empty string
+    arguments:
+      parent: parent
+      route: ''
+      value: value
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        route: ''
+        objects:
+        - name: root
+          value: parent
+  - description: Route is path to nested dict value
+    arguments:
+      parent:
+        key_a:
+          key_b: value_b
+      route: key_a.key_b
+      value: value
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        route:
+        - key_a
+        - key_b
+        objects:
+        - name: root
+          value:
+            key_a:
+              key_b: value_b
+        - name: key_a
+          value:
+            key_b: value_b
+        - name: key_b
+          value: value
+        # objects:
+        # - name: root
+        #   value:
+        #     key_a:
+        #       key_b: value_b
+        # - name: key_a
+        #   value:
+        #     key_b: value_b
+  - description: Route contains non-existing fields
+    arguments:
+      parent:
+        field_a: {}
+      route: field_a.field_b.field_c
+      value: value
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        route:
+        - field_a
+        - field_b
+        - field_c
+        objects:
+        - name: root
+          value:
+            field_a: {}
+        - name: field_a
+          value: {}
+        - name: field_b
+          value: {}
+        - name: field_c
+          value: value
+- function: set_child_in_parent
+  cast_arguments:
+  - method: _resources.set_object.set_child_in_parent_cast_arguments
+  description: Sets the value of a a child object inside of a parent object
+  tests:
+  - description: Child are parent is undefined
+    arguments: {}
+    assertions:
+    - method: assertions.app.check_exception
+      expected: AttributeError
+  - description: Set child when parent is dict
+    arguments:
+      parent:
+        value: {}
+      child:
+        value: value
+        name: key
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        name: null
+        value:
+          key: value
+  - description: Set child when parent is none
+    arguments:
+      parent:
+        value: null
+      child:
+        value: value
+        name: name
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        name: null
+    - method: assertions.app.check_sns
+      field: value
+      expected:
+        name: value
+  - description: Set child when parent is a simple name space
+    cast_arguments:
+    - field: parent.value
+      method: _resources.set_object.dict_to_sns
+    arguments:
+      parent:
+        value:
+          field_a: value_a
+      child:
+        value: value_b
+        name: field_b
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        name: null
+    - method: assertions.app.check_equals
+      field: value
+      expected:
+        field_a: value_a
+        field_b: value_b
+- function: reset_route_values
+  description: >
+    Sets child values inside of parents along the route to the child from top
+    to bottom
+  cast_arguments:
+  - field: objects
+    method: _resources.set_object.list_dict_to_list_sns
+  tests:
+  - description: Undefined arguments
+    arguments:
+      objects: null
+    assertions:
+    - method: assertions.app.check_exception
+      expected: TypeError
+  - description: Set child value in a nested dictionary
+    arguments:
+      objects:
+      - name: root
+        value:
+          key_a:
+            key_0 : value_0
+      - name: key_a
+        value:
+          key_0 : value_0
+      - name: key_0
+        value: value_0
+    assertions:
+    - method: assertions.app.check_equals
+      expected:
+        key_a:
+          key_0 : value_0
+  - description: Set child value in a simple name space
+    cast_arguments:
+    - method: _resources.set_object.reset_route_values_cast_arguments
+      field: objects.0|1
+    arguments:
+      objects:
+      - name: root
+        value:
+          field: value
+      - name: field
+        value: set_value
+    assertions:
+    - method: assertions.app.check_equals
+      expected:
+        field: set_value
+- function: get_slice_start_and_end_indices
+  description: >
+    Returns the start and end indices for slice of an Iterable object from
+    a pipe delimited string representing the indices; start|end
+  tests:
+  - description: Start and end indices are undefined
+    arguments:
+      name: null
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        start: null
+        end: null
+  - description: Start and end indices are the same integer
+    arguments:
+      name: 0|0
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        start: 0
+        end: 0
+  - description: Start and end indices are different integers
+    arguments:
+      name: 0|4
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        start: 0
+        end: 4
+  - description: Start index is an integer and end index is undefined
+    arguments:
+      name: 0
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        start: 0
+        end: null
+  - description: Start index is undefined and end index is an integer
+    arguments:
+      name: '|5'
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        start: null
+        end: 5
+- function: replace_slice_with_value
+  description: >
+    Returns an Iterable object with a slice, represented as a pipe delimited
+    string, of the object replaced with specified values.
+  cast_arguments:
+  - method: sns
+    field: indices
+    unpack: true
+  tests:
+  - description: Undefined arguments
+    arguments:
+      parent_value: null
+      child_value: null
+      indices: null
+    assertions:
+    - method: assertions.app.check_exception
+      expected: AttributeError
+  - description: Replace value at single index of parent value
+    arguments:
+      parent_value:
+      - a
+      - b
+      - c
+      child_value: A
+      indices:
+        start: 0
+        end: 0
+    assertions:
+    - method: assertions.app.check_equals
+      expected:
+      - A
+      - b
+      - c
+  - description: Replace the full parent value
+    arguments:
+      parent_value:
+      - a
+      - b
+      - c
+      child_value:
+      - A
+      - B
+      - C
+      indices:
+        start: null
+        end: null
+    assertions:
+    - method: assertions.app.check_equals
+      expected:
+      - A
+      - B
+      - C
+  - description: Replace a slice in middle of the parent value
+    arguments:
+      parent_value:
+      - a
+      - b
+      - c
+      - d
+      child_value:
+      - A
+      - B
+      - C
+      indices:
+        start: 1
+        end: 3
+    assertions:
+    - method: assertions.app.check_equals
+      expected:
+      - a
+      - A
+      - B
+      - C
+      - d
+  - description: Replace a slice at beginning of the parent value
+    arguments:
+      parent_value:
+      - a
+      - b
+      - c
+      - d
+      child_value:
+      - 1
+      - 2
+      - 3
+      indices:
+        start: 2
+        end: null
+    assertions:
+    - method: assertions.app.check_equals
+      expected:
+      - 1
+      - 2
+      - 3
+      - c
+      - d
+  - description: Replace a slice at ending of the parent value
+    arguments:
+      parent_value:
+      - a
+      - b
+      - c
+      - d
+      child_value:
+      - 1
+      - 2
+      - 3
+      indices:
+        start: null
+        end: 3
+    assertions:
+    - method: assertions.app.check_equals
+      expected:
+      - a
+      - b
+      - c
+      - 1
+      - 2
+      - 3

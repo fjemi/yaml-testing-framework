@@ -1,47 +1,46 @@
-functions:
-- name: format_ids
-  description: Formats IDs for parameterized tests
+TODO:
+- Pass excluded functions and modules to coverage
+- Move some logic to plugin.py so that all that is needed is to import function test_
+
+
+configurations:
+  # Todo: Is there a way to link these patterns with coverage
+  # exclude_functions_patterns:
+  # - test_
+  # exclude_resources_patterns:
+  # - blank
+  # filter_functions_patterns:
+  # - blank
+  # filter_resources_patterns:
+  resources:
+  - ${PYTEST_YAML_ROOT_DIR}/_resources/test_entrypoint/app.py
+  - ${PYTEST_YAML_ROOT_DIR}/assertions/app.py
+
+
+tests:
+- function: get_test_id
+  description: >
+    Returns the id for a test or creates one if the id does not exist.
+  cast_arguments:
+  - method: sns
+    field: val
+    unpack: true
   tests:
-  - description: Test 0
-    patch:
-    - object: pytest.project_path
-      value: project_path
-    - object: pytest.yml_tests
-      value: []
-    arguments: 
-      test:
-        module: project_path/module_0
-        function: function_0
-        description: description_0
-    cast_arguments:
-      test: test_resources.app.Test
+  - arguments:
+      val:
+        id: null
     assertions:
-    - equals: module_0.function_0 - description_0
-    - type: str
-  - description: Test 1
-    patch:
-    - object: pytest.project_path
-      value: project_path
-    - object: pytest.yml_tests
-      value: []
-    arguments: 
-      test:
-        module: project_path/module_1
-        function: function_1
-        description: description_1
-    cast_arguments:
-      test: test_resources.app.Test
+    - method: assertions.app.check_equals
+      expected: null
+  - arguments:
+      val:
+        id: id_b
     assertions:
-    - equals: module_1.function_1 - description_1
-    - type: str
-  - description: Test 2
-    patch:
-    - object: pytest.project_path
-      value: project_path
-    - object: pytest.yml_tests
-      value: []
-    arguments: null
-    cast_arguments:
+    - method: assertions.app.check_equals
+      expected: id_b
+  - arguments:
+      val:
+        id: id_a
     assertions:
-    - equals: null
-    - type: NoneType
+    - method: assertions.app.check_equals
+      expected: id_a

@@ -1,0 +1,76 @@
+configurations:
+  resources:
+  - ${PYTEST_YAML_ROOT_DIR}/assertions/app.py
+  - ${PYTEST_YAML_ROOT_DIR}/main/process/_environment_resources/app.py
+
+
+tests:
+- function: main
+  description: >
+    Sets environment variables in a global CONFIG variable within a module
+  cast_arguments:
+  - field: module
+    method: _environment_resources.app.get_module_wrapper
+  tests:
+  - description: Undefined arguments
+    arguments:
+      environment: null
+      module: null
+    assertions:
+    - method: assertions.app.check_equals
+      field: __dict__
+      expected: {}
+    # - method: assertions.app.check_sns
+    #   field: log
+    #   expected:
+    #     level: warning
+    #     message: No environment set for module ${PYTEST_YAML_ROOT_DIR}/main/process/_environment_resources/no_config.py
+  - description: Module with no CONFIG
+    arguments:
+      environment:
+        VAR_A: A
+        VAR_B: B
+      module: ${PYTEST_YAML_ROOT_DIR}/main/process/_environment_resources/no_config.py
+    assertions:
+    - method: assertions.app.check_sns
+      field: module.CONFIG.environment
+      expected:
+        VAR_A: A
+        VAR_B: B
+    # - method: assertions.app.check_sns
+    #   expected:
+    #     log: CONFIG added to module at location ${PYTEST_YAML_ROOT_DIR}/main/process/_environment_resources/no_config.py
+  - description: Module has CONFIG with no environment
+    arguments:
+      environment:
+        VAR_A: 1
+        VAR_B: 2
+        VAR_C: 3
+      module:  ${PYTEST_YAML_ROOT_DIR}/main/process/_environment_resources/no_config.py
+    assertions:
+    - method: assertions.app.check_sns
+      field: module.CONFIG.environment
+      expected:
+        VAR_A: 1
+        VAR_B: 2
+        VAR_C: 3
+  - description: Module has CONFIG with environment
+    arguments:
+      environment:
+        VAR_1: 1
+        VAR_2: 2
+        VAR_3: 3
+      module:  ${PYTEST_YAML_ROOT_DIR}/main/process/_environment_resources/config_with_environment.py
+    assertions:
+    - method: assertions.app.check_sns
+      field: module.CONFIG.environment
+      expected:
+        VAR_1: 1
+        VAR_2: 2
+        VAR_3: 3
+        VAR_A: A
+        VAR_B: B
+        VAR_C: C
+    - method: assertions.app.check_sns
+      expected:
+        log: null

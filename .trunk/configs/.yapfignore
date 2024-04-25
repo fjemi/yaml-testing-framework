@@ -1,0 +1,11 @@
+# Resources
+# https://github.com/google/yapf
+# https://chromium.googlesource.com/chromium/src/+/master/.yapfignore
+
+
+# Ignore hird party packages
+.venv/*
+
+# Ignore artifacts
+.eggs/*
+build/*

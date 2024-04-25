@@ -1,93 +1,43 @@
 [build-system]
-requires = [
-  'setuptools>=61.0', 
-  'pyyaml==6.0',
-] 
+requires = ['setuptools>=61.0', 'pyyaml==6.0']
 build-backend = 'setuptools.build_meta'
-
-
-[tool.ruff]
-target-version = 'py37'
-
-src = ['.']
-
-respect-gitignore  = true
-# Include file path's with matching patterns
-extend-exclude = [
-  '*test_resources/*.py',
-  '*ignore*/*.py',
-  '*_ignore*.py',
-]
-
-# Enable codes
-select = [
-  'E',    # flake8
-  'F',    # flake8
-  'W',    # flake8
-  "ARG",  # flake8-unused-arguments
-  'PL',   # pylint
-  'RUF',  # ruff
-  'I',    # isort
-]
-
-# Allow autofix for all enabled rules 
-fixable = [
-  'I',  # isort
-]
-
-# Decrease the maximum line length 
-# Max number of characters per line
-line-length = 80
-tab-size = 2
-
-# Skip rules
-extend-ignore = [
-  'PLW0602',   # Using global but no assignment is done
-  'PLW0603',   # Using the global statement to update
-]
-
-
-[tool.ruff.pylint]
-max-args = 7
-
-
-[tool.ruff.mccabe]
-max-complexity = 5
-
-
-[tool.yapf]
-based_on_style = 'google'
-indent_width = 2
-continuation_indent_width = 2
-spaces_before_comment = 4
-split_before_logical_operator = true
-space_between_ending_comma_and_closing_bracket = false
-
-
-[tool.yapfignore]
-ignore_patterns  = [
-  '.venv/*',
-  '.eggs/*',
-  'build',
-]
 
 
 [tool.coverage.run]
 omit = [
-  '*/test_resources/*',
-  '*/ignore/*',
-  '*_ignore*',
+  '*ignore/*',
+  '*.ignore/*',
+  '*.logs*',
+  '*logs*',
+  # '*__init__.py',
+  'test_entrypoint.py',
+  '*_test.py',
+  '*_resource.py',
+  '*/_resources/*',
 ]
 branch = true
+source = ['/']
 
 
 [tool.coverage.html]
-directory = 'htmlcov'
+directory = '.htmlcov'
 
 
 [tool.coverage.report]
 exclude_lines = [
   "if __name__ == '__main__':",
-  'def example()',
+  'def example',
+  'def invoke_pytest',
+  'def run_app',
 ]
 fail_under = 90
+
+
+[tool.pytest.ini_options]
+addopts = """
+-ra
+--tb=short
+--project-directory=.
+--cov=.
+--cov-report=html
+"""

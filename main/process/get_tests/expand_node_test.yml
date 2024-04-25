@@ -1,0 +1,536 @@
+todo:
+- rename from collating to branching
+
+
+configurations:
+  resources:
+  - ${PYTEST_YAML_ROOT_DIR}/main/process/get_tests/_resources/expand_node.py
+  - ${PYTEST_YAML_ROOT_DIR}/assertions/app.py
+
+
+tests:
+- function: main
+  description: >
+    Expands nested tests into a single list of tests, and returns a count of the
+    tests collected
+  cast_output:
+  - method: _resources.expand_node.list_sns_to_list_dict
+    field: nodes
+  tests:
+  - description: Undefined arguments
+    arguments:
+      root_node: null
+      configurations: null
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        nodes: []
+  - description: Arguments are empty
+    arguments:
+      root_node: {}
+      configurations: {}
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        nodes:
+        - arguments: {}
+          assertions: []
+          cast_arguments: []
+          cast_output: []
+          description: []
+          environment: {}
+          exclude_functions: []
+          exclude_resources: []
+          function: null
+          function_name: null
+          id: null
+          id_long: null
+          id_short: null
+          key: null
+          module: null
+          module_location: null
+          module_route: null
+          output: null
+          patches: []
+          resources: []
+          tests: null
+          yaml: null
+  - description: Root node with two nested nodes and defined configurations
+    arguments:
+      root_node:
+        tests:
+        - {}
+        - {}
+      configurations:
+        yaml: yaml
+        module: module
+        module_route: module_route
+        module_location: module_location
+        resources: resources
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        nodes:
+        - arguments: {}
+          assertions: []
+          cast_arguments: []
+          cast_output: []
+          description: []
+          environment: {}
+          exclude_functions: []
+          exclude_resources: []
+          function: null
+          function_name: null
+          id: null
+          id_long: null
+          id_short: null
+          key: '0.0'
+          module: module
+          module_location: module_location
+          module_route: module_route
+          output: null
+          patches: []
+          resources:
+          - resources
+          tests: null
+          yaml: yaml
+        - arguments: {}
+          assertions: []
+          cast_arguments: []
+          cast_output: []
+          description: []
+          environment: {}
+          exclude_functions: []
+          exclude_resources: []
+          function: null
+          function_name: null
+          id: null
+          id_long: null
+          id_short: null
+          key: '0.1'
+          module: module
+          module_location: module_location
+          module_route: module_route
+          output: null
+          patches: []
+          resources:
+          - resources
+          tests: null
+          yaml: yaml
+  - description: Root node with a nested node that has a nested node
+    arguments:
+      root_node:
+        tests:
+        - description: nested_node_a
+        - tests:
+          - description: nested_node_b
+          - description: nested_node_c
+      configurations:
+        yaml: configurations
+        module: configurations
+        module_route: configurations
+        module_location: configurations
+        resources: configurations
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        nodes:
+        - arguments: {}
+          assertions: []
+          cast_arguments: []
+          cast_output: []
+          description:
+          - nested_node_a
+          environment: {}
+          exclude_functions: []
+          exclude_resources: []
+          function: null
+          function_name: null
+          id: null
+          id_long: null
+          id_short: null
+          key: '0.0'
+          module: configurations
+          module_location: configurations
+          module_route: configurations
+          output: null
+          patches: []
+          resources:
+          - configurations
+          tests: null
+          yaml: configurations
+        - arguments: {}
+          assertions: []
+          cast_arguments: []
+          cast_output: []
+          description:
+          - nested_node_b
+          environment: {}
+          exclude_functions: []
+          exclude_resources: []
+          function: null
+          function_name: null
+          id: null
+          id_long: null
+          id_short: null
+          key: 0.1.0
+          module: configurations
+          module_location: configurations
+          module_route: configurations
+          output: null
+          patches: []
+          resources:
+          - configurations
+          tests: null
+          yaml: configurations
+        - arguments: {}
+          assertions: []
+          cast_arguments: []
+          cast_output: []
+          description:
+          - nested_node_c
+          environment: {}
+          exclude_functions: []
+          exclude_resources: []
+          function: null
+          function_name: null
+          id: null
+          id_long: null
+          id_short: null
+          key: 0.1.1
+          module: configurations
+          module_location: configurations
+          module_route: configurations
+          output: null
+          patches: []
+          resources:
+          - configurations
+          tests: null
+          yaml: configurations
+- function: add_configurations_to_root_node
+  description: Adds defined configurations, such as locations, to a root node
+  tests:
+  - description: Empty arguments
+    arguments:
+      root_node: {}
+      configurations: {}
+    assertions:
+    - method: assertions.app.check_sns
+      field: root_node
+      expected:
+        arguments: {}
+        assertions: []
+        cast_arguments: []
+        cast_output: []
+        description: []
+        environment: {}
+        exclude_functions: []
+        exclude_resources: []
+        function: null
+        function_name: null
+        id: null
+        id_long: null
+        id_short: null
+        key: null
+        module: null
+        module_location: null
+        module_route: null
+        output: null
+        patches: []
+        resources: []
+        tests: null
+        yaml: null
+  - description: Non-empty arguments
+    arguments:
+      root_node:
+        module: root_node
+        module_route: root_node
+        module_location: root_node
+        resources: root_node
+        yaml: root_node
+      configurations:
+        module: configurations
+        module_route: configurations
+        module_location: configurations
+        resources: configurations
+        yaml: configurations
+    assertions:
+    - method: assertions.app.check_sns
+      field: root_node
+      expected:
+        arguments: {}
+        assertions: []
+        cast_arguments: []
+        cast_output: []
+        description: []
+        environment: {}
+        exclude_functions: []
+        exclude_resources: []
+        function: null
+        function_name: null
+        id: null
+        id_long: null
+        id_short: null
+        key: null
+        module: configurations
+        module_location: configurations
+        module_route: configurations
+        output: null
+        patches: []
+        resources:
+        - configurations
+        - root_node
+        tests: null
+        yaml: configurations
+- function: expand_nested_nodes
+  description: Expands data to nodes directly nested under a root node
+  cast_arguments:
+  - method: sns
+    field: node
+    unpack: true
+  cast_output:
+  - method: _resources.expand_node.dict_sns_to_dict_dict
+  tests:
+  - description: Empty arguments
+    arguments:
+      key: key
+      node: {}
+      nested_nodes: []
+    assertions:
+    - method: assertions.app.check_equals
+      expected: {}
+  - description: Two nested nodes
+    arguments:
+      key: key
+      node:
+        description: root_node
+        module: root_node
+        module_route: root_node
+        module_location: root_node
+        resources: root_node
+        yaml: root_node
+      nested_nodes:
+      - description: nest_node_a
+      - description: nest_node_b
+    assertions:
+    - method: assertions.app.check_equals
+      expected:
+        key.0:
+          arguments: {}
+          assertions: []
+          cast_arguments: []
+          cast_output: []
+          description:
+          - root_node
+          - nest_node_a
+          environment: {}
+          exclude_functions: []
+          exclude_resources: []
+          function: null
+          function_name: null
+          id: null
+          id_long: null
+          id_short: null
+          key: key.0
+          module: root_node
+          module_location: root_node
+          module_route: root_node
+          output: null
+          patches: []
+          resources:
+          - root_node
+          tests: null
+          yaml: root_node
+        key.1:
+          arguments: {}
+          assertions: []
+          cast_arguments: []
+          cast_output: []
+          description:
+          - root_node
+          - nest_node_b
+          environment: {}
+          exclude_functions: []
+          exclude_resources: []
+          function: null
+          function_name: null
+          id: null
+          id_long: null
+          id_short: null
+          key: key.1
+          module: root_node
+          module_location: root_node
+          module_route: root_node
+          output: null
+          patches: []
+          resources:
+          - root_node
+          tests: null
+          yaml: root_node
+- function: get_expanded_nodes
+  description: >
+    Returns a list of individual nodes with expanded data, and a list of nodes
+    containing nesting nodes
+  cast_arguments:
+  - method: sns
+    field: root_node
+    unpack: true
+  cast_output:
+  - method: _resources.expand_node.dict_sns_to_dict_dict
+    field: nodes
+  tests:
+  - description: Root node is empty
+    arguments:
+      root_node: {}
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        expanded_keys: []
+        nodes:
+          '0': {}
+  - description: One node with no nested nodes
+    arguments:
+      root_node:
+        description: root_node
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        expanded_keys: []
+        nodes:
+          '0':
+            description: root_node
+  - description: One node with 3 nested nodes
+    arguments:
+      root_node:
+        description: root_node
+        tests:
+        - description: nested_0
+        - description: nested_1
+        - description: nested_2
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        expanded_keys: ['0']
+        nodes:
+          '0':
+            description: root_node
+          '0.0':
+            arguments: {}
+            assertions: []
+            cast_arguments: []
+            cast_output: []
+            description:
+            - root_node
+            - nested_0
+            environment: {}
+            exclude_functions: []
+            exclude_resources: []
+            function: null
+            function_name: null
+            id: null
+            id_long: null
+            id_short: null
+            key: '0.0'
+            module: null
+            module_location: null
+            module_route: null
+            output: null
+            patches: []
+            resources: []
+            tests: null
+            yaml: null
+          '0.1':
+            arguments: {}
+            assertions: []
+            cast_arguments: []
+            cast_output: []
+            description:
+            - root_node
+            - nested_1
+            environment: {}
+            exclude_functions: []
+            exclude_resources: []
+            function: null
+            function_name: null
+            id: null
+            id_long: null
+            id_short: null
+            key: '0.1'
+            module: null
+            module_location: null
+            module_route: null
+            output: null
+            patches: []
+            resources: []
+            tests: null
+            yaml: null
+          '0.2':
+            arguments: {}
+            assertions: []
+            cast_arguments: []
+            cast_output: []
+            description:
+            - root_node
+            - nested_2
+            environment: {}
+            exclude_functions: []
+            exclude_resources: []
+            function: null
+            function_name: null
+            id: null
+            id_long: null
+            id_short: null
+            key: '0.2'
+            module: null
+            module_location: null
+            module_route: null
+            output: null
+            patches: []
+            resources: []
+            tests: null
+            yaml: null
+- function: remove_roots_of_expanded_nodes
+  description: >
+    Returns a list of individual nodes. Filters out expanded nodes and counts
+    remaining nodes.
+  tests:
+  - description: Empty arguments
+    arguments:
+      expanded_keys: []
+      nodes: {}
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        expanded_keys: null
+        nodes: []
+  - description: One expanded key
+    arguments:
+      nodes:
+        0: 0
+        1: 1
+        2: 2
+      expanded_keys: [0]
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        expanded_keys: null
+        nodes:
+        - 1
+        - 2
+  - description: Multiple expanded keys
+    arguments:
+      nodes:
+        0: 0
+        1: 1
+        2: 2
+        3: 3
+        4: 4
+      expanded_keys: [0, 1, 5]
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        expanded_keys: null
+        nodes:
+        - 2
+        - 3
+        - 4

@@ -1,127 +1,141 @@
-#!/usr/bin/env python3
+#!.venv/bin/python3
+# -*- coding: utf-8 -*-
 
 import dataclasses as dc
 import os
-from typing import List
+from typing import Any, List
 
-import yaml
-from setuptools import setup
+import yaml as pyyaml
+import setuptools
 
-ROOT_DIRECTORY = os.path.dirname(__file__)
+
+PYTEST_YAML_ROOT_DIRECTORY = os.path.dirname(__file__)
+
+FILES = '''
+- name: Pipfile.lock
+  field: pipfile_lock
+  type: json
+- name: setup.yaml
+  field: setup_yaml
+  type: yaml
+- name: README.md
+  field: long_description
+  type: file
+'''
+FILES = pyyaml.safe_load(FILES)
 
 
 @dc.dataclass
 class Data:
-  directory: str = dc.field(default_factory=lambda: ROOT_DIRECTORY)
+  directory: str | None = None
   pipfile_lock: dict | None = None
   long_description: str | None = None
-  setup_yml: dict | None = None
+  setup_yaml: dict | None = None
 
 
-def get_file_contents(data: Data) -> Data:
-  files = '''
-  - name: Pipfile.lock
-    dataclass_field: pipfile_lock
-    type: json
-  - name: setup.yml
-    dataclass_field: setup_yml
-    type: yml
-  - name: README.md
-    dataclass_field: long_description
-    type: file
-  '''
-  files = yaml.safe_load(files)
+def get_content_from_file(location: str | None = None) -> Any:
+  location = str(location)
+  content = None
 
-  for file in files:
-    path = os.path.join(data.directory, file.get('name'))
-
-    if not os.path.exists(path):
-      continue
-
-    content = None
+  if os.path.isfile(location):
     with open(
-      file=path,
+      file=location,
       mode='r',
       encoding='utf-8',
-    ) as file_content:
-      content = file_content.read()
+    ) as file:
+      content = file.read()
 
-    if file.get('type') in ['json', 'yml']:
-      content = yaml.safe_load(content)
-
-    setattr(
-      data,
-      file.get('dataclass_field'),
-      content,
-    )
-
-  return data
+  return content
 
 
-def get_setup_requires(pipfile_lock: dict) -> List[str]:
-  default = pipfile_lock.get('default')
+def get_contents(
+  directory: str | None = None,
+) -> dict:
+  store = {'directory': directory}
+
+  if directory:
+    for file in FILES:
+      filename = file.get('name', '')
+      location = os.path.join(directory, filename)
+      location = os.path.normpath(location)
+
+      content = get_content_from_file(location=location)
+
+      condition = file.get('type', '') in ['json', 'yaml']
+      if condition and content:
+        content = pyyaml.safe_load(content)
+
+      store[file.get('field')] = content
+
+  return store
+
+
+def get_setup_requires(
+  pipfile_lock: dict | None = None,
+) -> List[str]:
+  pipfile_lock = pipfile_lock or {}
+  default = pipfile_lock.get('default', {})
   exclude_keys = [
     'coverage',
     'iniconfig',
     'packaging',
     'pluggy',
   ]
-  packages = []
 
+  packages = []
   for key, value in default.items():
-    if key in exclude_keys:
-      continue
-    version = value.get('version')
-    requirement = f'{key}{version}'
-    packages.append(requirement)
+    if key not in exclude_keys:
+      version = value.get('version')
+      requirement = f'{key}{version}'
+      packages.append(requirement)
 
   return packages
 
 
-def get_python_requires(pipfile_lock: dict) -> str:
-  versions = {}
-
+def get_python_requires(pipfile_lock: dict | None = None) -> str:
   packages = pipfile_lock.get('default')
   for name, details in packages.items():
-    markers = details.get('markers')
-    if not markers:
-      continue
-
-    numbering = markers.replace("'", '').split(' ')
-    numbering = numbering[-1].split('.')[0:2]
-    major, minor = [int(x) for x in numbering]
-
-    if major not in versions:
-      versions[major] = []
-    versions[major].append(minor)
-    versions[major].sort()
-
-  min_major = min(versions.keys())
-  min_minor = min(versions[min_major])
-  return f'>={min_major}.{min_minor}'
+    markers = details.get('markers', None)
+    if markers:
+      numbers = markers.replace('python_version', '').strip()
+      numbers = numbers.replace("'", '')
+      numbers = numbers.split(' ')
+      return ''.join(numbers)
 
 
-def add_pip_lock_fields_to_setup_yml(data: Data) -> Data:
-  fields = {
-    'setup_requires': get_setup_requires(pipfile_lock=data.pipfile_lock),
-    'python_requires': get_python_requires(pipfile_lock=data.pipfile_lock),
-    'long_description': data.long_description,
-  }
-  data.setup_yml.update(fields)
-  data.pipfile_lock = None
-  return data
+EMPTY_VALUES = [
+  None,
+  {},
+  [],
+  '',
+]
+
+
+def merge_pip_lock_and_setup_yaml(
+  long_description: str | None = None,
+  setup_yaml: dict | None = None,
+  pipfile_lock: dict | None = None,
+  # trunk-ignore(ruff/ARG001)
+  directory: str | None = None,
+) -> dict:
+  fields = dict(
+    setup_requires=get_setup_requires(pipfile_lock=pipfile_lock),
+    python_requires=get_python_requires(pipfile_lock=pipfile_lock),
+    long_description=long_description,
+  )
+  setup_yaml = setup_yaml or {}
+  setup_yaml.update(fields)
+  pipfile_lock = None
+  return setup_yaml
 
 
 def main(directory: str | None = None) -> Data:
-  data = Data()
-  if directory:
-    data.directory = directory
-
-  data = get_file_contents(data=data)
-  data = add_pip_lock_fields_to_setup_yml(data=data)
-  return data.setup_yml
+  directory = directory or PYTEST_YAML_ROOT_DIRECTORY
+  data = get_contents(directory=directory)
+  data = merge_pip_lock_and_setup_yaml(**data)
+  return data
 
 
 if __name__ == '__main__':
-  setup_data = main()
-  setup(**setup_data)
+  data = main()
+  setuptools.setup(**data)

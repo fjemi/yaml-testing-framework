@@ -1,0 +1,26 @@
+# Resources
+# https://prettier.io/docs/en/ignore.html
+
+
+# Ignore artifacts:
+build
+dist
+coverage
+.htmlcov
+.logs
+.eggs
+.ignore
+.trunk
+
+
+# Ignore third party packages
+.venv
+
+
+# Ignore all YAML files:
+**/*.yaml
+**/*.yml
+
+
+# README files
+**/*README*.md
