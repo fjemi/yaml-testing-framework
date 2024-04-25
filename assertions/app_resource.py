@@ -46,11 +46,11 @@ def check_function_resource(output: str | None = None) -> Callable | None:
 def check_dataclass_resource(output: str | None = None) -> Any:
 
   @dc.dataclass
-  class Data_Class:
+  class DataClass:
     a: str = 'a'
     b: str = 'b'
 
-  dataclass = Data_Class()
+  dataclass = DataClass()
   return locals().get(output, None)
 
 

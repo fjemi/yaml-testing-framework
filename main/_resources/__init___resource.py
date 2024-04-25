@@ -4,8 +4,6 @@
 from main.__init__ import sys
 
 
-def get_sys_path(
-  # trunk-ignore(ruff/ARG001)
-  data: None = None,
-) -> dict:
+def get_sys_path(data: None = None) -> dict:
+  _ = data
   return sys.path

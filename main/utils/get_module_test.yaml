@@ -61,19 +61,24 @@ tests:
 - function: get_module_from_location
   description: Get the module at a given file path
   tests:
-  - description: Module location doesn't exist
+  - description: Location doesn't exist
     arguments:
       location: DOES_NOT_EXIST/app.py
+      name: name
     assertions:
-    - method: assertions.app.check_sns
+    - method: assertions.app.check_equals
+      field: __dict__
       expected:  {}
-  - description: Module is defined
+  - description: Location exists
     arguments:
-      module: module
+      name: name
+      location: ${PYTEST_YAML_ROOT_DIR}/main/utils/_resources/get_module.py
     assertions:
-    - method: assertions.app.check_sns
-      expected: {}
-  - description: Module is undefined and the module location exist
+    - method: assertions.app.check_module
+      field: module
+      expected:
+        location: ${PYTEST_YAML_ROOT_DIR}/main/utils/_resources/get_module.py
+  - description: Location is defined
     arguments:
       name: app
       location: ${PYTEST_YAML_ROOT_DIR}/main/utils/_resources/get_module.py

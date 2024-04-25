@@ -205,7 +205,7 @@ Patch_Data: &PATCH_DATA
     type: Patch
     default: null
 Patch_Side_Effect_List: &PATCH_SIDE_EFFECT_LIST
-  description: Data_Class needed to create a list side effect
+  description: DataClass needed to create a list side effect
   fields:
   - name: value
     description: List of values for the side effect
@@ -298,7 +298,7 @@ process_casts.Data: &CAST_DATA
     description: Any object
     default: null
   - name: kinds
-    type: Data_Class
+    type: DataClass
     description: Stores the kind of objects
     default: null
   - name: object_key

@@ -102,11 +102,9 @@ def get_callable_patch_method(
   if callable_route:
     return get_object.main(parent=module, route=callable_route)
 
-  def callable_patch(
-    # trunk-ignore(ruff/ARG001)
-    *args, **kwargs,
-  ) -> Any:
+  def callable_patch(*args, **kwargs) -> Any:
     # callable patch
+    _ = args, kwargs
     return value
 
   return callable_patch
@@ -127,10 +125,9 @@ def get_side_effect_list_patch_method(
     data=data,
     name='Patch_Side_Effect_List', )
 
-  def side_effect_list_patch(
-    # trunk-ignore(ruff/ARG001)
-    *args, **kwargs,
-  ) -> Any:
+  def side_effect_list_patch(*args, **kwargs) -> Any:
+    _ = args, kwargs
+
     n = len(SIDE_EFFECTS[timestamp].value)
     if SIDE_EFFECTS[timestamp].count == n:
       SIDE_EFFECTS[timestamp].count = 0

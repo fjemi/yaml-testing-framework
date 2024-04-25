@@ -6,7 +6,7 @@ from typing import Any
 
 
 @dc.dataclass
-class Test_Data:
+class TestData:
   a: int = 0
   b: int = 0
 
@@ -20,7 +20,7 @@ def get_resources(
   if 'int' in [caster, object]:
     return int
   if 'dataclass' in [caster, object]:
-    return Test_Data
+    return TestData
 
 
 def add(data: dict | None) -> int:

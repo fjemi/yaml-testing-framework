@@ -292,14 +292,14 @@ tests:
       expected:
         passed: False
         output:
-        - Output is of type Data_Class
+        - Output is of type DataClass
         - Expected is of type NoneType
         expected: null
   - description: Output is a dataclass
     arguments:
       output: dataclass
       expected:
-        name: Data_Class
+        name: DataClass
         fields:
           a: a
           b: b
@@ -308,12 +308,12 @@ tests:
       expected:
         passed: true
         output:
-          name: Data_Class
+          name: DataClass
           fields:
             a: a
             b: b
         expected:
-          name: Data_Class
+          name: DataClass
           fields:
             a: a
             b: b
@@ -321,7 +321,7 @@ tests:
     arguments:
       output: dataclass
       expected:
-        name: Data_Class
+        name: DataClass
         fields:
           a: a
           b: b
@@ -331,12 +331,12 @@ tests:
       expected:
         passed: false
         output:
-          name: Data_Class
+          name: DataClass
           fields:
             a: a
             b: b
         expected:
-          name: Data_Class
+          name: DataClass
           fields:
             a: a
             b: b

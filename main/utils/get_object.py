@@ -34,7 +34,10 @@ def slice_iterable(
   child: int | str | None = None,
 ) -> Iterable | None:
 
-  def inner(item: Any, i: int) -> int | None:
+  def inner(
+    item: Any | None = None,
+    i: int | None = None,
+  ) -> int | None:
     if item.isdigit():
       return int(item)
     elif i == TWO and item is None:

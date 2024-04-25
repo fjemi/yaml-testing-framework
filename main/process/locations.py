@@ -126,13 +126,13 @@ def get_route_for_module(
 
 
 def get_module_and_yaml_location_when_path_kind_is_file(
-  # trunk-ignore(ruff/ARG001)
   exclude_files: list | None = None,
-  # trunk-ignore(ruff/ARG001)
   resources_folder_name: str | None = None,
   paths: sns | None = None,
   yaml_suffix: str | None = None,
 ) -> sns:
+  _ = exclude_files, resources_folder_name
+
   data = sns(locations=[])
 
   if getattr(paths, 'kind', None) != 'file':

@@ -41,7 +41,6 @@ def format_module_name(
   name: str | None = None,
   location: str | None = None,
   pool: bool | None = None,
-  # key: str | None = None,
 ) -> sns | None:
   data = sns(name='app')
 
@@ -54,13 +53,9 @@ def format_module_name(
     data.name = data.name.split(os.sep)
     data.name = '.'.join(data.name)
 
-  # if key:
-  #   data.name = f'{data.name}|{key}'
-
   global MODULE_NAMES
   MODULE_NAMES.append(data.name)
 
-  # if not pool and not key:
   if not pool:
     count = MODULE_NAMES.count(data.name)
     data.name = f'{data.name}_{count}'
@@ -81,15 +76,12 @@ def get_module_from_pool(
 def get_module_from_location(
   location: str | None = None,
   name: str | None = None,
-  module: ModuleType | None = None,
 ) -> sns:
   location = str(location)
   if os.path.exists(location) is False:
     return sns()
 
-  spec = importlib.util.spec_from_file_location(
-    name=name,
-    location=location, )
+  spec = importlib.util.spec_from_file_location(name=name, location=location)
   module = importlib.util.module_from_spec(spec)
 
   try:

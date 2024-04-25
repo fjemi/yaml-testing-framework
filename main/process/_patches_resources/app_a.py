@@ -5,11 +5,11 @@ import dataclasses as dc
 
 
 @dc.dataclass
-class Data_Class_Resource:
+class DataClassResource:
   field: str = 'value'
 
 
-EXAMPLE_OBJECT = Data_Class_Resource()
+EXAMPLE_OBJECT = DataClassResource()
 
 
 @dc.dataclass
@@ -19,7 +19,7 @@ class Object_Parent:
 
 
 @dc.dataclass
-class Test_Data_Class:
+class TestDataClass:
   pass
 
 

@@ -14,10 +14,8 @@ MODULE = __file__
 LOCALS = locals()
 
 
-def pass_through(
-  # trunk-ignore(ruff/ARG001)
-  *args, **kwargs,
-) -> str:
+def pass_through(*args, **kwargs) -> str:
+  _ = args, kwargs
   return 'pass_through'
 
 
@@ -67,17 +65,17 @@ def unpack_nonetype() -> str:
 
 
 @dc.dataclass
-class Data_Class:
+class DataClass:
   pass
 
 
 @dc.dataclass
-class Test_Data:
+class TestData:
   a: int = 0
   b: int = 0
 
 
-DATA_CLASS_RESOURCE = Test_Data()
+DATA_CLASS_RESOURCE = TestData()
 
 
 def inverse(a: int) -> int:
@@ -105,9 +103,9 @@ def add_dict(temp_object: dict | None = None) -> int:
 
 
 OBJECT_MAP = {
-  'dataclass': Test_Data,
+  'dataclass': TestData,
   'dict_dataclass': {
-    'dataclass': Test_Data()
+    'dataclass': TestData()
   },
   'add': add,
   'add_list': add_list,
@@ -122,27 +120,19 @@ OBJECT_MAP = {
 }
 
 
-def function_one_parameter(
-  # trunk-ignore(ruff/ARG001)
-  parameter_1: None = None,
-) -> None:
-  return
+def function_one_parameter(parameter_1: None = None) -> None:
+  _ = parameter_1
 
 
 def function_two_parameters(
-  # trunk-ignore(ruff/ARG001)
   parameter_1: None = None,
-  # trunk-ignore(ruff/ARG001)
   parameter_2: None = None,
 ) -> None:
-  return
+  _ = parameter_1, parameter_2
 
 
-def function(
-  # trunk-ignore(ruff/ARG001)
-  data: None = None,
-) -> None:
-  return
+def function(data: None = None) -> None:
+  _ = data
 
 
 def function_resource(function: str) -> Callable:
@@ -169,7 +159,7 @@ def module_resource(module: str | None = None) -> ModuleType | None:
 
 def kinds_resource(kinds: str | dict) -> Any:
   if isinstance(kinds, dict):
-    data = Data_Class()
+    data = DataClass()
     for key, value in kinds.items():
       setattr(data, key, value)
     return data
