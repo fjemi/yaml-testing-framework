@@ -87,7 +87,7 @@ pytest --project-directory=add.py
 
 ## Configuration
 
-The plugin can be configured within the pytest settings of a configuration file,
+The app can be configured within the pytest settings of a configuration file,
  such as a `pytest.ini`, or in the console when invoking pytest. The
  configurations are
 
@@ -132,7 +132,7 @@ pytest \
 
 ## YAML Test Files
 
-Tests are defined in YAML files with the top level keys picked up by the plugin
+Tests are defined in YAML files with the top level keys picked up by the app
 being:
 - `configurations` - Configurations to be used locally for each test in the YAML files
 - `tests` - Configurations used for multiple of individual tests.
@@ -140,7 +140,7 @@ being:
 
 ### Expanding and Collating Tests
 
-Using the plugin we can define configurations for tests at various levels
+Using the app we can define configurations for tests at various levels
 (configurations, tests, nested tests), expand those configurations to lower
 configurations, and collate individual tests. This allows us to reuse
 configurations and reduce the duplication of content across a YAML file. This is
@@ -150,7 +150,7 @@ which we can take advantage, along with the other features available in YAML.
 #### Example
 
 This is an abstract example of the expanding/collating configurations done by
-the plugin, where the configurations for tests are comprised of:
+the app, where the configurations for tests are comprised of:
 - `config_a` - a list
 - `config_b` - an object
 - `config_c` - a string
@@ -237,7 +237,7 @@ fields can be defined globally or at different test levels.
 
 ## Resources
 
-Resources represent the location of modules to import and use during tests. Resources can be defined globally when configuring the plugin, or at the module or test levels  under the key `resources` in a YAML file.
+Resources represent the location of modules to import and use during tests. Resources can be defined globally when configuring the app, or at the module or test levels  under the key `resources` in a YAML file.
 
 ```yaml
 configurations:

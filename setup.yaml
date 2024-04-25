@@ -1,6 +1,6 @@
 author: Olufemi Jemilohun
 author_email: olufemi.jemilohun@gmail.com
-description: A pytest plugin used to run tests in defined in YAML files
+description: A testing framework where tests are defined in YAML files
 long_description: null
 classifiers:
 - 'Framework :: Pytest'
@@ -13,10 +13,10 @@ keywords:
 - pytest
 - yaml
 - testing
-name: pytest-yaml
+name: yaml-testing-framework
 packages:
 - main
-url: https://github.com/fjemi/pytest-yaml
+url: https://github.com/fjemi/yaml-testing-framework
 version: '0.2.0'  # yamllint disable-line rule:quoted-strings
 zip_safe: True
 setup_requires:
@@ -26,4 +26,4 @@ extras_require: {}
 python_requires: null
 entry_points:
   pytest11:
-  - pytest-yaml = main.plugin
+  - yaml-testing-framework = main.plugin

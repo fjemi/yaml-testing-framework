@@ -11,7 +11,7 @@ nest-asyncio = "*"
 [dev-packages]
 pre-commit = "*"
 pytest-cov = "*"
-pytest-yaml = {editable = true, path = "."}
+yaml-testing-framework = {editable = true, path = "."}
 
 [requires]
 python_version = "3.11"

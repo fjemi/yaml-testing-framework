@@ -348,7 +348,7 @@
             "markers": "python_version >= '3.7'",
             "version": "==4.1.0"
         },
-        "pytest-yaml": {
+        "yaml-testing-framework": {
             "editable": true,
             "path": "."
         },
