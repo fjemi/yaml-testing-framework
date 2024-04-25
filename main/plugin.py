@@ -36,9 +36,10 @@ def get_options(
 
 def process_option_exclude_files(
   option: dict | None = None,
-  # trunk-ignore(ruff/ARG001)
   config: py_test.Config | None = None,
 ) -> List[str]:
+  _ = config
+
   option = option or []
   if not isinstance(option, list):
     option = [option]
@@ -68,19 +69,11 @@ def get_pytest_parser(pytest_instance: ModuleType) -> py_test.Parser:
   return pytest_instance.Parser
 
 
-def get_pytest_instance(
-  # trunk-ignore(ruff/ARG001)
-  data: None = None,
-) -> py_test:
+def get_pytest_instance(data: None = None) -> py_test:
+  _ = data
+
   import pytest as instance
   return instance
-
-
-# def pytest_terminal_summary(terminalreporter, exitstatus, config):
-#     # terminalreporter.section("My session")
-#     # terminalreporter.write("My message")
-#     terminalreporter.currentfspath = 1
-#     terminalreporter.ensure_newline()
 
 
 def add_args_and_ini_options_to_parser(
@@ -105,9 +98,9 @@ def pytest_addoption(parser: py_test.Parser) -> None:
 
 def pass_through(
   option: Any | None = None,
-  # trunk-ignore(ruff/ARG001)
   config: py_test.Config | None = None,
 ) -> Any:
+  _ = config
   return option
 
 

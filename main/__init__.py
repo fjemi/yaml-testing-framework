@@ -13,10 +13,7 @@ DIRECTORIES = dict(main='')
 EXCLUDE_DIRECTORIES = ['.ignore', '__pycache__', ]
 
 
-def allow_nested_event_loops(
-  # trunk-ignore(ruff/ARG001)
-  data: None = None,
-) -> int:
+def allow_nested_event_loops() -> int:
   nest_asyncio.apply()
   return 1
 

@@ -17,17 +17,14 @@ PARENT_MODULE = invoke_testing_method.get_parent_module_location(
 CONFIG = get_config.main(module=PARENT_MODULE)
 
 
-def pytest_resource(
-  # trunk-ignore(ruff/ARG001)
-  *args, **kwargs,
-) -> types.ModuleType:
+def pytest_resource(*args, **kwargs) -> types.ModuleType:
+  _ = args, kwargs
   return pytest
 
 
-def get_locals(
-  # trunk-ignore(ruff/ARG001)
-  *args, **kwargs,
-) -> dict:
+def get_locals(*args, **kwargs) -> dict:
+  _ = args, kwargs
+
   return {
     'process_option_option_0':
     # trunk-ignore(ruff/ARG005)
@@ -68,17 +65,13 @@ def process_option_project_directory_resource(
   return arguments
 
 
-def get_options_or_inis_resource(
-  # trunk-ignore(ruff/ARG001)
-  *args, **kwargs,
-) -> mock:
+def get_options_or_inis_resource(*args, **kwargs) -> mock:
+  _ = args, kwargs
   return mock
 
 
-def pytest_parser_resource(
-  # trunk-ignore(ruff/ARG001)
-  parser: str | None = None,
-) -> pytest.Parser:
+def pytest_parser_resource(parser: str | None = None) -> pytest.Parser:
+  _ = parser
   return pytest.Parser()
 
 

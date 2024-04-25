@@ -9,7 +9,7 @@ LOCALS = locals()
 
 
 @dc.dataclass
-class Data_Class:
+class DataClass:
   a: int = 0
   b: int = 0
   result: int = 0
@@ -42,42 +42,35 @@ def function_one_parameter(
 
 
 def function_two_parameters(
-  # trunk-ignore(ruff/ARG001)
   parameter_1: None = None,
-  # trunk-ignore(ruff/ARG001)
   parameter_2: None = None,
 ) -> None:
-  return
+  _ = parameter_1, parameter_2
 
 
 def function_resource(function: str) -> Callable:
   return LOCALS[function]
 
 
-def data_class_resource(
-  # trunk-ignore(ruff/ARG001)
-  *args, **kwargs,
-) -> Data_Class:
-  return Data_Class
+def get_data_class_resource(*args, **kwargs) -> DataClass:
+  _ = args, kwargs
+  return DataClass
 
 
-def data_resource(data: dict) -> Data_Class:
-  return Data_Class(**data)
+def data_resource(data: dict) -> DataClass:
+  return DataClass(**data)
 
 
-def functions_resource(
-  # trunk-ignore(ruff/ARG001)
-  *args, **kwargs,
-) -> dict:
+def functions_resource(*args, **kwargs) -> dict:
+  _ = args, kwargs
   return LOCALS
 
 
 def coroutine_resource(
-  # trunk-ignore(ruff/ARG001)
   task: Any | None = None,
-  # trunk-ignore(ruff/ARG001)
   object: Any | None = None,
 ) -> Callable:
+  _ = task, object
 
   def entrypoint() -> str:
     return 'coroutine_output'

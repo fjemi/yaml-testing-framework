@@ -115,14 +115,13 @@ def merge_pip_lock_and_setup_yaml(
   long_description: str | None = None,
   setup_yaml: dict | None = None,
   pipfile_lock: dict | None = None,
-  # trunk-ignore(ruff/ARG001)
   directory: str | None = None,
 ) -> dict:
+  _ = directory
   fields = dict(
     setup_requires=get_setup_requires(pipfile_lock=pipfile_lock),
     python_requires=get_python_requires(pipfile_lock=pipfile_lock),
-    long_description=long_description,
-  )
+    long_description=long_description, )
   setup_yaml = setup_yaml or {}
   setup_yaml.update(fields)
   pipfile_lock = None

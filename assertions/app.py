@@ -17,7 +17,7 @@ CONFIG = get_config.main()
 
 
 @dc.dataclass
-class Data_Class:
+class DataClass:
   pass
 
 
@@ -175,7 +175,7 @@ def perform_type_checks(
 
 
 def check_dataclass(
-  output: Data_Class | None = None,
+  output: DataClass | None = None,
   expected: dict | None = None,
 ) -> sns:
   output_check = dc.is_dataclass(output)

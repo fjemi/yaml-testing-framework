@@ -8,7 +8,7 @@ tests:
         a: 0
         b: 0
     cast_arguments:
-      data: Data_Class
+      data: DataClass
     assertions:
     - method: assertions.app.check_equals
       expected: 0

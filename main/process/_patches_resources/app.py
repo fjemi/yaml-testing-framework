@@ -26,14 +26,14 @@ LOCALS = locals()
 
 
 @dc.dataclass
-class Data_Class:
+class DataClass:
   a: int = 0
   b: int = 0
   result: int = 0
 
 
 @dc.dataclass
-class Test_Data_Class:
+class TestDataClass:
   pass
 
 
@@ -42,7 +42,7 @@ class Store:
   pass
 
 
-GET_PARENT_RESOURCES = Data_Class()
+GET_PARENT_RESOURCES = DataClass()
 
 
 def get_module_wrapper(module: str | None = None) -> ModuleType:
@@ -61,24 +61,18 @@ def use_get_input(data: str | None = None) -> str:
   return get_input(data=data)
 
 
-def foo(
-  # trunk-ignore(ruff/ARG001)
-  data: None = None,
-) -> str:
+def foo(data: None = None) -> str:
+  _ = data
   return 'foo'
 
 
-def bar(
-  # trunk-ignore(ruff/ARG001)
-  data: None = None,
-) -> str:
+def bar(data: None = None) -> str:
+  _ = data
   return bar
 
 
-def use_foo(
-  # trunk-ignore(ruff/ARG001)
-  data: None = None,
-) -> str:
+def use_foo(data: None = None) -> str:
+  _ = data
   return foo()
 
 
@@ -86,10 +80,9 @@ def add(a: int, b: int) -> int:
   return a + b
 
 
-def use_add(
-  # trunk-ignore(ruff/ARG001)
-  data: None = None,
-) -> int:
+def use_add(data: None = None) -> int:
+  _ = data
+
   a = 0
   b = 0
   return add(a, b)
@@ -99,7 +92,7 @@ def subtract(a: int, b: int) -> int:
   return b - a
 
 
-def absolute_value(data: Data_Class) -> Data_Class:
+def absolute_value(data: DataClass) -> DataClass:
   data.result = data.a
   if data.result < 0:
     data.result = data.result * -1
@@ -119,10 +112,8 @@ variable_1 = 1
 variable_2 = 'a'
 
 
-def setup_get_locals(
-  # trunk-ignore(ruff/ARG001)
-  *args, **kwargs,
-) -> dict:
+def setup_get_locals(*args, **kwargs) -> dict:
+  _ = args, kwargs
   return {'add': add}
 
 
@@ -130,32 +121,28 @@ def do_nothing():
   return
 
 
-def return_example(
-  # trunk-ignore(ruff/ARG001)
-  *args, **kwargs,
-) -> Test_Data_Class:
-  data = Test_Data_Class()
+def return_example(*args, **kwargs) -> TestDataClass:
+  _ = args, kwargs
+  data = TestDataClass()
   data.method = 'return'
   data.value = 'return_patch'
   return data
 
 
-def side_effect_list_example(
-  # trunk-ignore(ruff/ARG001)
-  *args, **kwargs,
-) -> Test_Data_Class:
-  data = Test_Data_Class()
+def side_effect_list_example(*args, **kwargs) -> TestDataClass:
+  _ = args, kwargs
+
+  data = TestDataClass()
   data.method = 'side_effect_list'
   data.value = [0, 1, 2, 3]
   data.timestamp = 0
   return data
 
 
-def side_effect_dict_example(
-  # trunk-ignore(ruff/ARG001)
-  *args, **kwargs,
-) -> Test_Data_Class:
-  data = Test_Data_Class()
+def side_effect_dict_example(*args, **kwargs) -> TestDataClass:
+  _ = args, kwargs
+
+  data = TestDataClass()
   data.method = 'side_effect_dict'
   data.value = {0: 0, 1: 1, 2: 2, 3: 3}
   data.timestamp = 0
@@ -170,28 +157,25 @@ def setup_001(object_parent: str) -> dict:
   return object_parent
 
 
-def setup_get_parent_from_object(
-  # trunk-ignore(ruff/ARG001)
-  *args, **kwargs,
-) -> ModuleType:
+def setup_get_parent_from_object(*args, **kwargs) -> ModuleType:
+  _ = args, kwargs
+
   from process_patches._resources import app_a
 
   return app_a
 
 
-def setup_0(
-  # trunk-ignore(ruff/ARG001)
-  *args, **kwargs,
-) -> ModuleType:
+def setup_0(*args, **kwargs) -> ModuleType:
+  _ = args, kwargs
+
   from process_patches._resources import app_a
 
   return app_a
 
 
-def setup_1(
-  # trunk-ignore(ruff/ARG001)
-  module: None = None,
-) -> dict:
+def setup_1(module: None = None) -> dict:
+  _ = module
+
   text = '''
     add: add
     subtract: subtract
@@ -202,11 +186,9 @@ def setup_1(
   return yaml.dump(text)
 
 
-def parent_example(
-  # trunk-ignore(ruff/ARG001)
-  *args,
-  **kwargs,
-) -> Store:
+def parent_example(*args, **kwargs) -> Store:
+  _ = args, kwargs
+
   parent = kwargs.get('parent', None)
   if not parent:
     store = Store()
@@ -225,59 +207,51 @@ def parent_example(
     return store
 
 
-def builtins_example(
-  # trunk-ignore(ruff/ARG001)
-  builtins: str | None = None,
-) -> Store:
+def builtins_example(builtins: str | None = None) -> Store:
+  _ = builtins
+
   store = Store()
   store.__class__ = 'module'
   return store
 
 
-def get_builtins(
-  # trunk-ignore(ruff/ARG001)
-  *args,
-  **kwargs,
-) -> None | dict | Store:
+def get_builtins(*args, **kwargs) -> None | dict | Store:
+  _ = args, kwargs
+
   if kwargs.get('builtins') == 'dict':
     return {}
   if kwargs.get('builtins') == 'module':
     return Store()
 
 
-def setup_module(
-  # trunk-ignore(ruff/ARG001)
-  *args, **kwargs,
-) -> ModuleType:
+def setup_module(*args, **kwargs) -> ModuleType:
+  _ = args, kwargs
+
   from process_patches._resources import app_a
 
   return app_a
 
 
-def setup_get_parent_from_builtins(
-  # trunk-ignore(ruff/ARG001)
-  *args,
-  **kwargs,
-) -> None | dict | Store:
+def setup_get_parent_from_builtins(*args, **kwargs) -> None | dict | Store:
+  _ = args, kwargs
+
   if kwargs.get('builtins') == 'dict':
     return {}
   if kwargs.get('builtins') == 'module':
     return Store()
 
 
-def patch_object_in_dict_resource(
-  # trunk-ignore(ruff/ARG001)
-  patch: None = None,
-) -> ModuleType:
+def patch_object_in_dict_resource(patch: None = None) -> ModuleType:
+  _ = patch
+
   from process_patches._resources import app_a
 
   return app_a
 
 
-def pass_through(
-  # trunk-ignore(ruff/ARG001)
-  *args, **kwargs,
-) -> str:
+def pass_through(*args, **kwargs) -> str:
+  _ = args, kwargs
+
   return 'pass_through'
 
 
@@ -296,10 +270,9 @@ def setup_patch_object_in_object(
   return data
 
 
-def main_resources(
-  # trunk-ignore(ruff/ARG001)
-  *args, **kwargs,
-) -> Any:
+def main_resources(*args, **kwargs) -> Any:
+  _ = args, kwargs
+
   from process_patches._resources import app_a
 
   return app_a
@@ -360,7 +333,7 @@ def parents_resource(parents: dict | str | None = None) -> Any:
 
   if parents == 'parents_length_one':
     from process_patches._resources import app_a
-    return data(
+    return sns(
       values=[app_a],
       types=['object'],
       names=[''],
@@ -389,11 +362,6 @@ def get_patch_for_side_effect_list_cast_output(
       no_values_repeated = False
 
   return store
-
-
-# def value_resource(value: str | None = None) -> Any:
-#   if value == 'callable':
-#     return callable_resource
 
 
 def get_patch_for_side_effect_dict_cast_output(

@@ -4,10 +4,9 @@
 MODULE = __file__
 
 
-def main(
-  # trunk-ignore(ruff/ARG001)
-  *args, **kwargs,
-) -> str:
+def main(*args, **kwargs) -> str:
+  _ = args, kwargs
+
   return 'no yaml test file'
 
 
