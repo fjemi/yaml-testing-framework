@@ -124,7 +124,7 @@ def get_side_effect_list_patch_method(
   SIDE_EFFECTS[timestamp] = schema.get_model(
     data=data,
     name='Patch_Side_Effect_List', )
-
+  
   def side_effect_list_patch(*args, **kwargs) -> Any:
     _ = args, kwargs
 

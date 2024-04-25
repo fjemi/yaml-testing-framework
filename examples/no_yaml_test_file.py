@@ -6,6 +6,7 @@ MODULE = __file__
 
 def main(*args, **kwargs) -> str:
   _ = args, kwargs
+
   return 'no yaml test file'
 
 

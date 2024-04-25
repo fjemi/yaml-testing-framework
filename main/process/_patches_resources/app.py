@@ -82,6 +82,7 @@ def add(a: int, b: int) -> int:
 
 def use_add(data: None = None) -> int:
   _ = data
+
   a = 0
   b = 0
   return add(a, b)
@@ -208,6 +209,7 @@ def parent_example(*args, **kwargs) -> Store:
 
 def builtins_example(builtins: str | None = None) -> Store:
   _ = builtins
+
   store = Store()
   store.__class__ = 'module'
   return store
@@ -241,6 +243,7 @@ def setup_get_parent_from_builtins(*args, **kwargs) -> None | dict | Store:
 
 def patch_object_in_dict_resource(patch: None = None) -> ModuleType:
   _ = patch
+
   from process_patches._resources import app_a
 
   return app_a

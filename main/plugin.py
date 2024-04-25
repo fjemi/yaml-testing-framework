@@ -71,15 +71,9 @@ def get_pytest_parser(pytest_instance: ModuleType) -> py_test.Parser:
 
 def get_pytest_instance(data: None = None) -> py_test:
   _ = data
+
   import pytest as instance
   return instance
-
-
-# def pytest_terminal_summary(terminalreporter, exitstatus, config):
-#     # terminalreporter.section("My session")
-#     # terminalreporter.write("My message")
-#     terminalreporter.currentfspath = 1
-#     terminalreporter.ensure_newline()
 
 
 def add_args_and_ini_options_to_parser(
