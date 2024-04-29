@@ -10,7 +10,8 @@ import yaml as pyyaml
 import setuptools
 
 
-YAML_TESTING_FRAMEWORK_ROOT_DIRECTORY = os.path.dirname(__file__)
+ROOT_DIR = os.path.abspath(os.curdir)
+ROOT_DIR = os.path.normpath(ROOT_DIR)
 
 FILES = '''
 - name: Pipfile.lock
@@ -130,7 +131,7 @@ def merge_pip_lock_and_setup_yaml(
 
 
 def main(directory: str | None = None) -> Data:
-  directory = directory or YAML_TESTING_FRAMEWORK_ROOT_DIRECTORY
+  directory = directory or ROOT_DIR
   data = get_contents(directory=directory)
   data = merge_pip_lock_and_setup_yaml(**data)
   return data

@@ -22,10 +22,10 @@ ROOT_DIR = os.path.abspath(os.curdir)
 
 CONFIG = '''
   environment:
-    YAML_TESTING_FRAMEWORK_ROOT_DIR: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}
-    YAML_TESTING_FRAMEWORK_LOG_DIR: ${YAML_TESTING_FRAMEWORK_LOG_DIR}
-    YAML_TESTING_FRAMEWORK_DEBUG: ${YAML_TESTING_FRAMEWORK_DEBUG}
-    YAML_TESTING_FRAMEWORK_LOGGING_DISABLED: ${YAML_TESTING_FRAMEWORK_LOGGING_DISABLED}
+    ROOT_DIR: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}
+    LOG_DIR: ${YAML_TESTING_FRAMEWORK_LOG_DIR}
+    DEBUG: ${YAML_TESTING_FRAMEWORK_DEBUG}
+    LOGGING_DISABLED: ${YAML_TESTING_FRAMEWORK_LOGGING_DISABLED}
   default_arguments:
     format: yaml
     standard_output: false
@@ -166,7 +166,7 @@ def get_log_file_location(
   if filename.find('.') == len(filename) - 1:
     filename = filename[:-1]
 
-  directory = CONFIG.environment.YAML_TESTING_FRAMEWORK_LOG_DIR or f'{ROOT_DIR}/.logs'
+  directory = CONFIG.environment.LOG_DIR or f'{ROOT_DIR}/.logs'
   os.makedirs(name=directory, exist_ok=True)
   location = f'{directory}/{filename}.log'
   location = os.path.normpath(location)

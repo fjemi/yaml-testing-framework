@@ -15,9 +15,9 @@ from main.utils import get_object, logger, set_object
 
 CONFIG = '''
   environment:
-    YAML_TESTING_FRAMEWORK_DEBUG: ${YAML_TESTING_FRAMEWORK_DEBUG}
-    YAML_TESTING_FRAMEWORK_DISABLE_LOGGING: ${DISABLE_LOGGING}
-    YAML_TESTING_FRAMEWORK_YAML_LOADER: ${YAML_TESTING_FRAMEWORK_YAML_LOADER}
+    DEBUG: ${YAML_TESTING_FRAMEWORK_DEBUG}
+    DISABLE_LOGGING: ${DISABLE_LOGGING}
+    YAML_LOADER: ${YAML_TESTING_FRAMEWORK_YAML_LOADER}
   update_log_fields:
   - timestamps
   - operation
@@ -65,7 +65,7 @@ def get_yaml_loader() -> ModuleType:
   if LOADER:
     return LOADER
 
-  name = CONFIG.environment.YAML_TESTING_FRAMEWORK_YAML_LOADER
+  name = CONFIG.environment.YAML_LOADER
   name = f'{name}Loader'
   LOADER = getattr(pyyaml, name, None) or pyyaml.SafeLoader
   return LOADER

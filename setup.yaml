@@ -17,7 +17,7 @@ name: yaml-testing-framework
 packages:
 - main
 url: https://github.com/fjemi/yaml-testing-framework
-version: '0.0.6a'  # yamllint disable-line rule:quoted-strings
+version: '0.0.6c'  # yamllint disable-line rule:quoted-strings
 zip_safe: True
 setup_requires:
 - setuptools>=61.0

@@ -199,7 +199,7 @@ tests:
   tests:
   - description: Log directory environment variable is not set
     patches:
-    - route: CONFIG.environment.YAML_TESTING_FRAMEWORK_LOG_DIR
+    - route: CONFIG.environment.LOG_DIR
       method: value
       value: null
     arguments:
@@ -210,7 +210,7 @@ tests:
       expected: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/.logs/root.project.log
   - description: Log directory environment variable is set
     patches:
-    - route: CONFIG.environment.YAML_TESTING_FRAMEWORK_LOG_DIR
+    - route: CONFIG.environment.LOG_DIR
       method: value
       value: .logs
     arguments:

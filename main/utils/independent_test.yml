@@ -70,7 +70,7 @@ tests:
   - description: Environment variable set to loader that doesn't exist
     patches:
     - method: value
-      route: CONFIG.environment.YAML_TESTING_FRAMEWORK_YAML_LOADER
+      route: CONFIG.environment.YAML_LOADER
       value: DOES_NOT_EXIST
     arguments: {}
     assertions:
@@ -81,7 +81,7 @@ tests:
   - description: Environment variable set to Full
     patches:
     - method: value
-      route: CONFIG.environment.YAML_TESTING_FRAMEWORK_YAML_LOADER
+      route: CONFIG.environment.YAML_LOADER
       value: Full
     arguments: {}
     assertions:

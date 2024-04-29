@@ -8,8 +8,8 @@ from typing import Any, List
 from main.utils import get_config, independent
 
 
-YAML_TESTING_FRAMEWORK_ROOT_DIRECTORY = os.path.abspath(os.curdir)
-YAML_TESTING_FRAMEWORK_ROOT_DIRECTORY = os.path.normpath(YAML_TESTING_FRAMEWORK_ROOT_DIRECTORY)
+ROOT_DIR = os.path.abspath(os.curdir)
+ROOT_DIR = os.path.normpath(ROOT_DIR)
 
 MODULE = __file__
 CONFIG = get_config.main()
@@ -48,7 +48,7 @@ def main(
 
 
 def format_paths(path: str | None = None) -> sns:
-  root = YAML_TESTING_FRAMEWORK_ROOT_DIRECTORY
+  root = ROOT_DIR
 
   if not path:
     path = '.'
