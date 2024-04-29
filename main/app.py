@@ -7,21 +7,21 @@ from types import SimpleNamespace as sns
 from typing import Any, Callable, Iterable, List
 
 # trunk-ignore(ruff/F401)
-from process.assertions import main as process_assertions
-from process.casts import app as casts
+from main.process.assertions import main as process_assertions
+from main.process.casts import app as casts
 
 # trunk-ignore(ruff/F401)
-from process.environment import main as set_environment
+from main.process.environment import main as set_environment
 
 # trunk-ignore(ruff/F401)
-from process.get_tests.app import main as get_tests
+from main.process.get_tests.app import main as get_tests
 
 # trunk-ignore(ruff/F401)
-from process.locations import main as get_locations
+from main.process.locations import main as get_locations
 
 # trunk-ignore(ruff/F401)
-from process.patches import main as process_patches
-from utils import (
+from main.process.patches import main as process_patches
+from main.utils import (
   get_config,
   get_module,
   get_object,
@@ -341,7 +341,7 @@ def run_tests(locations: List[sns] | None = None) -> sns:
 
 
 def examples() -> None:
-  from utils import invoke_testing_method
+  from main.utils import invoke_testing_method
 
   invoke_testing_method.main(location=MODULE)
   # invoke_testing_method.main(location='.')

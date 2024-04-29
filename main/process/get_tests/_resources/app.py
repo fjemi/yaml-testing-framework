@@ -22,7 +22,7 @@ def sns_to_dict(data: sns | list | None = None) -> dict | list | None:
 
 
 def examples() -> None:
-  from utils import invoke_testing_method
+  from main.utils import invoke_testing_method
 
   invoke_testing_method.main(resource_flag=True)
 

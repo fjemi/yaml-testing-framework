@@ -6,7 +6,7 @@ import os
 from types import SimpleNamespace as sns
 
 import yaml as pyyaml
-from utils import get_object, independent, schema
+from main.utils import get_object, independent, schema
 
 
 MODULE = __file__
@@ -140,7 +140,7 @@ def format_schema_content(value: dict | None = None) -> sns:
 
 
 def examples() -> None:
-  from utils import invoke_testing_method
+  from main.utils import invoke_testing_method
 
   invoke_testing_method.main()
 

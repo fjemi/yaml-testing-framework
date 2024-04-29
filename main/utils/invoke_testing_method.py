@@ -10,7 +10,7 @@ from types import SimpleNamespace as sns
 from typing import List
 
 import yaml
-from utils import independent
+from main.utils import independent
 
 from main.app import main as plugin
 

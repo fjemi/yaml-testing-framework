@@ -11,7 +11,7 @@ def main(*args, **kwargs) -> str:
 
 
 def examples() -> None:
-  from utils import invoke_testing_method
+  from main.utils import invoke_testing_method
 
   invoke_testing_method.main()
 

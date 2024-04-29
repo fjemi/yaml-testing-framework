@@ -7,7 +7,7 @@ import os
 from types import ModuleType
 from types import SimpleNamespace as sns
 
-from utils import independent
+from main.utils import independent
 
 
 MODULE = __file__
@@ -104,7 +104,7 @@ def add_module_to_pool(
 
 
 def examples() -> None:
-  from utils import invoke_testing_method
+  from main.utils import invoke_testing_method
 
   invoke_testing_method.main()
 

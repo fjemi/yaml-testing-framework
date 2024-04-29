@@ -9,7 +9,7 @@ from types import ModuleType
 from types import SimpleNamespace as sns
 from typing import Any, Awaitable, Callable
 
-from utils import get_config, get_object, independent
+from main.utils import get_config, get_object, independent
 
 
 MODULE = __file__
@@ -522,7 +522,7 @@ def check_file_exists(
 
 
 def examples() -> None:
-  from utils import invoke_testing_method
+  from main.utils import invoke_testing_method
 
   invoke_testing_method.main()
 

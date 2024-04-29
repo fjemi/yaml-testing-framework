@@ -5,7 +5,7 @@ import os
 from types import SimpleNamespace as sns
 from typing import Any, List
 
-from utils import get_config, independent
+from main.utils import get_config, independent
 
 
 PYTEST_YAML_ROOT_DIRECTORY = os.path.abspath(os.curdir)
@@ -231,7 +231,7 @@ def get_location_of_resources(
 
 
 def examples() -> None:
-  from utils import invoke_testing_method
+  from main.utils import invoke_testing_method
 
   invoke_testing_method.main()
 

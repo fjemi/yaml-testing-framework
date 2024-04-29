@@ -4,7 +4,7 @@
 from types import SimpleNamespace as sns
 from typing import Any, Iterable
 
-from utils import get_object
+from main.utils import get_object
 
 
 MODULE = __file__
@@ -128,7 +128,7 @@ def reset_route_values(objects: list | None = None) -> Any:
 
 
 def examples() -> None:
-  from utils import invoke_testing_method
+  from main.utils import invoke_testing_method
 
   invoke_testing_method.main()
   # invoke_testing_method.main(location='.')

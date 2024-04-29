@@ -12,7 +12,7 @@ import sys
 from types import ModuleType, SimpleNamespace as sns
 from typing import Any, Callable, List
 
-from utils import get_module, invoke_testing_method, get_config, schema
+from main.utils import get_module, invoke_testing_method, get_config, schema
 import yaml
 
 
@@ -150,7 +150,7 @@ def side_effect_dict_example(*args, **kwargs) -> TestDataClass:
 
 
 def setup_001(object_parent: str) -> dict:
-  from process_patches._resources import app_a
+  from main.process_patches._resources import app_a
 
   if object_parent == 'resources.app':
     object_parent = app_a
@@ -160,7 +160,7 @@ def setup_001(object_parent: str) -> dict:
 def setup_get_parent_from_object(*args, **kwargs) -> ModuleType:
   _ = args, kwargs
 
-  from process_patches._resources import app_a
+  from main.process_patches._resources import app_a
 
   return app_a
 
@@ -168,7 +168,7 @@ def setup_get_parent_from_object(*args, **kwargs) -> ModuleType:
 def setup_0(*args, **kwargs) -> ModuleType:
   _ = args, kwargs
 
-  from process_patches._resources import app_a
+  from main.process_patches._resources import app_a
 
   return app_a
 
@@ -227,7 +227,7 @@ def get_builtins(*args, **kwargs) -> None | dict | Store:
 def setup_module(*args, **kwargs) -> ModuleType:
   _ = args, kwargs
 
-  from process_patches._resources import app_a
+  from main.process_patches._resources import app_a
 
   return app_a
 
@@ -244,7 +244,7 @@ def setup_get_parent_from_builtins(*args, **kwargs) -> None | dict | Store:
 def patch_object_in_dict_resource(patch: None = None) -> ModuleType:
   _ = patch
 
-  from process_patches._resources import app_a
+  from main.process_patches._resources import app_a
 
   return app_a
 
@@ -258,7 +258,7 @@ def pass_through(*args, **kwargs) -> str:
 def setup_patch_object_in_object(
   data: Any,
 ) -> Store:
-  from process_patches._resources import app_a
+  from main.process_patches._resources import app_a
 
   _ = data
   data = Store()
@@ -273,7 +273,7 @@ def setup_patch_object_in_object(
 def main_resources(*args, **kwargs) -> Any:
   _ = args, kwargs
 
-  from process_patches._resources import app_a
+  from main.process_patches._resources import app_a
 
   return app_a
 
@@ -312,7 +312,7 @@ def patch_resource(patch: str | None = None) -> None | str:
 def parents_resource(parents: dict | str | None = None) -> Any:
   if isinstance(parents, dict):
     return schema.get_model(data=parents, name='process_patches.Data')
-  from process_patches._resources import app_a
+  from main.process_patches._resources import app_a
 
   data = sns(
     values=[
@@ -332,7 +332,7 @@ def parents_resource(parents: dict | str | None = None) -> Any:
     return schema.get_model(data=data, name='process_patches.Data')
 
   if parents == 'parents_length_one':
-    from process_patches._resources import app_a
+    from main.process_patches._resources import app_a
     return sns(
       values=[app_a],
       types=['object'],

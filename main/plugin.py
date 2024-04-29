@@ -7,10 +7,10 @@ from types import SimpleNamespace as sns
 from typing import Any, List
 
 import pytest as py_test
-from utils import get_object
 
 from main.app import get_config
 from main.app import main as app
+from main.utils import get_object
 
 
 MODULE = __file__
@@ -154,7 +154,7 @@ def format_report_nodeid(nodeid: str) -> str:
 
 
 def examples() -> None:
-  from utils import invoke_testing_method
+  from main.utils import invoke_testing_method
 
   invoke_testing_method.main()
 

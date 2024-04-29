@@ -10,7 +10,7 @@ from types import SimpleNamespace as sns
 from typing import Any, Awaitable, Callable, List
 
 import yaml as pyyaml
-from utils import get_object, logger, set_object
+from main.utils import get_object, logger, set_object
 
 
 CONFIG = '''
@@ -332,7 +332,7 @@ def exit_loop() -> None:
 
 
 def examples() -> None:
-  from utils import invoke_testing_method
+  from main.utils import invoke_testing_method
 
   invoke_testing_method.main()
 

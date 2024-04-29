@@ -4,7 +4,7 @@
 import sys
 from types import SimpleNamespace as sns
 
-from utils import logger
+from main.utils import logger
 
 
 THIS_MODULE_NAME = __name__

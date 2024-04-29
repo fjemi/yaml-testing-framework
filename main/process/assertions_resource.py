@@ -6,7 +6,7 @@ from types import SimpleNamespace as sns
 from typing import Any, Callable
 
 import yaml
-from utils import (
+from main.utils import (
   get_config,
   get_module,
   invoke_testing_method,
@@ -158,7 +158,7 @@ def compare_expected_and_output_cast_arguments(
 
 
 def examples() -> None:
-  from utils import invoke_testing_method
+  from main.utils import invoke_testing_method
 
   invoke_testing_method.main(resource_flag=True)
 

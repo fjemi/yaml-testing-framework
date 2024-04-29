@@ -7,8 +7,8 @@ from types import SimpleNamespace as sns
 from typing import Any, Callable, List
 
 # trunk-ignore(ruff/F401)
-from process.casts.handle_casting import main as handle_casting
-from utils import get_config, get_object, independent, set_object
+from main.process.casts.handle_casting import main as handle_casting
+from main.utils import get_config, get_object, independent, set_object
 
 
 MODULE = __file__
@@ -79,7 +79,7 @@ def reset_object(
 
 
 def examples() -> None:
-  from utils import invoke_testing_method
+  from main.utils import invoke_testing_method
 
   invoke_testing_method.main()
 

@@ -6,7 +6,7 @@ from types import SimpleNamespace as sns
 from unittest import mock
 
 import pytest
-from utils import get_config, invoke_testing_method
+from main.utils import get_config, invoke_testing_method
 
 
 MODULE = __file__
