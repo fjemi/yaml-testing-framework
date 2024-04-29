@@ -9,11 +9,10 @@ omit = [
   '*.ignore/*',
   '*.logs*',
   '*logs*',
-  # '*__init__.py',
-  'test_entrypoint.py',
   '*_test.py',
-  '*_resource.py',
-  '*/_resources/*',
+  '*/*resource*/**',
+  '*/*resource*/*.py',
+  '*/*resource*.py',
 ]
 branch = true
 source = ['/']
