@@ -12,8 +12,8 @@ TODO:
 
 configurations:
   resources:
-  - ${PYTEST_YAML_ROOT_DIR}/assertions/app.py
-  - ${PYTEST_YAML_ROOT_DIR}/main/_resources/app/app.py
+  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/assertions/app.py
+  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/_resources/app/app.py
 
 
 tests:
@@ -25,11 +25,11 @@ tests:
   tests:
   - description: Results from running tests associated with a module
     arguments:
-      project_directory: ${PYTEST_YAML_ROOT_DIR}/main/_resources/app/add.py
+      project_directory: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/_resources/app/add.py
       yaml_suffix: _test
       resources_folder_name: resources_folder_name
       resources:
-      - ${PYTEST_YAML_ROOT_DIR}/assertions/app.py
+      - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/assertions/app.py
     assertions:
     - method: assertions.app.check_equals
       expected:
@@ -111,13 +111,13 @@ tests:
 #         level: warning
 #   - description: Module exists at the location
 #     arguments:
-#       module: ${PYTEST_YAML_ROOT_DIR}/main/_resources/app/app.py
+#       module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/_resources/app/app.py
 #       module_route: .main._resources.app.app
 #     assertions:
 #     - method: assertions.app.check_module
 #       field: module
 #       expected:
-#         location: ${PYTEST_YAML_ROOT_DIR}/main/_resources/app/app.py
+#         location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/_resources/app/app.py
 # - function: get_resource_route
 #   description: >
 #     Get the route for a resource in a module based on resource and module's
@@ -183,11 +183,11 @@ tests:
 #       Resources is a list containing the locations of existing python and
 #       javascript modules, and the location of a non-existing module
 #     arguments:
-#       module: ${PYTEST_YAML_ROOT_DIR}/main/_resources/app/module.py
+#       module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/_resources/app/module.py
 #       resources:
 #       - does_not_exist.py
-#       - ${PYTEST_YAML_ROOT_DIR}/main/_resources/app/resource.js
-#       - ${PYTEST_YAML_ROOT_DIR}/main/_resources/app/resource.py
+#       - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/_resources/app/resource.js
+#       - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/_resources/app/resource.py
 #     assertions:
 #     - method: assertions.app.check_sns
 #       expected:
@@ -200,7 +200,7 @@ tests:
 #         standard_output: true
 #         resources_ignored:
 #         - does_not_exist.py
-#         - ${PYTEST_YAML_ROOT_DIR}/main/_resources/app/resource.js
+#         - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/_resources/app/resource.js
 #     - method: assertions.app.check_module
 #       field: module
 #       expected:
@@ -209,7 +209,7 @@ tests:
 #     - method: assertions.app.check_module
 #       field: module.resource
 #       expected:
-#         location: ${PYTEST_YAML_ROOT_DIR}/main/_resources/app/resource.py
+#         location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/_resources/app/resource.py
 # - function: handle_casting_arguments
 #   description: Handles casting arguments used to call test function
 #   cast_arguments:
@@ -219,7 +219,7 @@ tests:
 #   - description: Undefined arguments
 #     arguments:
 #       cast_arguments: null
-#       module: ${PYTEST_YAML_ROOT_DIR}/main/_resources/app/app.py
+#       module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/_resources/app/app.py
 #       arguments: arguments
 #     assertions:
 #     - method: assertions.app.check_sns
@@ -230,7 +230,7 @@ tests:
 #   - description: Cast arguments is empty
 #     arguments:
 #       cast_arguments: []
-#       module: ${PYTEST_YAML_ROOT_DIR}/main/_resources/app/app.py
+#       module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/_resources/app/app.py
 #       arguments: arguments
 #     assertions:
 #     - method: assertions.app.check_sns
@@ -242,7 +242,7 @@ tests:
 #     arguments:
 #       cast_arguments:
 #       - method: __builtins__.int
-#       module: ${PYTEST_YAML_ROOT_DIR}/main/_resources/app/app.py
+#       module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/_resources/app/app.py
 #       arguments: '0000'
 #     assertions:
 #     - method: assertions.app.check_sns
@@ -255,7 +255,7 @@ tests:
 #       cast_arguments:
 #       - method: __builtins__.int
 #         field: key
-#       module: ${PYTEST_YAML_ROOT_DIR}/main/_resources/app/app.py
+#       module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/_resources/app/app.py
 #       arguments:
 #         key: '0000'
 #     assertions:
@@ -282,7 +282,7 @@ tests:
 #     - method: assertions.app.check_sns
 #       field: log
 #       expected:
-#         log: Could not retrieve None from ${PYTEST_YAML_ROOT_DIR}/main/_resources/app/module.py
+#         log: Could not retrieve None from ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/_resources/app/module.py
 #         level: warning
 #         standard_output: true
 #   - description: Defined arguments
@@ -483,7 +483,7 @@ tests:
 #   - description: Undefined arguments
 #     arguments:
 #       cast_output: null
-#       module: ${PYTEST_YAML_ROOT_DIR}/main/_resources/app/app.py
+#       module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/_resources/app/app.py
 #       output: null
 #     assertions:
 #     - method: assertions.app.check_sns
@@ -494,7 +494,7 @@ tests:
 #   - description: Cast output is an empty list
 #     arguments:
 #       cast_output: []
-#       module: ${PYTEST_YAML_ROOT_DIR}/main/_resources/app/app.py
+#       module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/_resources/app/app.py
 #       output: output
 #     assertions:
 #     - method: assertions.app.check_sns
@@ -506,7 +506,7 @@ tests:
 #     arguments:
 #       cast_output:
 #       - method: __builtins__.str
-#       module: ${PYTEST_YAML_ROOT_DIR}/main/_resources/app/app.py
+#       module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/_resources/app/app.py
 #       output: 1
 #     assertions:
 #     - method: assertions.app.check_sns
@@ -523,7 +523,7 @@ tests:
 #       cast_output:
 #       - method: __builtins__.int
 #         field: key
-#       module: ${PYTEST_YAML_ROOT_DIR}/main/_resources/app/app.py
+#       module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/_resources/app/app.py
 #       output:
 #         key: '0000'
 #     assertions:
@@ -551,9 +551,9 @@ tests:
 #   - description: Defined test returns a list containing assertions
 #     arguments:
 #       test:
-#         project_directory: ${PYTEST_YAML_ROOT_DIR}/main/_resources/app/add.py
-#         module: ${PYTEST_YAML_ROOT_DIR}/main/_resources/app/add.py
-#         yaml: ${PYTEST_YAML_ROOT_DIR}/main/_resources/app/add.yaml
+#         project_directory: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/_resources/app/add.py
+#         module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/_resources/app/add.py
+#         yaml: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/_resources/app/add.yaml
 #         function: add
 #         function_name: add
 #         module_route: .main._resources.app.add.app
@@ -562,7 +562,7 @@ tests:
 #           a: 0
 #           b: 11
 #         resources:
-#         - ${PYTEST_YAML_ROOT_DIR}/assertions/app.py
+#         - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/assertions/app.py
 #         assertions:
 #         - method: assertions.app.check_equals
 #           expected: 11
@@ -597,8 +597,8 @@ tests:
 #     arguments:
 #       tests:
 #       - resources:
-#         - ${PYTEST_YAML_ROOT_DIR}/assertions/app.py
-#         module: ${PYTEST_YAML_ROOT_DIR}/main/_resources/app/add.py
+#         - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/assertions/app.py
+#         module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/_resources/app/add.py
 #         function: add
 #         description: Return the result of adding two integers
 #         arguments:
@@ -607,8 +607,8 @@ tests:
 #         assertions:
 #         - method: assertions.app.check_equals
 #           expected: 2
-#         yaml: ${PYTEST_YAML_ROOT_DIR}/main/_resources/app/add_test.yaml
-#         project_directory: ${PYTEST_YAML_ROOT_DIR}/main/_resources/app/add.py
+#         yaml: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/_resources/app/add_test.yaml
+#         project_directory: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/_resources/app/add.py
 #         module_route: app.add.app
 #         key: 0.0
 #     assertions:
@@ -649,13 +649,13 @@ tests:
 #   - description: Location of files associated with an "add" module
 #     arguments:
 #       locations:
-#       - module: ${PYTEST_YAML_ROOT_DIR}/main/_resources/app/add.py
+#       - module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/_resources/app/add.py
 #         module_route: add.app.app
-#         yaml: ${PYTEST_YAML_ROOT_DIR}/main/_resources/app/add_test.yaml
+#         yaml: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/_resources/app/add_test.yaml
 #         resources:
-#         - ${PYTEST_YAML_ROOT_DIR}/assertions/app.py
-#         - ${PYTEST_YAML_ROOT_DIR}/main/_resources/app/add/resources_folder_name/app.py
-#         project_directory: ${PYTEST_YAML_ROOT_DIR}/main/_resources/app/add/resources_folder_name/app.py
+#         - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/assertions/app.py
+#         - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/_resources/app/add/resources_folder_name/app.py
+#         project_directory: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/_resources/app/add/resources_folder_name/app.py
 #     assertions:
 #     - method: assertions.app.check_sns
 #       cast_output:

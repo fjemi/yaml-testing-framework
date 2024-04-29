@@ -14,13 +14,13 @@ resources:
 - https://stackoverflow.com/questions/11232230/logging-to-two-files-with-different-settings
 
 
-log_directory: &LOG_DIRECTORY ${PYTEST_YAML_ROOT_DIR}/main/utils/_resources/logger/data
+log_directory: &LOG_DIRECTORY ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/_resources/logger/data
 
 
 configurations:
   resources:
-  - ${PYTEST_YAML_ROOT_DIR}/main/utils/_resources/logger/logger.py
-  - ${PYTEST_YAML_ROOT_DIR}/assertions/app.py
+  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/_resources/logger/logger.py
+  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/assertions/app.py
 
 
 tests:
@@ -114,7 +114,7 @@ tests:
 #       object: module
 #     assertions:
 #     - method: assertions.app.check_equals
-#       expected: ${PYTEST_YAML_ROOT_DIR}/main/utils/_resources/logger/module.py
+#       expected: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/_resources/logger/module.py
 #   - description: Object is a function
 #     arguments:
 #       object: function_
@@ -199,7 +199,7 @@ tests:
   tests:
   - description: Log directory environment variable is not set
     patches:
-    - route: CONFIG.environment.PYTEST_YAML_LOG_DIR
+    - route: CONFIG.environment.YAML_TESTING_FRAMEWORK_LOG_DIR
       method: value
       value: null
     arguments:
@@ -207,10 +207,10 @@ tests:
       project_directory: root/project
     assertions:
     - method: assertions.app.check_equals
-      expected: ${PYTEST_YAML_ROOT_DIR}/.logs/root.project.log
+      expected: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/.logs/root.project.log
   - description: Log directory environment variable is set
     patches:
-    - route: CONFIG.environment.PYTEST_YAML_LOG_DIR
+    - route: CONFIG.environment.YAML_TESTING_FRAMEWORK_LOG_DIR
       method: value
       value: .logs
     arguments:
@@ -230,13 +230,13 @@ tests:
   #     expected: TypeError
   - description: Location is defined
     arguments:
-      location: ${PYTEST_YAML_ROOT_DIR}/main/utils/_resources/logger/data/log_file.log
+      location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/_resources/logger/data/log_file.log
     assertions:
     - method: assertions.app.check_type
       expected: Logger
     - method: assertions.app.check_equals
       field: name
-      expected: ${PYTEST_YAML_ROOT_DIR}/main/utils/_resources/logger/data/log_file.log
+      expected: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/_resources/logger/data/log_file.log
 - function: create_logger
   description: >
     Creates the directory to store logs for each run of the app. The

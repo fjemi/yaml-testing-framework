@@ -44,7 +44,7 @@ def project_directory_option_resource(option: str | None) -> str:
     option is None,
     option == '.',
   ]:
-    option = 'PYTEST_YAML_ROOT_DIR'
+    option = 'YAML_TESTING_FRAMEWORK_ROOT_DIR'
   return option
 
 

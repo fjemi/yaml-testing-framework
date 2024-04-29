@@ -1,7 +1,7 @@
 configurations:
   resources:
-  - ${PYTEST_YAML_ROOT_DIR}/assertions/app.py
-  - ${PYTEST_YAML_ROOT_DIR}/main/process/assertions_resource.py
+  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/assertions/app.py
+  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/assertions_resource.py
 
 
 tests:
@@ -37,7 +37,7 @@ tests:
         message: Processed 0 assertions for None
   - description: Single assertion that passes
     arguments:
-      module: ${PYTEST_YAML_ROOT_DIR}/main/process/assertions_resource.py
+      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/assertions_resource.py
       output: output
       assertions:
       - method: check_equals
@@ -79,7 +79,7 @@ tests:
         log: null
   - description: Two assertions. One passes and one fails
     arguments:
-      module: ${PYTEST_YAML_ROOT_DIR}/main/process/assertions_resource.py
+      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/assertions_resource.py
       output:
         key: output_value
       assertions:
@@ -127,7 +127,7 @@ tests:
         passed: false
   - description: Assertion method does not exist
     arguments:
-      module:  ${PYTEST_YAML_ROOT_DIR}/main/process/assertions_resource.py
+      module:  ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/assertions_resource.py
       output: output
       assertions:
       - method: assertion_method_does_not_exist
@@ -266,18 +266,18 @@ tests:
   tests:
   - description: UMethod undefined
     arguments:
-      module: ${PYTEST_YAML_ROOT_DIR}/main/process/assertions_resource.py
+      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/assertions_resource.py
       method: null
     assertions:
     - method: assertions.app.check_sns
       field: log
       expected:
         level: error
-        message: Method None does not exist in module at location ${PYTEST_YAML_ROOT_DIR}/main/process/assertions_resource.py
+        message: Method None does not exist in module at location ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/assertions_resource.py
   - description: Assertion method exists
     arguments:
       method: check_method_a
-      module: ${PYTEST_YAML_ROOT_DIR}/main/process/assertions_resource.py
+      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/assertions_resource.py
     assertions:
     - method: assertions.app.check_type
       expected: SimpleNamespace
@@ -288,17 +288,17 @@ tests:
       field: method
       expected:
         name: check_method_a
-        location: ${PYTEST_YAML_ROOT_DIR}/main/process/assertions_resource.py
+        location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/assertions_resource.py
   - description: Assertion method does not exist
     arguments:
       method: check_method_b
-      module: ${PYTEST_YAML_ROOT_DIR}/main/process/assertions_resource.py
+      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/assertions_resource.py
     assertions:
     - method: assertions.app.check_sns
       field: log
       expected:
         level: error
-        message: Method check_method_b does not exist in module at location ${PYTEST_YAML_ROOT_DIR}/main/process/assertions_resource.py
+        message: Method check_method_b does not exist in module at location ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/assertions_resource.py
     - method: assertions.app.check_sns
       expected:
         method_name: check_method_b
@@ -306,7 +306,7 @@ tests:
       field: method
       expected:
         name: pass_through
-        location: ${PYTEST_YAML_ROOT_DIR}/main/process/assertions.py
+        location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/assertions.py
 - function: reset_output_value
   description: >
     Sets output to one of its fields, keys, or attributes; given the
@@ -391,7 +391,7 @@ tests:
   - description: Module and output are defined
     arguments:
       output: output
-      module: ${PYTEST_YAML_ROOT_DIR}/main/process/assertions_resource.py
+      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/assertions_resource.py
     assertions:
     - method: assertions.app.check_sns
       expected:
@@ -402,7 +402,7 @@ tests:
       output: 12345
       cast_output:
       - method: __builtins__.str
-      module: ${PYTEST_YAML_ROOT_DIR}/main/process/assertions_resource.py
+      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/assertions_resource.py
     assertions:
     - method: assertions.app.check_sns
       expected:
@@ -413,7 +413,7 @@ tests:
       output: '12345'
       cast_output:
       - method: __builtins__.int
-      module: ${PYTEST_YAML_ROOT_DIR}/main/process/assertions_resource.py
+      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/assertions_resource.py
     assertions:
     - method: assertions.app.check_sns
       expected:

@@ -8,8 +8,8 @@ help:
 
 configurations:
   resources:
-  - ${PYTEST_YAML_ROOT_DIR}/main/process/_patches_resources/app.py
-  - ${PYTEST_YAML_ROOT_DIR}/assertions/app.py
+  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/_patches_resources/app.py
+  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/assertions/app.py
 
 
 tests:
@@ -24,24 +24,24 @@ tests:
   - description: No defined patches
     arguments:
       patches: null
-      module: ${PYTEST_YAML_ROOT_DIR}/main/process/_patches_resources/app.py
+      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/_patches_resources/app.py
     assertions:
     - method: assertions.app.check_module
       field: module
       expected:
-        location: ${PYTEST_YAML_ROOT_DIR}/main/process/_patches_resources/app.py
+        location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/_patches_resources/app.py
   - description: Patch a non-existing object using value method
     arguments:
       patches:
       - method: value
         value: patched_value
         route: .does_not_exist
-      module: ${PYTEST_YAML_ROOT_DIR}/main/process/_patches_resources/app.py
+      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/_patches_resources/app.py
     assertions:
     - method: assertions.app.check_module
       field: module
       expected:
-        location: ${PYTEST_YAML_ROOT_DIR}/main/process/_patches_resources/app.py
+        location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/_patches_resources/app.py
     - method: assertions.app.check_equals
       field: module.does_not_exist
       expected: patched_value
@@ -51,17 +51,17 @@ tests:
       - method: callable
         value: callable_output
         route: add
-      module: ${PYTEST_YAML_ROOT_DIR}/main/process/_patches_resources/app.py
+      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/_patches_resources/app.py
     assertions:
     - method: assertions.app.check_module
       field: module
       expected:
-        location: ${PYTEST_YAML_ROOT_DIR}/main/process/_patches_resources/app.py
+        location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/_patches_resources/app.py
     - method: assertions.app.check_function
       field: module.add
       expected:
         name: callable_patch
-        location: ${PYTEST_YAML_ROOT_DIR}/main/process/patches.py
+        location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/patches.py
 - function: pre_processing
   description: Returns patch model containing module and timestamp
   tests:
@@ -128,7 +128,7 @@ tests:
       field: value
       expected:
         name: callable_patch
-        location: ${PYTEST_YAML_ROOT_DIR}/main/process/patches.py
+        location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/patches.py
   - description: Side effect list method
     arguments:
       value:
@@ -143,7 +143,7 @@ tests:
       field: value
       expected:
         name: side_effect_list_patch
-        location: ${PYTEST_YAML_ROOT_DIR}/main/process/patches.py
+        location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/patches.py
   - description: Side effect dict method
     arguments:
       value:
@@ -158,7 +158,7 @@ tests:
       field: value
       expected:
         name: side_effect_dict_patch
-        location: ${PYTEST_YAML_ROOT_DIR}/main/process/patches.py
+        location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/patches.py
   - description: Method does not exist
     arguments:
       method: method_does_not_exist
@@ -347,20 +347,20 @@ tests:
   - description: Do nothing flag is true
     arguments:
       do_nothing: true
-      module: ${PYTEST_YAML_ROOT_DIR}/main/process/_patches_resources/app.py
+      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/_patches_resources/app.py
     assertions:
     - method: assertions.app.check_sns
       expected: {}
     - method: assertions.app.check_module
       field: module
       expected:
-        location: ${PYTEST_YAML_ROOT_DIR}/main/process/_patches_resources/app.py
+        location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/_patches_resources/app.py
   - description: Patch object in module
     arguments:
       value: value
       route: route
       do_nothing: False
-      module: ${PYTEST_YAML_ROOT_DIR}/main/process/_patches_resources/app.py
+      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/_patches_resources/app.py
     assertions:
     - method: assertions.app.check_equals
       field: module.route

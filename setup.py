@@ -1,6 +1,7 @@
 #!.venv/bin/python3
 # -*- coding: utf-8 -*-
 
+
 import dataclasses as dc
 import os
 from typing import Any, List
@@ -9,7 +10,7 @@ import yaml as pyyaml
 import setuptools
 
 
-PYTEST_YAML_ROOT_DIRECTORY = os.path.dirname(__file__)
+YAML_TESTING_FRAMEWORK_ROOT_DIRECTORY = os.path.dirname(__file__)
 
 FILES = '''
 - name: Pipfile.lock
@@ -129,7 +130,7 @@ def merge_pip_lock_and_setup_yaml(
 
 
 def main(directory: str | None = None) -> Data:
-  directory = directory or PYTEST_YAML_ROOT_DIRECTORY
+  directory = directory or YAML_TESTING_FRAMEWORK_ROOT_DIRECTORY
   data = get_contents(directory=directory)
   data = merge_pip_lock_and_setup_yaml(**data)
   return data

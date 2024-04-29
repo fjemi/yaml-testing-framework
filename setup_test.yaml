@@ -10,8 +10,8 @@ resources:
 
 configurations:
   resources:
-  - ${PYTEST_YAML_ROOT_DIR}/assertions/app.py
-  - ${PYTEST_YAML_ROOT_DIR}/_resources/setup
+  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/assertions/app.py
+  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/_resources/setup
 
 
 tests:
@@ -24,7 +24,7 @@ tests:
     - method: assertions.app.check_equals
       expected: null
   - arguments:
-      location: ${PYTEST_YAML_ROOT_DIR}/_resources/setup/hello_world.yml
+      location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/_resources/setup/hello_world.yml
     assertions:
     - method: assertions.app.check_equals
       expected: >
@@ -39,11 +39,11 @@ tests:
       expected:
         directory: null
   - arguments:
-      directory: ${PYTEST_YAML_ROOT_DIR}/_resources/setup
+      directory: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/_resources/setup
     assertions:
     - method: assertions.app.check_equals
       expected:
-        directory: ${PYTEST_YAML_ROOT_DIR}/_resources/setup
+        directory: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/_resources/setup
         long_description: '# README.md'
         pipfile_lock:
           _meta:
@@ -218,7 +218,7 @@ tests:
   tests:
   - description: Test 0
     arguments:
-      directory: ${PYTEST_YAML_ROOT_DIR}/_resources/setup
+      directory: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/_resources/setup
     assertions:
     - method: assertions.app.check_equals
       expected:

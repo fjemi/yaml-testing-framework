@@ -24,7 +24,7 @@ operations:
 specified_content_keys:
 - environment
 - schema
-PYTEST_YAML_DEBUG: ${PYTEST_YAML_DEBUG}
+YAML_TESTING_FRAMEWORK_DEBUG: ${YAML_TESTING_FRAMEWORK_DEBUG}
 module_extension: .py
 '''
 CONFIG = os.path.expandvars(CONFIG)

@@ -21,8 +21,8 @@ configurations:
   - pytest_itemcollected
   # - pytest_configure
   resources:
-  - ${PYTEST_YAML_ROOT_DIR}/main/_resources/plugin.py
-  - ${PYTEST_YAML_ROOT_DIR}/assertions/app.py
+  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/_resources/plugin.py
+  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/assertions/app.py
 
 
 tests:
@@ -82,14 +82,14 @@ tests:
       config: null
     assertions:
     - method: assertions.app.check_equals
-      expected: PYTEST_YAML_ROOT_DIR
+      expected: YAML_TESTING_FRAMEWORK_ROOT_DIR
   - description: Option is a single dot representing root directory
     arguments:
       option: .
       config: config
     assertions:
     - method: assertions.app.check_equals
-      expected: PYTEST_YAML_ROOT_DIR
+      expected: YAML_TESTING_FRAMEWORK_ROOT_DIR
   - description: Option is path to directory within the root directory
     arguments:
       option: ./path_to_directory

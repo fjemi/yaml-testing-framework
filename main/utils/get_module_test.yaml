@@ -4,8 +4,8 @@ resources:
 
 configurations:
   resources:
-  - ${PYTEST_YAML_ROOT_DIR}/main/utils/_resources/get_module.py
-  - ${PYTEST_YAML_ROOT_DIR}/assertions/app.py
+  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/_resources/get_module.py
+  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/assertions/app.py
 
 
 tests:
@@ -72,21 +72,21 @@ tests:
   - description: Location exists
     arguments:
       name: name
-      location: ${PYTEST_YAML_ROOT_DIR}/main/utils/_resources/get_module.py
+      location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/_resources/get_module.py
     assertions:
     - method: assertions.app.check_module
       field: module
       expected:
-        location: ${PYTEST_YAML_ROOT_DIR}/main/utils/_resources/get_module.py
+        location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/_resources/get_module.py
   - description: Location is defined
     arguments:
       name: app
-      location: ${PYTEST_YAML_ROOT_DIR}/main/utils/_resources/get_module.py
+      location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/_resources/get_module.py
     assertions:
     - method: assertions.app.check_module
       field: module
       expected:
-        location: ${PYTEST_YAML_ROOT_DIR}/main/utils/_resources/get_module.py
+        location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/_resources/get_module.py
 - function: get_module_from_pool
   tests:
   - description: Returns a new instance of the module
@@ -135,12 +135,12 @@ tests:
   - description: Get module at location
     arguments:
       pool: false
-      location: ${PYTEST_YAML_ROOT_DIR}/main/utils/_resources/get_module.py
+      location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/_resources/get_module.py
       name: app
     assertions:
     - method: assertions.app.check_module
       expected:
-        location: ${PYTEST_YAML_ROOT_DIR}/main/utils/_resources/get_module.py
+        location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/_resources/get_module.py
   - description: Get module from pool
     patches:
     - route: POOL

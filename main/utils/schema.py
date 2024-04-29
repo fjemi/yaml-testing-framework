@@ -7,7 +7,7 @@ from types import SimpleNamespace as sns
 from main.utils import independent
 
 
-PYTEST_YAML_DEBUG = os.getenv('PYTEST_YAML_DEBUG')
+YAML_TESTING_FRAMEWORK_DEBUG = os.getenv('YAML_TESTING_FRAMEWORK_DEBUG')
 
 LOCALS = locals()
 MODULE = __file__

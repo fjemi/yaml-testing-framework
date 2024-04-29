@@ -1,7 +1,7 @@
 configurations:
   resources:
-  - ${PYTEST_YAML_ROOT_DIR}/assertions/app.py
-  - ${PYTEST_YAML_ROOT_DIR}/main/utils/_resources/set_object.py
+  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/assertions/app.py
+  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/_resources/set_object.py
 
 
 tests:

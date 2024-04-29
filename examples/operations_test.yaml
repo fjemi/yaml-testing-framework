@@ -5,8 +5,8 @@ TODO:
 
 configurations:
   resources:
-  - ${PYTEST_YAML_ROOT_DIR}/assertions/app.py
-  - ${PYTEST_YAML_ROOT_DIR}/examples/operations_resource.py
+  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/assertions/app.py
+  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/examples/operations_resource.py
 
 
 tests:

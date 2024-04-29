@@ -13,8 +13,8 @@ configurations:
   # - blank
   # filter_resources_patterns:
   resources:
-  - ${PYTEST_YAML_ROOT_DIR}/_resources/test_entrypoint/app.py
-  - ${PYTEST_YAML_ROOT_DIR}/assertions/app.py
+  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/_resources/test_entrypoint/app.py
+  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/assertions/app.py
 
 
 tests:

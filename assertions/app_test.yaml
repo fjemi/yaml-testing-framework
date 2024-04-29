@@ -9,7 +9,7 @@ resources:
 
 configurations:
   resources:
-  - ${PYTEST_YAML_ROOT_DIR}/assertions/app_resource.py
+  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/assertions/app_resource.py
 
 
 tests:
@@ -136,14 +136,14 @@ tests:
     arguments:
       output: module
       expected:
-        location: ${PYTEST_YAML_ROOT_DIR}/assertions/module_resource.py
+        location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/assertions/module_resource.py
     assertions:
     - method: check_sns
       expected:
         output:
-          location: ${PYTEST_YAML_ROOT_DIR}/assertions/module_resource.py
+          location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/assertions/module_resource.py
         expected:
-          location: ${PYTEST_YAML_ROOT_DIR}/assertions/module_resource.py
+          location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/assertions/module_resource.py
         passed: true
   - description: Output is the builtins module
     arguments:
@@ -219,50 +219,50 @@ tests:
       output: callable
       expected:
         name: callable
-        location: ${PYTEST_YAML_ROOT_DIR}/assertions/app_resource.py
+        location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/assertions/app_resource.py
     assertions:
     - method: check_sns
       expected:
         passed: true
         output:
           name: callable
-          location: ${PYTEST_YAML_ROOT_DIR}/assertions/app_resource.py
+          location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/assertions/app_resource.py
         expected:
           name: callable
-          location: ${PYTEST_YAML_ROOT_DIR}/assertions/app_resource.py
+          location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/assertions/app_resource.py
   - description: Output is an awaitable function
     arguments:
       output: coroutine
       expected:
         name: coroutine
-        location: ${PYTEST_YAML_ROOT_DIR}/assertions/app_resource.py
+        location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/assertions/app_resource.py
     assertions:
     - method: check_sns
       expected:
         passed: true
         output:
           name: coroutine
-          location: ${PYTEST_YAML_ROOT_DIR}/assertions/app_resource.py
+          location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/assertions/app_resource.py
         expected:
           name: coroutine
-          location: ${PYTEST_YAML_ROOT_DIR}/assertions/app_resource.py
+          location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/assertions/app_resource.py
   # # Todo: Finish this test
   # - description: Output is a decorated function
   #   arguments:
   #     output: wrapped
   #     expected:
   #       name: wrapped
-  #       location: ${PYTEST_YAML_ROOT_DIR}/assertions/app.py
+  #       location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/assertions/app.py
   #   assertions:
   #   - method: check_sns
   #     expected:
   #       passed: true
   #       output:
   #         name: wrapped
-  #         location: ${PYTEST_YAML_ROOT_DIR}/assertions/app.py
+  #         location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/assertions/app.py
   #       expected:
   #         name: wrapped
-  #         location: ${PYTEST_YAML_ROOT_DIR}/assertions/app.py
+  #         location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/assertions/app.py
 - function: check_dataclass
   description: >
     Verify that the output is a dataclass; check name and specified fields and
