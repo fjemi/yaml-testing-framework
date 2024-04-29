@@ -5,7 +5,7 @@ from types import ModuleType
 from types import SimpleNamespace as sns
 from typing import Any, Callable, List
 
-import main.process.casts.app as casts
+from main.process.casts import app as casts
 import yaml
 from main.utils import get_config, get_object, independent, schema, set_object
 

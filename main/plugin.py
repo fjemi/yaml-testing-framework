@@ -8,9 +8,8 @@ from typing import Any, List
 
 import pytest as py_test
 
-from main.app import get_config
 from main.app import main as app
-from main.utils import get_object
+from main.utils import get_object, get_config
 
 
 MODULE = __file__
