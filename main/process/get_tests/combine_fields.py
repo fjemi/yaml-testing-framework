@@ -4,7 +4,7 @@
 from types import SimpleNamespace as sns
 from typing import Any
 
-from utils import get_config
+from main.utils import get_config
 
 
 MODULE = __file__
@@ -73,7 +73,7 @@ def combine_levels_as_low(levels: sns | None = None) -> sns:
 
 
 def examples() -> None:
-  from utils import invoke_testing_method
+  from main.utils import invoke_testing_method
 
   invoke_testing_method.main()
 

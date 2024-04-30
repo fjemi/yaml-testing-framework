@@ -1,20 +1,5 @@
 environment:
-  PYTEST_YAML_ROOT_DIR: ${PYTEST_YAML_ROOT_DIR}
-
-
-# schema:
-# - cls_name: Data
-#   description: Data processed by functions within the module
-#   slots: False
-#   fields:
-#   - name: pytest_config
-#     type: py_test.Config | None
-#   - name: pytest_parser
-#     type: py_test.Parser | None
-#   - name: pytest_instance
-#     type: ModuleType | None
-#   - name: project_directory
-#     type: str | None
+  ROOT_DIR: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}
 
 
 options:

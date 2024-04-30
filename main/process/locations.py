@@ -5,11 +5,11 @@ import os
 from types import SimpleNamespace as sns
 from typing import Any, List
 
-from utils import get_config, independent
+from main.utils import get_config, independent
 
 
-PYTEST_YAML_ROOT_DIRECTORY = os.path.abspath(os.curdir)
-PYTEST_YAML_ROOT_DIRECTORY = os.path.normpath(PYTEST_YAML_ROOT_DIRECTORY)
+ROOT_DIR = os.path.abspath(os.curdir)
+ROOT_DIR = os.path.normpath(ROOT_DIR)
 
 MODULE = __file__
 CONFIG = get_config.main()
@@ -48,7 +48,7 @@ def main(
 
 
 def format_paths(path: str | None = None) -> sns:
-  root = PYTEST_YAML_ROOT_DIRECTORY
+  root = ROOT_DIR
 
   if not path:
     path = '.'
@@ -231,7 +231,7 @@ def get_location_of_resources(
 
 
 def examples() -> None:
-  from utils import invoke_testing_method
+  from main.utils import invoke_testing_method
 
   invoke_testing_method.main()
 

@@ -5,15 +5,12 @@ build-backend = 'setuptools.build_meta'
 
 [tool.coverage.run]
 omit = [
-  '*ignore/*',
-  '*.ignore/*',
-  '*.logs*',
-  '*logs*',
-  # '*__init__.py',
-  'test_entrypoint.py',
+  '*/*ignore*.py',
+  '*/*ignore*/*.py',
   '*_test.py',
-  '*_resource.py',
-  '*/_resources/*',
+  '*/*resource*/**',
+  '*/*resource*/*.py',
+  '*/*resource*.py',
 ]
 branch = true
 source = ['/']
@@ -27,8 +24,6 @@ directory = '.htmlcov'
 exclude_lines = [
   "if __name__ == '__main__':",
   'def example',
-  'def invoke_pytest',
-  'def run_app',
 ]
 fail_under = 90
 

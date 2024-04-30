@@ -6,7 +6,7 @@ from types import ModuleType
 from types import SimpleNamespace as sns
 from typing import Any, Callable
 
-from utils import get_module
+from main.utils import get_module
 
 
 MODULE = __file__
@@ -176,7 +176,7 @@ def get_resource(resource: Any | None = None) -> Callable:
 
 
 def examples() -> None:
-  from utils import invoke_testing_method
+  from main.utils import invoke_testing_method
 
   invoke_testing_method.main(resource_flag=True)
 

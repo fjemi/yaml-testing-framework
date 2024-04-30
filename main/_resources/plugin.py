@@ -6,7 +6,7 @@ from types import SimpleNamespace as sns
 from unittest import mock
 
 import pytest
-from utils import get_config, invoke_testing_method
+from main.utils import get_config, invoke_testing_method
 
 
 MODULE = __file__
@@ -44,7 +44,7 @@ def project_directory_option_resource(option: str | None) -> str:
     option is None,
     option == '.',
   ]:
-    option = 'PYTEST_YAML_ROOT_DIR'
+    option = 'YAML_TESTING_FRAMEWORK_ROOT_DIR'
   return option
 
 

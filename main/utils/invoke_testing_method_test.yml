@@ -2,8 +2,8 @@ configurations:
   exclude_functions:
   - run_pytest
   resources:
-  - ${PYTEST_YAML_ROOT_DIR}/main/utils/_resources/invoke_testing_method/resource.py
-  - ${PYTEST_YAML_ROOT_DIR}/assertions/app.py
+  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/_resources/invoke_testing_method/resource.py
+  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/assertions/app.py
 
 
 tests:
@@ -176,7 +176,7 @@ tests:
   tests:
   - description: Location is a module with defined tests
     arguments: &MODULE_WITH_TESTS_ARGUMENTS
-      location: ${PYTEST_YAML_ROOT_DIR}/main/utils/_resources/invoke_testing_method/module_with_tests.py
+      location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/_resources/invoke_testing_method/module_with_tests.py
       exclude_files: []
       resources_folder_name: resources_folder_name
       yaml_suffix: _test
@@ -212,7 +212,7 @@ tests:
     #       passed: true
   - description: Location is a module with no defined tests
     arguments: &MODULE_WITHOUT_TESTS_ARGUMENTS
-      location: ${PYTEST_YAML_ROOT_DIR}/main/utils/_resources/invoke_testing_method/module_without_tests.py
+      location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/_resources/invoke_testing_method/module_without_tests.py
       exclude_files: []
       resources_folder_name: resources_folder_name
       yaml_suffix: _test
@@ -280,7 +280,7 @@ tests:
       expected: SimpleNamespace
   - description: Run tests on modules in a directory using plugin invocation method
     arguments:
-      location: ${PYTEST_YAML_ROOT_DIR}/main/utils/_resources/invoke_testing_method/
+      location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/_resources/invoke_testing_method/
       resources_folder_name: resources_folder_name
       method: plugin
       yaml_suffix: _test

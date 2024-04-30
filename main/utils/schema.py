@@ -4,10 +4,10 @@
 import os
 from types import SimpleNamespace as sns
 
-from utils import independent
+from main.utils import independent
 
 
-PYTEST_YAML_DEBUG = os.getenv('PYTEST_YAML_DEBUG')
+YAML_TESTING_FRAMEWORK_DEBUG = os.getenv('YAML_TESTING_FRAMEWORK_DEBUG')
 
 LOCALS = locals()
 MODULE = __file__
@@ -119,6 +119,6 @@ def get_model(
 
 
 if __name__ == '__main__':
-  from utils import invoke_testing_method
+  from main.utils import invoke_testing_method
 
   invoke_testing_method.main()

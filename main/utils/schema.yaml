@@ -515,7 +515,7 @@ logger.Data: &LOGGER_DATA
   - name: log_directory
     type: str
     description: Directory to store logs in
-    default: ${PYTEST_YAML_ROOT_DIR}/.logs
+    default: null
   - name: data
     type: Any
     description: Data to log

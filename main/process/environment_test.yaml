@@ -1,7 +1,7 @@
 configurations:
   resources:
-  - ${PYTEST_YAML_ROOT_DIR}/assertions/app.py
-  - ${PYTEST_YAML_ROOT_DIR}/main/process/_environment_resources/app.py
+  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/assertions/app.py
+  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/_environment_resources/app.py
 
 
 tests:
@@ -24,13 +24,13 @@ tests:
     #   field: log
     #   expected:
     #     level: warning
-    #     message: No environment set for module ${PYTEST_YAML_ROOT_DIR}/main/process/_environment_resources/no_config.py
+    #     message: No environment set for module ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/_environment_resources/no_config.py
   - description: Module with no CONFIG
     arguments:
       environment:
         VAR_A: A
         VAR_B: B
-      module: ${PYTEST_YAML_ROOT_DIR}/main/process/_environment_resources/no_config.py
+      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/_environment_resources/no_config.py
     assertions:
     - method: assertions.app.check_sns
       field: module.CONFIG.environment
@@ -39,14 +39,14 @@ tests:
         VAR_B: B
     # - method: assertions.app.check_sns
     #   expected:
-    #     log: CONFIG added to module at location ${PYTEST_YAML_ROOT_DIR}/main/process/_environment_resources/no_config.py
+    #     log: CONFIG added to module at location ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/_environment_resources/no_config.py
   - description: Module has CONFIG with no environment
     arguments:
       environment:
         VAR_A: 1
         VAR_B: 2
         VAR_C: 3
-      module:  ${PYTEST_YAML_ROOT_DIR}/main/process/_environment_resources/no_config.py
+      module:  ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/_environment_resources/no_config.py
     assertions:
     - method: assertions.app.check_sns
       field: module.CONFIG.environment
@@ -60,7 +60,7 @@ tests:
         VAR_1: 1
         VAR_2: 2
         VAR_3: 3
-      module:  ${PYTEST_YAML_ROOT_DIR}/main/process/_environment_resources/config_with_environment.py
+      module:  ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/_environment_resources/config_with_environment.py
     assertions:
     - method: assertions.app.check_sns
       field: module.CONFIG.environment

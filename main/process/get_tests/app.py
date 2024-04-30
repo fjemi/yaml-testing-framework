@@ -3,9 +3,9 @@
 
 from types import SimpleNamespace as sns
 
-from process.get_tests import expand_node
-from process.get_tests.combine_fields import main as combine_fields
-from utils import get_config, independent
+from main.process.get_tests import expand_node
+from main.process.get_tests.combine_fields import main as combine_fields
+from main.utils import get_config, independent
 
 
 MODULE = __file__
@@ -85,7 +85,7 @@ def get_expanded_nodes(
 
 
 def examples() -> None:
-  from utils import invoke_testing_method
+  from main.utils import invoke_testing_method
 
   invoke_testing_method.main()
 

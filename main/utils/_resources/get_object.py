@@ -6,7 +6,7 @@ import builtins
 from types import ModuleType
 from types import SimpleNamespace as sns
 
-from utils import get_module
+from main.utils import get_module
 
 
 MODULE = __file__
@@ -21,7 +21,7 @@ def get_module_wrapper(parent: str | None = None) -> ModuleType:
 
 
 def examples() -> None:
-  from utils import invoke_testing_method
+  from main.utils import invoke_testing_method
 
   invoke_testing_method.main(resource_flag=True)
 

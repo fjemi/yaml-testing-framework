@@ -1,8 +1,8 @@
 configurations:
   resources:
-  - ${PYTEST_YAML_ROOT_DIR}/assertions/app.py
-  - ${PYTEST_YAML_ROOT_DIR}/main/process/casts/handle_casting_resource.py
-  - ${PYTEST_YAML_ROOT_DIR}/main/process/casts/app_resource.py
+  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/assertions/app.py
+  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/casts/handle_casting_resource.py
+  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/casts/app_resource.py
 
 
 tests:

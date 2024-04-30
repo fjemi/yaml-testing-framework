@@ -1,7 +1,7 @@
 configurations:
   resources:
-  - ${PYTEST_YAML_ROOT_DIR}/assertions/app.py
-  - ${PYTEST_YAML_ROOT_DIR}/main/utils/_resources/schema.py
+  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/assertions/app.py
+  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/_resources/schema.py
 
 
 tests:
@@ -21,7 +21,7 @@ tests:
   - description: YAML is defined
     arguments:
       module: null
-      yaml: ${PYTEST_YAML_ROOT_DIR}/main/utils/_resources/schema.yaml
+      yaml: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/_resources/schema.yaml
       sns_models_flag: null
     assertions:
     - method: assertions.app.check_equals
@@ -36,7 +36,7 @@ tests:
         dictionary: {}
   - description: Module is defined and simple name space model flag is true
     arguments:
-      module: ${PYTEST_YAML_ROOT_DIR}/main/utils/_resources/schema.py
+      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/_resources/schema.py
       yaml: null
       sns_models_flag: true
     assertions:
@@ -62,7 +62,7 @@ tests:
     assertions:
     - method: assertions.app.check_sns
       expected:
-        location: ${PYTEST_YAML_ROOT_DIR}/main/utils/schema.yaml
+        location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/schema.yaml
   - description: YAML is defined
     arguments:
       module: null
@@ -73,12 +73,12 @@ tests:
         location: YAML
   - description: Module is Defined
     arguments:
-      module: ${PYTEST_YAML_ROOT_DIR}/main/utils/schema.py
+      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/schema.py
       yaml: null
     assertions:
     - method: assertions.app.check_sns
       expected:
-        location: ${PYTEST_YAML_ROOT_DIR}/main/utils/schema.yaml
+        location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/schema.yaml
 - function: get_models_from_schema
   description: Parses schema key in YAML content to create models for a schema
   tests:

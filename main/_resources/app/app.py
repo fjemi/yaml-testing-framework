@@ -6,7 +6,7 @@ from types import ModuleType
 from types import SimpleNamespace as sns
 from typing import Any
 
-from utils import get_module
+from main.utils import get_module
 
 
 LOCALS = locals()
@@ -52,7 +52,7 @@ async def subtract(data: dict) -> int:
 
 
 def examples() -> None:
-  from utils import invoke_testing_method
+  from main.utils import invoke_testing_method
 
   invoke_testing_method.main(
     resources_folder_name='_resources',

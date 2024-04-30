@@ -4,8 +4,8 @@
 import logging
 from typing import Any, Callable
 
-from utils import invoke_testing_method
-from utils.logger import get_logger
+from main.utils import invoke_testing_method
+from main.utils.logger import get_logger
 
 
 MODULE = __file__

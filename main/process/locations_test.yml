@@ -3,15 +3,15 @@ resources:
 
 
 locations:
-  root: &ROOT ${PYTEST_YAML_ROOT_DIR}
-  app: &APP ${PYTEST_YAML_ROOT_DIR}/main/process/locations.py
-  resources: &RESOURCES ${PYTEST_YAML_ROOT_DIR}/main/process/_locations_resources
+  root: &ROOT ${YAML_TESTING_FRAMEWORK_ROOT_DIR}
+  app: &APP ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/locations.py
+  resources: &RESOURCES ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/_locations_resources
 
 
 configurations:
   resources:
-  - ${PYTEST_YAML_ROOT_DIR}/assertions/app.py
-  - ${PYTEST_YAML_ROOT_DIR}/main/process/_locations_resources/app.py
+  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/assertions/app.py
+  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/_locations_resources/app.py
 
 
 tests:
@@ -48,20 +48,20 @@ tests:
     - method: assertions.app.check_sns
       expected:
         locations:
-        - module: ${PYTEST_YAML_ROOT_DIR}/main/process/_locations_resources/exclusion_pattern.py
-          module_location: ${PYTEST_YAML_ROOT_DIR}/main/process/_locations_resources/exclusion_pattern.py
+        - module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/_locations_resources/exclusion_pattern.py
+          module_location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/_locations_resources/exclusion_pattern.py
           module_route: .main.process._locations_resources.exclusion_pattern
           resources:
-          - ${PYTEST_YAML_ROOT_DIR}/main/process/_locations_resources/resources_folder_name/resource_b.py
-          - ${PYTEST_YAML_ROOT_DIR}/main/process/_locations_resources/resources_folder_name/resource_a.py
-          yaml: ${PYTEST_YAML_ROOT_DIR}/main/process/_locations_resources/exclusion_pattern_test.yml
-        - module: ${PYTEST_YAML_ROOT_DIR}/main/process/_locations_resources/app.py
-          module_location: ${PYTEST_YAML_ROOT_DIR}/main/process/_locations_resources/app.py
+          - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/_locations_resources/resources_folder_name/resource_b.py
+          - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/_locations_resources/resources_folder_name/resource_a.py
+          yaml: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/_locations_resources/exclusion_pattern_test.yml
+        - module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/_locations_resources/app.py
+          module_location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/_locations_resources/app.py
           module_route: .main.process._locations_resources.app
           resources:
-          - ${PYTEST_YAML_ROOT_DIR}/main/process/_locations_resources/resources_folder_name/resource_b.py
-          - ${PYTEST_YAML_ROOT_DIR}/main/process/_locations_resources/resources_folder_name/resource_a.py
-          yaml: ${PYTEST_YAML_ROOT_DIR}/main/process/_locations_resources/app_test.yml
+          - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/_locations_resources/resources_folder_name/resource_b.py
+          - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/_locations_resources/resources_folder_name/resource_a.py
+          yaml: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/_locations_resources/app_test.yml
 - function: format_paths
   description: >
     Returns a project's directory based on the location defined in a dictionary
@@ -76,10 +76,10 @@ tests:
     - method: assertions.app.check_sns
       field: paths
       expected:
-        directory: ${PYTEST_YAML_ROOT_DIR}
+        directory: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}
         kind: directory
-        path: ${PYTEST_YAML_ROOT_DIR}
-        root: ${PYTEST_YAML_ROOT_DIR}
+        path: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}
+        root: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}
   - description: Path does not exist
     arguments:
       path: does_not_exist
@@ -104,7 +104,7 @@ tests:
         kind: directory
   - description: Path is an existing file
     arguments:
-      path: ${PYTEST_YAML_ROOT_DIR}/main/process/_locations_resources/app.py
+      path: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/_locations_resources/app.py
     assertions:
     - method: assertions.app.check_sns
       field: paths
@@ -112,7 +112,7 @@ tests:
         root: *ROOT
         directory: *RESOURCES
         kind: file
-        path: ${PYTEST_YAML_ROOT_DIR}/main/process/_locations_resources/app.py
+        path: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/_locations_resources/app.py
 - function: format_yaml_suffix
   description: Sets the suffix used in YAML test file names
   tests:
@@ -322,15 +322,15 @@ tests:
       paths:
         kind: file
         root: *ROOT
-        path: ${PYTEST_YAML_ROOT_DIR}/main/process/_locations_resources/exclusion_pattern.py
+        path: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/_locations_resources/exclusion_pattern.py
     assertions:
     - method: assertions.app.check_sns
       expected:
         locations:
-        - module: ${PYTEST_YAML_ROOT_DIR}/main/process/_locations_resources/exclusion_pattern.py
-          module_location: ${PYTEST_YAML_ROOT_DIR}/main/process/_locations_resources/exclusion_pattern.py
+        - module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/_locations_resources/exclusion_pattern.py
+          module_location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/_locations_resources/exclusion_pattern.py
           module_route: .main.process._locations_resources.exclusion_pattern
-          yaml: ${PYTEST_YAML_ROOT_DIR}/main/process/_locations_resources/exclusion_pattern_test.yml
+          yaml: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/_locations_resources/exclusion_pattern_test.yml
   - description: Path is the location of a YAML file
     arguments:
       exclude_files: []
@@ -339,15 +339,15 @@ tests:
       paths:
         kind: file
         root: *ROOT
-        path: ${PYTEST_YAML_ROOT_DIR}/main/process/_locations_resources/exclusion_pattern_test.yml
+        path: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/_locations_resources/exclusion_pattern_test.yml
     assertions:
     - method: assertions.app.check_sns
       expected:
         locations:
-        - module: ${PYTEST_YAML_ROOT_DIR}/main/process/_locations_resources/exclusion_pattern.py
-          module_location: ${PYTEST_YAML_ROOT_DIR}/main/process/_locations_resources/exclusion_pattern.py
+        - module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/_locations_resources/exclusion_pattern.py
+          module_location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/_locations_resources/exclusion_pattern.py
           module_route: .main.process._locations_resources.exclusion_pattern
-          yaml: ${PYTEST_YAML_ROOT_DIR}/main/process/_locations_resources/exclusion_pattern_test.yml
+          yaml: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/_locations_resources/exclusion_pattern_test.yml
 - function: get_module_and_yaml_location_when_path_kind_is_directory
   description: >
     Returns a list of SimpleNamespace objects containing the location of module
@@ -385,14 +385,14 @@ tests:
     - method: assertions.app.check_sns
       expected:
         locations:
-        - module: ${PYTEST_YAML_ROOT_DIR}/main/process/_locations_resources/exclusion_pattern.py
-          module_location: ${PYTEST_YAML_ROOT_DIR}/main/process/_locations_resources/exclusion_pattern.py
+        - module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/_locations_resources/exclusion_pattern.py
+          module_location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/_locations_resources/exclusion_pattern.py
           module_route: .main.process._locations_resources.exclusion_pattern
-          yaml: ${PYTEST_YAML_ROOT_DIR}/main/process/_locations_resources/exclusion_pattern_test.yml
-        - module: ${PYTEST_YAML_ROOT_DIR}/main/process/_locations_resources/app.py
-          module_location: ${PYTEST_YAML_ROOT_DIR}/main/process/_locations_resources/app.py
+          yaml: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/_locations_resources/exclusion_pattern_test.yml
+        - module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/_locations_resources/app.py
+          module_location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/_locations_resources/app.py
           module_route: .main.process._locations_resources.app
-          yaml: ${PYTEST_YAML_ROOT_DIR}/main/process/_locations_resources/app_test.yml
+          yaml: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/_locations_resources/app_test.yml
 - function: get_location_of_resources
   description: >
     Returns the location of resources or modules associated with the module
@@ -418,14 +418,14 @@ tests:
       exclude_files:
       - exclusion_pattern
       locations:
-      - yaml: ${PYTEST_YAML_ROOT_DIR}/main/process/_locations_resources/app.yml
-        module: ${PYTEST_YAML_ROOT_DIR}/main/process/_locations_resources/app.py
+      - yaml: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/_locations_resources/app.yml
+        module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/_locations_resources/app.py
     assertions:
     - method: assertions.app.check_sns
       expected:
         locations:
-        - yaml: ${PYTEST_YAML_ROOT_DIR}/main/process/_locations_resources/app.yml
-          module: ${PYTEST_YAML_ROOT_DIR}/main/process/_locations_resources/app.py
+        - yaml: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/_locations_resources/app.yml
+          module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/_locations_resources/app.py
           resources:
-          - ${PYTEST_YAML_ROOT_DIR}/main/process/_locations_resources/resources_folder_name/resource_b.py
-          - ${PYTEST_YAML_ROOT_DIR}/main/process/_locations_resources/resources_folder_name/resource_a.py
+          - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/_locations_resources/resources_folder_name/resource_b.py
+          - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/_locations_resources/resources_folder_name/resource_a.py

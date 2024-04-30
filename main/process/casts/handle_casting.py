@@ -4,7 +4,7 @@
 from types import SimpleNamespace as sns
 from typing import Any, Callable
 
-from utils import get_config
+from main.utils import get_config
 
 
 MODULE = __file__
@@ -110,7 +110,7 @@ def cast_any_unpacked(
 
 
 def examples() -> None:
-  from utils import invoke_testing_method
+  from main.utils import invoke_testing_method
 
   invoke_testing_method.main()
 

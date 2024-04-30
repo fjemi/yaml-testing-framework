@@ -3,7 +3,7 @@
 
 import types
 
-from utils import get_module
+from main.utils import get_module
 
 
 MODULE = __file__

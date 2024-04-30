@@ -1,7 +1,7 @@
 configurations:
   resources:
-  - ${PYTEST_YAML_ROOT_DIR}/assertions/app.py
-  - ${PYTEST_YAML_ROOT_DIR}/main/process/casts/app_resource.py
+  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/assertions/app.py
+  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/casts/app_resource.py
 
 
 tests:
@@ -19,7 +19,7 @@ tests:
     tests:
     - description: Cast string as integer
       arguments:
-        module: ${PYTEST_YAML_ROOT_DIR}/main/process/casts/app_resource.py
+        module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/casts/app_resource.py
         casts:
         - method: __builtins__.int
         object: '1111'
@@ -28,7 +28,7 @@ tests:
         expected: 1111
     - description: Cast dict as simple name space
       arguments:
-        module: ${PYTEST_YAML_ROOT_DIR}/main/process/casts/app_resource.py
+        module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/casts/app_resource.py
         casts:
         - method: cast_dict_as_sns
         object:
@@ -39,7 +39,7 @@ tests:
           key: value
     - description: Cast list into string with unpacking
       arguments:
-        module: ${PYTEST_YAML_ROOT_DIR}/main/process/casts/app_resource.py
+        module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/casts/app_resource.py
         casts:
         - method: cast_list_to_string
           unpack: true
@@ -66,7 +66,7 @@ tests:
   - description: Return the str class from builtins
     arguments:
       method: __builtins__.str
-      module: ${PYTEST_YAML_ROOT_DIR}/main/process/casts/app_resource.py
+      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/casts/app_resource.py
     assertions:
     - method: assertions.app.check_sns
       expected:
@@ -77,7 +77,7 @@ tests:
   - description: Return the int class from builtins
     arguments:
       method: __builtins__.int
-      module: ${PYTEST_YAML_ROOT_DIR}/main/process/casts/app_resource.py
+      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/casts/app_resource.py
     assertions:
     - method: assertions.app.check_sns
       expected:
@@ -90,7 +90,7 @@ tests:
       resources directory
     arguments:
       method: pass_through
-      module: ${PYTEST_YAML_ROOT_DIR}/main/process/casts/app_resource.py
+      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/casts/app_resource.py
     assertions:
     - method: assertions.app.check_sns
       expected:
@@ -99,16 +99,16 @@ tests:
       field: method
       expected:
         name: pass_through
-        location: ${PYTEST_YAML_ROOT_DIR}/main/process/casts/app_resource.py
+        location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/casts/app_resource.py
   - description: Method not in module
     arguments:
       method: does_not_exist
-      module: ${PYTEST_YAML_ROOT_DIR}/main/process/casts/app_resource.py
+      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/casts/app_resource.py
     assertions:
     - method: assertions.app.check_sns
       field: log
       expected:
-        message: Method does_not_exist not in module located at ${PYTEST_YAML_ROOT_DIR}/main/process/casts/app_resource.py
+        message: Method does_not_exist not in module located at ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/casts/app_resource.py
         level: error
 - function: get_temp_object
   description: Set a temporary object as the object to cast or field within it

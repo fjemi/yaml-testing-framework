@@ -18,8 +18,8 @@ resource:
 
 configurations:
   resources:
-  - ${PYTEST_YAML_ROOT_DIR}/assertions/app.py
-  - ${PYTEST_YAML_ROOT_DIR}/main/utils/_resources/independent.py
+  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/assertions/app.py
+  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/_resources/independent.py
 
 
 tests:
@@ -55,7 +55,7 @@ tests:
 - function: get_yaml_loader
   description: >
     Returns a YAML Loader (Base, Safe, or Full). Safe is default and can set the
-    environment variable PYTEST_YAML_YAML_LOADER to a loader to use
+    environment variable YAML_TESTING_FRAMEWORK_YAML_LOADER to a loader to use
   tests:
   - description: SafeLoader is default
     arguments: {}
@@ -70,7 +70,7 @@ tests:
   - description: Environment variable set to loader that doesn't exist
     patches:
     - method: value
-      route: CONFIG.environment.PYTEST_YAML_YAML_LOADER
+      route: CONFIG.environment.YAML_LOADER
       value: DOES_NOT_EXIST
     arguments: {}
     assertions:
@@ -81,7 +81,7 @@ tests:
   - description: Environment variable set to Full
     patches:
     - method: value
-      route: CONFIG.environment.PYTEST_YAML_YAML_LOADER
+      route: CONFIG.environment.YAML_LOADER
       value: Full
     arguments: {}
     assertions:
@@ -116,7 +116,7 @@ tests:
       expected: {}
   - description: Location is an existing YAML file
     arguments:
-      location: ${PYTEST_YAML_ROOT_DIR}/main/utils/_resources/independent.yaml
+      location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/_resources/independent.yaml
     assertions:
     - method: assertions.app.check_equals
       field: content
@@ -337,7 +337,7 @@ tests:
       expected:
         description: 'unsupported operand type(s) for +: ''int'' and ''str'''
         trace:
-        - file: ${PYTEST_YAML_ROOT_DIR}/main/utils/_resources/independent.py
+        - file: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/_resources/independent.py
           line: 63
           name: add
         name: TypeError

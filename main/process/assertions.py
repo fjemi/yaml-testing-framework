@@ -5,9 +5,9 @@ from types import ModuleType
 from types import SimpleNamespace as sns
 from typing import Any, Callable, List
 
-import process.casts.app as casts
+from main.process.casts import app as casts
 import yaml
-from utils import get_config, get_object, independent, schema, set_object
+from main.utils import get_config, get_object, independent, schema, set_object
 
 
 MODULE = __file__
@@ -193,7 +193,7 @@ def handle_failed_assertion(
 
 
 def examples() -> None:
-  from utils import invoke_testing_method
+  from main.utils import invoke_testing_method
 
   invoke_testing_method.main()
 

@@ -94,8 +94,8 @@ The app can be configured within the pytest settings of a configuration file,
 | Field | Type | Description | Default |
 | - | - | - | - |
 | project-directory | str | Location of a directory containing files or an an individual module or YAML file to test. | . |
-| exclude-files | str \| list| A list of patterns. Exclude files from testing that match a specified pattern . | [] |
-| resources | str \| list | The locations of modules to use as resources during tests | [] |
+| exclude-files | str or list| A list of patterns. Exclude files from testing that match a specified pattern . | [] |
+| resources | str or list | The locations of modules to use as resources during tests | [] |
 | resources_folder_name | str | Name of folders containing resources to use for tests| _resources |
 | yaml-suffix | str | Suffix in the names of YAML files containing tests | _test |
 
@@ -226,13 +226,13 @@ fields can be defined globally or at different test levels.
 | - | - | - | - |
 | function | str | Name of function to test | replace |
 | environment | dict | Environment variables used by functions in a module | update |
-| description | str \| list | Additional details about the module, function, or test | append |
-| resources | str \| list | Resources or modules to use during test | append |
-| patches | dict \| list | Objects in a module to patch for tests | append |
-| cast_arguments | dict \| list | Convert function arguments to other data types | append |
-| cast_output | dict \| list | Convert function output to other data types | append |
-| assertions | dict \| list | Verifies the output of functions | append |
-| tests | dict \| list | Nested configurations that get expanded into individual tests | append |
+| description | str or list | Additional details about the module, function, or test | append |
+| resources | str or list | Resources or modules to use during test | append |
+| patches | dict or list | Objects in a module to patch for tests | append |
+| cast_arguments | dict or list | Convert function arguments to other data types | append |
+| cast_output | dict or list | Convert function output to other data types | append |
+| assertions | dict or list | Verifies the output of functions | append |
+| tests | dict or list | Nested configurations that get expanded into individual tests | append |
 
 
 ## Resources
@@ -291,7 +291,7 @@ single assertion has the following fields:
 | method | str | Function or method used to verify the result of test | pass_through |
 | expected | Any | The expected output of the function | null |
 | field | str | Sets the output to a dot-delimited route to an attribute or key within the output. | null |
-| cast_output | dict \| list | Converts output or an attribute or key in the output before processing an assertion method | null |
+| cast_output | dict or list | Converts output or an attribute or key in the output before processing an assertion method | null |
 
 
 And single test can have multiple assertions
@@ -398,16 +398,6 @@ tests:
     NAME_A: A
     NAME_B: b
 ```
-
-
-## Advanced example
-
-Create the files
-- 
-
-
-
-
 
 
 <br>

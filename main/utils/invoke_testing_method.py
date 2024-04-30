@@ -10,7 +10,7 @@ from types import SimpleNamespace as sns
 from typing import List
 
 import yaml
-from utils import independent
+from main.utils import independent
 
 from main.app import main as plugin
 
@@ -41,7 +41,7 @@ CONFIG = '''
 CONFIG = yaml.safe_load(CONFIG)
 CONFIG = sns(**CONFIG)
 
-PYTEST_YAML_DEBUG = os.getenv('PYTEST_YAML_DEBUG')
+YAML_TESTING_FRAMEWORK_DEBUG = os.getenv('YAML_TESTING_FRAMEWORK_DEBUG')
 
 
 # trunk-ignore(ruff/PLR0913)
