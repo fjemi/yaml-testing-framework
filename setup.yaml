@@ -14,7 +14,7 @@ keywords:
 - pytest
 - yaml
 - testing
-name: yaml-testing-framework
+name: yaml_testing_framework
 packages:
 - main
 - main.process
@@ -39,4 +39,4 @@ extras_require: {}
 python_requires: null
 entry_points:
   pytest11:
-  - yaml-testing-framework = main.plugin
+  - yaml_testing_framework = main.plugin
