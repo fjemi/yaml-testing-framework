@@ -56,9 +56,9 @@ def format_module_name(
   global MODULE_NAMES
   MODULE_NAMES.append(data.name)
 
-  if not pool:
-    count = MODULE_NAMES.count(data.name)
-    data.name = f'{data.name}_{count}'
+  # if not pool:
+  #   count = MODULE_NAMES.count(data.name)
+  #   data.name = f'{data.name}_{count}'
 
   return data
 

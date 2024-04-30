@@ -30,7 +30,7 @@ tests:
     assertions:
     - method: assertions.app.check_sns
       expected:
-        name: name_1
+        name: name
   - description: Name is defined and pool is true
     arguments:
       name: name.py
@@ -48,7 +48,7 @@ tests:
     assertions:
     - method: assertions.app.check_sns
       expected:
-        name: app_1
+        name: app
   - description: Name and location are undefined. Pool is true.
     arguments:
       name: null
