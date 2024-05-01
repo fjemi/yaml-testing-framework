@@ -20,6 +20,7 @@ operations:
   - format_config_location
   - get_content_from_files
   - format_content_keys
+format_keys:
 - environment
 - schema
 - operations
@@ -78,9 +79,6 @@ def get_yaml_content_wrapper(location: str | None = None) -> sns:
   return independent.get_yaml_content(location=location)
 
 
-FIELDS = ['environment', 'schema', 'config']
-
-
 def get_content_from_files(
   environment: str | None = None,
   schema: str | None = None,
@@ -91,8 +89,7 @@ def get_content_from_files(
   data = sns(content=sns())
   message = []
 
-  for name in FIELDS:
-    location = locals_[name]
+  for name, location in locals_.items():
     content = get_yaml_content_wrapper(location=location)
     setattr(data.content, name, content.content)
     if getattr(content, 'log', None):
@@ -104,8 +101,8 @@ def get_content_from_files(
   return data
 
 
-def format_specified_content_keys(content: sns | None = None) -> sns:
-  for key in CONFIG.specified_content_keys:
+def format_content_keys(content: sns | None = None) -> sns:
+  for key in CONFIG.format_keys:
     value = {}
     content = content or sns(config={})
 
@@ -123,9 +120,6 @@ def format_specified_content_keys(content: sns | None = None) -> sns:
 
 
 def format_environment_content(value: dict | None = None) -> sns:
-  # if not isinstance(value, dict):
-  #   return value
-
   for name, variable in value.items():
     if str(variable).find('$') == 0:
       value[name] = None

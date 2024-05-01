@@ -53,20 +53,14 @@ def main(
   logging_enabled: bool | None = None,
 ) -> list:
   timestamp = independent.get_timestamp()
-  logger.create_logger(
-    logging_enabled=logging_enabled,
-    project_directory=project_directory, )
+  logger.create_logger(logging_enabled=logging_enabled, project_directory=project_directory)
 
-  # data = locations.main(**locals())
   data = schema.get_model(name='main.app.Data', data=locals())
-
   data = independent.process_operations(
     operations=CONFIG.operations.main,
     functions=LOCALS,
     data=data, )
-  if not hasattr(data, 'tests'):
-    data.tests = []
-  return data.tests
+  return getattr(data, 'tests', None) or []
 
 
 def handle_id(
