@@ -32,4 +32,13 @@ schema:
       description: An example of an list field with default items
       default:
         key: value
-
+operations:
+  one:
+  - 1
+  two:
+  - 1
+  - 2
+  three:
+  - 1
+  - 2
+  - 3
