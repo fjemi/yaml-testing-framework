@@ -30,7 +30,7 @@ def main(
     data.module = module
     data.object = object_
     data = independent.process_operations(
-      operations=CONFIG.main_operations,
+      operations=CONFIG.operations.main,
       functions=LOCALS,
       data=data, )
     object_ = data.object
