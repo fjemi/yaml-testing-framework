@@ -16,20 +16,20 @@ yaml_extensions:
 - .yaml
 - .yml
 operations:
-- format_config_location
-- get_content_from_files
-- format_specified_content_keys
-# - format_environment_content
-# - format_schema_content
-specified_content_keys:
+  main:
+  - format_config_location
+  - get_content_from_files
+  - format_content_keys
+format_keys:
 - environment
 - schema
-DEBUG: ${YAML_TESTING_FRAMEWORK_DEBUG}
+- operations
 module_extension: .py
 '''
 CONFIG = os.path.expandvars(CONFIG)
 CONFIG = pyyaml.safe_load(CONFIG)
 CONFIG = sns(**CONFIG)
+CONFIG.operations = sns(**CONFIG.operations)
 
 LOCALS= locals()
 
@@ -43,7 +43,7 @@ def main(
   data = sns(**locals())
   data.module = data.module or inspect.stack()[1].filename
   data = independent.process_operations(
-    operations=CONFIG.operations,
+    operations=CONFIG.operations.main,
     functions=LOCALS,
     data=data, )
   data = get_object.main(parent=data, route='content.config') or {}
@@ -79,20 +79,17 @@ def get_yaml_content_wrapper(location: str | None = None) -> sns:
   return independent.get_yaml_content(location=location)
 
 
-FIELDS = ['environment', 'schema', 'config']
-
-
 def get_content_from_files(
   environment: str | None = None,
   schema: str | None = None,
   config: str | None = None,
+  operations: str | None = None,
 ) -> sns:
   locals_ = locals()
   data = sns(content=sns())
   message = []
 
-  for name in FIELDS:
-    location = locals_[name]
+  for name, location in locals_.items():
     content = get_yaml_content_wrapper(location=location)
     setattr(data.content, name, content.content)
     if getattr(content, 'log', None):
@@ -104,8 +101,8 @@ def get_content_from_files(
   return data
 
 
-def format_specified_content_keys(content: sns | None = None) -> sns:
-  for key in CONFIG.specified_content_keys:
+def format_content_keys(content: sns | None = None) -> sns:
+  for key in CONFIG.format_keys:
     value = {}
     content = content or sns(config={})
 
@@ -123,9 +120,6 @@ def format_specified_content_keys(content: sns | None = None) -> sns:
 
 
 def format_environment_content(value: dict | None = None) -> sns:
-  # if not isinstance(value, dict):
-  #   return value
-
   for name, variable in value.items():
     if str(variable).find('$') == 0:
       value[name] = None
@@ -137,6 +131,11 @@ def format_schema_content(value: dict | None = None) -> sns:
     content=value,
     sns_models_flag=True, )
   return value.models
+
+
+def format_operations_content(value: dict | None = None) -> sns:
+  value = value or {}
+  return sns(**value)
 
 
 def examples() -> None:

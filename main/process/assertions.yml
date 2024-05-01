@@ -53,9 +53,10 @@ schema:
       description: Flag indicating whether a test was passed or not
 
 
-main_operations:
-- get_assertion_method
-- reset_output_value
-- cast_output
-- get_assertion_result
-- handle_failed_assertion
+operations:
+  main:
+  - get_assertion_method
+  - reset_output_value
+  - cast_output
+  - get_assertion_result
+  - handle_failed_assertion

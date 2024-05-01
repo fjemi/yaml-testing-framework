@@ -50,8 +50,9 @@ empty_values:
 - '0'
 
 
-main_operations:
-- get_cast_method
-- get_temp_object
-- handle_casting
-- reset_object
+operations:
+  main:
+  - get_cast_method
+  - get_temp_object
+  - handle_casting
+  - reset_object

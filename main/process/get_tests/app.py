@@ -24,7 +24,7 @@ def main(
   del yaml, module, module_location, module_route, resources
 
   data = independent.process_operations(
-    operations=CONFIG.main_operations,
+    operations=CONFIG.operations.main,
     functions=LOCALS,
     data=data, )
   return data

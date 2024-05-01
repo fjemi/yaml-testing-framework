@@ -36,7 +36,7 @@ def main(
     assertion = independent.process_operations(
       data=assertion,
       functions=LOCALS,
-      operations=CONFIG.main_operations, )
+      operations=CONFIG.operations.main, )
     assertions[i] = assertion
 
   n = len(assertions)

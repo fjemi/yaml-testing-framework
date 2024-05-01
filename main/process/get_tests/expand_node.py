@@ -19,7 +19,7 @@ def main(
 ) -> sns:
   data = sns(**locals())
   data = independent.process_operations(
-    operations=CONFIG.main_operations,
+    operations=CONFIG.operations.main,
     functions=LOCALS,
     data=data, )
   return sns(nodes=data.nodes)

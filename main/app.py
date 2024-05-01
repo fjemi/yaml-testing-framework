@@ -53,20 +53,14 @@ def main(
   logging_enabled: bool | None = None,
 ) -> list:
   timestamp = independent.get_timestamp()
-  logger.create_logger(
-    logging_enabled=logging_enabled,
-    project_directory=project_directory, )
+  logger.create_logger(logging_enabled=logging_enabled, project_directory=project_directory)
 
-  # data = locations.main(**locals())
   data = schema.get_model(name='main.app.Data', data=locals())
-
   data = independent.process_operations(
-    operations=CONFIG.main_operations,
+    operations=CONFIG.operations.main,
     functions=LOCALS,
     data=data, )
-  if not hasattr(data, 'tests'):
-    data.tests = []
-  return data.tests
+  return getattr(data, 'tests', None) or []
 
 
 def handle_id(
@@ -297,7 +291,7 @@ def handle_casting_output(
 
 def run_test_for_function(test: sns | None = None) -> sns:
   test = independent.process_operations(
-    operations=CONFIG.run_test_for_functions_operations,
+    operations=CONFIG.operations.run_test_for_functions,
     functions=LOCALS,
     data=test, )
   return test.assertions
@@ -325,7 +319,7 @@ def run_tests(locations: List[sns] | None = None) -> sns:
 
   for i, item in enumerate(locations):
     result = independent.process_operations(
-      operations=CONFIG.run_tests_operations,
+      operations=CONFIG.operations.run_tests,
       functions=LOCALS,
       data=item, )
     tests.extend(result.tests)

@@ -33,13 +33,15 @@ CONFIG = '''
     method: plugin
     # location: .
     logging_enabled: true
-  main_operations:
-  - set_default_values_for_arguments
-  - set_location
-  - run_tests_using_invocation_method
+  operations:
+    main:
+    - set_default_values_for_arguments
+    - set_location
+    - run_tests_using_invocation_method
 '''
 CONFIG = yaml.safe_load(CONFIG)
 CONFIG = sns(**CONFIG)
+CONFIG.operations = sns(**CONFIG.operations)
 
 YAML_TESTING_FRAMEWORK_DEBUG = os.getenv('YAML_TESTING_FRAMEWORK_DEBUG')
 
@@ -62,7 +64,7 @@ def main(
   data = sns(**locals())
   data = independent.process_operations(
     data=data,
-    operations=CONFIG.main_operations,
+    operations=CONFIG.operations.main,
     functions=LOCALS, )
   return getattr(data, 'result', [])
 

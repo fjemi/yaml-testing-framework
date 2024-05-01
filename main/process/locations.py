@@ -33,7 +33,7 @@ def main(
   data = sns(**locals())
   data = independent.process_operations(
     functions=LOCALS,
-    operations=CONFIG.main_operations,
+    operations=CONFIG.operations.main,
     data=data, )
 
   data.locations = data.locations or []

@@ -67,28 +67,25 @@ test_kinds:
 # Order of operations for testing functions
 # and the fields/values of an object that are
 # required to run functions
-run_test_for_functions_operations:
-- handle_id
-- handle_module
-- handle_resources
-- set_environment
-- process_patches
-- handle_casting_arguments
-- get_function
-- get_function_output
-- handle_casting_output
-- process_assertions
-
-
-run_tests_operations:
-- get_tests
-- run_test_handler
-# - post_processing
-
-
-main_operations:
-- get_locations
-- run_tests
+operations:
+  run_test_for_functions:
+  - handle_id
+  - handle_module
+  - handle_resources
+  - set_environment
+  - process_patches
+  - handle_casting_arguments
+  - get_function
+  - get_function_output
+  - handle_casting_output
+  - process_assertions
+  run_tests:
+  - get_tests
+  - run_test_handler
+  # - post_processing
+  main:
+  - get_locations
+  - run_tests
 
 
 unpack_kinds:

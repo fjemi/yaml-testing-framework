@@ -24,7 +24,7 @@ def main(
   for patch in patches:
     data = pre_processing(patch=patch, module=module)
     data = independent.process_operations(
-      operations=CONFIG.main_operations,
+      operations=CONFIG.operations.main,
       functions=LOCALS,
       data=data, )
     module = data.module
