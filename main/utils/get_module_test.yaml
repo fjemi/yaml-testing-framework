@@ -21,7 +21,7 @@ tests:
     assertions:
     - method: assertions.app.check_sns
       expected:
-        name: .main.utils._resources.get_module_1
+        name: .main.utils._resources.get_module
   - description: Name is defined
     arguments:
       name: name.py

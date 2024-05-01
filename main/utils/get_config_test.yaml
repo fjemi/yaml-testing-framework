@@ -133,6 +133,16 @@ tests:
             B: B
             C: C
             D: D
+          operations:
+            one:
+            - 1
+            three:
+            - 1
+            - 2
+            - 3
+            two:
+            - 1
+            - 2
           schema:
             Example:
               description: An example scheme
@@ -172,6 +182,7 @@ tests:
         - environment: No YAML file at None
         - schema: No YAML file at None
         - config: No YAML file at None
+        - operations: No YAML file at None
     - method: assertions.app.check_sns
       field: content
       expected:
@@ -188,6 +199,7 @@ tests:
         level: warning
         message:
         - schema: No YAML file at None
+        - operations: No YAML file at None
     - method: assertions.app.check_sns
       field: content
       expected:
@@ -195,8 +207,36 @@ tests:
           config: config
         environment:
           environment: environment
-- function: format_specified_content_keys
-  description: Sets environment as a SimpleNamespace within config data
+  - description: Defined operations and config locations
+    arguments:
+      operations: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/_resources/get_config/operations.yml
+      config: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/_resources/get_config/config.yml
+    assertions:
+    - method: assertions.app.check_sns
+      field: log
+      expected:
+        level: warning
+        message:
+        - environment: No YAML file at None
+        - schema: No YAML file at None
+    - method: assertions.app.check_sns
+      field: content
+      expected:
+        config:
+          config: config
+        operations:
+          one:
+          - 1
+          three:
+          - 1
+          - 2
+          - 3
+          two:
+          - 1
+          - 2
+
+- function: format_content_keys
+  description: Formats specified keys in config content
   cast_arguments:
   - method: _resources.get_config.app.format_environment_content_cast_arguments
     field: content
