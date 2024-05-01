@@ -22,12 +22,13 @@ operations:
   - format_content_keys
 - environment
 - schema
-DEBUG: ${YAML_TESTING_FRAMEWORK_DEBUG}
+- operations
 module_extension: .py
 '''
 CONFIG = os.path.expandvars(CONFIG)
 CONFIG = pyyaml.safe_load(CONFIG)
 CONFIG = sns(**CONFIG)
+CONFIG.operations = sns(**CONFIG.operations)
 
 LOCALS= locals()
 
@@ -41,7 +42,7 @@ def main(
   data = sns(**locals())
   data.module = data.module or inspect.stack()[1].filename
   data = independent.process_operations(
-    operations=CONFIG.operations,
+    operations=CONFIG.operations.main,
     functions=LOCALS,
     data=data, )
   data = get_object.main(parent=data, route='content.config') or {}
@@ -84,6 +85,7 @@ def get_content_from_files(
   environment: str | None = None,
   schema: str | None = None,
   config: str | None = None,
+  operations: str | None = None,
 ) -> sns:
   locals_ = locals()
   data = sns(content=sns())
@@ -135,6 +137,11 @@ def format_schema_content(value: dict | None = None) -> sns:
     content=value,
     sns_models_flag=True, )
   return value.models
+
+
+def format_operations_content(value: dict | None = None) -> sns:
+  value = value or {}
+  return sns(**value)
 
 
 def examples() -> None:
