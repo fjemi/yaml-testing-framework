@@ -3,9 +3,10 @@ environment:
   DEBUG: ${YAML_TESTING_FRAMEWORK_DEBUG}
 
 
-main_operations:
-- get_patch_method
-- patch_module
+operations:
+  main:
+  - get_patch_method
+  - patch_module
 
 
 empty_values:

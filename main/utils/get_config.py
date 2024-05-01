@@ -16,12 +16,10 @@ yaml_extensions:
 - .yaml
 - .yml
 operations:
-- format_config_location
-- get_content_from_files
-- format_specified_content_keys
-# - format_environment_content
-# - format_schema_content
-specified_content_keys:
+  main:
+  - format_config_location
+  - get_content_from_files
+  - format_content_keys
 - environment
 - schema
 DEBUG: ${YAML_TESTING_FRAMEWORK_DEBUG}

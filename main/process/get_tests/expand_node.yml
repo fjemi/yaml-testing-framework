@@ -17,7 +17,8 @@ yaml_extensions:
 - .yml
 
 
-main_operations:
-- add_configurations_to_root_node
-- get_expanded_nodes
-- remove_roots_of_expanded_nodes
+operations:
+  main:
+  - add_configurations_to_root_node
+  - get_expanded_nodes
+  - remove_roots_of_expanded_nodes

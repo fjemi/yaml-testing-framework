@@ -51,11 +51,12 @@ empty_values:
 - 'False'
 
 
-main_operations:
-- format_paths
-- format_yaml_suffix
-- format_resources_folder_name
-- format_exclude_files
-- get_module_and_yaml_location_when_path_kind_is_file
-- get_module_and_yaml_location_when_path_kind_is_directory
-- get_location_of_resources
+operations:
+  main:
+  - format_paths
+  - format_yaml_suffix
+  - format_resources_folder_name
+  - format_exclude_files
+  - get_module_and_yaml_location_when_path_kind_is_file
+  - get_module_and_yaml_location_when_path_kind_is_directory
+  - get_location_of_resources

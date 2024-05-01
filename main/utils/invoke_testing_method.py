@@ -33,10 +33,11 @@ CONFIG = '''
     method: plugin
     # location: .
     logging_enabled: true
-  main_operations:
-  - set_default_values_for_arguments
-  - set_location
-  - run_tests_using_invocation_method
+  operations:
+    main:
+    - set_default_values_for_arguments
+    - set_location
+    - run_tests_using_invocation_method
 '''
 CONFIG = yaml.safe_load(CONFIG)
 CONFIG = sns(**CONFIG)
