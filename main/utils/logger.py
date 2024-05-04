@@ -156,10 +156,10 @@ def get_timestamp() -> float:
 
 
 def get_log_file_location(
-  project_directory: str,
+  project_path: str,
   root_directory: str,
 ) -> str:
-  filename = project_directory.replace(root_directory, '')
+  filename = project_path.replace(root_directory, '')
   filename = os.path.splitext(filename)[0]
   filename = filename.replace(os.path.sep, '.')
   filename = f'root{filename}'
@@ -185,13 +185,13 @@ def get_logger(location: str) -> logging.Logger:
 
 def create_logger(
   logging_enabled: bool,
-  project_directory: str,
+  project_path: str,
 ) -> sns:
   data = sns(status=1)
   if logging_enabled:
     global LOGGER
     location = get_log_file_location(
-      project_directory=project_directory,
+      project_path=project_path,
       root_directory=ROOT_DIR, )
     LOGGER = get_logger(location=location)
     return data

@@ -166,7 +166,7 @@ def invoke_plugin(
 ) -> sns:
   result = plugin(
     exclude_files=exclude_files,
-    project_directory=location,
+    project_path=location,
     yaml_suffix=yaml_suffix,
     resources_folder_name=resources_folder_name,
     logging_enabled=logging_enabled, )
@@ -191,7 +191,7 @@ def invoke_pytest(
     -ra
     --tb=short
     --resources-folder-name={resources_folder_name}
-    --project-directory={location}
+    --project-path={location}
     --yaml-suffix={yaml_suffix}
     --logging-enabled={logging_enabled}
   '''

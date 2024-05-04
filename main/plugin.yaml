@@ -10,12 +10,12 @@ options:
     required: false
     dest: resources
     default: []
-- args: project-directory
+- args: project-path
   options:
     action: store
     help: Directory containing python files to test.
     required: false
-    dest: project_directory
+    dest: project_path
     default: .
 - args: include-functions
   options:

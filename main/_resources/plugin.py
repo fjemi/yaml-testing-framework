@@ -39,7 +39,7 @@ def get_locals(*args, **kwargs) -> dict:
   }
 
 
-def project_directory_option_resource(option: str | None) -> str:
+def project_path_option_resource(option: str | None) -> str:
   if True in [
     option is None,
     option == '.',
@@ -48,13 +48,13 @@ def project_directory_option_resource(option: str | None) -> str:
   return option
 
 
-def process_option_project_directory_resource(
+def process_option_project_path_resource(
   arguments: dict | None = None,
 ) -> pytest.Config:
   arguments = arguments or {}
 
   option = arguments.get('option', None)
-  option = project_directory_option_resource(option=option)
+  option = project_path_option_resource(option=option)
 
   config = pytest.Config
   setattr(config, 'rootdir', option)
@@ -86,7 +86,7 @@ def pytest_configure_resource(
     ini_cache = sns(
       yaml_suffix='_test',
       resources_folder_name='_resources',
-      project_directory=PARENT_MODULE,
+      project_path=PARENT_MODULE,
       resources='resources', ).__dict__
     opt_2_dest = {}
     for key, value in ini_cache.items():
@@ -109,7 +109,7 @@ def set_node_ids_resource(item: str | None = None) -> sns:
 
 
 def examples() -> None:
-  invoke_testing_method.main(project_directory=PARENT_MODULE)
+  invoke_testing_method.main(project_path=PARENT_MODULE)
 
 
 if __name__ == '__main__':

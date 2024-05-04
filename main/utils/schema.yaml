@@ -96,15 +96,11 @@ Test: &TEST
 main.app.Data: &MAIN_DATA
   description: Store data used by the functions in a module
   fields:
-  - name: project_directory
+  - name: project_path
     type: str
     description: >
       The directory containing files to test or path to a module or
       YAML file to test
-  - name: log_directory
-    type: str
-    description: Directory to store logs in
-    default: null
   - name: exclude_files
     type: str | list
     description: Patterns to match to files for excluding files from testing
@@ -512,7 +508,7 @@ run_multiple_threads.Data: &RUN_MULTIPLES_THREADS_DATA
 logger.Data: &LOGGER_DATA
   description: Data needed to call the the logger
   fields:
-  - name: log_directory
+  - name: directory
     type: str
     description: Directory to store logs in
     default: null
