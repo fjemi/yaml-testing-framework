@@ -13,12 +13,15 @@ from main.utils import get_object, get_config
 
 
 MODULE = __file__
+ROOT_DIR = os.path.abspath(os.path.curdir)
+
 CONFIG = get_config.main()
 CONFIG.root_paths = [
   f'.{os.sep}',
   f'{os.sep}{os.sep}',
   f'.{os.sep}',
   *CONFIG.root_paths, ]
+
 LOCALS = locals()
 
 
@@ -45,20 +48,17 @@ def process_option_exclude_files(
   return option
 
 
-def process_option_project_directory(
+def process_option_project_path(
   option: str | None,
   config: py_test.Config,
 ) -> str:
-  root = getattr(config, 'rootdir', '')
-  root = str(root) or ''
-
   option = str(option)
 
   if option in CONFIG.root_paths:
-    return root
+    return ROOT_DIR
 
   if option.find('.') == 0:
-    option = os.path.join(root, option[1:])
+    option = os.path.join(ROOT_DIR, option[1:])
 
   return os.path.normpath(option)
 
