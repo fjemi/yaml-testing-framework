@@ -27,25 +27,20 @@ tests:
     arguments:
       project_path: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/_resources/app/add.py
       yaml_suffix: _test
-      resources_folder_name: resources_folder_name
       resources:
       - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/assertions/app.py
     assertions:
     - method: assertions.app.check_equals
       expected:
-      - expected: '3
-      
-          ...'
+      - expected: TypeError
         id: ' .main._resources.app.add.add - 0.1 - Return the result of adding two integers '
         id_short: .main._resources.app.add.add
-        log: '[]'
-        method: check_equals
-        method_name: assertions.app.check_equals
+        log: null
+        method: check_exception
+        method_name: assertions.app.check_exception
         module: null
-        output: '!!python/object/apply:builtins.TypeError
-
-          - ''unsupported operand type(s) for +: ''''int'''' and ''''str'''''''
-        passed: false
+        output: TypeError
+        passed: true
       - expected: 3
         id: ' .main._resources.app.add.add - 0.0 - Return the result of adding two integers '
         id_short: .main._resources.app.add.add

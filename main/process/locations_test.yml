@@ -23,10 +23,9 @@ tests:
   - method: _locations_resources.app.list_sns_to_list_dict
     field: locations
   tests:
-  - description: Project directory does not exist
+  - description: Project path does not exist
     arguments:
       project_path: does/not/exist
-      resources_folder_name: resources_folder_name
       exclude_files: exclusion_pattern
       yaml_suffix: _test
     assertions:
@@ -38,10 +37,9 @@ tests:
     - method: assertions.app.check_sns
       expected:
         locations: []
-  - description: Project directory does exist
+  - description: Project path is a directory
     arguments:
       project_path: *RESOURCES
-      resources_folder_name: resources_folder_name
       exclude_files: exclusion_pattern
       yaml_suffix: _test
     assertions:
@@ -51,16 +49,10 @@ tests:
         - module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/_locations_resources/exclusion_pattern.py
           module_location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/_locations_resources/exclusion_pattern.py
           module_route: .main.process._locations_resources.exclusion_pattern
-          resources:
-          - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/_locations_resources/resources_folder_name/resource_b.py
-          - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/_locations_resources/resources_folder_name/resource_a.py
           yaml: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/_locations_resources/exclusion_pattern_test.yml
         - module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/_locations_resources/app.py
           module_location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/_locations_resources/app.py
           module_route: .main.process._locations_resources.app
-          resources:
-          - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/_locations_resources/resources_folder_name/resource_b.py
-          - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/_locations_resources/resources_folder_name/resource_a.py
           yaml: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/_locations_resources/app_test.yml
 - function: format_paths
   description: >
@@ -130,23 +122,6 @@ tests:
     - method: assertions.app.check_sns
       expected:
         yaml_suffix: _yaml_suffix
-- function: format_resources_folder_name
-  description: Sets the resources folder names for modules
-  tests:
-  - description: Undefined argument
-    arguments:
-      resources_folder_name: null
-    assertions:
-    - method: assertions.app.check_sns
-      expected:
-        resources_folder_name: _resources
-  - description: Defined argument
-    arguments:
-      resources_folder_name: resources_folder_name
-    assertions:
-    - method: assertions.app.check_sns
-      expected:
-        resources_folder_name: resources_folder_name
 - function: format_exclude_files
   description: >
     Returns a list strings that are patterns used to
@@ -235,16 +210,14 @@ tests:
     arguments:
       root: null
       exclude_files: null
-      resources_folder_name: null
     assertions:
-    - method: assertions.app.check_exception
-      expected: AttributeError
+    - method: assertions.app.check_equals
+      expected: False
   - description: Path flagged for exclusion
     arguments:
       root: pattern_a/resources_folder_name
       exclude_files:
       - pattern_a
-      resources_folder_name: resources_folder_name
     assertions:
     - method: assertions.app.check_equals
       expected: True
@@ -254,7 +227,6 @@ tests:
       exclude_files:
       - pattern_a
       - pattern_b
-      resources_folder_name: resources_folder_name
     assertions:
     - method: assertions.app.check_equals
       expected: False
@@ -317,7 +289,6 @@ tests:
   - description: Path is the location of a module file
     arguments:
       exclude_files: []
-      resources_folder_name: resources_folder_name
       yaml_suffix: _test
       paths:
         kind: file
@@ -334,7 +305,6 @@ tests:
   - description: Path is the location of a YAML file
     arguments:
       exclude_files: []
-      resources_folder_name: resources_folder_name
       yaml_suffix: _test
       paths:
         kind: file
@@ -375,7 +345,6 @@ tests:
     arguments:
       exclude_files:
       - exclusion_pattern
-      resources_folder_name: resources_folder_name
       paths:
         root: *ROOT
         directory: *RESOURCES
@@ -393,39 +362,3 @@ tests:
           module_location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/_locations_resources/app.py
           module_route: .main.process._locations_resources.app
           yaml: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/_locations_resources/app_test.yml
-- function: get_location_of_resources
-  description: >
-    Returns the location of resources or modules associated with the module
-    being tested
-  cast_arguments:
-  - field: locations
-    method: _locations_resources.app.list_dict_to_list_sns
-  cast_output:
-  - field: locations
-    method: _locations_resources.app.list_sns_to_list_dict
-  tests:
-  - description: Undefined arguments
-    arguments:
-      locations: null
-      resources_folder_name: null
-      exclude_files: null
-    assertions:
-    - method: assertions.app.check_exception
-      expected: TypeError
-  - description: Defined arguments
-    arguments:
-      resources_folder_name: resources_folder_name
-      exclude_files:
-      - exclusion_pattern
-      locations:
-      - yaml: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/_locations_resources/app.yml
-        module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/_locations_resources/app.py
-    assertions:
-    - method: assertions.app.check_sns
-      expected:
-        locations:
-        - yaml: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/_locations_resources/app.yml
-          module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/_locations_resources/app.py
-          resources:
-          - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/_locations_resources/resources_folder_name/resource_b.py
-          - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/_locations_resources/resources_folder_name/resource_a.py
