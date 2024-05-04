@@ -25,7 +25,7 @@ tests:
   tests:
   - description: Project directory does not exist
     arguments:
-      project_directory: does/not/exist
+      project_path: does/not/exist
       resources_folder_name: resources_folder_name
       exclude_files: exclusion_pattern
       yaml_suffix: _test
@@ -40,7 +40,7 @@ tests:
         locations: []
   - description: Project directory does exist
     arguments:
-      project_directory: *RESOURCES
+      project_path: *RESOURCES
       resources_folder_name: resources_folder_name
       exclude_files: exclusion_pattern
       yaml_suffix: _test
@@ -284,8 +284,8 @@ tests:
       expected: .location_b.module
   - description: Location is a string 1
     arguments:
-      module: /project_directory/module_route.py
-      root: /project_directory
+      module: /project_path/module_route.py
+      root: /project_path
     assertions:
     - method: assertions.app.check_equals
       expected: .module_route

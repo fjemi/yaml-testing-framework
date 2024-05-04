@@ -25,7 +25,7 @@ tests:
   tests:
   - description: Results from running tests associated with a module
     arguments:
-      project_directory: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/_resources/app/add.py
+      project_path: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/_resources/app/add.py
       yaml_suffix: _test
       resources_folder_name: resources_folder_name
       resources:
@@ -551,7 +551,7 @@ tests:
 #   - description: Defined test returns a list containing assertions
 #     arguments:
 #       test:
-#         project_directory: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/_resources/app/add.py
+#         project_path: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/_resources/app/add.py
 #         module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/_resources/app/add.py
 #         yaml: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/_resources/app/add.yaml
 #         function: add
@@ -608,7 +608,7 @@ tests:
 #         - method: assertions.app.check_equals
 #           expected: 2
 #         yaml: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/_resources/app/add_test.yaml
-#         project_directory: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/_resources/app/add.py
+#         project_path: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/_resources/app/add.py
 #         module_route: app.add.app
 #         key: 0.0
 #     assertions:
@@ -655,7 +655,7 @@ tests:
 #         resources:
 #         - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/assertions/app.py
 #         - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/_resources/app/add/resources_folder_name/app.py
-#         project_directory: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/_resources/app/add/resources_folder_name/app.py
+#         project_path: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/_resources/app/add/resources_folder_name/app.py
 #     assertions:
 #     - method: assertions.app.check_sns
 #       cast_output:

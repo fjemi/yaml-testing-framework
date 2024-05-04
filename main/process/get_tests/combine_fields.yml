@@ -42,7 +42,7 @@ combine_fields_as:
   function: low_or_high
   function_name: low_or_high
   # Choose high level
-  project_directory: high
+  project_path: high
   module: high
   module_route: high
   module_location: high

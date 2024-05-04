@@ -71,10 +71,10 @@ tests:
       expected:
       - option_0
       - option_1
-- function: process_option_project_directory
+- function: process_option_project_path
   description: Returns the root directory for the project
   cast_arguments:
-  - method: _resources.plugin.process_option_project_directory_resource
+  - method: _resources.plugin.process_option_project_path_resource
   tests:
   - description: Option and config are null
     arguments:
@@ -158,7 +158,7 @@ tests:
         fields:
           _ininames:
           - resources
-          - project-directory
+          - project-path
           - include-functions
           - exclude-files
           - resources-folder-name

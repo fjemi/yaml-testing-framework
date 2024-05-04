@@ -42,7 +42,7 @@ TEST_IDS = {}
 
 
 def main(
-  project_directory: str | None = None,
+  project_path: str | None = None,
   exclude_files: str | List[str] | None = None,
   include_files: str | List[str] | None = None,
   exclude_functions: str | List[str] | None = None,
@@ -52,9 +52,7 @@ def main(
   yaml_suffix: str | None = None,
   logging_enabled: bool | None = None,
 ) -> list:
-  timestamp = independent.get_timestamp()
-  logger.create_logger(logging_enabled=logging_enabled, project_directory=project_directory)
-
+  logger.create_logger(logging_enabled=logging_enabled, project_path=project_path)
   data = schema.get_model(name='main.app.Data', data=locals())
   data = independent.process_operations(
     operations=CONFIG.operations.main,

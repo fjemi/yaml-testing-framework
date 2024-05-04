@@ -17,7 +17,7 @@ LOCALS = locals()
 
 
 def main(
-  project_directory: Any | None = None,
+  project_path: Any | None = None,
   include_files: str | List[str] | None = None,
   include_functions: str | List[str] | None = None,
   exclude_files: str | List[str] | None = None,
@@ -29,7 +29,7 @@ def main(
   timestamp: int | float | None = None,
 ) -> sns:
   # logger.main()
-  path = project_directory
+  path = project_path
   data = sns(**locals())
   data = independent.process_operations(
     functions=LOCALS,

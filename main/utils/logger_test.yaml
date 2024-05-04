@@ -14,7 +14,7 @@ resources:
 - https://stackoverflow.com/questions/11232230/logging-to-two-files-with-different-settings
 
 
-log_directory: &LOG_DIRECTORY ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/_resources/logger/data
+log_dir: &LOG_DIR ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/_resources/logger/data
 
 
 configurations:
@@ -64,7 +64,7 @@ tests:
   #     timestamp: timestamp
   #     standard_output: False
   #     enabled: True
-  #     log_directory: *LOG_DIRECTORY
+  #     log_dir: *LOG_DIR
   # - description: Logging and standard output are disabled
   #   arguments:
   #     data_:
@@ -76,7 +76,7 @@ tests:
   #     timestamp: timestamp
   #     standard_output: False
   #     enabled: False
-  #     log_directory: *LOG_DIRECTORY
+  #     log_dir: *LOG_DIR
   # - description: Only standard output is enabled
   #   arguments:
   #     data_:
@@ -88,7 +88,7 @@ tests:
   #     timestamp: timestamp
   #     standard_output: True
   #     enabled: False
-  #     log_directory: *LOG_DIRECTORY
+  #     log_dir: *LOG_DIR
 # - function: set_default_arguments
 #   description: Formats and returns objects that are not JSON serializable
 #   cast_arguments:
@@ -204,7 +204,7 @@ tests:
       value: null
     arguments:
       root_directory: root
-      project_directory: root/project
+      project_path: root/project
     assertions:
     - method: assertions.app.check_equals
       expected: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/.logs/root.project.log
@@ -215,7 +215,7 @@ tests:
       value: .logs
     arguments:
       root_directory: root
-      project_directory: root/project
+      project_path: root/project
     assertions:
     - method: assertions.app.check_equals
       expected: .logs/root.project.log
@@ -245,7 +245,7 @@ tests:
   - description: Undefined arguments
     arguments:
       logging_enabled: null
-      project_directory: null
+      project_path: null
     assertions:
     - method: assertions.app.check_sns
       expected:
@@ -253,7 +253,7 @@ tests:
   - description: Logging is not enabled
     arguments:
       logging_enabled: False
-      project_directory: null
+      project_path: null
     assertions:
     - method: assertions.app.check_sns
       expected:
@@ -261,7 +261,7 @@ tests:
   - description: Logging is enabled
     arguments:
       logging_enabled: true
-      project_directory: project_directory
+      project_path: project_path
     assertions:
     - method: assertions.app.check_sns
       expected:

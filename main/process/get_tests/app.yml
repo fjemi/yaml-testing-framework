@@ -157,7 +157,7 @@ empty_values:
 #     type: Any | None
 #     default: null
 #     description: Store results of running the function
-#   - name: project_directory
+#   - name: project_path
 #     type: str | None
 #     default: null
 #     description: Location of the project's working directory

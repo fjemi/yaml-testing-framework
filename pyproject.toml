@@ -32,7 +32,7 @@ fail_under = 90
 addopts = """
 -ra
 --tb=short
---project-directory=.
+--project-path=.
 --cov=.
 --cov-report=html
 """
