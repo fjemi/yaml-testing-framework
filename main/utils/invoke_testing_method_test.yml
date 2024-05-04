@@ -24,7 +24,6 @@ tests:
         module_filename: null
         resource_flag: false
         resource_suffix: _resource
-        resources_folder_name: _resources
         root_flag: false
         yaml_suffix: _test
         logging_enabled: true
@@ -34,7 +33,6 @@ tests:
       module: module
       module_filename: module_filename
       exclude_files: exclude_files
-      resources_folder_name: resources_folder_name
       yaml_suffix: yaml_suffix
       method: method
       resource_flag: resource_flag
@@ -51,7 +49,6 @@ tests:
         module_filename: module_filename
         resource_flag: resource_flag
         resource_suffix: resource_suffix
-        resources_folder_name: resources_folder_name
         root_flag: root_flag
         yaml_suffix: yaml_suffix
         logging_enabled: logging_enabled
@@ -62,7 +59,6 @@ tests:
     arguments:
       parent_filename: null
       resource_module: null
-      resources_folder_name: null
       resource_suffix: null
     assertions:
     - method: assertions.app.check_exception
@@ -71,7 +67,6 @@ tests:
     arguments:
       parent_filename: null
       resource_module: directory/module_resource
-      resources_folder_name: null
       resource_suffix: _resource
     assertions:
     - method: assertions.app.check_equals
@@ -85,11 +80,10 @@ tests:
       expected: directory/module.py
   - description: Resource module and folder name are defined
     arguments:
-      resource_module: directory/_resources/module.py
-      resources_folder_name: _resources
+      resource_module: directory/_resource/module.py
     assertions:
     - method: assertions.app.check_equals
-      expected: directory/module.py
+      expected: directory/_resource/module.py
   - description: Resource module parent module filename are defined
     arguments:
       resource_module: directory/module_resource.py
@@ -99,13 +93,12 @@ tests:
       expected: directory/module.py
   - description: All arguments are defined
     arguments:
-      resource_module: directory/_resources/module_resource.py
+      resource_module: directory/_resource/module_resource.py
       parent_filename: app
       resource_suffix: _resource
-      resources_folder_name: _resources
     assertions:
     - method: assertions.app.check_equals
-      expected: directory/app.py
+      expected: directory/_resource/app.py
 - function: set_location
   description: Set the location of a file or directory of files to test
   tests:
@@ -155,22 +148,15 @@ tests:
   - description: Resource flag is true and associated fields are defined
     arguments:
       resource_flag: true
-      module: _resources/module_resource.py
+      module: _resource/module_resource.py
       resource_suffix: _resource
-      resources_folder_name: _resources
     assertions:
     - method: assertions.app.check_sns
       expected:
-        location: module.py
+        location: _resource/module.py
         module: null
         root_flag: null
         resource_flag: null
-
-  # - description:
-  #   arguments:
-  #   assertions:
-  #   - method: assertions.app.
-  #     expected: 
 - function: invoke_plugin
   description: Run tests by invoking the PYTEST YAML app
   tests:
@@ -178,7 +164,6 @@ tests:
     arguments: &MODULE_WITH_TESTS_ARGUMENTS
       location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/_resources/invoke_testing_method/module_with_tests.py
       exclude_files: []
-      resources_folder_name: resources_folder_name
       yaml_suffix: _test
       logging_enabled: True
     assertions:
@@ -214,7 +199,6 @@ tests:
     arguments: &MODULE_WITHOUT_TESTS_ARGUMENTS
       location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/_resources/invoke_testing_method/module_without_tests.py
       exclude_files: []
-      resources_folder_name: resources_folder_name
       yaml_suffix: _test
       logging_enabled: True
     assertions:
@@ -281,7 +265,6 @@ tests:
   - description: Run tests on modules in a directory using plugin invocation method
     arguments:
       location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/_resources/invoke_testing_method/
-      resources_folder_name: resources_folder_name
       method: plugin
       yaml_suffix: _test
       logging_enabled: True

@@ -85,7 +85,6 @@ def pytest_configure_resource(
 
     ini_cache = sns(
       yaml_suffix='_test',
-      resources_folder_name='_resources',
       project_path=PARENT_MODULE,
       resources='resources', ).__dict__
     opt_2_dest = {}

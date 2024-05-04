@@ -23,7 +23,6 @@ def main(
   exclude_files: str | List[str] | None = None,
   exclude_functions: str | List[str] | None = None,
   yaml_suffix: str | None = None,
-  resources_folder_name: str | None = None,
   resources: list | str | None = None,
   logging_enabled: bool | None = None,
   timestamp: int | float | None = None,
@@ -76,13 +75,6 @@ def format_yaml_suffix(yaml_suffix: str | None = None) -> sns:
   return sns(yaml_suffix=yaml_suffix)
 
 
-def format_resources_folder_name(
-  resources_folder_name: str | None = None,
-) -> sns:
-  resources_folder_name = resources_folder_name or CONFIG.resources_folder_name
-  return sns(resources_folder_name=resources_folder_name)
-
-
 def format_exclude_files(exclude_files: str | list | None = None) -> sns:
   if isinstance(exclude_files, list):
     exclude_files = [*exclude_files, *CONFIG.exclude_files]
@@ -105,11 +97,9 @@ def format_resources(resources: list | str | None = None) -> sns:
 def flag_for_exclusion(
   root: str | None = None,
   exclude_files: list | None = None,
-  resources_folder_name: str | None = None,
 ) -> bool:
   exclude_files = exclude_files or []
-  patterns = [*exclude_files, str(resources_folder_name)]
-  for pattern in patterns:
+  for pattern in exclude_files:
     if root.find(pattern) > -1:
       return True
   return False
@@ -127,11 +117,10 @@ def get_route_for_module(
 
 def get_module_and_yaml_location_when_path_kind_is_file(
   exclude_files: list | None = None,
-  resources_folder_name: str | None = None,
   paths: sns | None = None,
   yaml_suffix: str | None = None,
 ) -> sns:
-  _ = exclude_files, resources_folder_name
+  _ = exclude_files
 
   data = sns(locations=[])
 
@@ -169,7 +158,6 @@ def get_module_and_yaml_location_when_path_kind_is_file(
 
 def get_module_and_yaml_location_when_path_kind_is_directory(
   exclude_files: list | None = None,
-  resources_folder_name: str | None = None,
   paths: sns | None = None,
   yaml_suffix: str | None = None,
 ) -> sns:
@@ -179,11 +167,7 @@ def get_module_and_yaml_location_when_path_kind_is_directory(
   store = []
 
   for root, dirs, files in os.walk(paths.directory):
-    if flag_for_exclusion(
-      root=root,
-      exclude_files=exclude_files,
-      resources_folder_name=resources_folder_name,
-    ):
+    if flag_for_exclusion(root=root, exclude_files=exclude_files):
       continue
 
     for file in files:
@@ -204,30 +188,6 @@ def get_module_and_yaml_location_when_path_kind_is_directory(
         store.append(location)
 
   return sns(locations=store)
-
-
-def get_location_of_resources(
-  locations: list | None = None,
-  resources_folder_name: str | None = None,
-  exclude_files: list | None = None,
-) -> sns:
-  for item in locations:
-    resources = []
-    directory = os.path.dirname(item.module)
-    directory = os.path.join(directory, resources_folder_name)
-
-    for root, dirs, files in os.walk(directory):
-      if flag_for_exclusion(root=root, exclude_files=exclude_files):
-        continue
-
-      for file in files:
-        if file.endswith(CONFIG.module_extension):
-          location = os.path.join(root, file)
-          resources.append(location)
-
-    item.resources = resources
-
-  return sns(locations=locations)
 
 
 def examples() -> None:

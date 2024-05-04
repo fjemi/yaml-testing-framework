@@ -42,14 +42,6 @@ options:
     required: false
     # type: str
   help: A list of strings. Exclude python files containing on of the strings
-- args: resources-folder-name
-  options:
-    action: store
-    help: The names of folders containing resources for tests.
-    default: _resources
-    dest: resources_folder_name
-    required: false
-  help: A string. The names of folders containing resources for tests.
 - args: yaml-suffix
   options:
     action: store

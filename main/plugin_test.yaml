@@ -161,12 +161,11 @@ tests:
           - project-path
           - include-functions
           - exclude-files
-          - resources-folder-name
           - yaml-suffix
           - logging-enabled
     - method: assertions.app.check_length
       field: _anonymous.options
-      expected: 7
+      expected: 6
 - function: pass_through
   description: Returns the data passed into the function
   tests:

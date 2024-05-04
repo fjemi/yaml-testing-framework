@@ -58,9 +58,7 @@ def reset_route_values_cast_arguments(
 def examples() -> None:
   from main.utils import invoke_testing_method
 
-  invoke_testing_method.main(
-    resource_flag=True,
-    resources_folder_name='_resources', )
+  invoke_testing_method.main(resource_flag=True, resources_folder_name='_resources')
 
 
 if __name__ == '__main__':
