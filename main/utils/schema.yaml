@@ -117,10 +117,6 @@ main.app.Data: &MAIN_DATA
     type: str | list
     description: Functions to filter or include for testing
     default: null
-  - name: resources_folder_name
-    type: str
-    description: The name of folders containing resource modules
-    default: null
   - name: yaml_suffix
     type: str
     description: Suffix for YAML files containing tests

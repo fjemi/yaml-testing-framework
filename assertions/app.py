@@ -12,10 +12,6 @@ from typing import Any, Awaitable, Callable
 from main.utils import get_config, get_object, independent
 
 
-MODULE = __file__
-CONFIG = get_config.main()
-
-
 @dc.dataclass
 class DataClass:
   pass

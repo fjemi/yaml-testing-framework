@@ -20,7 +20,7 @@ LOCALS = locals()
 
 CONFIG = '''
   default_arguments:
-    resources_folder_name: _resources
+    resources_folder_name: ''
     yaml_suffix: _test
     resource_suffix: _resource
     exclude_files:
@@ -160,7 +160,6 @@ def run_tests_using_invocation_method(
 def invoke_plugin(
   location: str | None = None,
   exclude_files: str | List[str] | None = None,
-  resources_folder_name: str | None = None,
   yaml_suffix: str | None = None,
   logging_enabled: bool | None = None,
 ) -> sns:
@@ -168,7 +167,6 @@ def invoke_plugin(
     exclude_files=exclude_files,
     project_path=location,
     yaml_suffix=yaml_suffix,
-    resources_folder_name=resources_folder_name,
     logging_enabled=logging_enabled, )
   independent.get_task_from_event_loop(task=result)
   return sns(result=result)
@@ -177,7 +175,6 @@ def invoke_plugin(
 def invoke_pytest(
   location: str | None = None,
   exclude_files: str | None = None,
-  resources_folder_name: str | None = None,
   yaml_suffix: str | None = None,
   logging_enabled: bool | None = None,
 ) -> sns:
@@ -190,7 +187,6 @@ def invoke_pytest(
     -vvv
     -ra
     --tb=short
-    --resources-folder-name={resources_folder_name}
     --project-path={location}
     --yaml-suffix={yaml_suffix}
     --logging-enabled={logging_enabled}

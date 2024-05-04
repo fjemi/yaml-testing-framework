@@ -17,5 +17,5 @@ tests:
       a: 1
       b: '1'
     assertions:
-    - method: assertions.app.check_equals
-      expected: 3
+    - method: assertions.app.check_exception
+      expected: TypeError
