@@ -43,8 +43,6 @@ CONFIG = yaml.safe_load(CONFIG)
 CONFIG = sns(**CONFIG)
 CONFIG.operations = sns(**CONFIG.operations)
 
-YAML_TESTING_FRAMEWORK_DEBUG = os.getenv('YAML_TESTING_FRAMEWORK_DEBUG')
-
 
 # trunk-ignore(ruff/PLR0913)
 def main(

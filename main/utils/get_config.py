@@ -12,24 +12,24 @@ from main.utils import get_object, independent, schema
 MODULE = __file__
 
 CONFIG = '''
-yaml_extensions:
-- .yaml
-- .yml
-operations:
-  main:
-  - format_config_location
-  - get_content_from_files
-  - format_content_keys
-format_keys:
-- environment
-- schema
-- operations
-module_extension: .py
+  extensions:
+    yaml:
+    - .yaml
+    - .yml
+    module:
+    - .py
+  operations:
+    main:
+    - format_config_location
+    - get_content_from_files
+    - format_content_keys
+  format_keys:
+  - environment
+  - schema
+  - operations
 '''
-CONFIG = os.path.expandvars(CONFIG)
-CONFIG = pyyaml.safe_load(CONFIG)
-CONFIG = sns(**CONFIG)
-CONFIG.operations = sns(**CONFIG.operations)
+CONFIG = independent.format_configurations_defined_in_module(
+  config=CONFIG, sns_fields=['extensions'])
 
 LOCALS= locals()
 
@@ -55,18 +55,17 @@ def format_config_location(
   config: str | None = None,
 ) -> sns:
   module = str(module)
+  extension = os.path.splitext(module)[-1]
   config = str(config)
+
   data = sns(config=str(config))
 
   if False not in [
-    module.find(CONFIG.module_extension) > -1,
+    extension in CONFIG.extensions.module,
     not os.path.isfile(data.config),
   ]:
-    for extension in CONFIG.yaml_extensions:
-      temp = module.replace(CONFIG.module_extension, extension)
-      if os.path.exists(temp):
-        data.config = temp
-        break
+    data.config = independent.get_path_of_yaml_associated_with_module(
+      module=module, extensions=CONFIG.extensions, )
 
   if os.path.isfile(data.config) is False:
     message = ['No config YAML file', dict(module=module, config=config)]

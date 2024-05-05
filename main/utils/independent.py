@@ -41,10 +41,8 @@ CONFIG = '''
   - data: output.exception
     log: error
 '''
-CONFIG = os.path.expandvars(CONFIG)
-CONFIG = pyyaml.safe_load(CONFIG)
-CONFIG = sns(**CONFIG)
-CONFIG.environment = sns(**CONFIG.environment)
+
+FORMAT_CONFIG_FIELDS = ['environment', 'schema', 'operations']
 
 MODULE = __file__
 LOCALS = locals()
@@ -329,6 +327,38 @@ def process_operations(
 
 def exit_loop() -> None:
   raise StopIteration
+
+
+def format_configurations_defined_in_module(
+  config: str | dict,
+  sns_fields: list | None = None,
+) -> sns:
+  if isinstance(config, str):
+    config = os.path.expandvars(config)
+    config = pyyaml.safe_load(config)
+
+  sns_fields = sns_fields or []
+  fields = [*FORMAT_CONFIG_FIELDS, *sns_fields]
+
+  for field in fields:
+    value = get_object.main(config, field)
+    if isinstance(value, dict):
+      config[field] = sns(**value)
+  return sns(**config)
+
+
+def get_path_of_yaml_associated_with_module(
+  module: str,
+  extensions: sns,
+) -> str | None:
+  for yaml_extension in extensions.yaml:
+    for module_extension in extensions.module:
+      path = module.replace(module_extension, yaml_extension)
+      if os.path.exists(path):
+        return path
+
+
+CONFIG = format_configurations_defined_in_module(config=CONFIG)
 
 
 def examples() -> None:
