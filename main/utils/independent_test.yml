@@ -856,3 +856,42 @@ tests:
     - method: assertions.app.check_equals
       field: other
       expected: other
+- function: get_path_of_yaml_associated_with_module
+  description: >
+    Returns the path to a YAML file associated with a module or null if no YAML
+    file exists
+  tests:
+  - description: Undefined arguments
+    arguments: {}
+    assertions:
+    - method: assertions.app.check_exception
+      expected: TypeError
+  - cast_arguments:
+    - field: extensions
+      method: sns
+      unpack: True
+    tests:
+    - description: Undefined arguments
+      arguments:
+        module: module/does/not/exist.py
+        extensions:
+          module:
+          - .py
+          yaml:
+          - .yaml
+          - .yml
+      assertions:
+      - method: assertions.app.check_equals
+        expected: null
+    - description: Module and YAML files exist
+      arguments:
+        module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/_resources/independent/resource.py
+        extensions:
+          module:
+          - .py
+          yaml:
+          - .yaml
+          - .yml
+      assertions:
+      - method: assertions.app.check_equals
+        expected: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/_resources/independent/resource.yaml

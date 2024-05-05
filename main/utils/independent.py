@@ -349,6 +349,17 @@ def format_configurations_defined_in_module(
   return sns(**config)
 
 
+def get_path_of_yaml_associated_with_module(
+  module: str,
+  extensions: sns,
+) -> str | None:
+  for yaml_extension in extensions.yaml:
+    for module_extension in extensions.module:
+      path = module.replace(module_extension, yaml_extension)
+      if os.path.exists(path):
+        return path
+
+
 
 def examples() -> None:
   from main.utils import invoke_testing_method
