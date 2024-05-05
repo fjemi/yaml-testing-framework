@@ -157,6 +157,10 @@ def compare_expected_and_output_cast_arguments(
   return assertion
 
 
+def sns_to_dict(output: sns) -> dict:
+  return output.__dict__
+
+
 def examples() -> None:
   from main.utils import invoke_testing_method
 

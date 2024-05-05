@@ -331,6 +331,25 @@ def exit_loop() -> None:
   raise StopIteration
 
 
+def format_configurations_defined_in_module(
+  config: str | dict,
+  sns_fields: list | None = None,
+) -> sns:
+  if isinstance(config, str):
+    config = os.path.expandvars(config)
+    config = pyyaml.safe_load(config)
+
+  sns_fields = sns_fields or []
+  fields = [*FORMAT_CONFIG_FIELDS, *sns_fields]
+
+  for field in fields:
+    value = get_object.main(config, field)
+    if isinstance(value, dict):
+      config[field] = sns(**value)
+  return sns(**config)
+
+
+
 def examples() -> None:
   from main.utils import invoke_testing_method
 

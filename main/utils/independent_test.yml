@@ -806,3 +806,53 @@ tests:
     - method: assertions.app.check_equals
       field: __class__.__name__
       expected: KeyError
+- function: format_configurations_defined_in_module
+  description: >
+    Returns SimpleNamespace containing configurations defined in a module
+  tests:
+  - description: Config is undefined
+    arguments:
+      config: null
+    assertions:
+    - method: assertions.app.check_exception
+      expected: TypeError
+  - description: Config is an empty dict
+    arguments:
+      config: {}
+    assertions:
+    - method: assertions.app.check_equals
+      field: __dict__
+      expected: {}
+  - description: Config is a non-empty dict
+    arguments:
+      config:
+        environment:
+          A: A
+          B: B
+        operations:
+          main:
+          - a
+          - b
+        schema:
+          description: description
+          field:
+          - name: name
+            description: description
+            type: type
+            default: default
+        other: other
+    assertions:
+    - method: assertions.app.check_sns
+      field: environment
+      expected:
+        A: A
+        B: B
+    - method: assertions.app.check_equals
+      field: operations.__dict__
+      expected:
+        main:
+        - a
+        - b
+    - method: assertions.app.check_equals
+      field: other
+      expected: other
