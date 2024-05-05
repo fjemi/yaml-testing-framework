@@ -221,7 +221,7 @@ tests:
     Returns the method to use if an assertion method does not exist. Returns data needed to
     fail an assertion.
   tests:
-  - description: Undefined argument
+  - description: Method is undefined
     arguments: {}
     assertions:
     - method: assertions.app.check_function
@@ -240,24 +240,26 @@ tests:
         cast_output:
         - method: sns_to_dict
         module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/assertions_resource.py
-  - description: Defined argument
+  - description: Method is defined
     arguments:
-      output: assertion_method_does_not_exist
+      method: assertion_method_does_not_exist
     assertions:
-    - method: assertions.app.check_sns
+    - method: assertions.app.check_function
       expected:
-        output: Assertion method None does not exist
-        expected: ''
-        passed: false
-  - description: Defined argument
-    arguments:
-      output: output
-    assertions:
-    - method: assertions.app.check_sns
+        name: pass_through_inner
+        location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/assertions.py
+    - method: assertions.app.check_function_output
       expected:
-        output: Assertion method None does not exist
-        expected: ''
-        passed: false
+        arguments:
+        - expected: expected
+          output: output
+        output:
+        - output: Assertion method assertion_method_does_not_exist does not exist
+          expected: ''
+          passed: false
+        cast_output:
+        - method: sns_to_dict
+        module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/assertions_resource.py
 - function: get_assertion_method
   description: >
     Returns an assertion method defined in a resource module, given the route
