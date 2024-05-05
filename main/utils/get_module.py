@@ -12,12 +12,15 @@ from main.utils import independent
 
 MODULE = __file__
 LOCALS = locals()
-MAIN_OPERATIONS = '''
-- format_module_name
-- get_module_from_pool
-- get_module_from_location
-- add_module_to_pool
+CONFIG = '''
+  operations:
+    main:
+    - format_module_name
+    - get_module_from_pool
+    - get_module_from_location
+    - add_module_to_pool
 '''
+CONFIG = independent.format_configurations_defined_in_module(config=CONFIG)
 
 POOL = {}
 MODULE_NAMES = []
@@ -32,7 +35,7 @@ def main(
   data = sns(**locals())
   data = independent.process_operations(
     functions=LOCALS,
-    operations=MAIN_OPERATIONS,
+    operations=CONFIG.operations.main,
     data=data, )
   return getattr(data, 'module', None)
 

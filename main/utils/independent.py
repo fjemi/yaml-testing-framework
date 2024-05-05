@@ -41,10 +41,8 @@ CONFIG = '''
   - data: output.exception
     log: error
 '''
-CONFIG = os.path.expandvars(CONFIG)
-CONFIG = pyyaml.safe_load(CONFIG)
-CONFIG = sns(**CONFIG)
-CONFIG.environment = sns(**CONFIG.environment)
+
+FORMAT_CONFIG_FIELDS = ['environment', 'schema', 'operations']
 
 MODULE = __file__
 LOCALS = locals()
@@ -359,6 +357,8 @@ def get_path_of_yaml_associated_with_module(
       if os.path.exists(path):
         return path
 
+
+CONFIG = format_configurations_defined_in_module(config=CONFIG)
 
 
 def examples() -> None:

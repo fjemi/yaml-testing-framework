@@ -7,19 +7,26 @@ from types import SimpleNamespace as sns
 from main.utils import independent
 
 
-YAML_TESTING_FRAMEWORK_DEBUG = os.getenv('YAML_TESTING_FRAMEWORK_DEBUG')
-
 LOCALS = locals()
 MODULE = __file__
 
-YAML_EXTENSIONS = ['.yaml', '.yml']
-MODULE_EXTENSION = '.py'
-
-OPERATIONS = [
-  'get_yaml_location',
-  'get_yaml_content_wrapper',
-  'get_models_from_schema',
-]
+CONFIG = '''
+  environment:
+    DEBUG: YAML_TESTING_FRAMEWORK_DEBUG
+  operations:
+    main:
+    - get_yaml_location
+    - get_yaml_content_wrapper
+    - get_models_from_schema
+  extensions:
+    module:
+    - .py
+    yaml:
+    - .yaml
+    - .yml
+'''
+CONFIG = independent.format_configurations_defined_in_module(
+  config=CONFIG, sns_fields=['extensions'])
 
 
 def main(
@@ -31,32 +38,21 @@ def main(
   data = independent.process_operations(
     data=data,
     functions=LOCALS,
-    operations=OPERATIONS, )
-  return getattr(data, 'models', {})
+    operations=CONFIG.operations.main, )
+  return getattr(data, 'models', None) or {}
 
 
 def get_yaml_location(
   module: str | None = None,
   yaml: str | None = None,
 ) -> sns:
-  data = sns(location=None)
-
   if yaml:
-    data.location = yaml
-    return data
-
-  temp = module or MODULE
-
-  if temp.find(MODULE_EXTENSION) != -1:
-    temp = os.path.splitext(temp)[0]
-
-    for extension in YAML_EXTENSIONS:
-      location = f'{temp}{extension}'
-      if os.path.isfile(location):
-        data.location = location
-        break
-
-  return data
+    return sns(location=yaml)
+  
+  module = module or MODULE
+  location = independent.get_path_of_yaml_associated_with_module(
+    module=module, extensions=CONFIG.extensions)
+  return sns(location=location)
 
 
 def get_yaml_content_wrapper(location: str | None = None) -> sns:
@@ -87,7 +83,8 @@ def get_models_from_schema(
   if not data.models.__dict__:
     data.log = sns(
       message=f'No schema defined in YAML at location {location}',
-      level='warning', )
+      level='warning',
+      debug=CONFIG.environment.DEBUG, )
 
   return data
 
