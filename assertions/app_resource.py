@@ -13,7 +13,7 @@ from typing import Any, Awaitable, Callable
 from assertions import module_resource as module
 
 
-LOCALS= locals()
+LOCALS = locals()
 MODULE = __file__
 
 
@@ -96,6 +96,9 @@ def check_function_output_resource(
   async def hello_earth(name: str | None = None) -> str:
     name = name or 'earth'
     return f'Hello {name}'
+
+  def add(a: int, b: int) -> int:
+    return a + b
 
   return locals().get(output, None)
 

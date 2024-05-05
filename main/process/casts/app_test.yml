@@ -62,15 +62,12 @@ tests:
       field: log.__dict__
       expected:
         level: error
-        message: Method None not in module located at None
+        message: Cast method None not in module None
   - description: Return the str class from builtins
     arguments:
       method: __builtins__.str
       module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/casts/app_resource.py
     assertions:
-    - method: assertions.app.check_sns
-      expected:
-        method_name: __builtins__.str
     - method: assertions.app.check_equals
       field: method.__name__
       expected: str
@@ -79,9 +76,6 @@ tests:
       method: __builtins__.int
       module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/casts/app_resource.py
     assertions:
-    - method: assertions.app.check_sns
-      expected:
-        method_name: __builtins__.int
     - method: assertions.app.check_equals
       field: method.__name__
       expected: int
@@ -92,9 +86,6 @@ tests:
       method: pass_through
       module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/casts/app_resource.py
     assertions:
-    - method: assertions.app.check_sns
-      expected:
-        method_name: pass_through
     - method: assertions.app.check_function
       field: method
       expected:
@@ -108,7 +99,7 @@ tests:
     - method: assertions.app.check_sns
       field: log
       expected:
-        message: Method does_not_exist not in module located at ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/casts/app_resource.py
+        message: Cast method does_not_exist not in module ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/casts/app_resource.py
         level: error
 - function: get_temp_object
   description: Set a temporary object as the object to cast or field within it
@@ -178,3 +169,29 @@ tests:
         object:
           key: temp_object
         temp_object: null
+- function: get_module_wrapper
+  description: Returns an existing module at a location or null
+  tests:
+  - description: Module is undefined
+    arguments:
+      module: null
+    assertions:
+    - method: assertions.app.check_equals
+      expected: null
+  - description: Module is a module
+    cast_arguments:
+    - field: module
+      method: app_resource.module_resource
+    arguments:
+      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/casts/app_resource.py
+    assertions:
+    - method: assertions.app.check_module
+      expected:
+        location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/casts/app_resource.py
+  - description: Module is a string
+    arguments:
+      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/casts/app_resource.py
+    assertions:
+    - method: assertions.app.check_module
+      expected:
+        location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/casts/app_resource.py

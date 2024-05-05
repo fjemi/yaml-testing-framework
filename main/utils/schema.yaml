@@ -240,17 +240,9 @@ Cast_Kinds: &CAST_KINDS
 Cast: &CAST
   description: Store data needed to cast an object
   fields:
-  - name: caster
-    type: str | Any
-    description: Dot-delimited path to a caster or the caster itself
-    default: null
   - name: method
-    type: str | Any
-    description: Dot-delimited path to a caster or the caster itself
-    default: null
-  - name: method_name
-    type: str | Any
-    description: Dot-delimited path to a caster or the caster itself
+    type: str
+    description: Dot-delimited path to the casting method
     default: null
   - name: unpack
     type: bool
@@ -336,9 +328,6 @@ process_assertions.Assertion: &PROCESS_ASSERTIONS_ASSERTION
   - name: method
     type: str
     description: The assertion method
-  - name: method_name
-    type: str
-    description: The name of an assertion method
   - name: field
     type: str
     description: Dot-delimited path to an attribute or key of the result

@@ -8,7 +8,7 @@ from typing import Any, Callable, List
 
 # trunk-ignore(ruff/F401)
 from main.process.casts.handle_casting import main as handle_casting
-from main.utils import get_config, get_object, independent, set_object
+from main.utils import get_config, get_object, independent, set_object, get_module
 
 
 MODULE = __file__
@@ -27,7 +27,7 @@ def main(
 
   for cast in casts:
     data = sns(**cast)
-    data.module = module
+    data.module = get_module_wrapper(module=module)
     data.object = object_
     data = independent.process_operations(
       operations=CONFIG.operations.main,
@@ -38,18 +38,29 @@ def main(
   return object_
 
 
+def get_module_wrapper(module: ModuleType | str) -> ModuleType | None:
+  if isinstance(module, ModuleType):
+    return module
+  if isinstance(module, str):
+    return get_module.main(location=module, pool=False)
+
+
 def get_cast_method(
   module: str | None = None,
   method: str | None = None,
 ) -> sns:
-  data = sns(method_name=method)
-  data.method = get_object.main(parent=module, name=method)
-  if not isinstance(data.method, Callable):
-    module = getattr(module, '__file__', None)
-    data.log = sns(
-      level='error',
-      message=f'Method {data.method_name} not in module located at {module}', )
-  return data
+  name = str(method)
+  method = get_object.main(parent=module, name=name)
+  if isinstance(method, Callable):
+    return sns(method=method)
+
+  method = get_object.main(parent=module, name='pass_through')
+  module = getattr(module, '__file__', None)
+  log = sns(
+    level='error',
+    message=f'Cast method {name} not in module {module}', )
+
+  return sns(method=method, log=log)
 
 
 def get_temp_object(

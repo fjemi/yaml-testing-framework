@@ -81,7 +81,7 @@ tests:
 
 Execute the following command in your command line to run the tests.
 ```bash
-pytest --project-directory=add.py
+pytest --project-path=add.py
 ```
 
 
@@ -93,10 +93,9 @@ The app can be configured within the pytest settings of a configuration file,
 
 | Field | Type | Description | Default |
 | - | - | - | - |
-| project-directory | str | Location of a directory containing files or an an individual module or YAML file to test. | . |
+| project-path | str | Location of a directory containing files or an an individual module or YAML file to test. | . |
 | exclude-files | str or list| A list of patterns. Exclude files from testing that match a specified pattern . | [] |
 | resources | str or list | The locations of modules to use as resources during tests | [] |
-| resources_folder_name | str | Name of folders containing resources to use for tests| _resources |
 | yaml-suffix | str | Suffix in the names of YAML files containing tests | _test |
 
 
@@ -105,7 +104,7 @@ The app can be configured within the pytest settings of a configuration file,
 
 ```ini
 [pytest]
-project-directory = .
+project-path = .
 exclude_files =
   matching
   patterns
@@ -114,7 +113,6 @@ exclude_files =
 resources =
   resource_location_a
   resource_location_b
-resources_folder_name = _resources
 yaml_suffix = _test
 ```
 
@@ -122,7 +120,7 @@ yaml_suffix = _test
 
 ```console
 pytest \
---project-directory=.app.py \
+--project-path=.app.py \
 --exclude_files matching patterns to exclude \
 --resources resource_location_a resource_location_b \
 --resource-folder-name _resources \

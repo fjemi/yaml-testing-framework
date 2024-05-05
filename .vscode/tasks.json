@@ -3,7 +3,7 @@
   "tasks": [
     {
       "label": "run_tests",
-      "command": "time pytest --project-directory=.",
+      "command": "time pytest --project-path=.",
       "type": "shell"
     }
   ]
