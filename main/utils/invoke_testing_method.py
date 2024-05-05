@@ -144,7 +144,6 @@ def run_tests_using_invocation_method(
   method: str | None = None,
   location: str | None = None,
   exclude_files: str | List[str] | None = None,
-  resources_folder_name: str | None = None,
   yaml_suffix: str | None = None,
   logging_enabled: bool | None = None,
 ) -> sns:

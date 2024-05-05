@@ -26,7 +26,6 @@ tests:
     arguments:
       name: name.py
       location: null
-      pool: false
     assertions:
     - method: assertions.app.check_sns
       expected:
@@ -35,7 +34,6 @@ tests:
     arguments:
       name: name.py
       location: null
-      pool: true
     assertions:
     - method: assertions.app.check_sns
       expected:
@@ -44,7 +42,6 @@ tests:
     arguments:
       name: null
       location: null
-      pool: false
     assertions:
     - method: assertions.app.check_sns
       expected:
@@ -53,7 +50,6 @@ tests:
     arguments:
       name: null
       location: null
-      pool: true
     assertions:
     - method: assertions.app.check_sns
       expected:

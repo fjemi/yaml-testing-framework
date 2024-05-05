@@ -23,7 +23,6 @@ CONFIG = '''
 CONFIG = independent.format_configurations_defined_in_module(config=CONFIG)
 
 POOL = {}
-MODULE_NAMES = []
 
 
 def main(
@@ -43,27 +42,19 @@ def main(
 def format_module_name(
   name: str | None = None,
   location: str | None = None,
-  pool: bool | None = None,
 ) -> sns | None:
-  data = sns(name='app')
-
   if name:
-    data.name = name.replace('.py', '')
-
-  elif location:
-    data.name = location.replace('.py', '')
-    data.name = os.path.normpath(data.name)
-    data.name = data.name.split(os.sep)
-    data.name = '.'.join(data.name)
-
-  global MODULE_NAMES
-  MODULE_NAMES.append(data.name)
-
-  # if not pool:
-  #   count = MODULE_NAMES.count(data.name)
-  #   data.name = f'{data.name}_{count}'
-
-  return data
+    name = os.path.splitext(name)[0]
+    return sns(name=name)
+  
+  if location:
+    name = os.path.splitext(location)[0]
+    name = os.path.normpath(name)
+    name = name.split(os.sep)
+    name = '.'.join(name)
+    return sns(name=name)
+  
+  return sns(name='app')
 
 
 def get_module_from_pool(
