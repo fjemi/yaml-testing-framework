@@ -13,7 +13,7 @@ from typing import Any, Awaitable, Callable
 from assertions import module_resource as module
 
 
-LOCALS= locals()
+LOCALS = locals()
 MODULE = __file__
 
 
