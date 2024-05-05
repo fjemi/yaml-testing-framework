@@ -49,14 +49,18 @@ def get_cast_method(
   module: str | None = None,
   method: str | None = None,
 ) -> sns:
-  data = sns(method_name=method)
-  data.method = get_object.main(parent=module, name=method)
-  if not isinstance(data.method, Callable):
-    module = getattr(module, '__file__', None)
-    data.log = sns(
-      level='error',
-      message=f'Method {data.method_name} not in module located at {module}', )
-  return data
+  name = str(method)
+  method = get_object.main(parent=module, name=name)
+  if isinstance(method, Callable):
+    return sns(method=method)
+
+  method = get_object.main(parent=module, name='pass_through')
+  module = getattr(module, '__file__', None)
+  log = sns(
+    level='error',
+    message=f'Cast method {name} not in module {module}', )
+
+  return sns(method=method, log=log)
 
 
 def get_temp_object(

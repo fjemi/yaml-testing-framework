@@ -37,7 +37,6 @@ tests:
         id_short: .main._resources.app.add.add
         log: null
         method: check_exception
-        method_name: assertions.app.check_exception
         module: null
         output: TypeError
         passed: true
@@ -46,7 +45,6 @@ tests:
         id_short: .main._resources.app.add.add
         log: null
         method: check_equals
-        method_name: assertions.app.check_equals
         module: null
         output: 3
         passed: true
@@ -572,7 +570,6 @@ tests:
 #         id: ' .main._resources.app.add.app.add - 0.0 '
 #         id_short: .main._resources.app.add.app.add
 #         method: check_equals
-#         method_name: assertions.app.check_equals
 #         module: null
 #         output: 11
 #         passed: true
@@ -619,7 +616,6 @@ tests:
 #           id: ' app.add.app.add - 0.0 - Return the result of adding two integers '
 #           id_short: app.add.app.add
 #           method: check_equals
-#           method_name: assertions.app.check_equals
 #           module: null
 #           output: 2
 #           passed: true
@@ -664,7 +660,6 @@ tests:
 #           id: ' add.app.app.add - 0.0 - Return the result of adding two integers '
 #           id_short: add.app.app.add
 #           method: check_equals
-#           method_name: assertions.app.check_equals
 #           module: null
 #           output: 3
 #           passed: true
@@ -677,7 +672,6 @@ tests:
 #           id_short: add.app.app.add
 #           log: '[]'
 #           method: check_equals
-#           method_name: assertions.app.check_equals
 #           module: null
 #           output: '!!python/object/apply:builtins.TypeError
 

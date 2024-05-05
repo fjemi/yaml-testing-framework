@@ -55,7 +55,6 @@ tests:
           id: id
           id_short: id_short
           method: check_equals
-          method_name: check_equals
           module: null
           output: output
           passed: true
@@ -70,7 +69,6 @@ tests:
       expected:
       - expected: output
         method: check_equals
-        method_name: check_equals
         output: output
         module: null
         passed: true
@@ -108,7 +106,6 @@ tests:
       - expected:
           key: output_value
         method: check_equals
-        method_name: check_equals
         module: null
         output:
           key: output_value
@@ -121,7 +118,6 @@ tests:
         id_short: id_short
         log: '[]'
         method: check_equals
-        method_name: check_equals
         module: null
         output: 'key: output_value'
         passed: false
@@ -130,7 +126,7 @@ tests:
       module:  ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/assertions_resource.py
       output: output
       assertions:
-      - method: assertion_method_does_not_exist
+      - method: pass_through_inner
         expected: output
       id: id
       id_short: id_short
@@ -151,9 +147,8 @@ tests:
       - expected: 'null
 
           ...'
-        method: pass_through
-        method_name: assertion_method_does_not_exist
-        output: 'Assertion method None does not exist
+        method: pass_through_inner
+        output: 'Assertion method pass_through_inner does not exist
       
           ...'
         passed: false
@@ -177,7 +172,6 @@ tests:
         id: null
         id_short: null
         method: null
-        method_name: null
         module: null
         output: null
         passed: false
@@ -197,7 +191,6 @@ tests:
         id: id
         id_short: id_short
         method: null
-        method_name: null
         module: module
         output: output
         passed: false
@@ -208,7 +201,6 @@ tests:
         expected: expected
         field: field
         method: method
-        method_name: method_name
       output: null
       module: null
       id: null
@@ -222,22 +214,32 @@ tests:
         id: null
         id_short: null
         method: method
-        method_name: method_name
         output: null
         passed: false
 - function: pass_through
   description: >
-    Method to use if an assertion method does not exist. Returns data needed to
+    Returns the method to use if an assertion method does not exist. Returns data needed to
     fail an assertion.
   tests:
   - description: Undefined argument
     arguments: {}
     assertions:
-    - method: assertions.app.check_sns
+    - method: assertions.app.check_function
       expected:
-        output: Assertion method None does not exist
-        expected: ''
-        passed: false
+        location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/assertions.py
+        name: pass_through_inner
+    - method: assertions.app.check_function_output
+      expected:
+        arguments:
+        - expected: expected
+          output: output
+        output:
+        - output: Assertion method None does not exist
+          expected: ''
+          passed: false
+        cast_output:
+        - method: sns_to_dict
+        module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/assertions_resource.py
   - description: Defined argument
     arguments:
       output: assertion_method_does_not_exist
@@ -273,7 +275,7 @@ tests:
       field: log
       expected:
         level: error
-        message: Method None does not exist in module at location ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/assertions_resource.py
+        message: Assertion method None does not exist in module ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/assertions_resource.py
   - description: Assertion method exists
     arguments:
       method: check_method_a
@@ -281,9 +283,6 @@ tests:
     assertions:
     - method: assertions.app.check_type
       expected: SimpleNamespace
-    - method: assertions.app.check_sns
-      expected:
-        method_name: check_method_a
     - method: assertions.app.check_function
       field: method
       expected:
@@ -298,14 +297,11 @@ tests:
       field: log
       expected:
         level: error
-        message: Method check_method_b does not exist in module at location ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/assertions_resource.py
-    - method: assertions.app.check_sns
-      expected:
-        method_name: check_method_b
+        message: Assertion method check_method_b does not exist in module ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/assertions_resource.py
     - method: assertions.app.check_function
       field: method
       expected:
-        name: pass_through
+        name: pass_through_inner
         location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/assertions.py
 - function: reset_output_value
   description: >

@@ -69,41 +69,43 @@ def pre_processing(
       parent=assertion,
       route=field,
       value=locals_[field], )
-    # assertion.update({field: locals_[field]})
   return schema.get_model(name='process_assertions.Assertion', data=assertion)
 
 
-def pass_through(
-  output: Any | None = None,
-  expected: Any | None = None,
-  method_name: str | None = None,
-) -> sns:
-  _ = expected, output
-  return sns(
-    passed=False,
-    expected='',
-    output=f"Assertion method {method_name} does not exist", )
+def pass_through(method: str | None = None) -> Callable:
+  
+  def pass_through_inner(
+    output: Any | None = None,
+    expected: Any | None = None,
+  ) -> Callable:
+
+    return sns(
+      passed=False,
+      expected='',
+      output=f"Assertion method {method} does not exist", )
+  
+  return pass_through_inner
 
 
 def get_assertion_method(
   method: str | None = None,
   module: ModuleType | None = None,
 ) -> sns:
-  data = sns(method_name=str(method))
-  data.method = get_object.main(
-    parent=module,
-    name=data.method_name, )
+  name = str(method)
+  method = get_object.main(parent=module, name=name)
+  if isinstance(method, Callable):
+    return sns(method=method)
 
-  if not isinstance(data.method, Callable):
-    module = module.__file__
-    message = f'Method {method} does not exist in module at location {module}'
-    data.log = sns(
-      level='error',
-      message=message, )
-    data.method = pass_through
-    data.output = data.log
+  method = pass_through(method=name)
+  module = module.__file__
+  message = f'Assertion method {name} does not exist in module {module}'
+  log = sns(level='error', message=message)
+  output = log
 
-  return data
+  return sns(
+    method=method,
+    log=log,
+    output=output, )
 
 
 def reset_output_value(

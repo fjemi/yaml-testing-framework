@@ -27,14 +27,11 @@ add_assertion_fields:
 
 schema:
   Assertion: &ASSERTION
-    descrip ntion: Store data needed to process an assertion form a test
+    description: Store data needed to process an assertion form a test
     fields:
     - name: method
       type: str
       description: The assertion method
-    - name: method_name
-      type: str
-      description: The name of an assertion method
     - name: field
       type: str
       description: Dot-delimited path to an attribute or key of the result
