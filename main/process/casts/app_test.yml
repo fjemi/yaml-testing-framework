@@ -178,3 +178,29 @@ tests:
         object:
           key: temp_object
         temp_object: null
+- function: get_module_wrapper
+  description: Returns an existing module at a location or null
+  tests:
+  - description: Module is undefined
+    arguments:
+      module: null
+    assertions:
+    - method: assertions.app.check_equals
+      expected: null
+  - description: Module is a module
+    cast_arguments:
+    - field: module
+      method: app_resource.module_resource
+    arguments:
+      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/casts/app_resource.py
+    assertions:
+    - method: assertions.app.check_module
+      expected:
+        location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/casts/app_resource.py
+  - description: Module is a string
+    arguments:
+      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/casts/app_resource.py
+    assertions:
+    - method: assertions.app.check_module
+      expected:
+        location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/casts/app_resource.py

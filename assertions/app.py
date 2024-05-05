@@ -9,6 +9,7 @@ from types import ModuleType
 from types import SimpleNamespace as sns
 from typing import Any, Awaitable, Callable
 
+from main.process.casts import app as casts
 from main.utils import get_config, get_object, independent
 
 
@@ -459,8 +460,12 @@ def check_thread(
 def call_function(
   arguments: dict | list | tuple,
   function: Callable | Awaitable,
+  cast_output: list | None = None,
+  module: ModuleType | str | None = None,
 ) -> Any:
   result = None
+  exception = None
+
   try:
     if isinstance(arguments, dict):
       result = function(**arguments)
@@ -472,14 +477,24 @@ def call_function(
     result = e
 
   result = independent.get_task_from_event_loop(task=result)
-
+  
   if isinstance(result, Exception):
+    exception = result
+
     try:
       result = function(arguments)
     except Exception as e:
-      _ = e
+      exception = e
 
     result = independent.get_task_from_event_loop(task=result)
+
+    if isinstance(result, Exception):
+      result = exception
+
+  result = casts.main(
+    module=module,
+    casts=cast_output,
+    object=result, )
 
   return result
 
@@ -497,8 +512,14 @@ def check_function_output(
     return type_checks
 
   expected = sns(**expected)
-  output = [call_function(function=output, arguments=arguments) \
-    for arguments in expected.arguments]
+  output = [call_function(
+    function=output,
+    arguments=arguments,
+    cast_output=getattr(expected, 'cast_output', []),
+    module=getattr(expected, 'module', []),
+    ) for arguments in expected.arguments
+  ]
+
   passed = output == expected.output
   return sns(
     output=output,

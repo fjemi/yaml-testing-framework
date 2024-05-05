@@ -52,6 +52,7 @@ empty_values:
 
 operations:
   main:
+  - get_module_wrapper
   - get_cast_method
   - get_temp_object
   - handle_casting

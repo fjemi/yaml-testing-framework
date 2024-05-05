@@ -8,7 +8,7 @@ from typing import Any, Callable, List
 
 # trunk-ignore(ruff/F401)
 from main.process.casts.handle_casting import main as handle_casting
-from main.utils import get_config, get_object, independent, set_object
+from main.utils import get_config, get_object, independent, set_object, get_module
 
 
 MODULE = __file__
@@ -27,7 +27,7 @@ def main(
 
   for cast in casts:
     data = sns(**cast)
-    data.module = module
+    data.module = get_module_wrapper(module=module)
     data.object = object_
     data = independent.process_operations(
       operations=CONFIG.operations.main,
@@ -36,6 +36,13 @@ def main(
     object_ = data.object
 
   return object_
+
+
+def get_module_wrapper(module: ModuleType | str) -> ModuleType | None:
+  if isinstance(module, ModuleType):
+    return module
+  if isinstance(module, str):
+    return get_module.main(location=module, pool=False)
 
 
 def get_cast_method(

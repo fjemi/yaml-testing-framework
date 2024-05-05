@@ -97,6 +97,9 @@ def check_function_output_resource(
     name = name or 'earth'
     return f'Hello {name}'
 
+  def add(a: int, b: int) -> int:
+    return a + b
+
   return locals().get(output, None)
 
 
