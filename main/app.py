@@ -184,8 +184,10 @@ def get_function(
     return sns(function=function_, function_name=function)
 
   location = getattr(module, '__file__', None)
+  message = f'Could not retrieve {function} from {location}'
   log = sns(
-    error=f'Could not retrieve {function} from {location}',
+    message=message,
+    error=RuntimeError(message),
     level='error', )
   return sns(log=log)
 
