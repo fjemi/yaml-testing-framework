@@ -32,7 +32,7 @@ def list_dict_to_list_sns(data: list) -> list:
   if not isinstance(data, list):
     return data
 
-  return [sns(**item) for item in data if isinstance(data, dict)]
+  return [sns(**item) for item in data]
 
 
 def list_sns_to_list_dict(output: list) -> list:

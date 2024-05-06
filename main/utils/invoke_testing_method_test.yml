@@ -170,29 +170,30 @@ tests:
     - method: assertions.app.check_length
       field: result
       expected: 2
-    # # TODO: Figure out how to fix this test
-    # - method: assertions.app.check_sns
-    #   cast_output:
-    #   - field: result
-    #     method: _resources.invoke_testing_method.resource.list_sns_to_list_dict
-    #   expected: &MODULE_WITH_TESTS_ASSERTION_EXPECTED
-    #     result:
-    #     - expected: Hello Earth
-    #       id: ' .main.utils._resources.invoke_testing_method.module_with_tests.hello_world - 0.1 - Returns
-    #         a greeting '
-    #       id_short: .main.utils._resources.invoke_testing_method.module_with_tests.hello_world
-    #       method: check_equals
-    #       module: null
-    #       output: Hello Earth
-    #       passed: true
-    #     - expected: Hello World
-    #       id: ' .main.utils._resources.invoke_testing_method.module_with_tests.hello_world - 0.0 - Returns
-    #         a greeting '
-    #       id_short: .main.utils._resources.invoke_testing_method.module_with_tests.hello_world
-    #       method: check_equals
-    #       module: null
-    #       output: Hello World
-    #       passed: true
+    - method: assertions.app.check_sns
+      cast_output:
+      - field: result
+        method: _resources.invoke_testing_method.resource.list_sns_to_list_dict
+      expected: &MODULE_WITH_TESTS_ASSERTION_EXPECTED
+        result:
+        - expected: Hello Earth
+          id: ' .main.utils._resources.invoke_testing_method.module_with_tests.hello_world - 0.1 - Returns
+            a greeting '
+          id_short: .main.utils._resources.invoke_testing_method.module_with_tests.hello_world
+          log: null
+          method: check_equals
+          module: null
+          output: Hello Earth
+          passed: true
+        - expected: Hello World
+          id: ' .main.utils._resources.invoke_testing_method.module_with_tests.hello_world - 0.0 - Returns
+            a greeting '
+          id_short: .main.utils._resources.invoke_testing_method.module_with_tests.hello_world
+          log: null
+          method: check_equals
+          module: null
+          output: Hello World
+          passed: true
   - description: Location is a module with no defined tests
     arguments: &MODULE_WITHOUT_TESTS_ARGUMENTS
       location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/_resources/invoke_testing_method/module_without_tests.py
@@ -215,37 +216,38 @@ tests:
     - method: assertions.app.check_equals
       field: process.returncode
       expected: 0
-# # TODO: Fix tests for function
-# - function: run_tests_using_invocation_method
-#   description: Runs tests using one of the defined invocation methods
-#   cast_output:
-#   - field: result
-#     method: _resources.invoke_testing_method.resource.list_sns_to_list_dict
-#   tests:
-#   - description: Run tests by invoking plugin
-#     arguments:
-#       <<: *MODULE_WITH_TESTS_ARGUMENTS
-#       method: plugin
-#     assertions:
-#     - method: assertions.app.check_sns
-#       expected:
-#         result:
-#         - expected: Hello Earth
-#           id: ' .main.utils._resources.invoke_testing_method.module_with_tests.hello_world - 0.1 - Returns
-#             a greeting '
-#           id_short: .main.utils._resources.invoke_testing_method.module_with_tests.hello_world
-#           method: check_equals
-#           module: null
-#           output: Hello Earth
-#           passed: true
-#         - expected: Hello World
-#           id: ' .main.utils._resources.invoke_testing_method.module_with_tests.hello_world - 0.0 - Returns
-#             a greeting '
-#           id_short: .main.utils._resources.invoke_testing_method.module_with_tests.hello_world
-#           method: check_equals
-#           module: null
-#           output: Hello World
-#           passed: true
+- function: run_tests_using_invocation_method
+  description: Runs tests using one of the defined invocation methods
+  cast_output:
+  - field: result
+    method: _resources.invoke_testing_method.resource.list_sns_to_list_dict
+  tests:
+  - description: Run tests by invoking plugin
+    arguments:
+      <<: *MODULE_WITH_TESTS_ARGUMENTS
+      method: plugin
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        result:
+        - expected: Hello Earth
+          id: ' .main.utils._resources.invoke_testing_method.module_with_tests.hello_world - 0.1 - Returns
+            a greeting '
+          id_short: .main.utils._resources.invoke_testing_method.module_with_tests.hello_world
+          log: null
+          method: check_equals
+          module: null
+          output: Hello Earth
+          passed: true
+        - expected: Hello World
+          id: ' .main.utils._resources.invoke_testing_method.module_with_tests.hello_world - 0.0 - Returns
+            a greeting '
+          id_short: .main.utils._resources.invoke_testing_method.module_with_tests.hello_world
+          log: null
+          method: check_equals
+          module: null
+          output: Hello World
+          passed: true
 - function: main
   description: >
     Handles running tests for a specific module or modules within a directory
