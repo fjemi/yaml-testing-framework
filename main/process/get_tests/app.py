@@ -16,13 +16,10 @@ LOCALS = locals()
 def main(
   yaml: str | None = None,
   module: str | None = None,
-  module_location: str | None = None,
   module_route: str | None = None,
   resources: str | None = None,
 ) -> sns:
   data = sns(**locals())
-  del yaml, module, module_location, module_route, resources
-
   data = independent.process_operations(
     operations=CONFIG.operations.main,
     functions=LOCALS,
@@ -42,7 +39,6 @@ def get_configurations_and_tests(yaml: str | None = None) -> sns:
 def format_locations(
   yaml: str | None = None,
   module: str | None = None,
-  module_location: str | None = None,
   module_route: str | None = None,
   resources: str | None = None,
 ) -> sns:
