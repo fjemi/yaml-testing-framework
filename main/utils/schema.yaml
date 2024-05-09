@@ -17,10 +17,6 @@ Test: &TEST
     type: Any
     description: A module or the location to a module in the file system
     default: null
-  - name: module_location
-    type: str
-    description: Location of a module in the file system
-    default: null
   - name: function
     type: str
     description: Name of the function to test
