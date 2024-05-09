@@ -45,7 +45,6 @@ combine_fields_as:
   project_path: high
   module: high
   module_route: high
-  module_location: high
   yaml: high
   key: high
   # Choose low level

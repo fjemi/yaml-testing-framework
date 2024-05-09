@@ -85,25 +85,21 @@ def handle_id(
 
 def handle_module(
   module: str | None = None,
-  module_location: str | None = None,
   module_route: List[str] | str | None = None,
   key: str | None = None,
 ) -> sns:
-  module = get_module.main(
+  temp = get_module.main(
     location=module,
     name=module_route,
     key=key,
     pool=False, )
+  if isinstance(temp, ModuleType):
+    return sns(module=temp)
 
-  log = None
-  if not isinstance(module, ModuleType):
-    log = sns(
-      message=f'No module at location {module_location}',
-      location=__file__,
-      operation='handle_module',
-      level='warning', )
-
-  return sns(module=module, log=log)
+  log = sns(
+    message=f'No module at location {module}',
+    level='warning', )
+  return sns(log=log)
 
 
 def get_resource_route(

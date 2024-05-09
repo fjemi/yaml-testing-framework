@@ -48,7 +48,6 @@ tests:
           id_short: null
           key: null
           module: null
-          module_location: null
           module_route: null
           output: null
           patches: []
@@ -65,7 +64,6 @@ tests:
         yaml: yaml
         module: module
         module_route: module_route
-        module_location: module_location
         resources: resources
     assertions:
     - method: assertions.app.check_sns
@@ -86,7 +84,6 @@ tests:
           id_short: null
           key: '0.0'
           module: module
-          module_location: module_location
           module_route: module_route
           output: null
           patches: []
@@ -109,7 +106,6 @@ tests:
           id_short: null
           key: '0.1'
           module: module
-          module_location: module_location
           module_route: module_route
           output: null
           patches: []
@@ -129,7 +125,6 @@ tests:
         yaml: configurations
         module: configurations
         module_route: configurations
-        module_location: configurations
         resources: configurations
     assertions:
     - method: assertions.app.check_sns
@@ -151,7 +146,6 @@ tests:
           id_short: null
           key: '0.0'
           module: configurations
-          module_location: configurations
           module_route: configurations
           output: null
           patches: []
@@ -175,7 +169,6 @@ tests:
           id_short: null
           key: 0.1.0
           module: configurations
-          module_location: configurations
           module_route: configurations
           output: null
           patches: []
@@ -199,7 +192,6 @@ tests:
           id_short: null
           key: 0.1.1
           module: configurations
-          module_location: configurations
           module_route: configurations
           output: null
           patches: []
@@ -233,7 +225,6 @@ tests:
         id_short: null
         key: null
         module: null
-        module_location: null
         module_route: null
         output: null
         patches: []
@@ -245,13 +236,11 @@ tests:
       root_node:
         module: root_node
         module_route: root_node
-        module_location: root_node
         resources: root_node
         yaml: root_node
       configurations:
         module: configurations
         module_route: configurations
-        module_location: configurations
         resources: configurations
         yaml: configurations
     assertions:
@@ -273,7 +262,6 @@ tests:
         id_short: null
         key: null
         module: configurations
-        module_location: configurations
         module_route: configurations
         output: null
         patches: []
@@ -306,7 +294,6 @@ tests:
         description: root_node
         module: root_node
         module_route: root_node
-        module_location: root_node
         resources: root_node
         yaml: root_node
       nested_nodes:
@@ -333,7 +320,6 @@ tests:
           id_short: null
           key: key.0
           module: root_node
-          module_location: root_node
           module_route: root_node
           output: null
           patches: []
@@ -359,7 +345,6 @@ tests:
           id_short: null
           key: key.1
           module: root_node
-          module_location: root_node
           module_route: root_node
           output: null
           patches: []
@@ -432,7 +417,6 @@ tests:
             id_short: null
             key: '0.0'
             module: null
-            module_location: null
             module_route: null
             output: null
             patches: []
@@ -457,7 +441,6 @@ tests:
             id_short: null
             key: '0.1'
             module: null
-            module_location: null
             module_route: null
             output: null
             patches: []
@@ -482,7 +465,6 @@ tests:
             id_short: null
             key: '0.2'
             module: null
-            module_location: null
             module_route: null
             output: null
             patches: []

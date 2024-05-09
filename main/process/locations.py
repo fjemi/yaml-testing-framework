@@ -151,7 +151,6 @@ def get_module_and_yaml_location_when_path_kind_is_file(
   location.module_route = get_route_for_module(
     root=paths.root,
     module=location.module, )
-  location.module_location = location.module
   data.locations.append(location)
   return data
 
@@ -181,7 +180,6 @@ def get_module_and_yaml_location_when_path_kind_is_directory(
         location.module = location.yaml.replace(
           yaml_ending,
           CONFIG.module_extension, )
-        location.module_location = location.module
         location.module_route = get_route_for_module(
           root=paths.root,
           module=location.module, )
