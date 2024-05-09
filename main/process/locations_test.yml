@@ -47,11 +47,9 @@ tests:
       expected:
         locations:
         - module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/_locations_resources/exclusion_pattern.py
-          module_location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/_locations_resources/exclusion_pattern.py
           module_route: .main.process._locations_resources.exclusion_pattern
           yaml: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/_locations_resources/exclusion_pattern_test.yml
         - module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/_locations_resources/app.py
-          module_location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/_locations_resources/app.py
           module_route: .main.process._locations_resources.app
           yaml: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/_locations_resources/app_test.yml
 - function: format_paths
@@ -299,7 +297,6 @@ tests:
       expected:
         locations:
         - module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/_locations_resources/exclusion_pattern.py
-          module_location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/_locations_resources/exclusion_pattern.py
           module_route: .main.process._locations_resources.exclusion_pattern
           yaml: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/_locations_resources/exclusion_pattern_test.yml
   - description: Path is the location of a YAML file
@@ -315,7 +312,6 @@ tests:
       expected:
         locations:
         - module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/_locations_resources/exclusion_pattern.py
-          module_location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/_locations_resources/exclusion_pattern.py
           module_route: .main.process._locations_resources.exclusion_pattern
           yaml: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/_locations_resources/exclusion_pattern_test.yml
 - function: get_module_and_yaml_location_when_path_kind_is_directory
@@ -355,10 +351,8 @@ tests:
       expected:
         locations:
         - module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/_locations_resources/exclusion_pattern.py
-          module_location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/_locations_resources/exclusion_pattern.py
           module_route: .main.process._locations_resources.exclusion_pattern
           yaml: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/_locations_resources/exclusion_pattern_test.yml
         - module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/_locations_resources/app.py
-          module_location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/_locations_resources/app.py
           module_route: .main.process._locations_resources.app
           yaml: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/_locations_resources/app_test.yml

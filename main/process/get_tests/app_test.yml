@@ -43,7 +43,6 @@ tests:
           id_short: null
           key: null
           module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/get_tests/_resources/app.py
-          module_location: null
           module_route: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/get_tests/_resources/app.py
           output: null
           patches: []
@@ -69,7 +68,6 @@ tests:
           id_short: null
           key: '0.0'
           module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/get_tests/_resources/app.py
-          module_location: null
           module_route: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/get_tests/_resources/app.py
           output: null
           patches: []
@@ -95,7 +93,6 @@ tests:
           id_short: null
           key: '0.1'
           module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/get_tests/_resources/app.py
-          module_location: null
           module_route: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/get_tests/_resources/app.py
           output: null
           patches: []
@@ -148,7 +145,6 @@ tests:
       expected:
         module: null
         module_route: null
-        module_location: null
         yaml: null
         resources: null
     - method: assertions.app.check_sns
@@ -156,14 +152,12 @@ tests:
       expected:
         module: null
         module_route: null
-        module_location: null
         yaml: null
         resources: null
   - description: Defined arguments
     arguments:
       module: module
       module_route: module_route
-      module_location: module_location
       yaml: yaml
       resources: resources
     assertions:
@@ -171,7 +165,6 @@ tests:
       expected:
         module: null
         module_route: null
-        module_location: null
         yaml: null
         resources: null
     - method: assertions.app.check_sns
@@ -179,7 +172,6 @@ tests:
       expected:
         module: module
         module_route: module_route
-        module_location: module_location
         yaml: yaml
         resources: resources
 - function: add_locations_to_configurations
@@ -206,7 +198,6 @@ tests:
       locations:
         module: module
         module_route: module_route
-        module_location: module_location
         yaml: yaml
         resources: resources
     assertions:
@@ -216,7 +207,6 @@ tests:
         configurations:
           module: module
           module_route: module_route
-          module_location: module_location
           yaml: yaml
           resources:
           - resources
@@ -261,7 +251,6 @@ tests:
           id_short: null
           key: null
           module: null
-          module_location: null
           module_route: null
           output: null
           patches: []
@@ -297,7 +286,6 @@ tests:
           id_short: null
           key: '0.0'
           module: null
-          module_location: null
           module_route: null
           output: null
           patches: []
@@ -321,7 +309,6 @@ tests:
           id_short: null
           key: '0.1'
           module: null
-          module_location: null
           module_route: null
           output: null
           patches: []

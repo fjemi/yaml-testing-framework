@@ -82,9 +82,6 @@ tests:
     arguments: {}
     assertions:
     - method: assertions.app.check_sns
-      expected:
-        module: null
-    - method: assertions.app.check_sns
       field: log
       expected:
         message: No module at location None
@@ -92,11 +89,7 @@ tests:
   - description: Module does not exist at location
     arguments:
       module: module_location_does_not_exist
-      module_location: module_location_does_not_exist
     assertions:
-    - method: assertions.app.check_sns
-      expected:
-        module: null
     - method: assertions.app.check_sns
       field: log
       expected:
