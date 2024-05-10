@@ -10,6 +10,7 @@ from types import SimpleNamespace as sns
 from typing import List
 
 import yaml as pyyaml
+
 from main.app import main as plugin
 from main.utils import independent
 

@@ -8,7 +8,13 @@ from typing import Any, Callable, List
 
 # trunk-ignore(ruff/F401)
 from main.process.casts.handle_casting import main as handle_casting
-from main.utils import get_config, get_object, independent, set_object, get_module
+from main.utils import (
+  get_config,
+  get_module,
+  get_object,
+  independent,
+  set_object,
+)
 
 
 MODULE = __file__

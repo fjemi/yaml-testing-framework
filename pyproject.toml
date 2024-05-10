@@ -21,10 +21,7 @@ directory = '.htmlcov'
 
 
 [tool.coverage.report]
-exclude_lines = [
-  "if __name__ == '__main__':",
-  'def example',
-]
+exclude_lines = ["if __name__ == '__main__':", 'def example']
 fail_under = 90
 
 
