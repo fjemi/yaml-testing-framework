@@ -175,21 +175,25 @@ def invoke_pytest(
   _ = exclude_files
 
   args = f'''
-  - pytest
-  - --no-cov
-  - --tb=short
-  - --project-path={location}
-  - --yaml-suffix={yaml_suffix}
-  - --logging-enabled={logging_enabled}
-  - -p no:yaml_testing_framework
+    - python3
+    - -m
+    - pipenv
+    - run
+    - python3
+    - -m
+    - pytest
+    - --no-cov
+    - --tb=short
+    - --project-path={location}
+    - --yaml-suffix={yaml_suffix}
+    - --logging-enabled={logging_enabled}
+    - -p no:yaml_testing_framework
   '''
   args = pyyaml.safe_load(args)
   process = subprocess.run(
     args=args,
-    # trunk-ignore(bandit/B603)
-    shell=False,
+    shell=True,
     check=True,
-    capture_output=True,
     text=True, )
   return sns(process=process)
 
