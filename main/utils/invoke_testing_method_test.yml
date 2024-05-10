@@ -6,6 +6,19 @@ configurations:
   - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/assertions/app.py
 
 
+arguments:
+  module_with_tests: &MODULE_WITH_TESTS_ARGUMENTS
+    location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/_resources/invoke_testing_method/module_with_tests.py
+    exclude_files: []
+    yaml_suffix: _test
+    logging_enabled: True
+  module_without_tests: &MODULE_WITHOUT_TESTS_ARGUMENTS
+    location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/_resources/invoke_testing_method/module_without_tests.py
+    exclude_files: []
+    yaml_suffix: _test
+    logging_enabled: True
+
+
 tests:
 - function: set_default_values_for_arguments
   description: Sets defaults values for arguments
@@ -161,11 +174,8 @@ tests:
   description: Run tests by invoking the PYTEST YAML app
   tests:
   - description: Location is a module with defined tests
-    arguments: &MODULE_WITH_TESTS_ARGUMENTS
-      location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/_resources/invoke_testing_method/module_with_tests.py
-      exclude_files: []
-      yaml_suffix: _test
-      logging_enabled: True
+    arguments:
+      << : *MODULE_WITH_TESTS_ARGUMENTS
     assertions:
     - method: assertions.app.check_length
       field: result
@@ -195,11 +205,8 @@ tests:
           output: Hello World
           passed: true
   - description: Location is a module with no defined tests
-    arguments: &MODULE_WITHOUT_TESTS_ARGUMENTS
-      location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/_resources/invoke_testing_method/module_without_tests.py
-      exclude_files: []
-      yaml_suffix: _test
-      logging_enabled: True
+    arguments:
+      <<: *MODULE_WITHOUT_TESTS_ARGUMENTS
     assertions:
     - method: assertions.app.check_sns
       expected:

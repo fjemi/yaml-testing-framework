@@ -13,26 +13,36 @@ import setuptools
 ROOT_DIR = os.path.abspath(os.curdir)
 ROOT_DIR = os.path.normpath(ROOT_DIR)
 
-FILES = '''
-- name: Pipfile.lock
-  field: pipfile_lock
-  type: json
-- name: setup.yaml
-  field: setup_yaml
-  type: yaml
-- name: README.md
-  field: long_description
-  type: file
+CONFIG = '''
+  schema:
+  - description:
+    fields:
+    - name: directory
+    - name: pipfile_lock
+    - name: long_description
+    - name: setup_yaml
+  files:
+  - name: Pipfile.lock
+    field: pipfile_lock
+    type: json
+  - name: setup.yaml
+    field: setup_yaml
+    type: yaml
+  - name: README.md
+    field: long_description
+    type: file
+  content_file_types:
+  - json
+  - yaml
+  - yml
+  exclude_packages:
+  - coverage
+  - iniconfig
+  - packaging
+  - pluggy
 '''
-FILES = pyyaml.safe_load(FILES)
-
-
-@dc.dataclass
-class Data:
-  directory: str | None = None
-  pipfile_lock: dict | None = None
-  long_description: str | None = None
-  setup_yaml: dict | None = None
+CONFIG = pyyaml.safe_load(CONFIG)
+CONFIG = sns(**CONFIG)
 
 
 def get_content_from_file(location: str | None = None) -> Any:
@@ -56,14 +66,14 @@ def get_contents(
   store = {'directory': directory}
 
   if directory:
-    for file in FILES:
+    for file in CONFIG.files:
       filename = file.get('name', '')
       location = os.path.join(directory, filename)
       location = os.path.normpath(location)
 
       content = get_content_from_file(location=location)
 
-      condition = file.get('type', '') in ['json', 'yaml']
+      condition = file.get('type', '') in CONFIG.content_file_types
       if condition and content:
         content = pyyaml.safe_load(content)
 
@@ -77,16 +87,10 @@ def get_setup_requires(
 ) -> List[str]:
   pipfile_lock = pipfile_lock or {}
   default = pipfile_lock.get('default', {})
-  exclude_keys = [
-    'coverage',
-    'iniconfig',
-    'packaging',
-    'pluggy',
-  ]
 
   packages = []
   for key, value in default.items():
-    if key not in exclude_keys:
+    if key not in CONFIG.exclude_packages:
       version = value.get('version')
       requirement = f'{key}{version}'
       packages.append(requirement)

@@ -40,6 +40,11 @@ CONFIG = '''
     log: timestamps
   - data: output.exception
     log: error
+  field_map:
+    function.__name__: operation
+    function.__module__: location
+    timestamps.__dict__: timestamps
+    output.exception: error
 '''
 
 FORMAT_CONFIG_FIELDS = ['environment', 'schema', 'operations']
@@ -265,12 +270,7 @@ def format_log(data: sns) -> int:
   arguments.debug = arguments.debug or data.debug
   store = arguments
 
-  for data_field, log_field in {
-    'function.__name__': 'operation',
-    'function.__module__': 'location',
-    'timestamps.__dict__': 'timestamps',
-    'output.exception': 'error',
-  }.items():
+  for data_field, log_field in CONFIG.field_map.items():
     value = get_object.main(parent=data, route=data_field)
     setattr(store.log, log_field, value)
 

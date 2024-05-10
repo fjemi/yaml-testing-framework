@@ -19,6 +19,8 @@ CONFIG = '''
     - get_module_from_pool
     - get_module_from_location
     - add_module_to_pool
+  module_extensions:
+  - .py
 '''
 CONFIG = independent.format_configurations_defined_in_module(config=CONFIG)
 
@@ -43,18 +45,18 @@ def format_module_name(
   name: str | None = None,
   location: str | None = None,
 ) -> sns | None:
-  if name:
-    name = os.path.splitext(name)[0]
-    return sns(name=name)
-  
   if location:
     name = os.path.splitext(location)[0]
     name = os.path.normpath(name)
     name = name.split(os.sep)
     name = '.'.join(name)
     return sns(name=name)
-  
-  return sns(name='app')
+
+  name = name or 'app'
+  filename, extension = os.path.splitext(name)
+  if extension in CONFIG.module_extensions:
+    name = filename
+  return sns(name=name)
 
 
 def get_module_from_pool(

@@ -38,9 +38,7 @@ CONFIG = '''
     - set_location
     - run_tests_using_invocation_method
 '''
-CONFIG = pyyaml.safe_load(CONFIG)
-CONFIG = sns(**CONFIG)
-CONFIG.operations = sns(**CONFIG.operations)
+CONFIG = independent.format_configurations_defined_in_module(config=CONFIG)
 
 
 # trunk-ignore(ruff/PLR0913)
