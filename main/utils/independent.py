@@ -308,7 +308,6 @@ def process_operations(
 ) -> sns | dict:
   operations = convert_string_to_list(string=operations)
   store = sns(**locals())
-  del operations, data, functions, debug
 
   for name in store.operations:
     store.function = store.functions[name]

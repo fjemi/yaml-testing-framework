@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 
 
-import dataclasses as dc
 import os
+from types import SimpleNamespace as sns
 from typing import Any, List
 
 import yaml as pyyaml
@@ -105,14 +105,6 @@ def get_python_requires(pipfile_lock: dict | None = None) -> str:
       return ''.join(numbers)
 
 
-EMPTY_VALUES = [
-  None,
-  {},
-  [],
-  '',
-]
-
-
 def merge_pip_lock_and_setup_yaml(
   long_description: str | None = None,
   setup_yaml: dict | None = None,
@@ -130,7 +122,7 @@ def merge_pip_lock_and_setup_yaml(
   return setup_yaml
 
 
-def main(directory: str | None = None) -> Data:
+def main(directory: str | None = None) -> sns:
   directory = directory or ROOT_DIR
   data = get_contents(directory=directory)
   data = merge_pip_lock_and_setup_yaml(**data)

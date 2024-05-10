@@ -62,13 +62,6 @@ CONFIG.operations = sns(**CONFIG.operations)
 LOGGER = None
 
 
-def get_environment(data: dict | None = None) -> sns:
-  data = data or {}
-
-
-  return sns(**data)
-
-
 def main(
   format: str | None = None,
   level: str | None = None,
