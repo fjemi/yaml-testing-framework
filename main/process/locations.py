@@ -110,7 +110,8 @@ def get_route_for_module(
   module: str | None = None,
 ) -> str:
   route = module.replace(root, '')
-  route = route.replace(CONFIG.module_extension, '')
+  route = os.path.splitext(route)[0]
+  route = os.path.normpath(route)
   route = route.split(os.path.sep)
   return '.'.join(route)
 
@@ -169,21 +170,17 @@ def get_module_and_yaml_location_when_path_kind_is_directory(
     if flag_for_exclusion(root=root, exclude_files=exclude_files):
       continue
 
-    for file in files:
+    for item in files:
       for extension in CONFIG.yaml_extensions:
         yaml_ending = f'{yaml_suffix}{extension}'
-        if not file.endswith(yaml_ending):
+        if not item.endswith(yaml_ending):
           continue
 
-        location = sns(
-          yaml=os.path.join(root, file), )
-        location.module = location.yaml.replace(
-          yaml_ending,
-          CONFIG.module_extension, )
-        location.module_route = get_route_for_module(
-          root=paths.root,
-          module=location.module, )
-        store.append(location)
+        yaml = os.path.join(root, item)
+        module = yaml.replace(yaml_ending, CONFIG.module_extension)
+        module_route = get_route_for_module(root=paths.root, module=module)
+        locations = sns(module=module, yaml=yaml, module_route=module_route)
+        store.append(locations)
 
   return sns(locations=store)
 

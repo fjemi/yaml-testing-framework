@@ -9,7 +9,6 @@ import subprocess
 from types import SimpleNamespace as sns
 from typing import List
 
-import pytest
 import yaml as pyyaml
 from main.app import main as plugin
 from main.utils import independent
@@ -39,9 +38,7 @@ CONFIG = '''
     - set_location
     - run_tests_using_invocation_method
 '''
-CONFIG = pyyaml.safe_load(CONFIG)
-CONFIG = sns(**CONFIG)
-CONFIG.operations = sns(**CONFIG.operations)
+CONFIG = independent.format_configurations_defined_in_module(config=CONFIG)
 
 
 # trunk-ignore(ruff/PLR0913)
@@ -178,21 +175,25 @@ def invoke_pytest(
   _ = exclude_files
 
   args = f'''
-  - pytest
-  - --no-cov
-  - --tb=short
-  - --project-path={location}
-  - --yaml-suffix={yaml_suffix}
-  - --logging-enabled={logging_enabled}
-  - -p no:yaml_testing_framework
+    - python3
+    - -m
+    - pipenv
+    - run
+    - python3
+    - -m
+    - pytest
+    - --no-cov
+    - --tb=short
+    - --project-path={location}
+    - --yaml-suffix={yaml_suffix}
+    - --logging-enabled={logging_enabled}
+    - -p no:yaml_testing_framework
   '''
   args = pyyaml.safe_load(args)
   process = subprocess.run(
     args=args,
-    # trunk-ignore(bandit/B603)
-    shell=False,
+    shell=True,
     check=True,
-    capture_output=True,
     text=True, )
   return sns(process=process)
 
