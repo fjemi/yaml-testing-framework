@@ -6,8 +6,8 @@ import os
 from types import SimpleNamespace as sns
 from typing import Any, List
 
-import yaml as pyyaml
 import setuptools
+import yaml as pyyaml
 
 
 ROOT_DIR = os.path.abspath(os.curdir)

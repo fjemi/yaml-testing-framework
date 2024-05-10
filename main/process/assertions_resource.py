@@ -6,6 +6,7 @@ from types import SimpleNamespace as sns
 from typing import Any, Callable
 
 import yaml
+
 from main.utils import (
   get_config,
   get_module,
