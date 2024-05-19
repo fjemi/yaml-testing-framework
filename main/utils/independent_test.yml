@@ -181,7 +181,7 @@ tests:
       function: null
     assertions:
     - method: assertions.app.check_exception
-      expected: AttributeError
+      expected: TypeError
   - description: Function is a callable
     arguments:
       function: callable_function

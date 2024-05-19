@@ -56,6 +56,8 @@ LOCALS = locals()
 
 LOADER = None
 
+PARAMETERS = {}
+
 
 def convert_string_to_list(string: list | str | None = None) -> list | None:
   if isinstance(string, str):
@@ -109,7 +111,7 @@ def is_coroutine(object: Any | None = None) -> bool:
 
 
 def get_task_from_event_loop(task: Any | None = None) -> Any:
-  if is_coroutine(object=task):
+  if is_coroutine(object=task) and not isinstance(task, Callable):
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
 
@@ -166,14 +168,20 @@ def get_decorated_function(
 
 
 def get_function_parameters(function: Awaitable | Callable) -> list:
-  function_ = function
+  global PARAMETERS
+  function_ = get_decorated_function(function=function)
 
-  wrapper = getattr(function_, '__closure__', None)
-  if wrapper:
-    function_ = wrapper[0].cell_contents
+  file_ = inspect.getfile(function_)
+  key = f'{file_}|{function_.__name__}'
+  if key in PARAMETERS:
+    return PARAMETERS[key]
 
+  item = 'return'
   parameters = list(function_.__annotations__.keys())
-  parameters.remove('return')
+  if item in parameters:
+    parameters.remove(item)
+
+  PARAMETERS[key] = parameters
   return parameters
 
 
