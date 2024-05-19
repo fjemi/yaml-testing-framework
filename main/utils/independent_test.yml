@@ -229,7 +229,7 @@ tests:
       function: null
     assertions:
     - method: assertions.app.check_exception
-      expected: AttributeError
+      expected: TypeError
   - description: Function is a callable and data is an empty dictionary
     arguments:
       data: {}
@@ -338,7 +338,7 @@ tests:
         description: 'unsupported operand type(s) for +: ''int'' and ''str'''
         trace:
         - file: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/_resources/independent.py
-          line: 64
+          line: 68
           name: add
         name: TypeError
 
@@ -895,3 +895,127 @@ tests:
       assertions:
       - method: assertions.app.check_equals
         expected: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/_resources/independent/resource.yaml
+- function: get_decorated_function
+  description: >
+    Returns the original method for a decorated function or an undecorated
+    function
+  cast_arguments:
+  - method: _resources.independent.get_function
+    field: function
+  tests:
+  - description: Undefined arguments
+    arguments: {}
+    assertions:
+    - method: assertions.app.check_equals
+      expected: null
+  - description: Function is not decorated
+    arguments:
+      function: callable
+    assertions:
+    - method: assertions.app.check_function
+      expected:
+        name: callable
+        location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/_resources/independent.py
+  - description: Function decorated. Original function accessible through __wrapped__.
+    arguments:
+      function: callable_decorated_wrapped
+    assertions:
+    - method: assertions.app.check_function
+      expected:
+        name: callable_decorated_wrapped
+        location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/_resources/independent.py
+  - description: Function decorated and decorated. Original function accessible through closure.
+    arguments:
+      function: callable_decorated_closure
+    assertions:
+    - method: assertions.app.check_function
+      expected:
+        name: callable_decorated_closure
+        location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/_resources/independent.py
+  - description: Awaitable function decorated. Original function accessible through __wrapped__.
+    arguments:
+      function: awaitable_decorated_wrapped
+    assertions:
+    - method: assertions.app.check_function
+      expected:
+        name: awaitable_decorated_wrapped
+        location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/_resources/independent.py
+  - description: Awaitable function decorated. Original function accessible through closure.
+    arguments:
+      function: awaitable_decorated_closure
+    assertions:
+    - method: assertions.app.check_function
+      expected:
+        name: awaitable_decorated_closure
+        location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/_resources/independent.py
+- function: get_decorated_function_from_closure
+  description: >
+    Returns the original method from a decorated function by searching through closure
+  tests:
+  - description: Undefined arguments
+    arguments:
+      function: null
+    assertions:
+    - method: assertions.app.check_equals
+      expected: null
+  - cast_arguments:
+    - method: _resources.independent.get_function
+      field: function
+    tests:
+    - description: Regular function
+      arguments:
+        function: awaitable
+      assertions:
+      - method: assertions.app.check_function
+        expected:
+          name: awaitable
+          location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/_resources/independent.py
+    - description: Decorated function
+      arguments:
+        function: awaitable_decorated_closure
+      assertions:
+      - method: assertions.app.check_function
+        expected:
+          name: awaitable_decorated_closure
+          location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/_resources/independent.py
+- function: get_decorated_function_from_wrapped
+  description: >
+    Returns the original method from a decorated by accessing the `__wrapped__` attribute of the decorated function
+  tests:
+  - description: Undefined arguments
+    arguments:
+      function: null
+    assertions:
+    - method: assertions.app.check_equals
+      expected: null
+  - cast_arguments:
+    - method: _resources.independent.get_function
+      field: function
+    tests:
+    - description: Regular function
+      arguments:
+        function: awaitable
+      assertions:
+      - method: assertions.app.check_function
+        expected:
+          name: awaitable
+          location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/_resources/independent.py
+    - description: Function decorated and `__wrapped__` attribute is set
+      arguments:
+        function: awaitable_decorated_wrapped
+      assertions:
+      - method: assertions.app.check_function
+        expected:
+          name: awaitable_decorated_wrapped
+          location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/_resources/independent.py
+      - method: assertions.app.check_equals
+        field: __wrapped__
+        expected: null
+    - description: Function decorated and `__wrapped__` attribute is not set
+      arguments:
+        function: awaitable_decorated_closure
+      assertions:
+      - method: assertions.app.check_function
+        expected:
+          name: awaitable_decorated_closure
+          location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/_resources/independent.py

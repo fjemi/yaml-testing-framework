@@ -22,9 +22,13 @@ async def awaitable_function(
   return 'awaitable_output'
 
 
-def decorator(func):
-  def call(*args, **kwargs):
+def decorator(func: Callable) -> Callable:
+
+  def call(*args, **kwargs) -> Any:
     return func(*args, **kwargs)
+
+  call.__wrapped__ = func
+
   return call
 
 
@@ -93,6 +97,64 @@ def get_locals(function: str | None = None) -> dict:
 def get_exception_name(exception: Exception | None = None) -> str | None:
   if isinstance(exception, Exception | KeyError):
     return type(exception).__name__
+
+
+def wrapped(func):
+
+  def inner(*args, **kwargs):
+    return func(*args, **kwargs)
+
+  inner.__wrapped__ = func
+
+  return inner
+
+
+def closure(func):
+
+  def inner(*args, **kwargs):
+    return func(*args, **kwargs)
+
+  return inner
+
+
+def callable() -> str:
+  return 'callable_output'
+
+
+async def awaitable() -> str:
+  return 'awaitable_output'
+
+
+@closure
+def callable_decorated_closure() -> str:
+  return 'decorated_callable_output'
+
+
+@wrapped
+def callable_decorated_wrapped() -> str:
+  return 'decorated_callable_output'
+
+
+@closure
+async def awaitable_decorated_closure() -> str:
+  return 'decorated_callable_output'
+
+
+@wrapped
+async def awaitable_decorated_wrapped() -> str:
+  return 'decorated_callable_output'
+
+
+def check_method(
+  module: Any | None = None,
+  output: Any | None = None,
+  expected: Any | None = None,
+) -> sns:
+  _ = module
+  return sns(
+    passed=True,
+    output=output,
+    expected=expected, )
 
 
 def examples() -> None:
