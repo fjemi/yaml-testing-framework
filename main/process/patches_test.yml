@@ -60,8 +60,8 @@ tests:
     - method: assertions.app.check_function
       field: module.add
       expected:
-        name: callable_patch
-        location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/patches.py
+        name: add
+        location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/_patches_resources/app.py
 - function: pre_processing
   description: Returns patch model containing module and timestamp
   tests:
@@ -74,7 +74,6 @@ tests:
         method: null
         module: null
         value: null
-        do_nothing: False
     - method: assertions.app.check_type
       field: timestamp
       expected: float
@@ -92,16 +91,15 @@ tests:
         value: value
         route: route
         method: method
-        do_nothing: False
 - function: get_patch_method
   description: Returns the method to use for patching
   tests:
   - description: Undefined arguments
     arguments: {}
     assertions:
-    - method: assertions.app.check_sns
-      expected:
-        do_nothing: True
+    - method: assertions.app.check_equals
+      field: value
+      expected: null
     - method: assertions.app.check_sns
       field: log
       expected:
@@ -121,13 +119,24 @@ tests:
       method: callable
       value: value
       timestamp: 0
+      original: original
     assertions:
+    - method: assertions.app.check_type
+      field: value
+      expected: function
     - method: assertions.app.check_sns
-      expected: {}
+      expected:
+        log: null
+    - method: assertions.app.check_equals
+      field: value._method
+      expected: callable
+    - method: assertions.app.check_equals
+      field: value.__wrapped__
+      expected: original
     - method: assertions.app.check_function
       field: value
       expected:
-        name: callable_patch
+        name: patch
         location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/patches.py
   - description: Side effect list method
     arguments:
@@ -142,7 +151,7 @@ tests:
     - method: assertions.app.check_function
       field: value
       expected:
-        name: side_effect_list_patch
+        name: patch
         location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/patches.py
   - description: Side effect dict method
     arguments:
@@ -157,7 +166,7 @@ tests:
     - method: assertions.app.check_function
       field: value
       expected:
-        name: side_effect_dict_patch
+        name: patch
         location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/patches.py
   - description: Method does not exist
     arguments:
@@ -165,9 +174,6 @@ tests:
       value: value
       timestamp: 0
     assertions:
-    - method: assertions.app.check_sns
-      expected:
-        do_nothing: True
     - method: assertions.app.check_sns
       field: log
       expected:
@@ -210,7 +216,7 @@ tests:
   assertions:
   - method: assertions.app.check_function
     expected:
-      name: callable_patch
+      name: patch
       location: ${PWD}/main/process/patches.py
   tests:
   - description: Returns a function
@@ -223,6 +229,9 @@ tests:
       expected: value
       cast_output:
       - method: _patches_resources.app.get_patch_for_callable_cast_output
+    - method: assertions.app.check_equals
+      field: _method
+      expected: callable
   - description: Returns the function `callable_patch`
     arguments:
       value: value
@@ -248,8 +257,11 @@ tests:
   assertions:
   - method: assertions.app.check_function
     expected:
-      name: side_effect_list_patch
+      name: patch
       location: ${PWD}/main/process/patches.py
+  - method: assertions.app.check_equals
+    field: _method
+    expected: side_effect_list
   tests:
   - description: Return a side effect list patch
     arguments:
@@ -288,8 +300,11 @@ tests:
   assertions:
   - method: assertions.app.check_function
     expected:
-      name: side_effect_dict_patch
+      name: patch
       location: ${PWD}/main/process/patches.py
+  - method: assertions.app.check_equals
+    field: _method
+    expected: side_effect_dict
   tests:
   - description: Return a side effect dict patch
     arguments:
@@ -311,7 +326,7 @@ tests:
         - key_1: value_1
         - key_2: value_2
         - key_3: value_3
-  - description: Name of function should contain sh`side_effect_dict_patch`
+  - description: Name of function is correct
     arguments:
       value:
         a: 2
@@ -346,7 +361,6 @@ tests:
         module: null
   - description: Do nothing flag is true
     arguments:
-      do_nothing: true
       module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/_patches_resources/app.py
     assertions:
     - method: assertions.app.check_sns
@@ -359,7 +373,6 @@ tests:
     arguments:
       value: value
       route: route
-      do_nothing: False
       module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/_patches_resources/app.py
     assertions:
     - method: assertions.app.check_equals
