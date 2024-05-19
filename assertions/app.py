@@ -136,16 +136,12 @@ def check_function(
       expected=expected,
       expected_wanted='dict', )
 
-  location = ''
-  if hasattr(output, '__wrapped__'):
-    location = inspect.getfile(output.__wrapped__)
-    name = output.__wrapped__.__name__
-  else:
-    location = inspect.getfile(output)
-    name = output.__name__
+  temp = independent.get_decorated_function(function=output)
+  if isinstance(temp, Callable):
+    output = temp
 
-  output = sns(name=name, location=location)
-  output = output.__dict__
+  location = inspect.getfile(output)
+  output = dict(name=output.__name__, location=location)
   passed = output == expected
 
   return sns(

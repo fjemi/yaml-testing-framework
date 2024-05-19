@@ -19,7 +19,7 @@ resource:
 configurations:
   resources:
   - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/assertions/app.py
-  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/_resources/independent.py
+  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/independent/resource.py
 
 
 tests:
@@ -116,7 +116,7 @@ tests:
       expected: {}
   - description: Location is an existing YAML file
     arguments:
-      location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/_resources/independent.yaml
+      location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/independent/resource.yaml
     assertions:
     - method: assertions.app.check_equals
       field: content
@@ -125,7 +125,7 @@ tests:
 - function: is_coroutine
   description: Returns True if an object is a coroutine and False otherwise
   cast_arguments:
-  - method: _resources.independent.get_function
+  - method: resource.get_function
     field: object
   tests:
   - description: Object is undefined
@@ -149,7 +149,7 @@ tests:
 - function: get_task_from_event_loop
   description: Returns the output of an awaitable or callable function
   cast_arguments:
-  - method: _resources.independent.get_task
+  - method: resource.get_task
     field: task
   tests:
   - description: Task is undefined
@@ -174,14 +174,14 @@ tests:
   description: Returns a list containing a functions parameters
   cast_arguments:
   - field: function
-    method: _resources.independent.get_function
+    method: resource.get_function
   tests:
   - description: Function is undefined
     arguments:
       function: null
     assertions:
     - method: assertions.app.check_exception
-      expected: AttributeError
+      expected: TypeError
   - description: Function is a callable
     arguments:
       function: callable_function
@@ -218,7 +218,7 @@ tests:
 - function: get_function_arguments
   cast_arguments:
   - field: function
-    method: _resources.independent.get_function
+    method: resource.get_function
   description: >
     Returns the values of arguments from an object that are associated with a
     list parameters
@@ -229,7 +229,7 @@ tests:
       function: null
     assertions:
     - method: assertions.app.check_exception
-      expected: AttributeError
+      expected: TypeError
   - description: Function is a callable and data is an empty dictionary
     arguments:
       data: {}
@@ -311,7 +311,7 @@ tests:
 - function: format_exception_and_trace
   description: Formats an exception and its trace
   cast_arguments:
-  - method: _resources.independent.get_exception
+  - method: resource.get_exception
     field: exception
   tests:
   - description: Undefined arguments
@@ -337,8 +337,8 @@ tests:
       expected:
         description: 'unsupported operand type(s) for +: ''int'' and ''str'''
         trace:
-        - file: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/_resources/independent.py
-          line: 64
+        - file: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/independent/resource.py
+          line: 68
           name: add
         name: TypeError
 
@@ -467,7 +467,7 @@ tests:
 #           timestamps: timestamps
 #   - cast_arguments:
 #     - field: output.exception
-#       method: _resources.independent.get_exception
+#       method: resource.get_exception
 #     description: >
 #       Output contains an exception. Debug flag is not true.
 #     arguments:
@@ -517,7 +517,7 @@ tests:
     method: sns
     unpack: true
   - field: data.function
-    method: _resources.independent.get_function
+    method: resource.get_function
   tests:
   - description: Return expected output from adding two integers
     arguments:
@@ -726,7 +726,7 @@ tests:
     Performs a list of operations on data that can be represented as a
     dictionary
   cast_arguments:
-  - method: _resources.independent.get_locals
+  - method: resource.get_locals
     field: functions
   tests:
   - description: Undefined arguments
@@ -789,7 +789,7 @@ tests:
     assertions:
     - method: assertions.app.check_equals
       cast_output:
-      - method: _resources.independent.get_exception_name
+      - method: resource.get_exception_name
         field: exception
       expected:
         a: '2'
@@ -885,7 +885,7 @@ tests:
         expected: null
     - description: Module and YAML files exist
       arguments:
-        module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/_resources/independent/resource.py
+        module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/independent/resource.py
         extensions:
           module:
           - .py
@@ -894,4 +894,128 @@ tests:
           - .yml
       assertions:
       - method: assertions.app.check_equals
-        expected: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/_resources/independent/resource.yaml
+        expected: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/independent/resource.yaml
+- function: get_decorated_function
+  description: >
+    Returns the original method for a decorated function or an undecorated
+    function
+  cast_arguments:
+  - method: resource.get_function
+    field: function
+  tests:
+  - description: Undefined arguments
+    arguments: {}
+    assertions:
+    - method: assertions.app.check_equals
+      expected: null
+  - description: Function is not decorated
+    arguments:
+      function: callable
+    assertions:
+    - method: assertions.app.check_function
+      expected:
+        name: callable
+        location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/independent/resource.py
+  - description: Function decorated. Original function accessible through __wrapped__.
+    arguments:
+      function: callable_decorated_wrapped
+    assertions:
+    - method: assertions.app.check_function
+      expected:
+        name: callable_decorated_wrapped
+        location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/independent/resource.py
+  - description: Function decorated and decorated. Original function accessible through closure.
+    arguments:
+      function: callable_decorated_closure
+    assertions:
+    - method: assertions.app.check_function
+      expected:
+        name: callable_decorated_closure
+        location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/independent/resource.py
+  - description: Awaitable function decorated. Original function accessible through __wrapped__.
+    arguments:
+      function: awaitable_decorated_wrapped
+    assertions:
+    - method: assertions.app.check_function
+      expected:
+        name: awaitable_decorated_wrapped
+        location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/independent/resource.py
+  - description: Awaitable function decorated. Original function accessible through closure.
+    arguments:
+      function: awaitable_decorated_closure
+    assertions:
+    - method: assertions.app.check_function
+      expected:
+        name: awaitable_decorated_closure
+        location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/independent/resource.py
+- function: get_decorated_function_from_closure
+  description: >
+    Returns the original method from a decorated function by searching through closure
+  tests:
+  - description: Undefined arguments
+    arguments:
+      function: null
+    assertions:
+    - method: assertions.app.check_equals
+      expected: null
+  - cast_arguments:
+    - method: resource.get_function
+      field: function
+    tests:
+    - description: Regular function
+      arguments:
+        function: awaitable
+      assertions:
+      - method: assertions.app.check_function
+        expected:
+          name: awaitable
+          location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/independent/resource.py
+    - description: Decorated function
+      arguments:
+        function: awaitable_decorated_closure
+      assertions:
+      - method: assertions.app.check_function
+        expected:
+          name: awaitable_decorated_closure
+          location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/independent/resource.py
+- function: get_decorated_function_from_wrapped
+  description: >
+    Returns the original method from a decorated by accessing the `__wrapped__` attribute of the decorated function
+  tests:
+  - description: Undefined arguments
+    arguments:
+      function: null
+    assertions:
+    - method: assertions.app.check_equals
+      expected: null
+  - cast_arguments:
+    - method: resource.get_function
+      field: function
+    tests:
+    - description: Regular function
+      arguments:
+        function: awaitable
+      assertions:
+      - method: assertions.app.check_function
+        expected:
+          name: awaitable
+          location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/independent/resource.py
+    - description: Function decorated and `__wrapped__` attribute is set
+      arguments:
+        function: awaitable_decorated_wrapped
+      assertions:
+      - method: assertions.app.check_function
+        expected:
+          name: awaitable_decorated_wrapped
+          location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/independent/resource.py
+      - method: assertions.app.check_equals
+        field: __wrapped__
+        expected: null
+    - description: Function decorated and `__wrapped__` attribute is not set
+      arguments:
+        function: awaitable_decorated_closure
+      assertions:
+      - method: assertions.app.check_function
+        expected:
+          name: awaitable_decorated_closure
+          location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/independent/resource.py

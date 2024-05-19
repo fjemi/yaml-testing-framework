@@ -8,7 +8,7 @@ help:
 
 configurations:
   resources:
-  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/_patches_resources/app.py
+  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/patches/resources/app.py
   - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/assertions/app.py
 
 
@@ -18,30 +18,30 @@ tests:
     Patches an object within the module to test or modules used as resources
     during testing
   cast_arguments:
-  - method: _patches_resources.app.get_module_wrapper
+  - method: resources.app.get_module_wrapper
     field: module
   tests:
   - description: No defined patches
     arguments:
       patches: null
-      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/_patches_resources/app.py
+      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/patches/resources/app.py
     assertions:
     - method: assertions.app.check_module
       field: module
       expected:
-        location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/_patches_resources/app.py
+        location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/patches/resources/app.py
   - description: Patch a non-existing object using value method
     arguments:
       patches:
       - method: value
         value: patched_value
         route: .does_not_exist
-      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/_patches_resources/app.py
+      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/patches/resources/app.py
     assertions:
     - method: assertions.app.check_module
       field: module
       expected:
-        location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/_patches_resources/app.py
+        location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/patches/resources/app.py
     - method: assertions.app.check_equals
       field: module.does_not_exist
       expected: patched_value
@@ -51,17 +51,17 @@ tests:
       - method: callable
         value: callable_output
         route: add
-      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/_patches_resources/app.py
+      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/patches/resources/app.py
     assertions:
     - method: assertions.app.check_module
       field: module
       expected:
-        location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/_patches_resources/app.py
+        location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/patches/resources/app.py
     - method: assertions.app.check_function
       field: module.add
       expected:
-        name: callable_patch
-        location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/patches.py
+        name: add
+        location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/patches/resources/app.py
 - function: pre_processing
   description: Returns patch model containing module and timestamp
   tests:
@@ -74,7 +74,6 @@ tests:
         method: null
         module: null
         value: null
-        do_nothing: False
     - method: assertions.app.check_type
       field: timestamp
       expected: float
@@ -92,16 +91,15 @@ tests:
         value: value
         route: route
         method: method
-        do_nothing: False
 - function: get_patch_method
   description: Returns the method to use for patching
   tests:
   - description: Undefined arguments
     arguments: {}
     assertions:
-    - method: assertions.app.check_sns
-      expected:
-        do_nothing: True
+    - method: assertions.app.check_equals
+      field: value
+      expected: null
     - method: assertions.app.check_sns
       field: log
       expected:
@@ -121,14 +119,25 @@ tests:
       method: callable
       value: value
       timestamp: 0
+      original: original
     assertions:
+    - method: assertions.app.check_type
+      field: value
+      expected: function
     - method: assertions.app.check_sns
-      expected: {}
+      expected:
+        log: null
+    - method: assertions.app.check_equals
+      field: value._method
+      expected: callable
+    - method: assertions.app.check_equals
+      field: value.__wrapped__
+      expected: original
     - method: assertions.app.check_function
       field: value
       expected:
-        name: callable_patch
-        location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/patches.py
+        name: patch
+        location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/patches/app.py
   - description: Side effect list method
     arguments:
       value:
@@ -142,8 +151,8 @@ tests:
     - method: assertions.app.check_function
       field: value
       expected:
-        name: side_effect_list_patch
-        location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/patches.py
+        name: patch
+        location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/patches/app.py
   - description: Side effect dict method
     arguments:
       value:
@@ -157,17 +166,14 @@ tests:
     - method: assertions.app.check_function
       field: value
       expected:
-        name: side_effect_dict_patch
-        location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/patches.py
+        name: patch
+        location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/patches/app.py
   - description: Method does not exist
     arguments:
       method: method_does_not_exist
       value: value
       timestamp: 0
     assertions:
-    - method: assertions.app.check_sns
-      expected:
-        do_nothing: True
     - method: assertions.app.check_sns
       field: log
       expected:
@@ -210,8 +216,8 @@ tests:
   assertions:
   - method: assertions.app.check_function
     expected:
-      name: callable_patch
-      location: ${PWD}/main/process/patches.py
+      name: patch
+      location: ${PWD}/main/process/patches/app.py
   tests:
   - description: Returns a function
     arguments:
@@ -222,7 +228,10 @@ tests:
     - method: assertions.app.check_equals
       expected: value
       cast_output:
-      - method: _patches_resources.app.get_patch_for_callable_cast_output
+      - method: resources.app.get_patch_for_callable_cast_output
+    - method: assertions.app.check_equals
+      field: _method
+      expected: callable
   - description: Returns the function `callable_patch`
     arguments:
       value: value
@@ -232,7 +241,7 @@ tests:
     - method: assertions.app.check_equals
       expected: value
       cast_output:
-      - method: _patches_resources.app.get_patch_for_callable_cast_output
+      - method: resources.app.get_patch_for_callable_cast_output
   - description: Returns the value when the patch is called
     arguments:
       value: patch_value
@@ -242,14 +251,17 @@ tests:
     - method: assertions.app.check_equals
       expected: patch_value
       cast_output:
-      - method: _patches_resources.app.get_patch_for_callable_cast_output
+      - method: resources.app.get_patch_for_callable_cast_output
 - function: get_side_effect_list_patch_method
   description: Sets the patch for a side effect list
   assertions:
   - method: assertions.app.check_function
     expected:
-      name: side_effect_list_patch
-      location: ${PWD}/main/process/patches.py
+      name: patch
+      location: ${PWD}/main/process/patches/app.py
+  - method: assertions.app.check_equals
+    field: _method
+    expected: side_effect_list
   tests:
   - description: Return a side effect list patch
     arguments:
@@ -268,7 +280,7 @@ tests:
       - value_c
       - value_a
       cast_output:
-      - method: _patches_resources.app.get_patch_for_side_effect_list_cast_output
+      - method: resources.app.get_patch_for_side_effect_list_cast_output
   - description: Name of function should contain sh`side_effect_list_patch`
     arguments:
       value:
@@ -282,14 +294,17 @@ tests:
       - 1
       - 0
       cast_output:
-      - method: _patches_resources.app.get_patch_for_side_effect_list_cast_output
+      - method: resources.app.get_patch_for_side_effect_list_cast_output
 - function: get_side_effect_dict_patch_method
   description: Sets the patch for a side effect dict
   assertions:
   - method: assertions.app.check_function
     expected:
-      name: side_effect_dict_patch
-      location: ${PWD}/main/process/patches.py
+      name: patch
+      location: ${PWD}/main/process/patches/app.py
+  - method: assertions.app.check_equals
+    field: _method
+    expected: side_effect_dict
   tests:
   - description: Return a side effect dict patch
     arguments:
@@ -311,7 +326,7 @@ tests:
         - key_1: value_1
         - key_2: value_2
         - key_3: value_3
-  - description: Name of function should contain sh`side_effect_dict_patch`
+  - description: Name of function is correct
     arguments:
       value:
         a: 2
@@ -335,7 +350,7 @@ tests:
 - function: patch_module
   description: Returns a module with a patched object
   cast_arguments:
-  - method: _patches_resources.app.get_module_wrapper
+  - method: resources.app.get_module_wrapper
     field: module
   tests:
   - description: Undefined arguments
@@ -346,21 +361,19 @@ tests:
         module: null
   - description: Do nothing flag is true
     arguments:
-      do_nothing: true
-      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/_patches_resources/app.py
+      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/patches/resources/app.py
     assertions:
     - method: assertions.app.check_sns
       expected: {}
     - method: assertions.app.check_module
       field: module
       expected:
-        location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/_patches_resources/app.py
+        location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/patches/resources/app.py
   - description: Patch object in module
     arguments:
       value: value
       route: route
-      do_nothing: False
-      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/_patches_resources/app.py
+      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/patches/resources/app.py
     assertions:
     - method: assertions.app.check_equals
       field: module.route
