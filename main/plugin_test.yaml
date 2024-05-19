@@ -138,9 +138,11 @@ tests:
   tests:
   - arguments: {}
     assertions:
-    - method: assertions.app.check_module
-      expected:
-        location: ${PWD}/.venv/lib/python3.11/site-packages/pytest/__init__.py
+    - method: assertions.app.check_equals
+      field: __name__
+      expected: pytest
+    - method: assertions.app.check_type
+      expected: module
 - function: add_args_and_ini_options_to_parser
   description: >
     Add data cli arguments and ini settings

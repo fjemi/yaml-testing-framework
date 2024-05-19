@@ -1,6 +1,7 @@
 #!.venv/bin/python3
 # -*- coding: utf-8 -*-
 
+
 from types import ModuleType
 from types import SimpleNamespace as sns
 from typing import Any, Callable
@@ -102,7 +103,6 @@ def reset_output_value_cast_arguments(
 
 
 def convert_to_yaml_cast_arguments(field: Any) -> Any:
-  # values = sns('None'=None, list=['a'])
   return field
 
 

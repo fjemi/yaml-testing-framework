@@ -1,11 +1,10 @@
 #!.venv/bin/python3
 # -*- coding: utf-8 -*-
 
+
 import inspect
 import os
 from types import SimpleNamespace as sns
-
-import yaml as pyyaml
 
 from main.utils import get_object, independent, schema
 

@@ -1,6 +1,7 @@
 #!.venv/bin/python3
 # -*- coding: utf-8 -*-
 
+
 import os
 from types import ModuleType
 from types import SimpleNamespace as sns
@@ -51,7 +52,9 @@ def main(
   yaml_suffix: str | None = None,
   logging_enabled: bool | None = None,
 ) -> list:
-  logger.create_logger(logging_enabled=logging_enabled, project_path=project_path)
+  logger.create_logger(
+    logging_enabled=logging_enabled,
+    project_path=project_path, )
   data = schema.get_model(name='main.app.Data', data=locals())
   data = independent.process_operations(
     operations=CONFIG.operations.main,
@@ -333,7 +336,6 @@ def examples() -> None:
   from main.utils import invoke_testing_method
 
   invoke_testing_method.main(location=MODULE)
-  # invoke_testing_method.main(location='.')
 
 
 if __name__ == '__main__':

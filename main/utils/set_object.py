@@ -1,6 +1,7 @@
 #!.venv/bin/python3
 # -*- coding: utf-8 -*-
 
+
 from types import SimpleNamespace as sns
 from typing import Any, Iterable
 
@@ -131,7 +132,6 @@ def examples() -> None:
   from main.utils import invoke_testing_method
 
   invoke_testing_method.main()
-  # invoke_testing_method.main(location='.')
 
 
 if __name__ == '__main__':

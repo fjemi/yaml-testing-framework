@@ -1,7 +1,7 @@
 #!.venv/bin/python3
 # -*- coding: utf-8 -*-
 
-import os
+
 from types import SimpleNamespace as sns
 
 from main.utils import independent
@@ -48,7 +48,7 @@ def get_yaml_location(
 ) -> sns:
   if yaml:
     return sns(location=yaml)
-  
+
   module = module or MODULE
   location = independent.get_path_of_yaml_associated_with_module(
     module=module, extensions=CONFIG.extensions)

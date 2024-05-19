@@ -1,6 +1,7 @@
 #!.venv/bin/python3
 # -*- coding: utf-8 -*-
 
+
 # trunk-ignore(ruff/F401)
 import builtins
 import dataclasses as dc
@@ -39,6 +40,8 @@ def check_function_resource(output: str | None = None) -> Callable | None:
 
   async def coroutine() -> str:
     return 'coroutine_output'
+
+  _ = callable, coroutine
 
   return locals().get(output, None)
 
@@ -99,6 +102,8 @@ def check_function_output_resource(
 
   def add(a: int, b: int) -> int:
     return a + b
+
+  _ = hello_earth, hello_world, add
 
   return locals().get(output, None)
 

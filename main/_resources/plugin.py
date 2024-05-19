@@ -1,6 +1,7 @@
 #!.venv/bin/python3
 # -*- coding: utf-8 -*-
 
+
 import types
 from types import SimpleNamespace as sns
 from unittest import mock

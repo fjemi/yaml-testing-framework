@@ -44,3 +44,26 @@ tests:
     assertions:
     - method: assertions.app.check_equals
       expected: id_a
+- function: get_yaml_tests
+  description: >
+    Returns a list of tests processed by the plugin or an empty list if no
+    tests exists or were processed
+  cast_arguments:
+  - method: sns
+    field: pytest
+    unpack: true
+  tests:
+  - description: Attribute is undefined
+    arguments:
+      pytest:
+        yaml_tests: null
+    assertions:
+    - method: assertions.app.check_equals
+      expected: []
+  - description: Attribute is defined
+    arguments:
+      pytest:
+        yaml_tests: yaml_tests
+    assertions:
+    - method: assertions.app.check_equals
+      expected: yaml_tests

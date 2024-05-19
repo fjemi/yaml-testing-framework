@@ -190,13 +190,13 @@ tests:
       expected:
       - parameter_a
   - description: Function is a awaitable
-  #   arguments:
-  #     function: awaitable_function
-  #   assertions:
-  #   - method: assertions.app.check_equals
-  #     expected:
-  #     - parameter_a
-  #     - parameter_b
+    arguments:
+      function: awaitable_function
+    assertions:
+    - method: assertions.app.check_equals
+      expected:
+      - parameter_a
+      - parameter_b
   - description: Decorated callable
     arguments:
       function: decorated_callable
@@ -338,7 +338,7 @@ tests:
         description: 'unsupported operand type(s) for +: ''int'' and ''str'''
         trace:
         - file: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/_resources/independent.py
-          line: 63
+          line: 64
           name: add
         name: TypeError
 
@@ -497,17 +497,17 @@ tests:
 #           operation: operation
 #           timestamps: timestamps
 
-#   # # TODO: Need a spy on the logger.main to test this function
-#   # - description: Log is an exception
-#   #   arguments:
-#   #   assertions:
-#   #   - method:
-#   #     expected:
-#   # - description: Log is a message
-#   #   arguments:
-#   #   assertions:
-#   #   - method:
-#   #     expected:
+  # # TODO: Need a spy on the logger.main to test this function
+  # - description: Log is an exception
+  #   arguments:
+  #   assertions:
+  #   - method:
+  #     expected:
+  # - description: Log is a message
+  #   arguments:
+  #   assertions:
+  #   - method:
+  #     expected:
 
 - function: get_function_output
   description: >

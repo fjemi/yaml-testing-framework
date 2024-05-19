@@ -82,7 +82,6 @@ operations:
   run_tests:
   - get_tests
   - run_test_handler
-  # - post_processing
   main:
   - get_locations
   - run_tests
@@ -93,12 +92,3 @@ unpack_kinds:
 - dict
 - list
 - tuple
-
-
-# get_function_output_operations:
-#   dict:
-#   - get_function_output_for_dict_or_iterable
-#   iterable:
-#   - get_function_output_for_dict_or_iterable
-#   other:
-#   - get_function_output_for_other

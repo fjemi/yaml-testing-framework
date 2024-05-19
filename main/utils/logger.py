@@ -1,6 +1,7 @@
 #!.venv/bin/python3
 # -*- coding: utf-8 -*-
 
+
 import dataclasses as dc
 import inspect
 import json
@@ -73,7 +74,6 @@ def main(
   conditions = [
     LOGGER is None,
     enabled is False,
-    # getattr(log, 'message', None) is None and level == 'info',
   ]
   if True in conditions:
     return 0
@@ -83,7 +83,6 @@ def main(
   format_ = format or CONFIG.defaults.get('format')
   format_method = LOCALS.get(f'format_as_{format_}', format_as_yaml)
   log = format_method(log={level: log.__dict__})
-  # remove_fields(data=data)
 
   logging_method = getattr(LOGGER, level.lower(), LOGGER.debug)
   logging_method(log)

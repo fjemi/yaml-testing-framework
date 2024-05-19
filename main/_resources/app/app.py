@@ -54,7 +54,9 @@ async def subtract(data: dict) -> int:
 def examples() -> None:
   from main.utils import invoke_testing_method
 
-  invoke_testing_method.main(resources_folder_name='_resources', resource_flag=True)
+  invoke_testing_method.main(
+    resources_folder_name='_resources',
+    resource_flag=True, )
 
 
 if __name__ == '__main__':

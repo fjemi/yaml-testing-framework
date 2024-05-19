@@ -1,6 +1,7 @@
 #!.venv/bin/python3
 # -*- coding: utf-8 -*-
 
+
 from types import ModuleType
 from types import SimpleNamespace as sns
 from typing import Any, Callable, List
@@ -103,7 +104,6 @@ def get_callable_patch_method(
     return get_object.main(parent=module, route=callable_route)
 
   def callable_patch(*args, **kwargs) -> Any:
-    # callable patch
     _ = args, kwargs
     return value
 
@@ -124,7 +124,7 @@ def get_side_effect_list_patch_method(
   SIDE_EFFECTS[timestamp] = schema.get_model(
     data=data,
     name='Patch_Side_Effect_List', )
-  
+
   def side_effect_list_patch(*args, **kwargs) -> Any:
     _ = args, kwargs
 
