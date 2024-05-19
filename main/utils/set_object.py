@@ -132,7 +132,6 @@ def examples() -> None:
   from main.utils import invoke_testing_method
 
   invoke_testing_method.main()
-  # invoke_testing_method.main(location='.')
 
 
 if __name__ == '__main__':

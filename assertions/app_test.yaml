@@ -817,9 +817,6 @@ tests:
           start: 0
           stop: 3
         passed: false
-  # - description:
-  #   arguments:
-  #   assertions:
 - function: check_key_value_in_dict
   description: Verify that a dictionary contains key/value pairs
   tests:

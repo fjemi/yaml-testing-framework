@@ -104,7 +104,6 @@ def get_callable_patch_method(
     return get_object.main(parent=module, route=callable_route)
 
   def callable_patch(*args, **kwargs) -> Any:
-    # callable patch
     _ = args, kwargs
     return value
 

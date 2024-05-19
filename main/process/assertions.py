@@ -22,7 +22,6 @@ def main(
   assertions: List[dict] | None = None,
   output: Any | None = None,
   module: ModuleType | None = None,
-  # key: str | None = None,
   id: str | None = None,
   id_short: str | None = None,
 ) -> sns:

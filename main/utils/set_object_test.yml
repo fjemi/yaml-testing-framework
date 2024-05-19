@@ -110,14 +110,6 @@ tests:
             key_b: value_b
         - name: key_b
           value: value
-        # objects:
-        # - name: root
-        #   value:
-        #     key_a:
-        #       key_b: value_b
-        # - name: key_a
-        #   value:
-        #     key_b: value_b
   - description: Route contains non-existing fields
     arguments:
       parent:

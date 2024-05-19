@@ -103,7 +103,6 @@ def reset_output_value_cast_arguments(
 
 
 def convert_to_yaml_cast_arguments(field: Any) -> Any:
-  # values = sns('None'=None, list=['a'])
   return field
 
 

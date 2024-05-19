@@ -333,9 +333,6 @@ tests:
     - method: assertions.app.check_sns
       expected:
         output: 0
-
-
-
     # - method: assertions.app.check_exception
     #   field: output
     #   expected: TypeError

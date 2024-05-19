@@ -92,7 +92,7 @@ def get_parent_module_location(
   parent_filename: str | None = None,
   resource_module: str | None = None,
   resource_suffix: str | None = None,
-  resources_folder_name: str | None = None,  # root resources folder
+  resources_folder_name: str | None = None,
 ) -> str:
   directory, filename = os.path.split(resource_module)
 
