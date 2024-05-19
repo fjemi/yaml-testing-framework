@@ -4,7 +4,7 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-pyyaml = "==6.0"
+pyyaml = "*"
 pytest = "*"
 nest-asyncio = "*"
 
@@ -13,4 +13,4 @@ pre-commit = "*"
 pytest-cov = "*"
 
 [requires]
-python_version = "3.11"
+python_version = "3.12"
