@@ -12,7 +12,9 @@ from main.utils import independent
 
 
 MODULE = __file__
+ROOT_DIR = os.path.normpath(os.path.abspath(os.path.curdir))
 LOCALS = locals()
+
 CONFIG = '''
   operations:
     main:
@@ -32,7 +34,7 @@ def main(
   location: str | None = None,
   name: str | None = None,
   key: str | None = None,
-  pool: bool = True,
+  pool: bool | None = None,
 ) -> ModuleType | None:
   data = sns(**locals())
   data = independent.process_operations(
@@ -47,16 +49,17 @@ def format_module_name(
   location: str | None = None,
 ) -> sns | None:
   if location:
+    name = os.path.normpath(location)
+    name = name.replace(ROOT_DIR, '')
     name = os.path.splitext(location)[0]
-    name = os.path.normpath(name)
     name = name.split(os.sep)
     name = '.'.join(name)
     return sns(name=name)
 
   name = name or 'app'
-  filename, extension = os.path.splitext(name)
-  if extension in CONFIG.module_extensions:
-    name = filename
+  if os.path.isfile(name):
+    name = format_module_name(location=name)
+
   return sns(name=name)
 
 

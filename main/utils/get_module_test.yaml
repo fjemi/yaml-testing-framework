@@ -24,20 +24,21 @@ tests:
         name: .main.utils._resources.get_module
   - description: Name is defined
     arguments:
-      name: name.py
+      name: name
       location: null
     assertions:
     - method: assertions.app.check_sns
       expected:
         name: name
-  - description: Name is defined and pool is true
-    arguments:
-      name: name.py
-      location: null
-    assertions:
-    - method: assertions.app.check_sns
-      expected:
-        name: name
+  # # TODO: Need setup/teardown to finish test
+  # - description: Name is the location to a file
+  #   arguments:
+  #     name: location to temp file
+  #     location: null
+  #   assertions:
+  #   - method: assertions.app.check_sns
+  #     expected:
+  #       name: name
   - description: Name and location are undefined
     arguments:
       name: null

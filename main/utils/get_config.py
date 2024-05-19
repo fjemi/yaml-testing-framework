@@ -58,20 +58,20 @@ def format_config_location(
   extension = os.path.splitext(module)[-1]
   config = str(config)
 
-  data = sns(config=str(config))
-
   if False not in [
     extension in CONFIG.extensions.module,
-    not os.path.isfile(data.config),
+    not os.path.isfile(config),
   ]:
-    data.config = independent.get_path_of_yaml_associated_with_module(
-      module=module, extensions=CONFIG.extensions, )
+    config = independent.get_path_of_yaml_associated_with_module(
+      module=module,
+      extensions=CONFIG.extensions, ) or ''
 
-  if os.path.isfile(data.config) is False:
+  log = None
+  if os.path.isfile(config) is False:
     message = ['No config YAML file', dict(module=module, config=config)]
-    data.log = sns(level='error', message=message)
+    log = sns(level='error', message=message)
 
-  return data
+  return sns(config=config, log=log)
 
 
 def get_yaml_content_wrapper(location: str | None = None) -> sns:

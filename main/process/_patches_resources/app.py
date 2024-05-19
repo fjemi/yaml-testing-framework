@@ -379,6 +379,18 @@ def get_patch_for_side_effect_dict_cast_output(
   return store
 
 
+def callable_method(*args, **kwargs) -> Callable:
+  _ = args, kwargs
+
+  def method(*args, **kwargs) -> str:
+    _ = args, kwargs
+    return 'response'
+
+  _ = method
+
+  return method
+
+
 def examples() -> None:
   invoke_testing_method.main(
     resources_folder_name='_patches_resources',
