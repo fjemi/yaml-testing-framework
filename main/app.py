@@ -7,6 +7,8 @@ from types import ModuleType
 from types import SimpleNamespace as sns
 from typing import Any, Callable, Iterable, List
 
+import main.process.patches as _patches
+
 # trunk-ignore(ruff/F401)
 from main.process.assertions import main as process_assertions
 from main.process.casts import app as casts
@@ -19,9 +21,6 @@ from main.process.get_tests.app import main as get_tests
 
 # trunk-ignore(ruff/F401)
 from main.process.locations import main as get_locations
-
-# trunk-ignore(ruff/F401)
-from main.process.patches import main as process_patches
 from main.utils import (
   get_config,
   get_module,
@@ -61,6 +60,14 @@ def main(
     functions=LOCALS,
     data=data, )
   return getattr(data, 'tests', None) or []
+
+
+def process_patches(
+  patches: list | None,
+  module: ModuleType,
+) -> ModuleType:
+  arguments = locals()
+  return _patches.main(**arguments)
 
 
 def handle_id(

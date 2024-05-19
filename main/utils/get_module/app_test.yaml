@@ -4,7 +4,7 @@ resources:
 
 configurations:
   resources:
-  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/_resources/get_module.py
+  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/get_module/resource.py
   - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/assertions/app.py
 
 
@@ -16,12 +16,12 @@ tests:
   tests:
   - description: Location is defined
     arguments:
-      location: /main/utils/_resources/get_module.py
+      location: /main/utils/get_module/resource.py
       name: null
     assertions:
     - method: assertions.app.check_sns
       expected:
-        name: .main.utils._resources.get_module
+        name: .main.utils.get_module.resource
   - description: Name is defined
     arguments:
       name: name
@@ -69,21 +69,21 @@ tests:
   - description: Location exists
     arguments:
       name: name
-      location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/_resources/get_module.py
+      location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/get_module/resource.py
     assertions:
     - method: assertions.app.check_module
       field: module
       expected:
-        location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/_resources/get_module.py
+        location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/get_module/resource.py
   - description: Location is defined
     arguments:
       name: app
-      location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/_resources/get_module.py
+      location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/get_module/resource.py
     assertions:
     - method: assertions.app.check_module
       field: module
       expected:
-        location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/_resources/get_module.py
+        location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/get_module/resource.py
 - function: get_module_from_pool
   tests:
   - description: Returns a new instance of the module
@@ -132,12 +132,12 @@ tests:
   - description: Get module at location
     arguments:
       pool: false
-      location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/_resources/get_module.py
+      location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/get_module/resource.py
       name: app
     assertions:
     - method: assertions.app.check_module
       expected:
-        location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/_resources/get_module.py
+        location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/get_module/resource.py
   - description: Get module from pool
     patches:
     - route: POOL
