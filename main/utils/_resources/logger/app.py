@@ -1,6 +1,7 @@
 #!.venv/bin/python3
 # -*- coding: utf-8 -*-
 
+
 import logging
 from typing import Any, Callable
 
@@ -25,7 +26,9 @@ def get_logger_wrapper(logger: Any | None = None) -> logging.Logger:
 
 
 def examples() -> None:
-  invoke_testing_method.main(resource_flag=True, resources_folder_name='_resources')
+  invoke_testing_method.main(
+    resource_flag=True,
+    resources_folder_name='_resources', )
 
 
 if __name__ == '__main__':

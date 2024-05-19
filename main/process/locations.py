@@ -1,6 +1,7 @@
 #!.venv/bin/python3
 # -*- coding: utf-8 -*-
 
+
 import os
 from types import SimpleNamespace as sns
 from typing import Any, List

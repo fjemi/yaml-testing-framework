@@ -1,6 +1,7 @@
 #!.venv/bin/python3
 # -*- coding: utf-8 -*-
 
+
 import dataclasses as dc
 import inspect
 import os
@@ -10,7 +11,7 @@ from types import SimpleNamespace as sns
 from typing import Any, Awaitable, Callable
 
 from main.process.casts import app as casts
-from main.utils import get_config, get_object, independent
+from main.utils import get_object, independent
 
 
 @dc.dataclass
@@ -477,7 +478,7 @@ def call_function(
     result = e
 
   result = independent.get_task_from_event_loop(task=result)
-  
+
   if isinstance(result, Exception):
     exception = result
 

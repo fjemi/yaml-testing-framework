@@ -1,6 +1,7 @@
 #!.venv/bin/python3
 # -*- coding: utf-8 -*-
 
+
 import os
 from types import ModuleType
 from types import SimpleNamespace as sns
@@ -52,6 +53,8 @@ def process_option_project_path(
   option: str | None,
   config: py_test.Config,
 ) -> str:
+  _ = config
+
   option = str(option)
 
   if option in CONFIG.root_paths:

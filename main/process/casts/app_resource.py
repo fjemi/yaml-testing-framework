@@ -1,6 +1,7 @@
 # #!.venv/bin/python3
 # # -*- coding: utf-8 -*-
 
+
 import dataclasses as dc
 from types import ModuleType
 from types import SimpleNamespace as sns
@@ -160,7 +161,7 @@ def module_resource(module: str | None = None) -> ModuleType | None:
 def kinds_resource(kinds: str | dict) -> Any:
   if isinstance(kinds, dict):
     data = DataClass()
-    
+
     for key, value in kinds.items():
       setattr(data, key, value)
     return data

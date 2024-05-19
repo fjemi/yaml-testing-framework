@@ -1,6 +1,7 @@
 #!.venv/bin/python3
 # -*- coding: utf-8 -*-
 
+
 from types import ModuleType
 from types import SimpleNamespace as sns
 from typing import Any, Callable, List
@@ -74,17 +75,18 @@ def pre_processing(
 
 
 def pass_through(method: str | None = None) -> Callable:
-  
+
   def pass_through_inner(
     output: Any | None = None,
     expected: Any | None = None,
   ) -> Callable:
+    _ = output, expected
 
     return sns(
       passed=False,
       expected='',
       output=f"Assertion method {method} does not exist", )
-  
+
   return pass_through_inner
 
 
