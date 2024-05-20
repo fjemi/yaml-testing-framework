@@ -13,7 +13,8 @@ import sys
 from types import ModuleType, SimpleNamespace as sns
 from typing import Any, Callable, List
 
-from main.utils import get_module, invoke_testing_method, get_config, schema
+from main.utils import get_config, invoke_testing_method, schema, get_module
+
 import yaml
 
 

@@ -1,0 +1,194 @@
+configurations:
+  resources:
+  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/assertions/app.py
+  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/schema/resources/app.py
+
+
+tests:
+- function: main
+  description: Returns models from schema defined in YAML files
+  tests:
+  - description: >
+      Undefined arguments. Return schema defined in this modules associated
+      YAML file
+    arguments:
+      module: null
+      yaml: null
+      sns_models_flag: null
+    assertions:
+    - method: assertions.app.check_type
+      expected: SimpleNamespace
+  - description: YAML is defined
+    arguments:
+      module: null
+      yaml: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/schema/resources/app.yaml
+      sns_models_flag: null
+    assertions:
+    - method: assertions.app.check_equals
+      field: Example_1
+      expected:
+        integer: 1
+        string: ''
+    - method: assertions.app.check_equals
+      field: Example_2
+      expected:
+        list: []
+        dictionary: {}
+  - description: Module is defined and simple name space model flag is true
+    arguments:
+      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/schema/resources/app.py
+      yaml: null
+      sns_models_flag: true
+    assertions:
+    - method: assertions.app.check_sns
+      field: Example_1
+      expected:
+        integer: 1
+        string: ''
+    - method: assertions.app.check_sns
+      field: Example_2
+      expected:
+        list: []
+        dictionary: {}
+- function: get_yaml_location
+  description: >
+    Returns the location of a specified YAML file, a YAML file associated with
+    a module, or this module's associated YAML file.
+  tests:
+  - description: Arguments are undefined
+    arguments:
+      module: null
+      yaml: null
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/schema/app.yaml
+  - description: YAML is defined
+    arguments:
+      module: null
+      yaml: YAML
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        location: YAML
+  - description: Module is Defined
+    arguments:
+      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/schema/app.py
+      yaml: null
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/schema/app.yaml
+- function: get_models_from_schema
+  description: Parses schema key in YAML content to create models for a schema
+  tests:
+  - description: Content is empty
+    arguments:
+      content: {}
+      location: location
+    assertions:
+    - method: assertions.app.check_sns
+      field: log
+      expected:
+        message: No schema defined in YAML at location location
+        level: warning
+  - description: Content contains schema
+    arguments:
+      content:
+        Scheme:
+          description: Example scheme
+          fields:
+          - name: field_a
+            description: String field
+            type: str
+            default: ''
+          - name: field_b
+            description: Integer field
+            type: int
+            default: 0
+          - name: field_c
+            description: List field
+            type: list
+            default: []
+      sns_models_flag: False
+    assertions:
+    - method: assertions.app.check_sns
+      field: models
+      expected:
+        Scheme:
+          field_a: ''
+          field_b: 0
+          field_c: []
+  - description: Content contains schema. Returns models as sns when flag is true.
+    arguments:
+      content:
+        Scheme:
+          description: Example scheme
+          fields:
+          - name: field_a
+            description: String field
+            type: str
+            default: ''
+          - name: field_b
+            description: Integer field
+            type: int
+            default: 0
+          - name: field_c
+            description: List field
+            type: list
+            default: []
+      sns_models_flag: true
+    assertions:
+    - method: assertions.app.check_sns
+      field: models.Scheme
+      expected:
+        field_a: ''
+        field_b: 0
+        field_c: []
+- function: get_model
+  description: >
+    Returns a model with default values of values from data passed into the
+    function
+  tests:
+  - description: Arguments as undefined
+    arguments: {}
+    assertions:
+    - method: assertions.app.check_equals
+      field: __dict__
+      expected: {}
+  - cast_arguments:
+    - method: sns
+      field: models
+      unpack: true
+    tests:
+    - description: Return model with default values
+      arguments:
+        name: Example
+        models:
+          Example:
+            a: a
+            b: b
+            c: c
+      assertions:
+      - method: assertions.app.check_sns
+        expected:
+          a: a
+          b: b
+          c: c
+    - description: Return model with values from data
+      arguments:
+        data:
+          a: A
+          b: B
+        name: Example
+        models:
+          Example:
+            a: a
+            b: b
+            c: c
+      assertions:
+      - method: assertions.app.check_sns
+        expected:
+          a: A
+          b: B
+          c: c

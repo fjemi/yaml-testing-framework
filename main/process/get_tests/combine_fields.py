@@ -5,6 +5,7 @@
 from types import SimpleNamespace as sns
 from typing import Any
 
+from main import utils
 from main.utils import get_config
 
 

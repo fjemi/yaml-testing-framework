@@ -4,7 +4,7 @@
 
 from types import SimpleNamespace as sns
 
-from main.process.get_tests.combine_fields import main as combine_fields
+from main.process.get_tests import combine_fields
 from main.utils import get_config, independent, schema
 
 
@@ -35,7 +35,7 @@ def add_configurations_to_root_node(
 
   for field, value in data.root_node.__dict__.items():
     configuration = configurations.get(field, None)
-    combination = combine_fields(
+    combination = combine_fields.main(
       high=configuration,
       low=value,
       field=field, )
@@ -62,7 +62,7 @@ def expand_nested_nodes(
     for field in TEST_FIELDS:
       low = getattr(nested_node, field, None)
       high = getattr(node, field, None)
-      combination = combine_fields(
+      combination = combine_fields.main(
         high=high,
         low=low,
         field=field, )
@@ -119,7 +119,7 @@ def remove_roots_of_expanded_nodes(
 def examples() -> None:
   from main.utils import invoke_testing_method
 
-  invoke_testing_method.main()
+  invoke_testing_method.main(location='.')
 
 
 if __name__ == '__main__':

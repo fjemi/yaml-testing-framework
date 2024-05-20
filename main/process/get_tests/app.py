@@ -4,8 +4,7 @@
 
 from types import SimpleNamespace as sns
 
-from main.process.get_tests import expand_node
-from main.process.get_tests.combine_fields import main as combine_fields
+from main.process.get_tests import combine_fields, expand_node
 from main.utils import get_config, independent
 
 
@@ -59,7 +58,7 @@ def add_locations_to_configurations(
 
   for field, location in locations.__dict__.items():
     configuration = data.configurations.get(field, None)
-    combination = combine_fields(
+    combination = combine_fields.main(
       high=location,
       low=configuration,
       field=field, )

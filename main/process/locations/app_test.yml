@@ -1,0 +1,358 @@
+resources:
+- https://stackoverflow.com/questions/51162285/trying-to-print-multiline-string-on-one-line-string-stored-as-variable
+
+
+locations:
+  root: &ROOT ${YAML_TESTING_FRAMEWORK_ROOT_DIR}
+  app: &APP ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/locations.py
+  resources: &RESOURCES ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/locations/resources
+
+
+configurations:
+  resources:
+  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/assertions/app.py
+  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/locations/resources/app.py
+
+
+tests:
+- function: main
+  description: >
+    Return a list of dictionaries containing the locations of a module, YAML,
+    and resources for testing
+  cast_output:
+  - method: resources.app.list_sns_to_list_dict
+    field: locations
+  tests:
+  - description: Project path does not exist
+    arguments:
+      project_path: does/not/exist
+      exclude_files: exclusion_pattern
+      yaml_suffix: _test
+    assertions:
+    - method: assertions.app.check_sns
+      field: log
+      expected:
+        level: error
+        message: No modules at location does/not/exist
+    - method: assertions.app.check_sns
+      expected:
+        locations: []
+  - description: Project path is a directory
+    arguments:
+      project_path: *RESOURCES
+      exclude_files: exclusion_pattern
+      yaml_suffix: _test
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        locations:
+        - module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/locations/resources/exclusion_pattern.py
+          module_route: .main.process.locations.resources.exclusion_pattern
+          yaml: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/locations/resources/exclusion_pattern_test.yml
+        - module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/locations/resources/app.py
+          module_route: .main.process.locations.resources.app
+          yaml: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/locations/resources/app_test.yml
+- function: format_paths
+  description: >
+    Returns a project's directory based on the location defined in a dictionary
+  tests:
+  - description: >
+      Use path to current project's root directory when path argument is undefined
+    arguments:
+      path: null
+    assertions:
+    - method: assertions.app.check_type
+      expected: SimpleNamespace
+    - method: assertions.app.check_sns
+      field: paths
+      expected:
+        directory: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}
+        kind: directory
+        path: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}
+        root: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}
+  - description: Path does not exist
+    arguments:
+      path: does_not_exist
+    assertions:
+    - method: assertions.app.check_sns
+      field: paths
+      expected:
+        root: *ROOT
+        path: does_not_exist
+        kind: ''
+        directory: does_not_exist
+  - description: Path is an existing directory
+    arguments:
+      path: *RESOURCES
+    assertions:
+    - method: assertions.app.check_sns
+      field: paths
+      expected:
+        root: *ROOT
+        path: *RESOURCES
+        directory: *RESOURCES
+        kind: directory
+  - description: Path is an existing file
+    arguments:
+      path: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/locations/resources/app.py
+    assertions:
+    - method: assertions.app.check_sns
+      field: paths
+      expected:
+        root: *ROOT
+        directory: *RESOURCES
+        kind: file
+        path: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/locations/resources/app.py
+- function: format_yaml_suffix
+  description: Sets the suffix used in YAML test file names
+  tests:
+  - description: Argument is undefined
+    arguments:
+      yaml_suffix: null
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        yaml_suffix: _test
+  - description: Argument is defined
+    arguments:
+      yaml_suffix: yaml_suffix
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        yaml_suffix: _yaml_suffix
+- function: format_exclude_files
+  description: >
+    Returns a list strings that are patterns used to
+    exclude files from testing
+  tests:
+  - description: Argument is undefined
+    arguments:
+      exclude_files: null
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        exclude_files:
+        - .venv
+        - .eggs
+        - build
+        - .ignore
+        - __pycache__
+        - .pyc
+        - .trunk
+  - description: Argument is a string
+    arguments:
+      exclude_files: exclude_files
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        exclude_files:
+        - exclude_files
+        - .venv
+        - .eggs
+        - build
+        - .ignore
+        - __pycache__
+        - .pyc
+        - .trunk
+  - description: Argument is a list of strings
+    arguments:
+      exclude_files:
+      - exclude_files_a
+      - exclude_files_b
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        exclude_files:
+        - exclude_files_a
+        - exclude_files_b
+        - .venv
+        - .eggs
+        - build
+        - .ignore
+        - __pycache__
+        - .pyc
+        - .trunk
+- function: format_resources
+  description: Formats the resources field as a list of strings
+  tests:
+  - description: Argument is undefined
+    arguments:
+      resources: null
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        resources: []
+  - description: Argument is a string
+    arguments:
+      resources: resources
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        resources:
+        - resources
+  - description: Argument is a list
+    arguments:
+      resources:
+      - resource_a
+      - resource_b
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        resources:
+        - resource_a
+        - resource_b
+- function: flag_for_exclusion
+  description: Flags a path for exclusion if it contains an exclusion pattern
+  tests:
+  - description: Undefined arguments
+    arguments:
+      root: null
+      exclude_files: null
+    assertions:
+    - method: assertions.app.check_equals
+      expected: False
+  - description: Path flagged for exclusion
+    arguments:
+      root: pattern_a/resources_folder_name
+      exclude_files:
+      - pattern_a
+    assertions:
+    - method: assertions.app.check_equals
+      expected: True
+  - description: Path is not flagged for exclusion
+    arguments:
+      root: pattern_c/folder_name
+      exclude_files:
+      - pattern_a
+      - pattern_b
+    assertions:
+    - method: assertions.app.check_equals
+      expected: False
+- function: get_route_for_module
+  description: Format's the module location for use in a test id
+  tests:
+  - description: Undefined arguments
+    arguments:
+      root: null
+      module: null
+    assertions:
+    - method: assertions.app.check_exception
+      expected: AttributeError
+  - description: Root is an empty string
+    arguments:
+      module: location/module.py
+      root: ''
+    assertions:
+    - method: assertions.app.check_equals
+      expected: location.module
+  - description: Defined module location
+    arguments:
+      module: location_a/location_b/module.py
+      root: location_a
+    assertions:
+    - method: assertions.app.check_equals
+      expected: .location_b.module
+  - description: Location is a string 1
+    arguments:
+      module: /project_path/module_route.py
+      root: /project_path
+    assertions:
+    - method: assertions.app.check_equals
+      expected: .module_route
+- function: get_module_and_yaml_location_when_path_kind_is_file
+  description: >
+    Returns a list containing a single SimpleNamespace objects that has the
+    location of module and its associated YAML file
+  cast_arguments:
+  - method: resources.app.paths_cast_arguments
+    field: paths
+  cast_output:
+  - method: resources.app.list_sns_to_list_dict
+    field: locations
+  tests:
+  - description: Undefined arguments
+    arguments: {}
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        locations: []
+  - description: Path is not a file
+    arguments:
+      paths:
+        kind: directory
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        locations: []
+  - description: Path is the location of a module file
+    arguments:
+      exclude_files: []
+      yaml_suffix: _test
+      paths:
+        kind: file
+        root: *ROOT
+        path: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/locations/resources/exclusion_pattern.py
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        locations:
+        - module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/locations/resources/exclusion_pattern.py
+          module_route: .main.process.locations.resources.exclusion_pattern
+          yaml: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/locations/resources/exclusion_pattern_test.yml
+  - description: Path is the location of a YAML file
+    arguments:
+      exclude_files: []
+      yaml_suffix: _test
+      paths:
+        kind: file
+        root: *ROOT
+        path: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/locations/resources/exclusion_pattern_test.yml
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        locations:
+        - module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/locations/resources/exclusion_pattern.py
+          module_route: .main.process.locations.resources.exclusion_pattern
+          yaml: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/locations/resources/exclusion_pattern_test.yml
+- function: get_module_and_yaml_location_when_path_kind_is_directory
+  description: >
+    Returns a list of SimpleNamespace objects containing the location of module
+    and YAML files
+  cast_arguments:
+  - method: resources.app.paths_cast_arguments
+    field: paths
+  cast_output:
+  - method: resources.app.list_sns_to_list_dict
+    field: locations
+  tests:
+  - description: Undefined arguments
+    arguments: {}
+    assertions:
+    - method: assertions.app.check_exception
+      expected: AttributeError
+  - description: Path is a file
+    arguments:
+      paths:
+        kind: file
+    assertions:
+    - method: assertions.app.check_sns
+      expected: {}
+  - description: Path is a directory
+    arguments:
+      exclude_files:
+      - exclusion_pattern
+      paths:
+        root: *ROOT
+        directory: *RESOURCES
+        kind: directory
+      yaml_suffix: _test
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        locations:
+        - module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/locations/resources/exclusion_pattern.py
+          module_route: .main.process.locations.resources.exclusion_pattern
+          yaml: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/locations/resources/exclusion_pattern_test.yml
+        - module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/locations/resources/app.py
+          module_route: .main.process.locations.resources.app
+          yaml: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/locations/resources/app_test.yml

@@ -1,0 +1,619 @@
+configurations:
+  resources:
+  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/assertions/app.py
+  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/assertions/resource.py
+
+
+tests:
+- function: main
+  description: >
+    Performs a number of operations to process an assertion and verify that the
+    output from a function is as expected
+  cast_arguments:
+  - method: resource.get_module_wrapper
+    field: module
+  cast_output:
+  - method: resource.list_sns_to_list_dict
+    field: assertions
+  tests:
+  - description: Undefined arguments
+    arguments:
+      module: null
+      output: null
+      assertions: null
+      id: null
+      id_short: null
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        assertions: []
+        _cleanup:
+        - module
+        - output
+    - method: assertions.app.check_sns
+      field: log
+      expected:
+        level: warning
+        message: Processed 0 assertions for None
+  - description: Single assertion that passes
+    arguments:
+      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/assertions/resource.py
+      output: output
+      assertions:
+      - method: check_equals
+        expected: output
+      id: id
+      id_short: id_short
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        _cleanup:
+        - module
+        - output
+        assertions:
+        - expected: output
+          id: id
+          id_short: id_short
+          method: check_equals
+          module: null
+          output: output
+          passed: true
+          log: null
+    - method: assertions.app.check_sns
+      field: log
+      expected:
+        message: Processed 1 assertion for id_short
+        level: info
+    - method: assertions.app.check_equals
+      field: assertions
+      expected:
+      - expected: output
+        method: check_equals
+        output: output
+        module: null
+        passed: true
+        id: id
+        id_short: id_short
+        log: null
+  - description: Two assertions. One passes and one fails
+    arguments:
+      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/assertions/resource.py
+      output:
+        key: output_value
+      assertions:
+      - method: check_equals
+        expected:
+          key: output_value
+      - method: check_equals
+        expected:
+          key: expected_value
+      id: id
+      id_short: id_short
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        _cleanup:
+        - module
+        - output
+    - method: assertions.app.check_sns
+      field: log
+      expected:
+        message: Processed 2 assertions for id_short
+        level: info
+    - method: assertions.app.check_equals
+      field: assertions
+      expected:
+      - expected:
+          key: output_value
+        method: check_equals
+        module: null
+        output:
+          key: output_value
+        passed: true
+        id: id
+        id_short: id_short
+        log: null
+      - expected: 'key: expected_value'
+        id: id
+        id_short: id_short
+        log: '[]'
+        method: check_equals
+        module: null
+        output: 'key: output_value'
+        passed: false
+  - description: Assertion method does not exist
+    arguments:
+      module:  ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/assertions/resource.py
+      output: output
+      assertions:
+      - method: pass_through_inner
+        expected: output
+      id: id
+      id_short: id_short
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        _cleanup:
+        - module
+        - output
+    - method: assertions.app.check_sns
+      field: log
+      expected:
+        level: info
+        message: Processed 1 assertion for id_short
+    - method: assertions.app.check_equals
+      field: assertions
+      expected:
+      - expected: 'null
+
+          ...'
+        method: pass_through_inner
+        output: 'Assertion method pass_through_inner does not exist
+      
+          ...'
+        passed: false
+        module:  null
+        log: '[]'
+        id: id
+        id_short: id_short
+- function: pre_processing
+  description: >
+    Formats assertion data before processing. Returns a single Assertion
+    model.
+  tests:
+  - description: Undefined arguments
+    arguments: {}
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        cast_output: null
+        expected: null
+        field: null
+        id: null
+        id_short: null
+        method: null
+        module: null
+        output: null
+        passed: false
+  - description: Assertion is empty dict and other arguments are defined
+    arguments:
+      assertion: {}
+      output: output
+      module: module
+      id: id
+      id_short: id_short
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        cast_output: null
+        expected: null
+        field: null
+        id: id
+        id_short: id_short
+        method: null
+        module: module
+        output: output
+        passed: false
+  - description: Assertions defined and other arguments are undefined
+    arguments:
+      assertion:
+        cast_output: cast_output
+        expected: expected
+        field: field
+        method: method
+      output: null
+      module: null
+      id: null
+      id_short: null
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        cast_output: cast_output
+        expected: expected
+        field: field
+        id: null
+        id_short: null
+        method: method
+        output: null
+        passed: false
+- function: pass_through
+  description: >
+    Returns the method to use if an assertion method does not exist. Returns data needed to
+    fail an assertion.
+  tests:
+  - description: Method is undefined
+    arguments: {}
+    assertions:
+    - method: assertions.app.check_function
+      expected:
+        location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/assertions/app.py
+        name: pass_through_inner
+    - method: assertions.app.check_function_output
+      expected:
+        arguments:
+        - expected: expected
+          output: output
+        output:
+        - output: Assertion method None does not exist
+          expected: ''
+          passed: false
+        cast_output:
+        - method: sns_to_dict
+        module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/assertions/resource.py
+  - description: Method is defined
+    arguments:
+      method: assertion_method_does_not_exist
+    assertions:
+    - method: assertions.app.check_function
+      expected:
+        name: pass_through_inner
+        location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/assertions/app.py
+    - method: assertions.app.check_function_output
+      expected:
+        arguments:
+        - expected: expected
+          output: output
+        output:
+        - output: Assertion method assertion_method_does_not_exist does not exist
+          expected: ''
+          passed: false
+        cast_output:
+        - method: sns_to_dict
+        module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/assertions/resource.py
+- function: get_assertion_method
+  description: >
+    Returns an assertion method defined in a resource module, given the route
+    to the method
+  cast_arguments:
+  - method: resource.get_module_wrapper
+    field: module
+  tests:
+  - description: UMethod undefined
+    arguments:
+      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/assertions/resource.py
+      method: null
+    assertions:
+    - method: assertions.app.check_sns
+      field: log
+      expected:
+        level: error
+        message: Assertion method None does not exist in module ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/assertions/resource.py
+  - description: Assertion method exists
+    arguments:
+      method: check_method_a
+      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/assertions/resource.py
+    assertions:
+    - method: assertions.app.check_type
+      expected: SimpleNamespace
+    - method: assertions.app.check_function
+      field: method
+      expected:
+        name: check_method_a
+        location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/assertions/resource.py
+  - description: Assertion method does not exist
+    arguments:
+      method: check_method_b
+      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/assertions/resource.py
+    assertions:
+    - method: assertions.app.check_sns
+      field: log
+      expected:
+        level: error
+        message: Assertion method check_method_b does not exist in module ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/assertions/resource.py
+    - method: assertions.app.check_function
+      field: method
+      expected:
+        name: pass_through_inner
+        location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/assertions/app.py
+- function: reset_output_value
+  description: >
+    Sets output to one of its fields, keys, or attributes; given the
+    dot-delimited route to the field
+  tests:
+  - description: Undefined arguments
+    arguments: {}
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        output: null
+  - description: Output is a string and field is undefined
+    arguments:
+      output: output
+      field: null
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        output: output
+  - description: Output is a dict and field is a key in the dict
+    arguments:
+      output:
+        key: value
+      field: key
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        output: value
+  - description: Output is a dict and field is route to nested key
+    arguments:
+      output:
+        key_a:
+          key_b: value
+      field: key_a.key_b
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        output: value
+  - description: Output is a dict and field is route to non-existing key
+    arguments:
+      output:
+        key: value
+      field: key_does_not_exist
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        output: null
+    - method: assertions.app.check_sns
+      field: log
+      expected:
+        message: Field key_does_not_exist does not exist in object of type NoneType
+        level: warning
+  - description: Output is a SimpleNamespace and field is route to an attribute
+    cast_arguments:
+    - method: resource.reset_output_value_cast_arguments
+      field: output
+    arguments:
+      output:
+        attribute: value
+      field: attribute
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        output: value
+- function: cast_output
+  description: >
+    Calls a method to cast output value as another value or data type
+  cast_arguments:
+  - field: module
+    method: resource.get_module_wrapper
+  tests:
+  - description: Undefined arguments
+    arguments:
+      output: null
+      cast_output: null
+      module: null
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        output: null
+        cast_output: null
+  - description: Module and output are defined
+    arguments:
+      output: output
+      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/assertions/resource.py
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        output: output
+        cast_output: null
+  - description: Cast output as a string
+    arguments:
+      output: 12345
+      cast_output:
+      - method: __builtins__.str
+      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/assertions/resource.py
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        output: '12345'
+        cast_output: null
+  - description: Cast output as a integer
+    arguments:
+      output: '12345'
+      cast_output:
+      - method: __builtins__.int
+      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/assertions/resource.py
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        output: 12345
+        cast_output: null
+- function: get_assertion_result
+  description: >
+    Returns the result (passed, expected, output) of calling the assertion
+    method
+  cast_arguments:
+  - method: resource.method_resource
+    field: method
+  tests:
+  - description: Undefined arguments
+    arguments: {}
+    assertions:
+    - method: assertions.app.check_exception
+      expected: TypeError
+  - description: Assertion fails when expected and output are different values
+    arguments:
+      expected: expected
+      output: output
+      method: check_equals
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        method: check_equals
+        expected: expected
+        output: output
+        passed: false
+  - description: Assertion passes when expected and output are the same value
+    arguments:
+      expected: output
+      output: output
+      method: check_equals
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        method: check_equals
+        expected: output
+        output: output
+        passed: true
+  - description: Assertion fails and expected and output are converted to YAML
+    arguments:
+      expected:
+        expected_key:
+        - expected_value
+      output:
+        output_key:
+        - output_value
+      method: check_equals
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        method: check_equals
+        passed: False
+        expected:
+          expected_key:
+          - expected_value
+        output:
+          output_key:
+          - output_value
+- function: convert_to_yaml
+  description: Converts a field object to YAML
+  tests:
+  - description: Undefined arguments
+    arguments: {}
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        field: null
+        object: 'null
+
+          ...'
+  - description: Object is a string
+    arguments:
+      object: object
+      field: field
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        object: 'object
+
+          ...'
+  - description: Object is a dict
+    arguments:
+      object:
+        key: value
+      field: field
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        object: 'key: value'
+  - description: Object is a list
+    arguments:
+      object: [item_0, item_1, item_2]
+      field: field
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        object: '- item_0
+        
+          - item_1
+        
+          - item_2'
+  - description: Conversion fails
+    arguments:
+      object: >
+        a: b
+          c:
+      field: field
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        object: "a: b\n  c:\n"
+    - method: assertions.app.check_sns
+      field: log
+      expected:
+        message: ScannerError occurred trying to convert field to YAML
+        level: error
+- function: handle_failed_assertion
+  description: >
+    Converts expected and output values to YAML if the assertion
+    method fails
+  tests:
+  - description: Passed is false and expected/output values are list
+    arguments:
+      expected:
+      - a
+      - b
+      - c
+      output:
+      - a
+      - b
+      - c
+      passed: false
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        log: '[]'
+        expected: '- a
+
+          - b
+
+          - c'
+        output: '- a
+
+          - b
+
+          - c'
+  - description: Passed is false expected/output values are dicts
+    arguments:
+      passed: false
+      expected:
+        key: value
+      output:
+        key: value
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        log: '[]'
+        expected: 'key: value'
+        output: 'key: value'
+  - description: Passed is failed and expected/output are strings
+    arguments:
+      passed: false
+      expected: 'key: value'
+      output: 'key: value'
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        log: '[]'
+        expected: 'key: value'
+        output: 'key: value'
+  - description: Undefined arguments
+    arguments: {}
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        output: 'null
+        
+          ...'
+        expected: 'null
+        
+          ...'
+  - description: Passed it true
+    arguments:
+      passed: true
+      output: output
+      expected: expected
+    assertions:
+    - method: assertions.app.check_sns
+      expected: {}
+  - description: Passed it false
+    arguments:
+      passed: false
+      output: >
+        key: value
+      expected: >
+        key: value
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        output: "key: value"
+        expected: "key: value"

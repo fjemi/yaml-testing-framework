@@ -6,8 +6,7 @@ from types import ModuleType
 from types import SimpleNamespace as sns
 from typing import Any, Callable, List
 
-# trunk-ignore(ruff/F401)
-from main.process.casts.handle_casting import main as handle_casting
+from main.process.casts import handle_casting
 from main.utils import (
   get_config,
   get_module,
@@ -42,6 +41,17 @@ def main(
     object_ = data.object
 
   return object_
+
+
+def handle_casting_wrapper(
+  temp_object: Any,
+  method: Any,
+  unpack: bool,
+) -> sns:
+  return handle_casting.main(
+    temp_object=temp_object,
+    method=method,
+    unpack=unpack, )
 
 
 def get_module_wrapper(module: ModuleType | str) -> ModuleType | None:
