@@ -26,7 +26,7 @@ CONFIG = '''
     resource_suffix: _resource
     exclude_files:
     - ignore
-    - _resources
+    - resource
     # module: null
     resource_flag: False
     root_flag: False

@@ -5,7 +5,7 @@ resources:
 configurations:
   resources:
   - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/assertions/app.py
-  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/_resources/get_object.py
+  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/get_object/resource.py
 
 
 tests:
@@ -30,10 +30,10 @@ tests:
       expected: parent
   - description: Parent is a module and child is route to builtins function str
     cast_arguments:
-    - method: _resources.get_object.get_module_wrapper
+    - method: resource.get_module_wrapper
       field: parent
     arguments:
-      parent: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/_resources/get_object.py
+      parent: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/get_object/resource.py
       route: __builtins__.str
     assertions:
     - method: assertions.app.check_equals
@@ -129,7 +129,7 @@ tests:
         child: null
   - description: Parent is a simple name space
     cast_arguments:
-    - method: _resources.get_object.parent_to_sns
+    - method: resource.parent_to_sns
       field: parent
     arguments:
       parent:

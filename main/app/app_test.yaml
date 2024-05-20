@@ -13,7 +13,7 @@ TODO:
 configurations:
   resources:
   - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/assertions/app.py
-  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/_resources/app/app.py
+  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/app/resources/app.py
 
 
 tests:
@@ -21,11 +21,11 @@ tests:
   description: >
     Main module of this application. Returns the results of running tests
   cast_output:
-  - method: _resources.app.app.list_sns_to_list_dict
+  - method: resources.app.list_sns_to_list_dict
   tests:
   - description: Results from running tests associated with a module
     arguments:
-      project_path: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/_resources/app/add.py
+      project_path: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/app/resources/add.py
       yaml_suffix: _test
       resources:
       - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/assertions/app.py
@@ -33,16 +33,16 @@ tests:
     - method: assertions.app.check_equals
       expected:
       - expected: TypeError
-        id: ' .main._resources.app.add.add - 0.1 - Return the result of adding two integers '
-        id_short: .main._resources.app.add.add
+        id: ' .main.app.resources.add.add - 0.1 - Return the result of adding two integers '
+        id_short: .main.app.resources.add.add
         log: null
         method: check_exception
         module: null
         output: TypeError
         passed: true
       - expected: 3
-        id: ' .main._resources.app.add.add - 0.0 - Return the result of adding two integers '
-        id_short: .main._resources.app.add.add
+        id: ' .main.app.resources.add.add - 0.0 - Return the result of adding two integers '
+        id_short: .main.app.resources.add.add
         log: null
         method: check_equals
         module: null
@@ -97,13 +97,13 @@ tests:
         level: warning
   - description: Module exists at the location
     arguments:
-      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/_resources/app/app.py
-      module_route: .main._resources.app.app
+      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/app/resources/app.py
+      module_route: .main.resources.app
     assertions:
     - method: assertions.app.check_module
       field: module
       expected:
-        location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/_resources/app/app.py
+        location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/app/resources/app.py
 - function: get_resource_route
   description: >
     Get the route for a resource in a module based on resource and module's
@@ -154,7 +154,7 @@ tests:
 - function: handle_resources
   description: Loads resource modules into the module to test
   cast_arguments:
-  - method: _resources.app.app.get_module_wrapper
+  - method: resources.app.get_module_wrapper
     field: module
   tests:
   - description: Undefined arguments
@@ -169,11 +169,11 @@ tests:
       Resources is a list containing the locations of existing python and
       javascript modules, and the location of a non-existing module
     arguments:
-      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/_resources/app/module.py
+      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/app/resources/app.py
       resources:
       - does_not_exist.py
-      - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/_resources/app/resource.js
-      - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/_resources/app/resource.py
+      - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/app/resources/resource.js
+      - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/app/resources/resource.py
     assertions:
     - method: assertions.app.check_sns
       expected:
@@ -186,26 +186,26 @@ tests:
         standard_output: true
         resources_ignored:
         - does_not_exist.py
-        - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/_resources/app/resource.js
+        - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/app/resources/resource.js
     - method: assertions.app.check_module
       field: module
       expected:
-        location: ${PWD}/main/_resources/app/module.py
+        location: ${PWD}/main/app/resources/app.py
     # Verify that the resource was added to the module
     - method: assertions.app.check_module
       field: module.resource
       expected:
-        location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/_resources/app/resource.py
+        location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/app/resources/resource.py
 - function: handle_casting_arguments
   description: Handles casting arguments used to call test function
   cast_arguments:
-  - method: _resources.app.app.get_module_wrapper
+  - method: resources.app.get_module_wrapper
     field: module
   tests:
   - description: Undefined arguments
     arguments:
       cast_arguments: null
-      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/_resources/app/app.py
+      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/app/resources/app.py
       arguments: arguments
     assertions:
     - method: assertions.app.check_sns
@@ -216,7 +216,7 @@ tests:
   - description: Cast arguments is empty
     arguments:
       cast_arguments: []
-      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/_resources/app/app.py
+      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/app/resources/app.py
       arguments: arguments
     assertions:
     - method: assertions.app.check_sns
@@ -228,7 +228,7 @@ tests:
     arguments:
       cast_arguments:
       - method: __builtins__.int
-      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/_resources/app/app.py
+      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/app/resources/app.py
       arguments: '0000'
     assertions:
     - method: assertions.app.check_sns
@@ -241,7 +241,7 @@ tests:
       cast_arguments:
       - method: __builtins__.int
         field: key
-      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/_resources/app/app.py
+      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/app/resources/app.py
       arguments:
         key: '0000'
     assertions:
@@ -254,37 +254,37 @@ tests:
 - function: get_function
   description: Returns an existing function to test
   cast_arguments:
-  - method: _resources.app.app.get_module_wrapper
+  - method: resources.app.get_module_wrapper
     field: module
   tests:
   - description: Undefined arguments
     arguments:
       function: null
-      module: ${PWD}/main/_resources/app/module.py
+      module: ${PWD}/main/app/resources/resource.py
     assertions:
     - method: assertions.app.check_sns
       field: log
       expected:
-        message: Could not retrieve None from ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/_resources/app/module.py
+        message: Could not retrieve None from ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/app/resources/resource.py
         level: error
     - method: assertions.app.check_exception
       field: log.error
       expected: RuntimeError
   - description: Defined arguments
     arguments:
-      function: callable
-      module: ${PWD}/main/_resources/app/module.py
+      function: add
+      module: ${PWD}/main/app/resources/app.py
     assertions:
     - method: assertions.app.check_function
       field: function
       expected:
-        location: ${PWD}/main/_resources/app/module.py
-        name: callable
+        location: ${PWD}/main/app/resources/app.py
+        name: add
 - function: get_function_output_pack_arguments
   description: Return result of calling a function with packed arguments
   cast_arguments:
   - field: function
-    method: _resources.app.app.get_resource
+    method: resources.app.get_resource
   tests: &GET_FUNCTION_OUTPUT_PACK_ARGUMENTS_TESTS
   - description: Return output when exception is undefined
     arguments:
@@ -342,7 +342,7 @@ tests:
 - function: get_function_output_unpack_arguments
   description: Calls a function with an unpacked dictionary as arguments
   cast_arguments:
-  - method: _resources.app.app.get_resource
+  - method: resources.app.get_resource
     field: function
   tests: &GET_FUNCTION_OUTPUT_UNPACK_ARGUMENTS_TESTS
   - description: Undefined arguments
@@ -397,7 +397,7 @@ tests:
 - function: get_function_output
   description: Returns the result of running a function with arguments
   cast_arguments:
-  - method: _resources.app.app.get_resource
+  - method: resources.app.get_resource
     field: function
   tests:
   - description: Arguments is an empty dictionary
@@ -455,13 +455,13 @@ tests:
 - function: handle_casting_output
   description: Handles casting the output from calling the function to test
   cast_arguments:
-  - method: _resources.app.app.get_module_wrapper
+  - method: resources.app.get_module_wrapper
     field: module
   tests:
   - description: Undefined arguments
     arguments:
       cast_output: null
-      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/_resources/app/app.py
+      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/app/resources/app.py
       output: null
     assertions:
     - method: assertions.app.check_sns
@@ -472,7 +472,7 @@ tests:
   - description: Cast output is an empty list
     arguments:
       cast_output: []
-      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/_resources/app/app.py
+      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/app/resources/app.py
       output: output
     assertions:
     - method: assertions.app.check_sns
@@ -484,7 +484,7 @@ tests:
     arguments:
       cast_output:
       - method: __builtins__.str
-      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/_resources/app/app.py
+      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/app/resources/app.py
       output: 1
     assertions:
     - method: assertions.app.check_sns
@@ -501,7 +501,7 @@ tests:
       cast_output:
       - method: __builtins__.int
         field: key
-      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/_resources/app/app.py
+      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/app/resources/app.py
       output:
         key: '0000'
     assertions:
@@ -517,7 +517,7 @@ tests:
     field: test
     unpack: true
   cast_output:
-  - method: _resources.app.app.list_sns_to_list_dict
+  - method: resources.app.list_sns_to_list_dict
   tests:
   - description: Undefined test results in empty list
     arguments: {}
@@ -527,12 +527,12 @@ tests:
   - description: Defined test returns a list containing assertions
     arguments:
       test:
-        project_path: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/_resources/app/add.py
-        module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/_resources/app/add.py
-        yaml: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/_resources/app/add.yaml
+        project_path: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/app/resources/add.py
+        module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/app/resources/add.py
+        yaml: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/app/resources/add.yaml
         function: add
         function_name: add
-        module_route: .main._resources.app.add.app
+        module_route: .main.resources.add.app
         key: 0.0
         arguments:
           a: 0
@@ -545,11 +545,11 @@ tests:
     assertions:
     - method: assertions.app.check_equals
       cast_output:
-      - method: _resources.app.app.list_sns_to_list_dict
+      - method: resources.app.list_sns_to_list_dict
       expected:
       - expected: 11
-        id: ' .main._resources.app.add.app.add - 0.0 '
-        id_short: .main._resources.app.add.app.add
+        id: ' .main.resources.add.app.add - 0.0 '
+        id_short: .main.resources.add.app.add
         log: null
         method: check_equals
         module: null
@@ -558,7 +558,7 @@ tests:
 - function: run_test_handler
   description: Handles running tests of various kinds
   cast_arguments:
-  - method: _resources.app.app.list_dict_to_list_sns
+  - method: resources.app.list_dict_to_list_sns
     field: tests
   tests:
   - description: Tests is undefined
@@ -573,7 +573,7 @@ tests:
       tests:
       - resources:
         - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/assertions/app.py
-        module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/_resources/app/add.py
+        module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/app/resources/add.py
         function: add
         description: Return the result of adding two integers
         arguments:
@@ -582,14 +582,14 @@ tests:
         assertions:
         - method: assertions.app.check_equals
           expected: 2
-        yaml: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/_resources/app/add_test.yaml
-        project_path: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/_resources/app/add.py
+        yaml: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/app/resources/add_test.yaml
+        project_path: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/app/resources/add.py
         module_route: app.add.app
         key: 0.0
     assertions:
     - method: assertions.app.check_sns
       cast_output:
-      - method: _resources.app.app.list_sns_to_list_dict
+      - method: resources.app.list_sns_to_list_dict
         field: tests
       expected:
         tests:
@@ -606,7 +606,7 @@ tests:
     Performs a number of operations to process content or tests defined in
     YAML files provided the locations of a YAML, module, and resource files
   cast_arguments:
-  - method: _resources.app.app.list_dict_to_list_sns
+  - method: resources.app.list_dict_to_list_sns
     field: locations
   tests:
   - description: Locations is an empty dictionary
@@ -622,18 +622,18 @@ tests:
   - description: Location of files associated with an "add" module
     arguments:
       locations:
-      - module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/_resources/app/add.py
+      - module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/app/resources/add.py
         module_route: add.app.app
-        yaml: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/_resources/app/add_test.yaml
+        yaml: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/app/resources/add_test.yaml
         resources:
         - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/assertions/app.py
-        - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/_resources/app/add/resources_folder_name/app.py
-        project_path: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/_resources/app/add/resources_folder_name/app.py
+        - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/app/resources/add/resources_folder_name/app.py
+        project_path: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/app/resources/add/resources_folder_name/app.py
     assertions:
     - method: assertions.app.check_sns
       cast_output:
       - field: tests
-        method: _resources.app.app.list_sns_to_list_dict
+        method: resources.app.list_sns_to_list_dict
       expected:
         tests:
         - expected: TypeError

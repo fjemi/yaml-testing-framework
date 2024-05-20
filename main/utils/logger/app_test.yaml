@@ -14,12 +14,12 @@ resources:
 - https://stackoverflow.com/questions/11232230/logging-to-two-files-with-different-settings
 
 
-log_dir: &LOG_DIR ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/_resources/logger/data
+log_dir: &LOG_DIR ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/logger/resources/data
 
 
 configurations:
   resources:
-  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/_resources/logger/logger.py
+  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/logger/resources/app.py
   - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/assertions/app.py
 
 
@@ -230,13 +230,13 @@ tests:
   #     expected: TypeError
   - description: Location is defined
     arguments:
-      location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/_resources/logger/data/log_file.log
+      location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/logger/resources/data/log_file.log
     assertions:
     - method: assertions.app.check_type
       expected: Logger
     - method: assertions.app.check_equals
       field: name
-      expected: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/_resources/logger/data/log_file.log
+      expected: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/logger/resources/data/log_file.log
 - function: create_logger
   description: >
     Creates the directory to store logs for each run of the app. The

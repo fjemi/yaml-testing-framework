@@ -9,7 +9,7 @@ resources:
 
 configurations:
   resources:
-  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/assertions/app_resource.py
+  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/assertions/resource.py
 
 
 tests:
@@ -18,7 +18,7 @@ tests:
     Verify the output is a SimpleNamespace object and contains specified
     fields and values
   cast_arguments:
-  - method: app_resource.check_sns_resource
+  - method: resource.check_sns_resource
     field: output
   tests:
   - description: Output is not a SimpleNamespace or expected is not a dict
@@ -75,7 +75,7 @@ tests:
     Verifies that an exception was raised. Checks for the name of the exception
     (TypeError, RuntimeError, etc)
   cast_arguments:
-  - method: app_resource.check_exception_resource
+  - method: resource.check_exception_resource
     field: output
   tests:
   - description: Output is not an Exception or expected is not a str
@@ -111,7 +111,7 @@ tests:
 - function: check_module
   description: Verify that the output is a module
   cast_arguments:
-  - method: app_resource.check_module_resource
+  - method: resource.check_module_resource
     field: output
   tests:
   - description: Undefined arguments
@@ -192,7 +192,7 @@ tests:
     parent module
   cast_arguments:
   - field: output
-    method: app_resource.check_function_resource
+    method: resource.check_function_resource
   tests:
   - description: Output is not a function
     arguments:
@@ -219,33 +219,33 @@ tests:
       output: callable
       expected:
         name: callable
-        location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/assertions/app_resource.py
+        location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/assertions/resource.py
     assertions:
     - method: check_sns
       expected:
         passed: true
         output:
           name: callable
-          location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/assertions/app_resource.py
+          location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/assertions/resource.py
         expected:
           name: callable
-          location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/assertions/app_resource.py
+          location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/assertions/resource.py
   - description: Output is an awaitable function
     arguments:
       output: coroutine
       expected:
         name: coroutine
-        location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/assertions/app_resource.py
+        location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/assertions/resource.py
     assertions:
     - method: check_sns
       expected:
         passed: true
         output:
           name: coroutine
-          location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/assertions/app_resource.py
+          location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/assertions/resource.py
         expected:
           name: coroutine
-          location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/assertions/app_resource.py
+          location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/assertions/resource.py
   # # Todo: Finish this test
   # - description: Output is a decorated function
   #   arguments:
@@ -269,7 +269,7 @@ tests:
     values
   cast_arguments:
   - field: output
-    method: app_resource.check_dataclass_resource
+    method: resource.check_dataclass_resource
   tests:
   - description: Output is not a dataclass
     arguments:
@@ -346,7 +346,7 @@ tests:
     Verify that the output is a class. Check the name of the class and specified
     fields and values
   cast_arguments:
-  - method: app_resource.check_class_resource
+  - method: resource.check_class_resource
     field: output
   tests:
   - description: Output or expected are not correct types
@@ -767,7 +767,7 @@ tests:
 - function: check_range
   description: Verify that the output is a range object
   cast_arguments:
-  - method: app_resource.check_range_resource
+  - method: resource.check_range_resource
     field: output
   tests:
   - description: Output is not a range object or expected not a dict
@@ -882,7 +882,7 @@ tests:
 - function: check_thread
   description: Verify that the output is of type threading.Thread
   cast_arguments:
-  - method: app_resource.check_thread_resource
+  - method: resource.check_thread_resource
     field: output
   tests:
   - description: Output is not of type thread or expected is not a dict
@@ -911,7 +911,7 @@ tests:
 - function: check_function_output
   description: Verify the output from calling a function
   cast_arguments:
-  - method: app_resource.check_function_output_resource
+  - method: resource.check_function_output_resource
     field: output
   tests:
   - description: Arguments are undefined
@@ -988,7 +988,7 @@ tests:
         output:
         - '1'
         - '3'
-        module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/assertions/app_resource.py
+        module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/assertions/resource.py
         cast_output:
         - method: __builtins__.str
     assertions:

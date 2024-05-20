@@ -1,7 +1,7 @@
 configurations:
   resources:
   - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/assertions/app.py
-  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/assertions_resource.py
+  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/assertions/resource.py
 
 
 tests:
@@ -10,10 +10,10 @@ tests:
     Performs a number of operations to process an assertion and verify that the
     output from a function is as expected
   cast_arguments:
-  - method: assertions_resource.get_module_wrapper
+  - method: resource.get_module_wrapper
     field: module
   cast_output:
-  - method: assertions_resource.list_sns_to_list_dict
+  - method: resource.list_sns_to_list_dict
     field: assertions
   tests:
   - description: Undefined arguments
@@ -37,7 +37,7 @@ tests:
         message: Processed 0 assertions for None
   - description: Single assertion that passes
     arguments:
-      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/assertions_resource.py
+      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/assertions/resource.py
       output: output
       assertions:
       - method: check_equals
@@ -77,7 +77,7 @@ tests:
         log: null
   - description: Two assertions. One passes and one fails
     arguments:
-      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/assertions_resource.py
+      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/assertions/resource.py
       output:
         key: output_value
       assertions:
@@ -123,7 +123,7 @@ tests:
         passed: false
   - description: Assertion method does not exist
     arguments:
-      module:  ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/assertions_resource.py
+      module:  ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/assertions/resource.py
       output: output
       assertions:
       - method: pass_through_inner
@@ -226,7 +226,7 @@ tests:
     assertions:
     - method: assertions.app.check_function
       expected:
-        location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/assertions.py
+        location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/assertions/app.py
         name: pass_through_inner
     - method: assertions.app.check_function_output
       expected:
@@ -239,7 +239,7 @@ tests:
           passed: false
         cast_output:
         - method: sns_to_dict
-        module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/assertions_resource.py
+        module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/assertions/resource.py
   - description: Method is defined
     arguments:
       method: assertion_method_does_not_exist
@@ -247,7 +247,7 @@ tests:
     - method: assertions.app.check_function
       expected:
         name: pass_through_inner
-        location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/assertions.py
+        location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/assertions/app.py
     - method: assertions.app.check_function_output
       expected:
         arguments:
@@ -259,29 +259,29 @@ tests:
           passed: false
         cast_output:
         - method: sns_to_dict
-        module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/assertions_resource.py
+        module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/assertions/resource.py
 - function: get_assertion_method
   description: >
     Returns an assertion method defined in a resource module, given the route
     to the method
   cast_arguments:
-  - method: assertions_resource.get_module_wrapper
+  - method: resource.get_module_wrapper
     field: module
   tests:
   - description: UMethod undefined
     arguments:
-      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/assertions_resource.py
+      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/assertions/resource.py
       method: null
     assertions:
     - method: assertions.app.check_sns
       field: log
       expected:
         level: error
-        message: Assertion method None does not exist in module ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/assertions_resource.py
+        message: Assertion method None does not exist in module ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/assertions/resource.py
   - description: Assertion method exists
     arguments:
       method: check_method_a
-      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/assertions_resource.py
+      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/assertions/resource.py
     assertions:
     - method: assertions.app.check_type
       expected: SimpleNamespace
@@ -289,22 +289,22 @@ tests:
       field: method
       expected:
         name: check_method_a
-        location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/assertions_resource.py
+        location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/assertions/resource.py
   - description: Assertion method does not exist
     arguments:
       method: check_method_b
-      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/assertions_resource.py
+      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/assertions/resource.py
     assertions:
     - method: assertions.app.check_sns
       field: log
       expected:
         level: error
-        message: Assertion method check_method_b does not exist in module ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/assertions_resource.py
+        message: Assertion method check_method_b does not exist in module ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/assertions/resource.py
     - method: assertions.app.check_function
       field: method
       expected:
         name: pass_through_inner
-        location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/assertions.py
+        location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/assertions/app.py
 - function: reset_output_value
   description: >
     Sets output to one of its fields, keys, or attributes; given the
@@ -359,7 +359,7 @@ tests:
         level: warning
   - description: Output is a SimpleNamespace and field is route to an attribute
     cast_arguments:
-    - method: assertions_resource.reset_output_value_cast_arguments
+    - method: resource.reset_output_value_cast_arguments
       field: output
     arguments:
       output:
@@ -374,7 +374,7 @@ tests:
     Calls a method to cast output value as another value or data type
   cast_arguments:
   - field: module
-    method: assertions_resource.get_module_wrapper
+    method: resource.get_module_wrapper
   tests:
   - description: Undefined arguments
     arguments:
@@ -389,7 +389,7 @@ tests:
   - description: Module and output are defined
     arguments:
       output: output
-      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/assertions_resource.py
+      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/assertions/resource.py
     assertions:
     - method: assertions.app.check_sns
       expected:
@@ -400,7 +400,7 @@ tests:
       output: 12345
       cast_output:
       - method: __builtins__.str
-      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/assertions_resource.py
+      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/assertions/resource.py
     assertions:
     - method: assertions.app.check_sns
       expected:
@@ -411,7 +411,7 @@ tests:
       output: '12345'
       cast_output:
       - method: __builtins__.int
-      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/assertions_resource.py
+      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/assertions/resource.py
     assertions:
     - method: assertions.app.check_sns
       expected:
@@ -422,7 +422,7 @@ tests:
     Returns the result (passed, expected, output) of calling the assertion
     method
   cast_arguments:
-  - method: assertions_resource.method_resource
+  - method: resource.method_resource
     field: method
   tests:
   - description: Undefined arguments

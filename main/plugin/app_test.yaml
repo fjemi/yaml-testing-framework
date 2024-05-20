@@ -21,7 +21,7 @@ configurations:
   - pytest_itemcollected
   # - pytest_configure
   resources:
-  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/_resources/plugin.py
+  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/plugin/resources/app.py
   - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/assertions/app.py
 
 
@@ -74,7 +74,7 @@ tests:
 - function: process_option_project_path
   description: Returns the root directory for the project
   cast_arguments:
-  - method: _resources.plugin.process_option_project_path_resource
+  - method: resources.app.process_option_project_path_resource
   tests:
   - description: Option and config are null
     arguments:
@@ -120,7 +120,7 @@ tests:
   - description: Non-null instance of pytest
     cast_arguments:
     - field: pytest_instance
-      method: _resources.plugin.pytest_resource
+      method: resources.app.pytest_resource
       unpack: false
     arguments:
       pytest_instance: pytest_instance
@@ -149,7 +149,7 @@ tests:
     options to the pytest parser
   cast_arguments:
   - field: parser
-    method: _resources.plugin.pytest_parser_resource
+    method: resources.app.pytest_parser_resource
   tests:
   - arguments:
       parser: parser
@@ -191,7 +191,7 @@ tests:
 #     and calls the app to collect and run tests
 #   cast_arguments:
 #   - field: config
-#     method: _resources.plugin.pytest_configure_resource
+#     method: resources.app.pytest_configure_resource
 #   tests:
 #   - arguments:
 #       config: config
@@ -201,7 +201,7 @@ tests:
 - function: set_node_ids
   description: Sets node ids that are displayed in pytest report summaries
   cast_arguments:
-  - method: _resources.plugin.set_node_ids_resource
+  - method: resources.app.set_node_ids_resource
     field: item
   tests:
   - description: Item is undefined

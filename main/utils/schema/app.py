@@ -51,7 +51,8 @@ def get_yaml_location(
 
   module = module or MODULE
   location = independent.get_path_of_yaml_associated_with_module(
-    module=module, extensions=CONFIG.extensions)
+    module=module,
+    extensions=CONFIG.extensions, )
   return sns(location=location)
 
 

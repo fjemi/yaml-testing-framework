@@ -5,13 +5,13 @@ resources:
 locations:
   root: &ROOT ${YAML_TESTING_FRAMEWORK_ROOT_DIR}
   app: &APP ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/locations.py
-  resources: &RESOURCES ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/_locations_resources
+  resources: &RESOURCES ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/locations/resources
 
 
 configurations:
   resources:
   - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/assertions/app.py
-  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/_locations_resources/app.py
+  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/locations/resources/app.py
 
 
 tests:
@@ -20,7 +20,7 @@ tests:
     Return a list of dictionaries containing the locations of a module, YAML,
     and resources for testing
   cast_output:
-  - method: _locations_resources.app.list_sns_to_list_dict
+  - method: resources.app.list_sns_to_list_dict
     field: locations
   tests:
   - description: Project path does not exist
@@ -46,12 +46,12 @@ tests:
     - method: assertions.app.check_sns
       expected:
         locations:
-        - module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/_locations_resources/exclusion_pattern.py
-          module_route: .main.process._locations_resources.exclusion_pattern
-          yaml: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/_locations_resources/exclusion_pattern_test.yml
-        - module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/_locations_resources/app.py
-          module_route: .main.process._locations_resources.app
-          yaml: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/_locations_resources/app_test.yml
+        - module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/locations/resources/exclusion_pattern.py
+          module_route: .main.process.locations.resources.exclusion_pattern
+          yaml: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/locations/resources/exclusion_pattern_test.yml
+        - module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/locations/resources/app.py
+          module_route: .main.process.locations.resources.app
+          yaml: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/locations/resources/app_test.yml
 - function: format_paths
   description: >
     Returns a project's directory based on the location defined in a dictionary
@@ -94,7 +94,7 @@ tests:
         kind: directory
   - description: Path is an existing file
     arguments:
-      path: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/_locations_resources/app.py
+      path: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/locations/resources/app.py
     assertions:
     - method: assertions.app.check_sns
       field: paths
@@ -102,7 +102,7 @@ tests:
         root: *ROOT
         directory: *RESOURCES
         kind: file
-        path: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/_locations_resources/app.py
+        path: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/locations/resources/app.py
 - function: format_yaml_suffix
   description: Sets the suffix used in YAML test file names
   tests:
@@ -264,10 +264,10 @@ tests:
     Returns a list containing a single SimpleNamespace objects that has the
     location of module and its associated YAML file
   cast_arguments:
-  - method: _locations_resources.app.paths_cast_arguments
+  - method: resources.app.paths_cast_arguments
     field: paths
   cast_output:
-  - method: _locations_resources.app.list_sns_to_list_dict
+  - method: resources.app.list_sns_to_list_dict
     field: locations
   tests:
   - description: Undefined arguments
@@ -291,14 +291,14 @@ tests:
       paths:
         kind: file
         root: *ROOT
-        path: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/_locations_resources/exclusion_pattern.py
+        path: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/locations/resources/exclusion_pattern.py
     assertions:
     - method: assertions.app.check_sns
       expected:
         locations:
-        - module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/_locations_resources/exclusion_pattern.py
-          module_route: .main.process._locations_resources.exclusion_pattern
-          yaml: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/_locations_resources/exclusion_pattern_test.yml
+        - module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/locations/resources/exclusion_pattern.py
+          module_route: .main.process.locations.resources.exclusion_pattern
+          yaml: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/locations/resources/exclusion_pattern_test.yml
   - description: Path is the location of a YAML file
     arguments:
       exclude_files: []
@@ -306,23 +306,23 @@ tests:
       paths:
         kind: file
         root: *ROOT
-        path: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/_locations_resources/exclusion_pattern_test.yml
+        path: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/locations/resources/exclusion_pattern_test.yml
     assertions:
     - method: assertions.app.check_sns
       expected:
         locations:
-        - module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/_locations_resources/exclusion_pattern.py
-          module_route: .main.process._locations_resources.exclusion_pattern
-          yaml: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/_locations_resources/exclusion_pattern_test.yml
+        - module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/locations/resources/exclusion_pattern.py
+          module_route: .main.process.locations.resources.exclusion_pattern
+          yaml: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/locations/resources/exclusion_pattern_test.yml
 - function: get_module_and_yaml_location_when_path_kind_is_directory
   description: >
     Returns a list of SimpleNamespace objects containing the location of module
     and YAML files
   cast_arguments:
-  - method: _locations_resources.app.paths_cast_arguments
+  - method: resources.app.paths_cast_arguments
     field: paths
   cast_output:
-  - method: _locations_resources.app.list_sns_to_list_dict
+  - method: resources.app.list_sns_to_list_dict
     field: locations
   tests:
   - description: Undefined arguments
@@ -350,9 +350,9 @@ tests:
     - method: assertions.app.check_sns
       expected:
         locations:
-        - module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/_locations_resources/exclusion_pattern.py
-          module_route: .main.process._locations_resources.exclusion_pattern
-          yaml: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/_locations_resources/exclusion_pattern_test.yml
-        - module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/_locations_resources/app.py
-          module_route: .main.process._locations_resources.app
-          yaml: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/_locations_resources/app_test.yml
+        - module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/locations/resources/exclusion_pattern.py
+          module_route: .main.process.locations.resources.exclusion_pattern
+          yaml: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/locations/resources/exclusion_pattern_test.yml
+        - module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/locations/resources/app.py
+          module_route: .main.process.locations.resources.app
+          yaml: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/locations/resources/app_test.yml

@@ -2,6 +2,7 @@ TODO:
 - revisit get_python_requires function
 - automate pushing to pypi; github hooks?
 - linting/formatting/trunk - ignore shebang and encoding at the top of module files
+- Process resources if a directory is specified
 
 
 resources:
@@ -14,7 +15,7 @@ resources:
 configurations:
   resources:
   - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/assertions/app.py
-  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/_resources/setup
+  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/resources/setup
 
 
 tests:
@@ -27,7 +28,7 @@ tests:
     - method: assertions.app.check_equals
       expected: null
   - arguments:
-      location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/_resources/setup/hello_world.yml
+      location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/resources/setup/hello_world.yml
     assertions:
     - method: assertions.app.check_equals
       expected: >
@@ -42,11 +43,11 @@ tests:
       expected:
         directory: null
   - arguments:
-      directory: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/_resources/setup
+      directory: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/resources/setup
     assertions:
     - method: assertions.app.check_equals
       expected:
-        directory: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/_resources/setup
+        directory: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/resources/setup
         long_description: '# README.md'
         pipfile_lock:
           _meta:
@@ -221,7 +222,7 @@ tests:
   tests:
   - description: Test 0
     arguments:
-      directory: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/_resources/setup
+      directory: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/resources/setup
     assertions:
     - method: assertions.app.check_equals
       expected:

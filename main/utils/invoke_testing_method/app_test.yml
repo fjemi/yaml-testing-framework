@@ -3,6 +3,7 @@ configurations:
   - run_pytest
   resources:
   - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/invoke_testing_method/resources/app.py
+  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/invoke_testing_method/resources/resource.py
   - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/assertions/app.py
 
 
@@ -30,7 +31,7 @@ tests:
       expected:
         exclude_files:
         - ignore
-        - _resources
+        - resource
         location: null
         method: plugin
         module: null
@@ -183,7 +184,8 @@ tests:
     - method: assertions.app.check_sns
       cast_output:
       - field: result
-        method: invoke_testing_method.resources.app.list_sns_to_list_dict
+        method: resources.resource.list_sns_to_list_dict
+        # method: resources.app.list_sns_to_list_dict
       expected: &MODULE_WITH_TESTS_ASSERTION_EXPECTED
         result:
         - expected: Hello Earth
@@ -227,7 +229,8 @@ tests:
   description: Runs tests using one of the defined invocation methods
   cast_output:
   - field: result
-    method: invoke_testing_method.resources.app.list_sns_to_list_dict
+    method: resources.resource.list_sns_to_list_dict
+    # method: resources.app.list_sns_to_list_dict
   tests:
   - description: Run tests by invoking plugin
     arguments:
@@ -269,13 +272,13 @@ tests:
       expected: SimpleNamespace
   - description: Run tests on modules in a directory using plugin invocation method
     arguments:
-      location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/_resources/invoke_testing_method/
+      location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/invoke_testing_method/resources
       method: plugin
       yaml_suffix: _test
       logging_enabled: True
     cast_output:
     - field: result
-      method: invoke_testing_method.resources.app.list_sns_to_list_dict
+      method: resources.app.list_sns_to_list_dict
     assertions:
     - method: assertions.app.check_sns
       expected:

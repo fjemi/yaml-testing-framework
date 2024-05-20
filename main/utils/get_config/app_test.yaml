@@ -1,7 +1,7 @@
 configurations:
   resources:
   - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/assertions/app.py
-  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/_resources/get_config/app.py
+  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/get_config/resources/app.py
 
 
 tests:
@@ -10,7 +10,7 @@ tests:
   tests:
   - description: Module location is set
     arguments:
-      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/_resources/get_config/app.py
+      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/get_config/resources/app.py
       config: null
       environment: null
     assertions:
@@ -45,7 +45,7 @@ tests:
   - description: YAML location is set
     arguments:
       module: null
-      config: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/_resources/get_config/app.yaml
+      config: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/get_config/resources/app.yaml
       environment: null
     assertions:
     - method: assertions.app.check_sns
@@ -86,18 +86,18 @@ tests:
           config: None
   - description: Config location is set
     arguments:
-      config: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/_resources/get_config/app.yaml
+      config: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/get_config/resources/app.yaml
     assertions:
     - method: assertions.app.check_sns
       expected:
-        config: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/_resources/get_config/app.yaml
+        config: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/get_config/resources/app.yaml
   - description: Module locations is set
     arguments:
-      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/_resources/get_config/app.py
+      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/get_config/resources/app.py
     assertions:
     - method: assertions.app.check_sns
       expected:
-        config: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/_resources/get_config/app.yaml
+        config: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/get_config/resources/app.yaml
 - function: get_yaml_content_wrapper
   description: Returns the content of a YAML file a location
   tests:
@@ -117,7 +117,7 @@ tests:
         content: {}
   - description: YAML location exists
     arguments:
-      location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/_resources/get_config/app.yaml
+      location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/get_config/resources/app.yaml
     assertions:
     - method: assertions.app.check_sns
       expected:
@@ -190,8 +190,8 @@ tests:
         environment: {}
   - description: Defined environment and config locations
     arguments:
-      environment: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/_resources/get_config/environment.yml
-      config: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/_resources/get_config/config.yml
+      environment: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/get_config/resources/environment.yml
+      config: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/get_config/resources/config.yml
     assertions:
     - method: assertions.app.check_sns
       field: log
@@ -209,8 +209,8 @@ tests:
           environment: environment
   - description: Defined operations and config locations
     arguments:
-      operations: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/_resources/get_config/operations.yml
-      config: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/_resources/get_config/config.yml
+      operations: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/get_config/resources/operations.yml
+      config: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/get_config/resources/config.yml
     assertions:
     - method: assertions.app.check_sns
       field: log
@@ -238,7 +238,7 @@ tests:
 - function: format_content_keys
   description: Formats specified keys in config content
   cast_arguments:
-  - method: _resources.get_config.app.format_environment_content_cast_arguments
+  - method: resources.app.format_environment_content_cast_arguments
     field: content
   tests:
   - description: Undefined arguments

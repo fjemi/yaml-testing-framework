@@ -4,7 +4,7 @@ todo:
 
 configurations:
   resources:
-  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/get_tests/_resources/expand_node.py
+  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/get_tests/resources/expand_node.py
   - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/assertions/app.py
 
 
@@ -14,7 +14,7 @@ tests:
     Expands nested tests into a single list of tests, and returns a count of the
     tests collected
   cast_output:
-  - method: _resources.expand_node.list_sns_to_list_dict
+  - method: resources.expand_node.list_sns_to_list_dict
     field: nodes
   tests:
   - description: Undefined arguments
@@ -277,7 +277,7 @@ tests:
     field: node
     unpack: true
   cast_output:
-  - method: _resources.expand_node.dict_sns_to_dict_dict
+  - method: resources.expand_node.dict_sns_to_dict_dict
   tests:
   - description: Empty arguments
     arguments:
@@ -361,7 +361,7 @@ tests:
     field: root_node
     unpack: true
   cast_output:
-  - method: _resources.expand_node.dict_sns_to_dict_dict
+  - method: resources.expand_node.dict_sns_to_dict_dict
     field: nodes
   tests:
   - description: Root node is empty

@@ -18,7 +18,6 @@ def main(
   method: Any | None = None,
   unpack: bool | None = None,
 ) -> sns:
-
   kind = type(temp_object).__name__
   kind = CONFIG.kind_map.get(kind, 'any')
   flag = int((unpack or False) and kind != 'any')

@@ -42,6 +42,7 @@ exclude_files:
 - .eggs
 - build
 - __pycache__
+- resource
 
 
 locations:

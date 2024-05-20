@@ -119,6 +119,7 @@ def format_content_keys(content: sns | None = None) -> sns:
 
 
 def format_environment_content(value: dict | None = None) -> sns:
+  value = value.__dict__ if hasattr(value, '__dict__') else value
   for name, variable in value.items():
     if str(variable).find('$') == 0:
       value[name] = None

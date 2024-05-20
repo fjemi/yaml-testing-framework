@@ -13,7 +13,7 @@ configurations:
   # - blank
   # filter_resources_patterns:
   resources:
-  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/_resources/test_entrypoint/app.py
+  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/resources/test_entrypoint/app.py
   - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/assertions/app.py
 
 
