@@ -10,7 +10,7 @@ from types import ModuleType
 from types import SimpleNamespace as sns
 from typing import Any, Awaitable, Callable
 
-from main.process.casts import app as casts
+from main.process import casts
 from main.utils import get_object, independent
 
 

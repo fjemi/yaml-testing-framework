@@ -4,7 +4,7 @@
 
 from types import SimpleNamespace as sns
 
-from main.utils import schema
+from main.utils import invoke_testing_method, schema
 
 
 MODULE = __file__
@@ -29,8 +29,6 @@ def assertions_resource(assertions: list | None = None) -> list:
 
 
 def examples() -> None:
-  from main.utils import invoke_testing_method
-
   invoke_testing_method.main(resource_flag=True)
 
 

@@ -9,7 +9,7 @@ from typing import Any, List
 
 import pytest as py_test
 
-from main.app import main as app
+from main.app import app
 from main.utils import get_config, get_object
 
 
@@ -117,7 +117,7 @@ def pytest_configure(config: py_test.Config) -> None:
     key = name.replace('-', '_')
     data[key] = option or ini
 
-  py_test.yaml_tests = app(**data)
+  py_test.yaml_tests = app.main(**data)
   py_test.yaml_tests = py_test.yaml_tests or []
 
 

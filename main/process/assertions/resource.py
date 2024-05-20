@@ -8,12 +8,7 @@ from typing import Any, Callable
 
 import yaml
 
-from main.utils import (
-  get_config,
-  get_module,
-  invoke_testing_method,
-  schema,
-)
+from main.utils import get_config, get_module, invoke_testing_method, schema
 
 
 MODULE = __file__
@@ -163,8 +158,6 @@ def sns_to_dict(output: sns) -> dict:
 
 
 def examples() -> None:
-  from main.utils import invoke_testing_method
-
   invoke_testing_method.main(resource_flag=True)
 
 

@@ -8,7 +8,7 @@ from typing import Any, Callable, List
 
 import yaml
 
-from main.process.casts import app as casts
+from main.process import casts
 from main.utils import get_config, get_object, independent, schema, set_object
 
 

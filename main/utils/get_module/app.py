@@ -25,7 +25,8 @@ CONFIG = '''
   module_extensions:
   - .py
 '''
-CONFIG = independent.format_configurations_defined_in_module(config=CONFIG)
+CONFIG = independent.format_configurations_defined_in_module(
+  config=CONFIG)
 
 POOL = {}
 

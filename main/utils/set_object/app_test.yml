@@ -1,7 +1,7 @@
 configurations:
   resources:
   - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/assertions/app.py
-  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/_resources/set_object.py
+  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/set_object/resource.py
 
 
 tests:
@@ -60,7 +60,7 @@ tests:
     Returns a list of simple name space objects containing the name and value of
     child objects along a dot-delimited route
   cast_output:
-  - method: _resources.set_object.list_sns_to_list_dict
+  - method: set_object.resource.list_sns_to_list_dict
     field: objects
   tests:
   - description: Undefined arguments
@@ -135,7 +135,7 @@ tests:
           value: value
 - function: set_child_in_parent
   cast_arguments:
-  - method: _resources.set_object.set_child_in_parent_cast_arguments
+  - method: set_object.resource.set_child_in_parent_cast_arguments
   description: Sets the value of a a child object inside of a parent object
   tests:
   - description: Child are parent is undefined
@@ -174,7 +174,7 @@ tests:
   - description: Set child when parent is a simple name space
     cast_arguments:
     - field: parent.value
-      method: _resources.set_object.dict_to_sns
+      method: set_object.resource.dict_to_sns
     arguments:
       parent:
         value:
@@ -197,7 +197,7 @@ tests:
     to bottom
   cast_arguments:
   - field: objects
-    method: _resources.set_object.list_dict_to_list_sns
+    method: set_object.resource.list_dict_to_list_sns
   tests:
   - description: Undefined arguments
     arguments:
@@ -224,7 +224,7 @@ tests:
           key_0 : value_0
   - description: Set child value in a simple name space
     cast_arguments:
-    - method: _resources.set_object.reset_route_values_cast_arguments
+    - method: set_object.resource.reset_route_values_cast_arguments
       field: objects.0|1
     arguments:
       objects:

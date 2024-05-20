@@ -7,20 +7,11 @@ from types import ModuleType
 from types import SimpleNamespace as sns
 from typing import Any, Callable, Iterable, List
 
-import main.process.patches as _patches
-
-# trunk-ignore(ruff/F401)
-from main.process.assertions import main as process_assertions
-from main.process.casts import app as casts
-
-# trunk-ignore(ruff/F401)
-from main.process.environment import main as set_environment
-
-# trunk-ignore(ruff/F401)
-from main.process.get_tests.app import main as get_tests
-
-# trunk-ignore(ruff/F401)
-from main.process.locations import main as get_locations
+from main.process import assertions as _assertions
+from main.process import casts, locations
+from main.process import environment as _environment
+from main.process import get_tests as _get_tests
+from main.process import patches as _patches
 from main.utils import (
   get_config,
   get_module,
@@ -68,6 +59,50 @@ def process_patches(
 ) -> ModuleType:
   arguments = locals()
   return _patches.main(**arguments)
+
+
+def get_locations(
+  project_path: Any | None = None,
+  include_files: str | List[str] | None = None,
+  include_functions: str | List[str] | None = None,
+  exclude_files: str | List[str] | None = None,
+  exclude_functions: str | List[str] | None = None,
+  yaml_suffix: str | None = None,
+  resources: list | str | None = None,
+  logging_enabled: bool | None = None,
+  timestamp: int | float | None = None,
+) -> sns:
+  arguments = locals()
+  return locations.main(**arguments)
+
+
+def set_environment(
+  environment: dict | None,
+  module: ModuleType,
+) -> ModuleType:
+  arguments = locals()
+  return _environment.main(**arguments)
+
+
+def process_assertions(
+  assertions: list | None,
+  module: ModuleType,
+  output: Any,
+  id: str,
+  id_short: str,
+) -> ModuleType:
+  arguments = locals()
+  return _assertions.main(**arguments)
+
+
+def get_tests(
+  yaml: str | None = None,
+  module: str | None = None,
+  module_route: str | None = None,
+  resources: str | None = None,
+) -> sns:
+  arguments = locals()
+  return _get_tests.main(**arguments)
 
 
 def handle_id(

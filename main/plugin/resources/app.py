@@ -110,6 +110,8 @@ def set_node_ids_resource(item: str | None = None) -> sns:
 
 
 def examples() -> None:
+  from main.utils import invoke_testing_method
+
   invoke_testing_method.main(project_path=PARENT_MODULE)
 
 

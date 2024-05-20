@@ -2,18 +2,18 @@ configurations:
   exclude_functions:
   - run_pytest
   resources:
-  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/_resources/invoke_testing_method/resource.py
+  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/invoke_testing_method/resources/app.py
   - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/assertions/app.py
 
 
 arguments:
   module_with_tests: &MODULE_WITH_TESTS_ARGUMENTS
-    location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/_resources/invoke_testing_method/module_with_tests.py
+    location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/invoke_testing_method/resources/module_with_tests.py
     exclude_files: []
     yaml_suffix: _test
     logging_enabled: True
   module_without_tests: &MODULE_WITHOUT_TESTS_ARGUMENTS
-    location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/_resources/invoke_testing_method/module_without_tests.py
+    location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/invoke_testing_method/resources/module_without_tests.py
     exclude_files: []
     yaml_suffix: _test
     logging_enabled: True
@@ -183,22 +183,22 @@ tests:
     - method: assertions.app.check_sns
       cast_output:
       - field: result
-        method: _resources.invoke_testing_method.resource.list_sns_to_list_dict
+        method: invoke_testing_method.resources.app.list_sns_to_list_dict
       expected: &MODULE_WITH_TESTS_ASSERTION_EXPECTED
         result:
         - expected: Hello Earth
-          id: ' .main.utils._resources.invoke_testing_method.module_with_tests.hello_world - 0.1 - Returns
+          id: ' .main.utils.invoke_testing_method.resources.module_with_tests.hello_world - 0.1 - Returns
             a greeting '
-          id_short: .main.utils._resources.invoke_testing_method.module_with_tests.hello_world
+          id_short: .main.utils.invoke_testing_method.resources.module_with_tests.hello_world
           log: null
           method: check_equals
           module: null
           output: Hello Earth
           passed: true
         - expected: Hello World
-          id: ' .main.utils._resources.invoke_testing_method.module_with_tests.hello_world - 0.0 - Returns
+          id: ' .main.utils.invoke_testing_method.resources.module_with_tests.hello_world - 0.0 - Returns
             a greeting '
-          id_short: .main.utils._resources.invoke_testing_method.module_with_tests.hello_world
+          id_short: .main.utils.invoke_testing_method.resources.module_with_tests.hello_world
           log: null
           method: check_equals
           module: null
@@ -227,7 +227,7 @@ tests:
   description: Runs tests using one of the defined invocation methods
   cast_output:
   - field: result
-    method: _resources.invoke_testing_method.resource.list_sns_to_list_dict
+    method: invoke_testing_method.resources.app.list_sns_to_list_dict
   tests:
   - description: Run tests by invoking plugin
     arguments:
@@ -238,18 +238,18 @@ tests:
       expected:
         result:
         - expected: Hello Earth
-          id: ' .main.utils._resources.invoke_testing_method.module_with_tests.hello_world - 0.1 - Returns
+          id: ' .main.utils.invoke_testing_method.resources.module_with_tests.hello_world - 0.1 - Returns
             a greeting '
-          id_short: .main.utils._resources.invoke_testing_method.module_with_tests.hello_world
+          id_short: .main.utils.invoke_testing_method.resources.module_with_tests.hello_world
           log: null
           method: check_equals
           module: null
           output: Hello Earth
           passed: true
         - expected: Hello World
-          id: ' .main.utils._resources.invoke_testing_method.module_with_tests.hello_world - 0.0 - Returns
+          id: ' .main.utils.invoke_testing_method.resources.module_with_tests.hello_world - 0.0 - Returns
             a greeting '
-          id_short: .main.utils._resources.invoke_testing_method.module_with_tests.hello_world
+          id_short: .main.utils.invoke_testing_method.resources.module_with_tests.hello_world
           log: null
           method: check_equals
           module: null
@@ -275,23 +275,23 @@ tests:
       logging_enabled: True
     cast_output:
     - field: result
-      method: _resources.invoke_testing_method.resource.list_sns_to_list_dict
+      method: invoke_testing_method.resources.app.list_sns_to_list_dict
     assertions:
     - method: assertions.app.check_sns
       expected:
         result:
         - expected: Hello World
-          id: ' .main.utils._resources.invoke_testing_method.module_with_tests.hello_world
+          id: ' .main.utils.invoke_testing_method.resources.module_with_tests.hello_world
             - 0.0 - Returns a greeting '
-          id_short: .main.utils._resources.invoke_testing_method.module_with_tests.hello_world
+          id_short: .main.utils.invoke_testing_method.resources.module_with_tests.hello_world
           method: check_equals
           module: null
           output: Hello World
           passed: true
         - expected: Hello Earth
-          id: ' .main.utils._resources.invoke_testing_method.module_with_tests.hello_world
+          id: ' .main.utils.invoke_testing_method.resources.module_with_tests.hello_world
             - 0.1 - Returns a greeting '
-          id_short: .main.utils._resources.invoke_testing_method.module_with_tests.hello_world
+          id_short: .main.utils.invoke_testing_method.resources.module_with_tests.hello_world
           method: check_equals
           module: null
           output: Hello Earth

@@ -6,7 +6,7 @@ import logging
 from typing import Any, Callable
 
 from main.utils import invoke_testing_method
-from main.utils.logger import get_logger
+from main.utils import logger as logger_resource
 
 
 MODULE = __file__
@@ -22,7 +22,7 @@ def logging_method_resource(*args, **kwargs) -> Callable:
 
 
 def get_logger_wrapper(logger: Any | None = None) -> logging.Logger:
-  return get_logger(location=logger)
+  return logger_resource.get_logger(location=logger)
 
 
 def examples() -> None:

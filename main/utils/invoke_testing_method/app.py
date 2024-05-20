@@ -12,7 +12,7 @@ from typing import List
 
 import yaml as pyyaml
 
-from main.app import main as plugin
+from main import app
 from main.utils import independent
 
 
@@ -40,7 +40,8 @@ CONFIG = '''
     - set_location
     - run_tests_using_invocation_method
 '''
-CONFIG = independent.format_configurations_defined_in_module(config=CONFIG)
+CONFIG = independent.format_configurations_defined_in_module(
+  config=CONFIG)
 
 
 # trunk-ignore(ruff/PLR0913)
@@ -159,7 +160,7 @@ def invoke_plugin(
   yaml_suffix: str | None = None,
   logging_enabled: bool | None = None,
 ) -> sns:
-  result = plugin(
+  result = app.main(
     exclude_files=exclude_files,
     project_path=location,
     yaml_suffix=yaml_suffix,
@@ -195,8 +196,7 @@ def invoke_pytest(
   process = subprocess.run(
     args=args,
     shell=True,
-    check=True,
-    text=True, )
+    check=True,  )
   return sns(process=process)
 
 
