@@ -55,7 +55,6 @@ tests:
           id: id
           id_short: id_short
           method: check_equals
-          module: null
           output: output
           passed: true
           log: null
@@ -70,7 +69,6 @@ tests:
       - expected: output
         method: check_equals
         output: output
-        module: null
         passed: true
         id: id
         id_short: id_short
@@ -106,7 +104,6 @@ tests:
       - expected:
           key: output_value
         method: check_equals
-        module: null
         output:
           key: output_value
         passed: true
@@ -118,7 +115,6 @@ tests:
         id_short: id_short
         log: '[]'
         method: check_equals
-        module: null
         output: 'key: output_value'
         passed: false
   - description: Assertion method does not exist
@@ -152,7 +148,6 @@ tests:
       
           ...'
         passed: false
-        module:  null
         log: '[]'
         id: id
         id_short: id_short

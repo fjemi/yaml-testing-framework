@@ -37,7 +37,6 @@ tests:
         id_short: .main.app.resources.add.add
         log: null
         method: check_exception
-        module: null
         output: TypeError
         passed: true
       - expected: 3
@@ -45,7 +44,6 @@ tests:
         id_short: .main.app.resources.add.add
         log: null
         method: check_equals
-        module: null
         output: 3
         passed: true
 - function: handle_id
@@ -552,7 +550,6 @@ tests:
         id_short: .main.resources.add.app.add
         log: null
         method: check_equals
-        module: null
         output: 11
         passed: true
 - function: run_test_handler
@@ -598,7 +595,6 @@ tests:
           id_short: app.add.app.add
           log: null
           method: check_equals
-          module: null
           output: 2
           passed: true
 - function: run_tests
@@ -641,7 +637,6 @@ tests:
           id_short: add.app.app.add
           log: null
           method: check_exception
-          module: null
           output: TypeError
           passed: true
         - expected: 3
@@ -649,6 +644,5 @@ tests:
           id_short: add.app.app.add
           log: null
           method: check_equals
-          module: null
           output: 3
           passed: true
