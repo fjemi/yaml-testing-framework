@@ -35,7 +35,8 @@ def list_sns_to_list_dict(output: Any) -> Any:
 def examples() -> None:
   invoke_testing_method.main(
     resource_flag=True,
-    resources_folder_name='_resources', )
+    module_filename='app',
+    resources_folder_name='resources', )
 
 
 if __name__ == '__main__':

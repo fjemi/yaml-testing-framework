@@ -179,7 +179,9 @@ def get_resource(resource: Any | None = None) -> Callable:
 def examples() -> None:
   from main.utils import invoke_testing_method
 
-  invoke_testing_method.main(resource_flag=True)
+  invoke_testing_method.main(
+    module_filename='app',
+    resource_flag=True, )
 
 
 if __name__ == '__main__':

@@ -39,12 +39,11 @@ def call_spy(output: sns) -> dict:
 
 
 def examples() -> None:
-  import os
-
   from main.utils import invoke_testing_method
 
-  location = os.path.dirname(MODULE)
-  invoke_testing_method.main(location=location)
+  invoke_testing_method.main(
+    module_filename='app',
+    resource_flag=True, )
 
 
 if __name__ == '__main__':

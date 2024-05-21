@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 
-import os
 from types import SimpleNamespace as sns
 
 
@@ -25,9 +24,9 @@ def list_sns_to_list_dict(result: list | None = None) -> list | None:
 def examples() -> None:
   from main.utils import invoke_testing_method
 
-  location = os.path.dirname(MODULE)
-  location = os.path.dirname(location)
-  invoke_testing_method.main(location=location)
+  invoke_testing_method.main(
+    resources_folder_name='resources',
+    module_filename='app', )
 
 
 if __name__ == '__main__':
