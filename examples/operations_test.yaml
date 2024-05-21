@@ -49,14 +49,14 @@ tests:
     arguments:
       a: 1
       b: 1
-      method: multiply
+      method: method_does_not_exist
     assertions:
     - method: assertions.app.check_sns
       expected:
         a: 1
         b: 1
         result: Method does not exist
-        method: multiply
+        method: method_does_not_exist
   # # Assertion fails when uncommented
   # - description: Assertion fails
   #   arguments:
@@ -334,3 +334,29 @@ tests:
       expected:
         a: 5
         result: 15
+- function: multiply
+  description: >
+    Returns the product of two integers. An example of spying on a function
+    to see if it is called.
+  spies:
+  - add
+  cast_arguments:
+  - field: data
+    method: sns
+    unpack: true
+  tests:
+  - description: Multiply two integers and check that a function was called
+    arguments:
+      data:
+        a: 3
+        b: 4
+    assertions:
+    - method: assertions.app.check_sns
+      expected:
+        a: 3
+        b: 4
+        result: 12
+    - method: assertions.app.check_spies
+      expected:
+        add:
+          called: true
