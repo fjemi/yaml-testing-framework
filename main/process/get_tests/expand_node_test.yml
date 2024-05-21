@@ -52,6 +52,7 @@ tests:
           output: null
           patches: []
           resources: []
+          spies: []
           tests: null
           yaml: null
   - description: Root node with two nested nodes and defined configurations
@@ -89,6 +90,7 @@ tests:
           patches: []
           resources:
           - resources
+          spies: []
           tests: null
           yaml: yaml
         - arguments: {}
@@ -111,6 +113,7 @@ tests:
           patches: []
           resources:
           - resources
+          spies: []
           tests: null
           yaml: yaml
   - description: Root node with a nested node that has a nested node
@@ -151,6 +154,7 @@ tests:
           patches: []
           resources:
           - configurations
+          spies: []
           tests: null
           yaml: configurations
         - arguments: {}
@@ -174,6 +178,7 @@ tests:
           patches: []
           resources:
           - configurations
+          spies: []
           tests: null
           yaml: configurations
         - arguments: {}
@@ -197,6 +202,7 @@ tests:
           patches: []
           resources:
           - configurations
+          spies: []
           tests: null
           yaml: configurations
 - function: add_configurations_to_root_node
@@ -229,6 +235,7 @@ tests:
         output: null
         patches: []
         resources: []
+        spies: []
         tests: null
         yaml: null
   - description: Non-empty arguments
@@ -268,6 +275,7 @@ tests:
         resources:
         - configurations
         - root_node
+        spies: []
         tests: null
         yaml: configurations
 - function: expand_nested_nodes
@@ -325,6 +333,7 @@ tests:
           patches: []
           resources:
           - root_node
+          spies: []
           tests: null
           yaml: root_node
         key.1:
@@ -350,6 +359,7 @@ tests:
           patches: []
           resources:
           - root_node
+          spies: []
           tests: null
           yaml: root_node
 - function: get_expanded_nodes
@@ -421,6 +431,7 @@ tests:
             output: null
             patches: []
             resources: []
+            spies: []
             tests: null
             yaml: null
           '0.1':
@@ -445,6 +456,7 @@ tests:
             output: null
             patches: []
             resources: []
+            spies: []
             tests: null
             yaml: null
           '0.2':
@@ -469,6 +481,7 @@ tests:
             output: null
             patches: []
             resources: []
+            spies: []
             tests: null
             yaml: null
 - function: remove_roots_of_expanded_nodes

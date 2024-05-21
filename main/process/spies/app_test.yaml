@@ -1,0 +1,129 @@
+TODO:
+- Add logic to cast expected
+
+
+configurations:
+  resources:
+  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/spies/resource.py
+  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/assertions/app.py
+
+
+tests:
+- function: main
+  description: >
+    Returns a module with spied on methods. SPIES are stored in a dictionary
+    in the module, and the key for spy on a method is the route to the method
+    from the module of the function being tested.
+  cast_arguments:
+  - method: resource.get_module_wrapper
+    field: module
+  tests:
+  - description: No spies defined
+    arguments:
+      spies: null
+      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/spies/resource.py
+    assertions:
+    - method: assertions.app.check_type
+      expected: SimpleNamespace
+    - method: assertions.app.check_module
+      field: module
+      expected:
+        location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/spies/resource.py
+    - method: assertions.app.check_equals
+      field: module.SPIES
+      expected: {}
+  - description: Spies defined
+    arguments:
+      spies:
+      - add
+      - subtract
+      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/spies/resource.py
+    assertions:
+    - method: assertions.app.check_equals
+      field: module.SPIES
+      cast_output:
+      - method: resource.dict_sns_to_dict_dict
+      expected:
+        add:
+          called: False
+          called_with: null
+        subtract:
+          called: False
+          called_with: null
+    - method: assertions.app.check_function
+      field: module.add
+      expected:
+        location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/spies/resource.py
+        name: add
+    - method: assertions.app.check_equals
+      field: module.subtract._method
+      expected: spy
+- function: do_nothing
+  description: Returns a null object
+  arguments: {}
+  assertions:
+  - method: assertions.app.check_equals
+    expect: null
+- function: spy_on_method
+  description: >
+    Wraps a method in a module in a spy to tell if the method was called
+    and what it was called with. Then adds spy to the module store of spies.
+  tests:
+  - description: Undefined arguments
+    arguments: {}
+    assertions:
+    - method: assertions.app.check_exception
+      expected: TypeError
+  - cast_arguments:
+      field: module
+      method: resource.get_module_wrapper
+    tests:
+    - description: Method does not exist in module
+      arguments:
+        module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/spies/resource.py
+        route: method_does_not_exist
+      assertions:
+      - method: assertions.app.check_module
+        field: module
+        expected:
+          location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/spies/resource.py
+      - method: assertions.app.check_equals
+        field: module.SPIES
+        cast_output:
+        - method: resource.dict_sns_to_dict_dict
+        expected:
+          method_does_not_exist:
+            called: False
+            called_with: null
+      - method: assertions.app.check_function
+        field: module.method_does_not_exist
+        expected:
+          name: do_nothing
+          location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/spies/app.py
+    - description: Method exists in module
+      arguments:
+        module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/spies/resource.py
+        route: add
+      assertions:
+      - method: assertions.app.check_equals
+        field: module.SPIES
+        cast_output:
+        - method: resource.dict_sns_to_dict_dict
+        expected:
+          add:
+            called: False
+            called_with: null
+    - description: Call spied on method
+      arguments:
+        module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/spies/resource.py
+        route: add
+      assertions:
+      - method: assertions.app.check_equals
+        cast_output:
+        - method: resource.call_spy
+        expected:
+          add:
+            called: True
+            called_with:
+              a: 1
+              b: 1

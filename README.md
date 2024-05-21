@@ -230,6 +230,7 @@ fields can be defined globally or at different test levels.
 | cast_arguments | dict or list | Convert function arguments to other data types | append |
 | cast_output | dict or list | Convert function output to other data types | append |
 | assertions | dict or list | Verifies the output of functions | append |
+| spies | list or str | List of methods to spy on and see if called during test | append |
 | tests | dict or list | Nested configurations that get expanded into individual tests | append |
 
 
@@ -295,16 +296,15 @@ single assertion has the following fields:
 And single test can have multiple assertions
 
 ```yaml
-tests:
-- assertions:
-  - method: method_1
-    expected: expected_1
-    field: null
-    cast_output: []
-  - method: method_2
-    expected: expected_2
-    field: null
-    cast_output: []
+assertions:
+- method: method_1
+  expected: expected_1
+  field: null
+  cast_output: []
+- method: method_2
+  expected: expected_2
+  field: null
+  cast_output: []
 ```
 
 ## Cast arguments and output
@@ -322,21 +322,28 @@ The following fields make up a cast object:
 | unpack | Boolean indicating whether to unpack an object when casting| False |
 
 ```yaml
-tests:
-- cast_arguments:
-  - method: method_0
-    field: field_0
+cast_arguments:
+- method: method_0
+  field: field_0
+  unpack: false
+- method: method_1
+  field: field_1
+  unpack: false
+
+cast_output:
+- method: method_0
+  field: field_0
+  unpack: false
+- method: method_1
+  field: field_1
+  unpack: false
+
+assertions:
+- cast_output:
+  - method: method_2
+    field: field_2
     unpack: false
-  - method: method_1
-    field: field_1
-    unpack: false
-    ...
-  assertions:
-  - cast_output:
-    - method: method_2
-      field: field_2
-      unpack: false
-  ...
+...
 ```
 
 ## Patches
@@ -370,11 +377,10 @@ Patches are defined at a list of objects in YAML test files under the key
 
 
 ```yaml
-tests:
-- patches:
-  - method: value
-    value: value
-    name: name
+patches:
+- method: value
+  value: value
+  name: name
 ```
 
 
@@ -397,6 +403,59 @@ tests:
     NAME_B: b
 ```
 
+
+## Spies
+
+We can spy on methods to verify that the methods are called when the function being tested is executed. To do this we list the dot delimited routes to the methods to spy on under the key `spies` in YAML test files. Spies can be defined at the global, configuration, and test levels; and are combined into one. Spies are saved to the attribute `SPIES` in the module of the function being tests, and are accessible from an assertion method.
+
+### Example
+
+In this example, the methods to spy on are listed under the `spies` key at the individual test level, and an assertion method to verify spies is defined as a function.
+
+
+```yaml
+# ,/app_test.py
+
+tests:
+- spies:
+  - route.method_a
+  - route.method_b
+  assertions:
+  - method: check_spies
+    expected:
+      route.method_a:
+        called: True
+        called_with: []
+      route.method_b:
+        called: False
+        called_with: None
+```
+
+```python
+# ./assertions.py
+
+from types import ModuleType
+from types import SimpleNamespace as sns
+
+
+def check_spies(
+  module: ModuleType,
+  output: Any,
+  expected: dict
+) -> sns:
+  '''Example assertion method for verifying that a function was called'''
+  spies = {}
+  for key, value for expected.items():
+    spy = module.SPIES.get(key, {})
+      if spy != value
+        continue
+    spies[key] = spy
+  passed = expected == spies
+  return sns(
+    output=spies,
+    expected=expected,
+    passed=passed, )
+```
 
 <br>
 <a
