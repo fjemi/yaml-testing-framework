@@ -74,8 +74,9 @@ operations:
   - handle_module
   - handle_resources
   - set_environment
-  - process_patches
+  - set_patches
   - handle_casting_arguments
+  - set_spies
   - get_function
   - get_function_output
   - handle_casting_output

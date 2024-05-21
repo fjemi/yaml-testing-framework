@@ -76,10 +76,11 @@ def pre_processing(
 def pass_through(method: str | None = None) -> Callable:
 
   def pass_through_inner(
+    module: ModuleType | None = None,
     output: Any | None = None,
     expected: Any | None = None,
   ) -> Callable:
-    _ = output, expected
+    _ = output, expected, module
 
     return sns(
       passed=False,
@@ -140,15 +141,17 @@ def cast_output(
 
 
 def get_assertion_result(
+  module: ModuleType | None = None,
   method: Callable | None = None,
   output: Any | None = None,
   expected: Any | None = None,
 ) -> sns:
   result = method(
+    module=module,
     output=output,
     expected=expected, )
   result.method = method.__name__
-  result.module = None
+  result._cleanup = ['module']
   return result
 
 

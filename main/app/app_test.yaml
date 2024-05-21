@@ -2,12 +2,9 @@ TODO:
 - Add support for user defined logic (example, run_test_for_*) following the example for assertions
 - Add logic for testing APIs
 - Make timestamps a list and append timestamp at each logical operation
-- Add switcher for unpacking based on value and caster in 'execute_test'
 - Add logic for safe loading or regular loading data from yaml files -> configuration safe_load=true
-- Add logic to exclude specified modules from being imported as resources; help prevent errors caused by circular references
 - Add wrapper logic back in for external libraries
 - Consolidate duplicate code for sync and async functions -> https://stackoverflow.com/questions/27290656/should-i-use-two-asyncio-event-loops-in-one-program/27298880#27298880
-- tests as the root key for all tests instead of functions
 
 
 configurations:
@@ -37,7 +34,6 @@ tests:
         id_short: .main.app.resources.add.add
         log: null
         method: check_exception
-        module: null
         output: TypeError
         passed: true
       - expected: 3
@@ -45,7 +41,6 @@ tests:
         id_short: .main.app.resources.add.add
         log: null
         method: check_equals
-        module: null
         output: 3
         passed: true
 - function: handle_id
@@ -552,7 +547,6 @@ tests:
         id_short: .main.resources.add.app.add
         log: null
         method: check_equals
-        module: null
         output: 11
         passed: true
 - function: run_test_handler
@@ -598,7 +592,6 @@ tests:
           id_short: app.add.app.add
           log: null
           method: check_equals
-          module: null
           output: 2
           passed: true
 - function: run_tests
@@ -641,7 +634,6 @@ tests:
           id_short: add.app.app.add
           log: null
           method: check_exception
-          module: null
           output: TypeError
           passed: true
         - expected: 3
@@ -649,6 +641,5 @@ tests:
           id_short: add.app.app.add
           log: null
           method: check_equals
-          module: null
           output: 3
           passed: true

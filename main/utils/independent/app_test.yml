@@ -2,14 +2,7 @@ TODO:
 - Add test for decorated function and awaitable to ./main/app_test.yaml
 - Finalize logging and tests
 - Think of moving format_exception_and_trace to logger
-- |
-    Finish test for handle_logging. Need a spy:
-    - wrapper
-    - patch function with wrapper, wrappers has counter to keep track of times called and arguments passed in
-    - timestamp
-    - put this in the patch
-    - output should be sns with fields output, called - bool, called_with - dict, called_count - int
-    - will need the module
+- Finish test for the main function. May require a spy.
 
 
 resource:

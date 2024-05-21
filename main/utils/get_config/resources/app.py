@@ -20,7 +20,9 @@ def format_environment_content_cast_arguments(
 def examples() -> None:
   from main.utils import invoke_testing_method
 
-  invoke_testing_method.main(resource_flag=True)
+  invoke_testing_method.main(
+    resources_folder_name='resources',
+    resource_flag=True, )
 
 
 if __name__ == '__main__':

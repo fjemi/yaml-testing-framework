@@ -12,6 +12,7 @@ from main.process import casts, locations
 from main.process import environment as _environment
 from main.process import get_tests as _get_tests
 from main.process import patches as _patches
+from main.process import spies as _spies
 from main.utils import (
   get_config,
   get_module,
@@ -53,7 +54,15 @@ def main(
   return getattr(data, 'tests', None) or []
 
 
-def process_patches(
+def set_spies(
+  spies: list | None,
+  module: ModuleType,
+) -> ModuleType:
+  arguments = locals()
+  return _spies.main(**arguments)
+
+
+def set_patches(
   patches: list | None,
   module: ModuleType,
 ) -> ModuleType:

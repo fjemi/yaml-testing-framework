@@ -48,6 +48,7 @@ tests:
           resources:
           - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/get_tests/resources/resource.py
           - resource_configuration
+          spies: []
           tests: null
           yaml: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/get_tests/resources/app_test.yml
         - arguments: {}
@@ -70,6 +71,7 @@ tests:
           module_route: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/get_tests/resources/app.py
           output: null
           patches: []
+          spies: []
           resources:
           - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/get_tests/resources/resource.py
           - resource_configuration
@@ -95,6 +97,7 @@ tests:
           module_route: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/get_tests/resources/app.py
           output: null
           patches: []
+          spies: []
           resources:
           - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/get_tests/resources/resource.py
           - resource_configuration
@@ -254,6 +257,7 @@ tests:
           output: null
           patches: []
           resources: []
+          spies: []
           tests: null
           yaml: null
   - description: Single node with nested nodes
@@ -289,6 +293,7 @@ tests:
           output: null
           patches: []
           resources: []
+          spies: []
           tests: null
           yaml: null
         - arguments: {}
@@ -312,5 +317,6 @@ tests:
           output: null
           patches: []
           resources: []
+          spies: []
           tests: null
           yaml: null

@@ -86,6 +86,12 @@ Test: &TEST
     type: str
     description: ey or unique identifier for a test
     default: null
+  - name: spies
+    type: list | str
+    description: >
+      A list of methods to spy, where each item in the list is the dot
+      delimited route to a method
+    default: null
 
 
 # Update names

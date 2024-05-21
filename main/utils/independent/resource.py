@@ -160,7 +160,9 @@ def check_method(
 def examples() -> None:
   from main.utils import invoke_testing_method
 
-  invoke_testing_method.main(resource_flag=True)
+  invoke_testing_method.main(
+    resource_flag=True,
+    module_filename='app', )
 
 
 if __name__ == '__main__':

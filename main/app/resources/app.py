@@ -55,7 +55,8 @@ def examples() -> None:
   from main.utils import invoke_testing_method
 
   invoke_testing_method.main(
-    resources_folder_name='_resources',
+    resources_folder_name='resources',
+    module_filename='app',
     resource_flag=True, )
 
 

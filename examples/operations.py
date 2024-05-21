@@ -43,6 +43,14 @@ def subtract(data: sns | None = None) -> sns:
   return data
 
 
+def multiply(data: sns) -> sns:
+  data.result = 0
+  for i in range(data.a):
+    temp = sns(a=data.result, b=data.b)
+    data.result = add(temp).result
+  return data
+
+
 def constant(data: sns | None = None) -> sns:
   data.result = CONSTANT
   return data

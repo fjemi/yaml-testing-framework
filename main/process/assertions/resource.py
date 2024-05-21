@@ -29,9 +29,11 @@ def set_exception(assertion: Any) -> Any:
 
 
 def check_equals(
+  module: ModuleType,
   output: Any,
   expected: Any,
 ) -> sns:
+  _ = module
   passed = output == expected
   return sns(
     passed=passed,

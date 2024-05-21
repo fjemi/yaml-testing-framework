@@ -25,10 +25,18 @@ def get_logger_wrapper(logger: Any | None = None) -> logging.Logger:
   return logger_resource.get_logger(location=logger)
 
 
+def list_sns_to_list_dict(output: Any) -> Any:
+  if not isinstance(output, list):
+    return output
+
+  return [item.__dict__ for item in output]
+
+
 def examples() -> None:
   invoke_testing_method.main(
     resource_flag=True,
-    resources_folder_name='_resources', )
+    module_filename='app',
+    resources_folder_name='resources', )
 
 
 if __name__ == '__main__':
