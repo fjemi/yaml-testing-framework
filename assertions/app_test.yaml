@@ -1,6 +1,7 @@
 TODO:
 - Check if the "contains" assertions can be combined to reduce duplication of code
 - Need assertion for string/regex
+- Add ability to cast expected in assertions
 
 
 resources:
