@@ -592,6 +592,32 @@ def check_file_exists(
   return data
 
 
+def check_spies(
+  module: ModuleType | None = None,
+  output: str | None = None,
+  expected: str | None = None,
+) -> sns:
+  _ = output
+
+  store = {}
+  passed = True
+
+  for key, values in expected.items():
+    spy_store = {}
+
+    for field, value in values.items():
+      route = f'SPIES.{key}.{field}'
+      spy_store[field] = get_object.main(parent=module, route=route)
+
+    store[key] = spy_store
+
+  passed = store == expected
+  return sns(
+    output=store,
+    expected=expected,
+    passed=passed, )
+
+
 def examples() -> None:
   from main.utils import invoke_testing_method
 

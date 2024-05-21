@@ -1001,4 +1001,49 @@ tests:
         output:
         - '1'
         - '3'
-
+- function: check_spies
+  description: >
+    Verifies that spied on functions were called. Functions to check are listed
+    as keys in dictionary under the `expected` key under assertions. And the values
+    of keys in the dictionary should be `called` and/or `called_width`
+  cast_arguments:
+  - method: sns
+    field: module
+    unpack: true
+  tests:
+  - description: No spies defined
+    arguments:
+      module:
+        SPIES: {}
+      expected: {}
+      output: null
+    assertions:
+    - method: check_sns
+      expected:
+        output: {}
+        expected: {}
+        passed: true
+  - description: Spies defined
+    arguments:
+      module:
+        SPIES:
+          add:
+            called: False
+            called_with: None
+      expected:
+        add:
+          called: false
+          called_with: None
+      output: null
+    assertions:
+    - method: check_sns
+      expected:
+        output:
+          add:
+            called: False
+            called_with: None
+        expected:
+          add:
+            called: False
+            called_with: None
+        passed: true
