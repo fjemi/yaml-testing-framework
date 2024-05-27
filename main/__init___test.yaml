@@ -7,7 +7,7 @@ resources:
 configurations:
   resources:
   - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/_resources/__init___resource.py
-  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/assertions/app.py
+  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/app.py
 
 
 tests:
@@ -15,11 +15,11 @@ tests:
   description: Allows asyncio event loop to be nested
   arguments: {}
   assertions:
-  - method: assertions.app.check_equals
+  - method: checks.app.check_equals
     expected: 1
 - function: allow_nested_event_loops
   description: Allows asyncio event loop to be nested
   arguments: {}
   assertions:
-  - method: assertions.app.check_equals
+  - method: checks.app.check_equals
     expected: 1

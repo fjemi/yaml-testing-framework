@@ -69,10 +69,10 @@ def assertions_resource(
     case_.result = {'key': 'value'}
     case_.exception = {'name': 'name'}
     case_.assertions = '''
-    - method: assertions.app.check_type
+    - method: checks.app.check_type
       field: key
       expected: str
-    - method: assertions.app.check_substring_in_string
+    - method: checks.app.check_substring_in_string
       expected:
         key: value
     '''

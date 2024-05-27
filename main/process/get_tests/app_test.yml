@@ -1,7 +1,7 @@
 configurations:
   resources:
   - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/get_tests/resources/app.py
-  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/assertions/app.py
+  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/app.py
 
 
 tests:
@@ -12,7 +12,7 @@ tests:
   - description: Undefined arguments
     arguments: {}
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         tests: []
   - description: Defined arguments
@@ -23,7 +23,7 @@ tests:
       resources:
       - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/get_tests/resources/resource.py
     cast_output:
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       expected:
         tests:
         - arguments: {}
@@ -111,7 +111,7 @@ tests:
   - description: Undefined arguments
     arguments: {}
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         configurations: {}
         tests: []
@@ -119,7 +119,7 @@ tests:
     arguments:
       yaml: location/does/not/exist.yaml
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         configurations: {}
         tests: []
@@ -127,7 +127,7 @@ tests:
     arguments:
       yaml: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/get_tests/resources/app_test.yml
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         configurations:
           resources: resource_configuration
@@ -143,13 +143,13 @@ tests:
   - description: Undefined arguments
     arguments: {}
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         module: null
         module_route: null
         yaml: null
         resources: null
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       field: locations
       expected:
         module: null
@@ -163,13 +163,13 @@ tests:
       yaml: yaml
       resources: resources
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         module: null
         module_route: null
         yaml: null
         resources: null
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       field: locations
       expected:
         module: module
@@ -189,7 +189,7 @@ tests:
       configurations: {}
       locations: {}
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         locations: null
         configurations: {}
@@ -203,7 +203,7 @@ tests:
         yaml: yaml
         resources: resources
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         locations: null
         configurations:
@@ -225,7 +225,7 @@ tests:
       configurations: {}
       tests: []
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         tests: []
   - description: One node with no nested nodes
@@ -234,7 +234,7 @@ tests:
       tests:
       - description: description_a
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         tests:
         - arguments: {}
@@ -269,7 +269,7 @@ tests:
         - description: nested_0
         - description: nested_1
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         tests:
         - arguments: {}

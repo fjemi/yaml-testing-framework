@@ -20,7 +20,7 @@ log_dir: &LOG_DIR ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/logger/resources
 configurations:
   resources:
   - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/logger/resources/app.py
-  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/assertions/app.py
+  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/app.py
 
 
 tests:
@@ -31,7 +31,7 @@ tests:
     arguments:
       enabled: false
     assertions:
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       expected: 0
   - description: Logger has not been created
     patch:
@@ -41,7 +41,7 @@ tests:
     arguments:
       enabled: true
     assertions:
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       expected: 0
   # - description: Log info
   #   arguments:
@@ -51,7 +51,7 @@ tests:
   #     enabled: True
   #     standard_output: true
   #   assertions:
-  #   - method: assertions.app.check_equals
+  #   - method: checks.app.check_equals
   #     expected: 1
   # - description: Only logging enabled
   #   arguments:
@@ -101,37 +101,37 @@ tests:
 #     arguments:
 #       object: string
 #     assertions:
-#     - method: assertions.app.check_equals
+#     - method: checks.app.check_equals
 #       expected: string
 #   - description: Undefined object produces an error
 #     arguments:
 #       object: null
 #     assertions:
-#     - method: assertions.app.check_equals
+#     - method: checks.app.check_equals
 #       expected: None
 #   - description: When the object is a module, return its location
 #     arguments:
 #       object: module
 #     assertions:
-#     - method: assertions.app.check_equals
+#     - method: checks.app.check_equals
 #       expected: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/_resources/logger/module.py
 #   - description: Object is a function
 #     arguments:
 #       object: function_
 #     assertions:
-#     - method: assertions.app.check_equals
+#     - method: checks.app.check_equals
 #       expected: function_
 #   - description: Object is of type sh`Test`
 #     arguments:
 #       object: Test
 #     assertions:
-#     - method: assertions.app.check_substring_in_string
+#     - method: checks.app.check_substring_in_string
 #       expected: .main.logger._resources.app.Test
 #   - description: Object is of type sh`Exception`
 #     arguments:
 #       object: Exception
 #     assertions:
-#     - method: assertions.app.check_equals
+#     - method: checks.app.check_equals
 #       expected:
 #         exception: TypeError
 #         description: 'unsupported operand type(s) for +: ''int'' and ''str'''
@@ -141,7 +141,7 @@ tests:
 #   - description:
 #     arguments:
 #     assertions:
-#     - method: assertions.app.check_equals
+#     - method: checks.app.check_equals
 #       expected: 
 - function: format_as_json
   description: Converts data to JSON
@@ -149,20 +149,20 @@ tests:
   - arguments:
       log: {}
     assertions:
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       expected: '{}'
   - arguments:
       log:
         key: value
     assertions:
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       expected: '{"key": "value"}'
   - arguments:
       log:
         a: a
         b: b
     assertions:
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       expected: '{"a": "a", "b": "b"}'
 - function: format_as_yaml
   description: Convert data to YAML
@@ -171,7 +171,7 @@ tests:
     arguments:
       log: {}
     assertions:
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       expected: '{}
 
           '
@@ -181,7 +181,7 @@ tests:
         a: a
         b: b
     assertions:
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       expected: 'a: a
 
           b: b
@@ -192,7 +192,7 @@ tests:
   tests:
   - arguments: {}
     assertions:
-    - method: assertions.app.check_type
+    - method: checks.app.check_type
       expected: float
 - function: get_log_file_location
   description: Creates a log file and returns its location
@@ -206,7 +206,7 @@ tests:
       root_directory: root
       project_path: root/project
     assertions:
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       expected: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/.logs/root.project.log
   - description: Log directory environment variable is set
     patches:
@@ -217,7 +217,7 @@ tests:
       root_directory: root
       project_path: root/project
     assertions:
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       expected: .logs/root.project.log
 - function: get_logger
   description: Returns an instance of a Logger tied to the location of a log file
@@ -226,15 +226,15 @@ tests:
   #   arguments:
   #     location: null
   #   assertions:
-  #   - method: assertions.app.check_exception
+  #   - method: checks.app.check_exception
   #     expected: TypeError
   - description: Location is defined
     arguments:
       location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/logger/resources/data/log_file.log
     assertions:
-    - method: assertions.app.check_type
+    - method: checks.app.check_type
       expected: Logger
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       field: name
       expected: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/logger/resources/data/log_file.log
 - function: create_logger
@@ -247,7 +247,7 @@ tests:
       logging_enabled: null
       project_path: null
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         status: 0
   - description: Logging is not enabled
@@ -255,7 +255,7 @@ tests:
       logging_enabled: False
       project_path: null
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         status: 0
   - description: Logging is enabled
@@ -263,6 +263,6 @@ tests:
       logging_enabled: true
       project_path: project_path
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         status: 1

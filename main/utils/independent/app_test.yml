@@ -11,7 +11,7 @@ resource:
 
 configurations:
   resources:
-  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/assertions/app.py
+  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/app.py
   - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/independent/resource.py
 
 
@@ -23,7 +23,7 @@ tests:
     arguments:
       string: ''
     assertions:
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       expected: null
   - description: String in YAML list format
     arguments:
@@ -31,7 +31,7 @@ tests:
         - a
         - b
     assertions:
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       expected:
       - a
       - b
@@ -41,7 +41,7 @@ tests:
       - 1
       - 2
     assertions:
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       expected:
       - 1
       - 2
@@ -53,10 +53,10 @@ tests:
   - description: SafeLoader is default
     arguments: {}
     assertions:
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       field: __class__.__name__
       expected: type
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       cast_output:
       - method: __builtins__.str
       expected: "<class 'yaml.loader.SafeLoader'>\n..."
@@ -67,7 +67,7 @@ tests:
       value: DOES_NOT_EXIST
     arguments: {}
     assertions:
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       cast_output:
       - method: __builtins__.str
       expected: "<class 'yaml.loader.SafeLoader'>\n..."
@@ -78,7 +78,7 @@ tests:
       value: Full
     arguments: {}
     assertions:
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       cast_output:
       - method: __builtins__.str
       expected: "<class 'yaml.loader.FullLoader'>\n..."
@@ -91,27 +91,27 @@ tests:
     arguments:
       location: null
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         log: No YAML file at None
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       field: content
       expected: {}
   - description: Location does not exist
     arguments:
       location: location_does_not_exist
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         log: No YAML file at location_does_not_exist
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       field: content
       expected: {}
   - description: Location is an existing YAML file
     arguments:
       location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/independent/resource.yaml
     assertions:
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       field: content
       expected:
         hello: world
@@ -125,19 +125,19 @@ tests:
     arguments:
       object: null
     assertions:
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       expected: False
   - description: Object is callable
     arguments:
       object: callable_function
     assertions:
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       expected: False
   - description: Object is awaitable
     arguments:
       object: awaitable_function
     assertions:
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       expected: True
 - function: get_task_from_event_loop
   description: Returns the output of an awaitable or callable function
@@ -149,19 +149,19 @@ tests:
     arguments:
       task: null
     assertions:
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       expected: null
   - description: Task is callable output
     arguments:
       task: callable_function
     assertions:
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       expected: callable_output
   - description: Task is awaitable output
     arguments:
       task: awaitable_function
     assertions:
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       expected: awaitable_output
 - function: get_function_parameters
   description: Returns a list containing a functions parameters
@@ -173,20 +173,20 @@ tests:
     arguments:
       function: null
     assertions:
-    - method: assertions.app.check_exception
+    - method: checks.app.check_exception
       expected: TypeError
   - description: Function is a callable
     arguments:
       function: callable_function
     assertions:
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       expected:
       - parameter_a
   - description: Function is a awaitable
     arguments:
       function: awaitable_function
     assertions:
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       expected:
       - parameter_a
       - parameter_b
@@ -194,7 +194,7 @@ tests:
     arguments:
       function: decorated_callable
     assertions:
-    - method: assertions.app.check_item_in_list
+    - method: checks.app.check_item_in_list
       expected:
       - parameter_a
       - parameter_b
@@ -203,7 +203,7 @@ tests:
     arguments:
       function: decorated_awaitable
     assertions:
-    - method: assertions.app.check_item_in_list
+    - method: checks.app.check_item_in_list
       expected:
       - parameter_a
       - parameter_b
@@ -221,14 +221,14 @@ tests:
       data: null
       function: null
     assertions:
-    - method: assertions.app.check_exception
+    - method: checks.app.check_exception
       expected: TypeError
   - description: Function is a callable and data is an empty dictionary
     arguments:
       data: {}
       function: callable_function
     assertions:
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       expected:
         parameter_a: null
   - description: Function is a callable and data is a non-empty dictionary
@@ -237,7 +237,7 @@ tests:
         parameter_a: parameter_a
       function: callable_function
     assertions:
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       expected:
         parameter_a: parameter_a
   - description: Function is an awaitable and data is a non-empty dictionary
@@ -246,7 +246,7 @@ tests:
         parameter_a: a
       function: awaitable_function
     assertions:
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       expected:
         parameter_a: a
         parameter_b: null
@@ -262,7 +262,7 @@ tests:
         parameter_b: B
       function: awaitable_function
     assertions:
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       expected:
         parameter_a: A
         parameter_b: B
@@ -273,14 +273,14 @@ tests:
     arguments:
       output: null
     assertions:
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       expected: {}
   - description: Output is a dict
     arguments:
       output:
         key: value
     assertions:
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       expected:
         key: value
   - description: Output is a simple name space
@@ -292,14 +292,14 @@ tests:
       output:
         field: value
     assertions:
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       expected:
         field: value
   - description: Output is a list
     arguments:
       output: []
     assertions:
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       expected: null
 - function: format_exception_and_trace
   description: Formats an exception and its trace
@@ -311,13 +311,13 @@ tests:
     arguments:
       exception: null
     assertions:
-    - method: assertions.app.check_exception
+    - method: checks.app.check_exception
       expected: AttributeError
   - description: Runtime error
     arguments:
       exception: runtime_error
     assertions:
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       expected:
         description: runtime_error
         trace: []
@@ -326,7 +326,7 @@ tests:
     arguments:
       exception: type_error
     assertions:
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       expected:
         description: 'unsupported operand type(s) for +: ''int'' and ''str'''
         trace:
@@ -345,7 +345,7 @@ tests:
 #   - description: Undefined arguments
 #     arguments: {}
 #     assertions:
-#     - method: assertions.app.check_exception
+#     - method: checks.app.check_exception
 #       expected: AttributeError
 #   - description: >
 #       Output does not contain log and is not an exception. Debug flag is not
@@ -358,7 +358,7 @@ tests:
 #       timestamps: timestamps
 #       output: {}
 #     assertions:
-#     - method: assertions.app.check_equals
+#     - method: checks.app.check_equals
 #       expected:
 #         enabled: False
 #   - description: >
@@ -372,7 +372,7 @@ tests:
 #       output:
 #         log: log
 #     assertions:
-#     - method: assertions.app.check_equals
+#     - method: checks.app.check_equals
 #       expected:
 #         debug: False
 #         standard_output: False
@@ -404,7 +404,7 @@ tests:
 #           level: warning
 #       debug_flag: true
 #     assertions:
-#     - method: assertions.app.check_equals
+#     - method: checks.app.check_equals
 #       expected:
 #         debug: true
 #         standard_output: true
@@ -442,7 +442,7 @@ tests:
 #           level: warning
 #       debug_flag: true
 #     assertions:
-#     - method: assertions.app.check_equals
+#     - method: checks.app.check_equals
 #       expected:
 #         debug: true
 #         standard_output: true
@@ -473,7 +473,7 @@ tests:
 #         exception: exception
 #       exception_flag: true
 #     assertions:
-#     - method: assertions.app.check_equals
+#     - method: checks.app.check_equals
 #       expected:
 #         debug: False
 #         standard_output: true
@@ -520,11 +520,11 @@ tests:
           a: 1
           b: 2
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       field: output
       expected:
         c: 3
-    - method: assertions.app.check_type
+    - method: checks.app.check_type
       field: timestamps
       expected: SimpleNamespace
 - function: update_data_fields
@@ -541,7 +541,7 @@ tests:
         output: {}
         data: {}
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         output: {}
         data: {}
@@ -553,7 +553,7 @@ tests:
           b: B
         data: {}
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         data:
           a: A
@@ -570,7 +570,7 @@ tests:
           d: D
         data: {}
     assertions:
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       field: data.__dict__
       expected:
         c: C
@@ -582,13 +582,13 @@ tests:
     arguments:
       kind: null
     assertions:
-    - method: assertions.app.check_type
+    - method: checks.app.check_type
       expected: float
   - description: Kind is defined as a integer
     arguments:
       kind: int
     assertions:
-    - method: assertions.app.check_type
+    - method: checks.app.check_type
       expected: int
 - function: get_runtime_in_ms
   description: Returns a dict containing start,end, and run times
@@ -601,17 +601,17 @@ tests:
     arguments:
       timestamps: {}
     assertions:
-    - method: assertions.app.check_exception
+    - method: checks.app.check_exception
       expected: AttributeError
   - description: End and run times should be integers
     arguments:
       timestamps:
         start: 0
     assertions:
-    - method: assertions.app.check_type
+    - method: checks.app.check_type
       field: end
       expected: float
-    - method: assertions.app.check_type
+    - method: checks.app.check_type
       field: runtime_ms
       expected: float
   - patches:
@@ -623,7 +623,7 @@ tests:
       timestamps:
         start: 0
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         start: 0
         end: 2
@@ -642,7 +642,7 @@ tests:
         field_b: value_b
       field: field_b
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         field_a: value_a
         field_b: null
@@ -653,7 +653,7 @@ tests:
         key_b: value_b
       field: key_b
     assertions:
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       expected:
         key_a: value_a
 - function: purge_data_and_output_fields
@@ -671,7 +671,7 @@ tests:
         output: {}
         data: {}
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         output: {}
         data: {}
@@ -687,7 +687,7 @@ tests:
           b: B
           c: C
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         output: {}
         data:
@@ -709,7 +709,7 @@ tests:
           2: 2
           3: 3
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         output: {}
         data:
@@ -728,7 +728,7 @@ tests:
       data: null
       functions: null
     assertions:
-    - method: assertions.app.check_exception
+    - method: checks.app.check_exception
       expected: TypeError
   - description: Perform operations on a dictionary
     arguments:
@@ -742,7 +742,7 @@ tests:
         c: 0
       functions: null
     assertions:
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       expected:
         a: 0
         b: 0
@@ -763,7 +763,7 @@ tests:
         c: 3
       functions: null
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         a: 6
         b: 2
@@ -780,7 +780,7 @@ tests:
         c: '2'
       functions: null
     assertions:
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       cast_output:
       - method: resource.get_exception_name
         field: exception
@@ -796,7 +796,7 @@ tests:
       data: {}
       functions: null
     assertions:
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       field: __class__.__name__
       expected: KeyError
 - function: format_configurations_defined_in_module
@@ -807,13 +807,13 @@ tests:
     arguments:
       config: null
     assertions:
-    - method: assertions.app.check_exception
+    - method: checks.app.check_exception
       expected: TypeError
   - description: Config is an empty dict
     arguments:
       config: {}
     assertions:
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       field: __dict__
       expected: {}
   - description: Config is a non-empty dict
@@ -835,18 +835,18 @@ tests:
             default: default
         other: other
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       field: environment
       expected:
         A: A
         B: B
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       field: operations.__dict__
       expected:
         main:
         - a
         - b
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       field: other
       expected: other
 - function: get_path_of_yaml_associated_with_module
@@ -857,7 +857,7 @@ tests:
   - description: Undefined arguments
     arguments: {}
     assertions:
-    - method: assertions.app.check_exception
+    - method: checks.app.check_exception
       expected: TypeError
   - cast_arguments:
     - field: extensions
@@ -874,7 +874,7 @@ tests:
           - .yaml
           - .yml
       assertions:
-      - method: assertions.app.check_equals
+      - method: checks.app.check_equals
         expected: null
     - description: Module and YAML files exist
       arguments:
@@ -886,7 +886,7 @@ tests:
           - .yaml
           - .yml
       assertions:
-      - method: assertions.app.check_equals
+      - method: checks.app.check_equals
         expected: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/independent/resource.yaml
 - function: get_decorated_function
   description: >
@@ -899,13 +899,13 @@ tests:
   - description: Undefined arguments
     arguments: {}
     assertions:
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       expected: null
   - description: Function is not decorated
     arguments:
       function: callable
     assertions:
-    - method: assertions.app.check_function
+    - method: checks.app.check_function
       expected:
         name: callable
         location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/independent/resource.py
@@ -913,7 +913,7 @@ tests:
     arguments:
       function: callable_decorated_wrapped
     assertions:
-    - method: assertions.app.check_function
+    - method: checks.app.check_function
       expected:
         name: callable_decorated_wrapped
         location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/independent/resource.py
@@ -921,7 +921,7 @@ tests:
     arguments:
       function: callable_decorated_closure
     assertions:
-    - method: assertions.app.check_function
+    - method: checks.app.check_function
       expected:
         name: callable_decorated_closure
         location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/independent/resource.py
@@ -929,7 +929,7 @@ tests:
     arguments:
       function: awaitable_decorated_wrapped
     assertions:
-    - method: assertions.app.check_function
+    - method: checks.app.check_function
       expected:
         name: awaitable_decorated_wrapped
         location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/independent/resource.py
@@ -937,7 +937,7 @@ tests:
     arguments:
       function: awaitable_decorated_closure
     assertions:
-    - method: assertions.app.check_function
+    - method: checks.app.check_function
       expected:
         name: awaitable_decorated_closure
         location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/independent/resource.py
@@ -949,7 +949,7 @@ tests:
     arguments:
       function: null
     assertions:
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       expected: null
   - cast_arguments:
     - method: resource.get_function
@@ -959,7 +959,7 @@ tests:
       arguments:
         function: awaitable
       assertions:
-      - method: assertions.app.check_function
+      - method: checks.app.check_function
         expected:
           name: awaitable
           location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/independent/resource.py
@@ -967,7 +967,7 @@ tests:
       arguments:
         function: awaitable_decorated_closure
       assertions:
-      - method: assertions.app.check_function
+      - method: checks.app.check_function
         expected:
           name: awaitable_decorated_closure
           location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/independent/resource.py
@@ -979,7 +979,7 @@ tests:
     arguments:
       function: null
     assertions:
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       expected: null
   - cast_arguments:
     - method: resource.get_function
@@ -989,7 +989,7 @@ tests:
       arguments:
         function: awaitable
       assertions:
-      - method: assertions.app.check_function
+      - method: checks.app.check_function
         expected:
           name: awaitable
           location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/independent/resource.py
@@ -997,18 +997,18 @@ tests:
       arguments:
         function: awaitable_decorated_wrapped
       assertions:
-      - method: assertions.app.check_function
+      - method: checks.app.check_function
         expected:
           name: awaitable_decorated_wrapped
           location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/independent/resource.py
-      - method: assertions.app.check_equals
+      - method: checks.app.check_equals
         field: __wrapped__
         expected: null
     - description: Function decorated and `__wrapped__` attribute is not set
       arguments:
         function: awaitable_decorated_closure
       assertions:
-      - method: assertions.app.check_function
+      - method: checks.app.check_function
         expected:
           name: awaitable_decorated_closure
           location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/independent/resource.py

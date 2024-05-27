@@ -1,6 +1,6 @@
 configurations:
   resources:
-  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/assertions/app.py
+  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/app.py
   - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/schema/resources/app.py
 
 
@@ -16,7 +16,7 @@ tests:
       yaml: null
       sns_models_flag: null
     assertions:
-    - method: assertions.app.check_type
+    - method: checks.app.check_type
       expected: SimpleNamespace
   - description: YAML is defined
     arguments:
@@ -24,12 +24,12 @@ tests:
       yaml: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/schema/resources/app.yaml
       sns_models_flag: null
     assertions:
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       field: Example_1
       expected:
         integer: 1
         string: ''
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       field: Example_2
       expected:
         list: []
@@ -40,12 +40,12 @@ tests:
       yaml: null
       sns_models_flag: true
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       field: Example_1
       expected:
         integer: 1
         string: ''
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       field: Example_2
       expected:
         list: []
@@ -60,7 +60,7 @@ tests:
       module: null
       yaml: null
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/schema/app.yaml
   - description: YAML is defined
@@ -68,7 +68,7 @@ tests:
       module: null
       yaml: YAML
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         location: YAML
   - description: Module is Defined
@@ -76,7 +76,7 @@ tests:
       module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/schema/app.py
       yaml: null
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/schema/app.yaml
 - function: get_models_from_schema
@@ -87,7 +87,7 @@ tests:
       content: {}
       location: location
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       field: log
       expected:
         message: No schema defined in YAML at location location
@@ -112,7 +112,7 @@ tests:
             default: []
       sns_models_flag: False
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       field: models
       expected:
         Scheme:
@@ -139,7 +139,7 @@ tests:
             default: []
       sns_models_flag: true
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       field: models.Scheme
       expected:
         field_a: ''
@@ -153,7 +153,7 @@ tests:
   - description: Arguments as undefined
     arguments: {}
     assertions:
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       field: __dict__
       expected: {}
   - cast_arguments:
@@ -170,7 +170,7 @@ tests:
             b: b
             c: c
       assertions:
-      - method: assertions.app.check_sns
+      - method: checks.app.check_sns
         expected:
           a: a
           b: b
@@ -187,7 +187,7 @@ tests:
             b: b
             c: c
       assertions:
-      - method: assertions.app.check_sns
+      - method: checks.app.check_sns
         expected:
           a: A
           b: B

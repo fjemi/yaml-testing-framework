@@ -1,6 +1,6 @@
 configurations:
   resources:
-  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/assertions/app.py
+  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/app.py
 
 
 tests:
@@ -11,11 +11,11 @@ tests:
       a: 1
       b: 2
     assertions:
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       expected: 3
   - arguments:
       a: 1
       b: '1'
     assertions:
-    - method: assertions.app.check_exception
+    - method: checks.app.check_exception
       expected: TypeError

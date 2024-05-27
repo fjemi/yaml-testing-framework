@@ -10,9 +10,9 @@ tests:
     cast_arguments:
       data: DataClass
     assertions:
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       expected: 0
-    - method: assertions.app.check_type
+    - method: checks.app.check_type
       expected: [int, float]
   - description: Test description
     arguments:
@@ -25,9 +25,9 @@ tests:
       a: 1
       b: 2
     assertions:
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       expected: 3
-    - method: assertions.app.check_type
+    - method: checks.app.check_type
       expected: [int, float]
 - functions: add_dataclass
   description: Function description
@@ -37,7 +37,7 @@ tests:
         a: 1
         b: 2
     assertions:
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       expected: 3
-    - method: assertions.app.check_type
+    - method: checks.app.check_type
       expected: [int, float]

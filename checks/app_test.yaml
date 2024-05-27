@@ -10,10 +10,123 @@ resources:
 
 configurations:
   resources:
-  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/assertions/resource.py
+  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/resource.py
 
 
 tests:
+- function: type_checks_inner
+  description: >
+    Called by the `type_checks` decorator. Verifies the types of the expected
+    and output values passed to an assertion method coincide with the method's
+    type hints for its expected and output parameters.
+  cast_arguments:
+  - method: resource.get_method
+    field: method
+  - method: resource.get_module_resource
+    field: module
+  tests:
+  - description: Undefined arguments
+    arguments: {}
+    assertions:
+    - method: check_exception
+      expected: AttributeError
+  - description: >
+      Method where expected is a list and output is a dict. Check passes.
+    arguments:
+      module: module_resource
+      expected: []
+      output: {}
+      method: check_method_a
+    assertions:
+    - method: check_equals
+      expected: passed
+  - description: >
+      Method where expected is a list and output is a dict. Check fails.
+    arguments:
+      module: module_resource
+      expected: expected
+      output: 1
+      method: check_method_a
+    assertions:
+    - method: check_sns
+      expected:
+        expected:
+          kind: str
+          method: check_method_a
+          valid_kinds:
+          - list
+        output:
+          kind: int
+          method: check_method_a
+          valid_kinds:
+          - dict
+        passed: false
+  - description: >
+      Method has expected and output parameters with type hints that are Any
+      and a union. Checks pass.
+    arguments:
+      module: module_resource
+      method: check_method_b
+      output: output
+      expected: expected
+    assertions:
+    - method: check_equals
+      expected: passed
+  - description: >
+      Method has expected and output parameters with type hints that are Any
+      and a union. Checks fail.
+    arguments:
+      module: module_resource
+      method: check_method_b
+      output: {}
+      expected: expected
+    assertions:
+    - method: check_sns
+      expected:
+        expected:
+          kind: str
+          method: check_method_b
+          valid_kinds:
+          - any
+        output:
+          kind: dict
+          method: check_method_b
+          valid_kinds:
+          - list
+          - str
+        passed: false
+- function: type_checks
+  description: >
+    Decorates assertions methods. Perform type checks on expected and output
+    values based on method's type hints set for the parameters.
+  patches:
+  - method: callable
+    value: value
+    route: type_checks_inner
+  cast_arguments:
+  - method: resource.get_method
+    field: method
+  tests:
+  - description: Undefined arguments
+    arguments:
+      method: null
+    assertions:
+    - method: check_equals
+      field: __name__
+      expected: inner
+  - description: Synchronous method
+    arguments:
+      method: assertion_method
+    assertions:
+    - method: check_equals
+      field: __name__
+      expected: assertion_method
+    - method: check_equals
+      field: __class__.__name__
+      expected: function
+    - method: check_equals
+      field: __wrapped__.__name__
+      expected: assertion_method
 - function: check_sns
   description: >
     Verify the output is a SimpleNamespace object and contains specified
@@ -29,11 +142,19 @@ tests:
     assertions:
     - method: check_sns
       expected:
+        expected:
+          kind: str
+          method: check_sns
+          valid_kinds:
+          - dict
+          - nonetype
         output:
-        - Output is of type NoneType
-        - Expected is of type str
+          kind: nonetype
+          method: check_sns
+          valid_kinds:
+          - simplenamespace
+          - nonetype
         passed: false
-        expected: expected
   - description: SimpleNamespace should contain expected fields and values
     arguments:
       output:
@@ -84,11 +205,17 @@ tests:
     assertions:
     - method: check_sns
       expected:
-        expected: null
-        passed: false
+        expected:
+          kind: nonetype
+          method: check_exception
+          valid_kinds:
+          - str
         output:
-        - Output is of type NoneType
-        - Expected is of type NoneType
+          kind: nonetype
+          method: check_exception
+          valid_kinds:
+          - exception
+        passed: false
   - description: Output is a type error
     arguments:
       output: TypeError
@@ -112,7 +239,7 @@ tests:
 - function: check_module
   description: Verify that the output is a module
   cast_arguments:
-  - method: resource.check_module_resource
+  - method: resource.get_output_resource
     field: output
   tests:
   - description: Undefined arguments
@@ -120,8 +247,16 @@ tests:
     assertions:
     - method: check_sns
       expected:
-        output: Output is a NoneType not a module
-        expected: null
+        expected:
+          kind: nonetype
+          method: check_module
+          valid_kinds:
+          - dict
+        output:
+          kind: nonetype
+          method: check_module
+          valid_kinds:
+          - module
         passed: false
   - description: Expected is not a dict
     arguments:
@@ -130,21 +265,29 @@ tests:
     assertions:
     - method: check_sns
       expected:
-        output: Expected is a str not a dict
-        expected: expected
+        expected:
+          kind: str
+          method: check_module
+          valid_kinds:
+          - dict
+        output:
+          kind: nonetype
+          method: check_module
+          valid_kinds:
+          - module
         passed: false
   - description: Output is a module
     arguments:
-      output: module
+      output: module_resource
       expected:
-        location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/assertions/module_resource.py
+        location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/module_resource.py
     assertions:
     - method: check_sns
       expected:
         output:
-          location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/assertions/module_resource.py
+          location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/module_resource.py
         expected:
-          location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/assertions/module_resource.py
+          location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/module_resource.py
         passed: true
   - description: Output is the builtins module
     arguments:
@@ -193,7 +336,7 @@ tests:
     parent module
   cast_arguments:
   - field: output
-    method: resource.check_function_resource
+    method: resource.get_output_resource
   tests:
   - description: Output is not a function
     arguments:
@@ -202,68 +345,101 @@ tests:
     assertions:
     - method: check_sns
       expected:
+        expected:
+          kind: nonetype
+          method: check_function
+          valid_kinds:
+          - dict
+        output:
+          kind: nonetype
+          method: check_function
+          valid_kinds:
+          - callable
+          - function
         passed: False
-        output: Output is of type str not Callable
-        expected: null
   - description: Expected is not a dict
     arguments:
-      output: callable
+      output: callable_method
       expected: expected
     assertions:
     - method: check_sns
       expected:
+        expected:
+          kind: str
+          method: check_function
+          valid_kinds:
+          - dict
+        output:
+          kind: function
+          method: check_function
+          valid_kinds:
+          - callable
+          - function
         passed: False
-        output: Expected is of type str not dict
-        expected: expected
-  - description: Output is a function
+  - description: Function
     arguments:
-      output: callable
+      output: callable_method
       expected:
-        name: callable
-        location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/assertions/resource.py
+        name: callable_method
+        location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/resource.py
     assertions:
     - method: check_sns
       expected:
         passed: true
         output:
-          name: callable
-          location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/assertions/resource.py
+          name: callable_method
+          location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/resource.py
         expected:
-          name: callable
-          location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/assertions/resource.py
-  - description: Output is an awaitable function
+          name: callable_method
+          location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/resource.py
+  - description: Awaitable function
     arguments:
-      output: coroutine
+      output: awaitable_method
       expected:
-        name: coroutine
-        location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/assertions/resource.py
+        name: awaitable_method
+        location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/resource.py
     assertions:
     - method: check_sns
       expected:
         passed: true
         output:
-          name: coroutine
-          location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/assertions/resource.py
+          name: awaitable_method
+          location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/resource.py
         expected:
-          name: coroutine
-          location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/assertions/resource.py
-  # # Todo: Finish this test
-  # - description: Output is a decorated function
-  #   arguments:
-  #     output: wrapped
-  #     expected:
-  #       name: wrapped
-  #       location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/assertions/app.py
-  #   assertions:
-  #   - method: check_sns
-  #     expected:
-  #       passed: true
-  #       output:
-  #         name: wrapped
-  #         location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/assertions/app.py
-  #       expected:
-  #         name: wrapped
-  #         location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/assertions/app.py
+          name: awaitable_method
+          location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/resource.py
+  - description: Decorated function
+    arguments:
+      output: wrapped_awaitable_method
+      expected:
+        name: wrapped_awaitable_method
+        location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/resource.py
+    assertions:
+    - method: check_sns
+      expected:
+        passed: true
+        output:
+          name: wrapped_awaitable_method
+          location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/resource.py
+        expected:
+          name: wrapped_awaitable_method
+          location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/resource.py
+  - description: Decorated awaitable function
+    arguments:
+      output: wrapped_awaitable_method
+      expected:
+        name: wrapped_awaitable_method
+        location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/resource.py
+    assertions:
+    - method: check_sns
+      expected:
+        passed: true
+        output:
+          name: wrapped_awaitable_method
+          location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/resource.py
+        expected:
+          name: wrapped_awaitable_method
+          location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/resource.py
 - function: check_dataclass
   description: >
     Verify that the output is a dataclass; check name and specified fields and
@@ -281,9 +457,15 @@ tests:
       expected:
         passed: False
         output:
-        - Output is of type NoneType
-        - Expected is of type NoneType
-        expected: null
+          kind: nonetype
+          method: check_dataclass
+          valid_kinds:
+          - dataclass
+        expected:
+          kind: nonetype
+          method: check_dataclass
+          valid_kinds:
+          - dict
   - description: Expected is not a dict
     arguments:
       output: dataclass
@@ -293,9 +475,15 @@ tests:
       expected:
         passed: False
         output:
-        - Output is of type DataClass
-        - Expected is of type NoneType
-        expected: null
+          kind: dataclass
+          method: check_dataclass
+          valid_kinds:
+          - dataclass
+        expected:
+          kind: nonetype
+          method: check_dataclass
+          valid_kinds:
+          - dict
   - description: Output is a dataclass
     arguments:
       output: dataclass
@@ -358,10 +546,17 @@ tests:
     - method: check_sns
       expected:
         passed: False
-        expected: null
+        expected:
+          kind: nonetype
+          method: check_class
+          valid_kinds:
+          - dict
         output:
-        - Output is of type NoneType
-        - Expected is of type NoneType
+          kind: nonetype
+          method: check_class
+          valid_kinds:
+          - type
+          - object
   - description: Output is an instantiated class
     arguments:
       output: class_
@@ -410,11 +605,18 @@ tests:
     assertions:
     - method: check_sns
       expected:
-        expected: 0
+        expected:
+          kind: int
+          method: check_length
+          valid_kinds:
+          - int
+          - float
         passed: False
         output:
-        - Output is of type NoneType
-        - Expected is of type int
+          kind: nonetype
+          method: check_length
+          valid_kinds:
+          - iterable
   - description: Output is an empty string
     arguments:
       expected: 0
@@ -470,9 +672,16 @@ tests:
     - method: check_sns
       expected:
         output:
-        - Output is of type NoneType
-        - Expected is of type NoneType
-        expected: null
+          kind: nonetype
+          method: check_type
+          valid_kinds:
+          - any
+        expected:
+          kind: nonetype
+          method: check_type
+          valid_kinds:
+          - str
+          - list
         passed: false
   - description: Output is a string and a str object is expected
     arguments:
@@ -534,10 +743,17 @@ tests:
     assertions:
     - method: check_sns
       expected:
-        expected: null
+        expected:
+          kind: nonetype
+          method: check_substring_in_string
+          valid_kinds:
+          - list
+          - str
         output:
-        - Output is of type NoneType
-        - Expected is of type NoneType
+          kind: nonetype
+          method: check_substring_in_string
+          valid_kinds:
+          - str
         passed: false
   - description: Excepted is not a substring of output
     arguments:
@@ -597,9 +813,17 @@ tests:
       expected:
         passed: False
         output:
-        - Output is of type dict
-        - Expected is of type NoneType
-        expected: null
+          kind: dict
+          method: check_item_in_list
+          valid_kinds:
+          - list
+          - tuple
+        expected:
+          kind: nonetype
+          method: check_item_in_list
+          valid_kinds:
+          - any
+          - list
   - description: Expected item not in output list
     arguments:
       output:
@@ -654,10 +878,10 @@ tests:
     - method: check_sns
       expected:
         output:
-        - Output is of type NoneType
-        - Expected is of type NoneType
-        expected: null
-        passed: false
+        - null
+        expected:
+        - null
+        passed: true
   - description: Output not in list of expected values
     arguments:
       output: output
@@ -710,10 +934,17 @@ tests:
     assertions:
     - method: check_sns
       expected:
-        expected: null
+        expected:
+          kind: nonetype
+          method: check_key_in_dict
+          valid_kinds:
+          - list
+          - str
         output:
-        - Output is of type NoneType
-        - Expected is of type NoneType
+          kind: nonetype
+          method: check_key_in_dict
+          valid_kinds:
+          - dict
         passed: false
   - description: Output dict contains expected key
     arguments:
@@ -777,10 +1008,16 @@ tests:
     - method: check_sns
       expected:
         passed: false
-        expected: null
+        expected:
+          kind: nonetype
+          method: check_range
+          valid_kinds:
+          - dict
         output:
-        - Output is of type NoneType
-        - Expected is of type NoneType
+          kind: nonetype
+          method: check_range
+          valid_kinds:
+          - range
   - description: Output is a range that starts at 0 and stops at 3
     arguments:
       output:
@@ -827,10 +1064,16 @@ tests:
     - method: check_sns
       expected:
         passed: False
-        expected: null
+        expected:
+          kind: nonetype
+          method: check_key_value_in_dict
+          valid_kinds:
+          - dict
         output:
-        - Output is of type NoneType
-        - Expected is of type NoneType
+          kind: nonetype
+          method: check_key_value_in_dict
+          valid_kinds:
+          - dict
   - description: Output contains expected key/value pair
     arguments:
       output:
@@ -892,10 +1135,18 @@ tests:
     - method: check_sns
       expected:
         passed: False
-        expected: null
+        expected:
+          kind: nonetype
+          method: check_thread
+          valid_kinds:
+          - list
+          - dict
         output:
-        - Output is of type NoneType
-        - Expected is of type NoneType
+          kind: nonetype
+          method: check_thread
+          valid_kinds:
+          - list
+          - thread
   - description: Output is a thread
     arguments:
       output: thread
@@ -921,10 +1172,18 @@ tests:
     - method: check_sns
       expected:
         passed: false
-        expected: null
+        expected:
+          kind: nonetype
+          method: check_function_output
+          valid_kinds:
+          - any
+          - nonetype
         output:
-        - Output is of type NoneType
-        - Expected is of type NoneType
+          kind: nonetype
+          method: check_function_output
+          valid_kinds:
+          - callable
+          - function
   - description: Function with single argument and output
     arguments:
       output: hello_world
@@ -989,7 +1248,7 @@ tests:
         output:
         - '1'
         - '3'
-        module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/assertions/resource.py
+        module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/resource.py
         cast_output:
         - method: __builtins__.str
     assertions:

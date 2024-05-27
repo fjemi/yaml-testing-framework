@@ -11,7 +11,7 @@ from types import SimpleNamespace as sns
 from typing import Any, Awaitable, Callable
 
 # trunk-ignore(ruff/F401)
-from assertions import module_resource as module
+from checks import module_resource
 
 
 LOCALS = locals()
@@ -29,8 +29,20 @@ def check_exception_resource(output: str | None = None) -> Exception | None:
     return getattr(exceptions, output, None)
 
 
-def check_module_resource(output: str | None = None) -> ModuleType | None:
+def assertion_method() -> str:
+  return 'assertion_method_output'
+
+
+async def coroutine_method() -> str:
+  return 'coroutine'
+
+
+def get_output_resource(output: str | None = None) -> ModuleType:
   return LOCALS.get(output, None)
+
+
+def get_method(method: str | None) -> Callable | None:
+  return LOCALS.get(method, None)
 
 
 def check_function_resource(output: str | None = None) -> Callable | None:
@@ -106,6 +118,59 @@ def check_function_output_resource(
   _ = hello_earth, hello_world, add
 
   return locals().get(output, None)
+
+
+def check_method_a(
+  module: ModuleType,
+  expected: list,
+  output: dict,
+) -> str:
+  _ = expected, output, module
+  return 'passed'
+
+
+def check_method_b(
+  module: ModuleType,
+  expected: Any,
+  output: list | str,
+) -> str:
+  _ = expected, output, module
+  return 'passed'
+
+
+def callable_method(*args, **kwargs) -> str:
+  _ = args, kwargs
+  return 'callable_output'
+
+
+async def awaitable_method(*args, **kwargs) -> str:
+  _ = args, kwargs
+  return 'awaitable_output'
+
+
+def wrapper(func) -> Callable:
+
+  def inner(*args, **kwargs) -> Any:
+    return func(*args, **kwargs)
+
+  inner.__wrapped__ = func
+  return inner
+
+
+@wrapper
+def wrapped_callable_method(*args, **kwargs) -> str:
+  _ = args, kwargs
+  return 'wrapped_callable_output'
+
+
+@wrapper
+async def wrapped_awaitable_method(*args, **kwargs) -> str:
+  _ = args, kwargs
+  return 'wrapped_awaitable_output'
+
+
+def get_module_resource(module: str | None = None) -> ModuleType | None:
+  return LOCALS.get(module, None)
 
 
 def examples() -> None:

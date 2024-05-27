@@ -5,7 +5,7 @@ resources:
 configurations:
   resources:
   - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/get_module/resource.py
-  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/assertions/app.py
+  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/app.py
 
 
 tests:
@@ -19,7 +19,7 @@ tests:
       location: /main/utils/get_module/resource.py
       name: null
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         name: .main.utils.get_module.resource
   - description: Name is defined
@@ -27,7 +27,7 @@ tests:
       name: name
       location: null
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         name: name
   # # TODO: Need setup/teardown to finish test
@@ -36,7 +36,7 @@ tests:
   #     name: location to temp file
   #     location: null
   #   assertions:
-  #   - method: assertions.app.check_sns
+  #   - method: checks.app.check_sns
   #     expected:
   #       name: name
   - description: Name and location are undefined
@@ -44,7 +44,7 @@ tests:
       name: null
       location: null
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         name: app
   - description: Name and location are undefined. Pool is true.
@@ -52,7 +52,7 @@ tests:
       name: null
       location: null
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         name: app
 - function: get_module_from_location
@@ -63,7 +63,7 @@ tests:
       location: DOES_NOT_EXIST/app.py
       name: name
     assertions:
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       field: __dict__
       expected:  {}
   - description: Location exists
@@ -71,7 +71,7 @@ tests:
       name: name
       location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/get_module/resource.py
     assertions:
-    - method: assertions.app.check_module
+    - method: checks.app.check_module
       field: module
       expected:
         location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/get_module/resource.py
@@ -80,7 +80,7 @@ tests:
       name: app
       location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/get_module/resource.py
     assertions:
-    - method: assertions.app.check_module
+    - method: checks.app.check_module
       field: module
       expected:
         location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/get_module/resource.py
@@ -91,7 +91,7 @@ tests:
       pool: false
       location: location
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         module: null
   - description: Returns a module in the pool
@@ -104,7 +104,7 @@ tests:
       value:
         location: module_from_pool
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         module: module_from_pool
 - function: add_module_to_pool
@@ -116,7 +116,7 @@ tests:
       module: module
       pool: false
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected: {}
   - description: Do not add module to pool
     arguments:
@@ -124,7 +124,7 @@ tests:
       module: module
       pool: true
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected: {}
 - function: main
   description: Orchestrates execution of functions within the module
@@ -135,7 +135,7 @@ tests:
       location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/get_module/resource.py
       name: app
     assertions:
-    - method: assertions.app.check_module
+    - method: checks.app.check_module
       expected:
         location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/get_module/resource.py
   - description: Get module from pool
@@ -148,5 +148,5 @@ tests:
       pool: true
       location: location
     assertions:
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       expected: module

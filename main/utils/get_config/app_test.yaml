@@ -1,6 +1,6 @@
 configurations:
   resources:
-  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/assertions/app.py
+  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/app.py
   - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/get_config/resources/app.py
 
 
@@ -14,7 +14,7 @@ tests:
       config: null
       environment: null
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         a: a
         b:
@@ -22,17 +22,17 @@ tests:
         - b1
         c:
           d: e
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       field: environment
       expected:
         A: A
         B: B
         C: C
         D: D
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       field: schema
       expected: {}
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       field: schema.Example
       expected:
         str: ''
@@ -48,7 +48,7 @@ tests:
       config: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/get_config/resources/app.yaml
       environment: null
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         a: a
         b:
@@ -56,7 +56,7 @@ tests:
         - b1
         c:
           d: e
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       field: environment
       expected:
         A: A
@@ -73,10 +73,10 @@ tests:
       module: null
       config: null
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         config: None
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       field: log
       expected:
         level: error
@@ -88,14 +88,14 @@ tests:
     arguments:
       config: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/get_config/resources/app.yaml
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         config: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/get_config/resources/app.yaml
   - description: Module locations is set
     arguments:
       module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/get_config/resources/app.py
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         config: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/get_config/resources/app.yaml
 - function: get_yaml_content_wrapper
@@ -105,21 +105,21 @@ tests:
     arguments:
       location: null
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         content: {}
   - description: YAML location does not exist
     arguments:
       location: yaml
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         content: {}
   - description: YAML location exists
     arguments:
       location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/get_config/resources/app.yaml
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         content:
           a: a
@@ -174,7 +174,7 @@ tests:
       environment: null
       config: null
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       field: log
       expected:
         level: warning
@@ -183,7 +183,7 @@ tests:
         - schema: No YAML file at None
         - config: No YAML file at None
         - operations: No YAML file at None
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       field: content
       expected:
         config: {}
@@ -193,14 +193,14 @@ tests:
       environment: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/get_config/resources/environment.yml
       config: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/get_config/resources/config.yml
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       field: log
       expected:
         level: warning
         message:
         - schema: No YAML file at None
         - operations: No YAML file at None
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       field: content
       expected:
         config:
@@ -212,14 +212,14 @@ tests:
       operations: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/get_config/resources/operations.yml
       config: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/get_config/resources/config.yml
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       field: log
       expected:
         level: warning
         message:
         - environment: No YAML file at None
         - schema: No YAML file at None
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       field: content
       expected:
         config:
@@ -245,10 +245,10 @@ tests:
     arguments:
       content: null
     assertions:
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       field: content.config.schema.__dict__
       expected: {}
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       field: content.config.environment.__dict__
       expected: {}
   - description: Empty values for specified keys
@@ -258,10 +258,10 @@ tests:
           environment: {}
           schema: {}
     assertions:
-    - method: assertions.app.check_type
+    - method: checks.app.check_type
       field: content.config.environment
       expected: SimpleNamespace
-    - method: assertions.app.check_type
+    - method: checks.app.check_type
       field: content.config.schema
       expected: SimpleNamespace
   - description: Non-empty values for specified keys
@@ -283,19 +283,19 @@ tests:
               - name: b1
                 default: b1
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       field: content.config.environment
       expected:
         a: a
         b: b
-    - method: assertions.app.check_type
+    - method: checks.app.check_type
       field: content.config.schema
       expected: SimpleNamespace
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       field: content.config.schema.A
       expected:
         a0: a0
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       field: content.config.schema.B
       expected:
         b0: b0
@@ -308,7 +308,7 @@ tests:
   - description: Undefined arguments
     arguments: {}
     assertions:
-    - method: assertions.app.check_exception
+    - method: checks.app.check_exception
       expected: AttributeError
   - description: Defined arguments
     arguments:
@@ -317,7 +317,7 @@ tests:
         b: $B
         c: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         a: A
         b: null
@@ -330,10 +330,10 @@ tests:
   - description: Undefined arguments
     arguments: {}
     assertions:
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       field: __dict__
       expected: {}
-    - method: assertions.app.check_type
+    - method: checks.app.check_type
       expected: SimpleNamespace
   - description: Defined arguments
     arguments:
@@ -351,12 +351,12 @@ tests:
           - name: b
             default: 2
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       field: a
       expected:
         b: b
         c: c
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       field: b
       expected:
         a: 1

@@ -1,6 +1,6 @@
 configurations:
   resources:
-  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/assertions/app.py
+  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/app.py
   - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/assertions/resource.py
 
 
@@ -24,13 +24,13 @@ tests:
       id: null
       id_short: null
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         assertions: []
         _cleanup:
         - module
         - output
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       field: log
       expected:
         level: warning
@@ -45,7 +45,7 @@ tests:
       id: id
       id_short: id_short
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         _cleanup:
         - module
@@ -58,12 +58,12 @@ tests:
           output: output
           passed: true
           log: null
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       field: log
       expected:
         message: Processed 1 assertion for id_short
         level: info
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       field: assertions
       expected:
       - expected: output
@@ -88,17 +88,17 @@ tests:
       id: id
       id_short: id_short
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         _cleanup:
         - module
         - output
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       field: log
       expected:
         message: Processed 2 assertions for id_short
         level: info
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       field: assertions
       expected:
       - expected:
@@ -127,17 +127,17 @@ tests:
       id: id
       id_short: id_short
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         _cleanup:
         - module
         - output
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       field: log
       expected:
         level: info
         message: Processed 1 assertion for id_short
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       field: assertions
       expected:
       - expected: 'null
@@ -159,7 +159,7 @@ tests:
   - description: Undefined arguments
     arguments: {}
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         cast_output: null
         expected: null
@@ -178,7 +178,7 @@ tests:
       id: id
       id_short: id_short
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         cast_output: null
         expected: null
@@ -201,7 +201,7 @@ tests:
       id: null
       id_short: null
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         cast_output: cast_output
         expected: expected
@@ -219,11 +219,11 @@ tests:
   - description: Method is undefined
     arguments: {}
     assertions:
-    - method: assertions.app.check_function
+    - method: checks.app.check_function
       expected:
         location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/assertions/app.py
         name: pass_through_inner
-    - method: assertions.app.check_function_output
+    - method: checks.app.check_function_output
       expected:
         arguments:
         - expected: expected
@@ -239,11 +239,11 @@ tests:
     arguments:
       method: assertion_method_does_not_exist
     assertions:
-    - method: assertions.app.check_function
+    - method: checks.app.check_function
       expected:
         name: pass_through_inner
         location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/assertions/app.py
-    - method: assertions.app.check_function_output
+    - method: checks.app.check_function_output
       expected:
         arguments:
         - expected: expected
@@ -268,7 +268,7 @@ tests:
       module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/assertions/resource.py
       method: null
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       field: log
       expected:
         level: error
@@ -278,9 +278,9 @@ tests:
       method: check_method_a
       module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/assertions/resource.py
     assertions:
-    - method: assertions.app.check_type
+    - method: checks.app.check_type
       expected: SimpleNamespace
-    - method: assertions.app.check_function
+    - method: checks.app.check_function
       field: method
       expected:
         name: check_method_a
@@ -290,12 +290,12 @@ tests:
       method: check_method_b
       module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/assertions/resource.py
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       field: log
       expected:
         level: error
         message: Assertion method check_method_b does not exist in module ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/assertions/resource.py
-    - method: assertions.app.check_function
+    - method: checks.app.check_function
       field: method
       expected:
         name: pass_through_inner
@@ -308,7 +308,7 @@ tests:
   - description: Undefined arguments
     arguments: {}
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         output: null
   - description: Output is a string and field is undefined
@@ -316,7 +316,7 @@ tests:
       output: output
       field: null
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         output: output
   - description: Output is a dict and field is a key in the dict
@@ -325,7 +325,7 @@ tests:
         key: value
       field: key
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         output: value
   - description: Output is a dict and field is route to nested key
@@ -335,7 +335,7 @@ tests:
           key_b: value
       field: key_a.key_b
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         output: value
   - description: Output is a dict and field is route to non-existing key
@@ -344,10 +344,10 @@ tests:
         key: value
       field: key_does_not_exist
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         output: null
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       field: log
       expected:
         message: Field key_does_not_exist does not exist in object of type NoneType
@@ -361,7 +361,7 @@ tests:
         attribute: value
       field: attribute
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         output: value
 - function: cast_output
@@ -377,7 +377,7 @@ tests:
       cast_output: null
       module: null
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         output: null
         cast_output: null
@@ -386,7 +386,7 @@ tests:
       output: output
       module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/assertions/resource.py
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         output: output
         cast_output: null
@@ -397,7 +397,7 @@ tests:
       - method: __builtins__.str
       module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/assertions/resource.py
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         output: '12345'
         cast_output: null
@@ -408,7 +408,7 @@ tests:
       - method: __builtins__.int
       module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/assertions/resource.py
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         output: 12345
         cast_output: null
@@ -423,7 +423,7 @@ tests:
   - description: Undefined arguments
     arguments: {}
     assertions:
-    - method: assertions.app.check_exception
+    - method: checks.app.check_exception
       expected: TypeError
   - description: Assertion fails when expected and output are different values
     arguments:
@@ -431,7 +431,7 @@ tests:
       output: output
       method: check_equals
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         method: check_equals
         expected: expected
@@ -443,7 +443,7 @@ tests:
       output: output
       method: check_equals
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         method: check_equals
         expected: output
@@ -459,7 +459,7 @@ tests:
         - output_value
       method: check_equals
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         method: check_equals
         passed: False
@@ -475,7 +475,7 @@ tests:
   - description: Undefined arguments
     arguments: {}
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         field: null
         object: 'null
@@ -486,7 +486,7 @@ tests:
       object: object
       field: field
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         object: 'object
 
@@ -497,7 +497,7 @@ tests:
         key: value
       field: field
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         object: 'key: value'
   - description: Object is a list
@@ -505,7 +505,7 @@ tests:
       object: [item_0, item_1, item_2]
       field: field
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         object: '- item_0
         
@@ -519,10 +519,10 @@ tests:
           c:
       field: field
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         object: "a: b\n  c:\n"
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       field: log
       expected:
         message: ScannerError occurred trying to convert field to YAML
@@ -544,7 +544,7 @@ tests:
       - c
       passed: false
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         log: '[]'
         expected: '- a
@@ -565,7 +565,7 @@ tests:
       output:
         key: value
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         log: '[]'
         expected: 'key: value'
@@ -576,7 +576,7 @@ tests:
       expected: 'key: value'
       output: 'key: value'
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         log: '[]'
         expected: 'key: value'
@@ -584,7 +584,7 @@ tests:
   - description: Undefined arguments
     arguments: {}
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         output: 'null
         
@@ -598,7 +598,7 @@ tests:
       output: output
       expected: expected
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected: {}
   - description: Passed it false
     arguments:
@@ -608,7 +608,7 @@ tests:
       expected: >
         key: value
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         output: "key: value"
         expected: "key: value"
