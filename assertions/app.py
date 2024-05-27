@@ -3,6 +3,7 @@
 
 
 import dataclasses as dc
+import functools
 import inspect
 import os
 import threading
@@ -14,9 +15,107 @@ from main.process import casts
 from main.utils import get_object, independent
 
 
+
+CONFIG = '''
+  union_types:
+  - _UnionGenericAlias
+  - UnionType
+'''
+CONFIG = independent.format_configurations_defined_in_module(config=CONFIG)
+
+
 @dc.dataclass
 class DataClass:
   pass
+
+
+def get_type_hints(
+  method: Callable | None,
+  filter_out: list | None = None,
+):
+  store = {}
+
+  if isinstance(method, Callable):
+    store = inspect.getfullargspec(method).annotations
+
+  if not isinstance(filter_out, list):
+    filter_out = [filter_out]
+
+  for item in filter_out:
+    name = str(item)
+    store[name] = None
+    del store[name]
+
+  return store
+
+
+def type_checks_inner(
+  output: Any | None = None,
+  expected: Any | None = None,
+  module: ModuleType | None = None,
+  method: Callable | None = None,
+) -> sns:
+  values = sns(output=output, expected=expected)
+  type_hints = get_type_hints(method=method, filter_out=['return'])
+  passed = []
+
+  for key, value in values.__dict__.items():
+    kind = type(value).__name__.lower()
+    hints = get_object.main(
+      parent=type_hints,
+      route=key, )
+    if type(hints).__name__ in CONFIG.union_types:
+      hints = list(hints.__args__)
+    hints = hints if isinstance(hints, list) else [hints]
+
+    for i, item in enumerate(hints):
+      hints[i] = item.__name__.lower()
+
+      if item == Any:
+        passed.append(key)
+        continue
+      if True in [
+        isinstance(value, item),
+        kind in [hints[i]],
+      ]:
+        passed.append(key)
+
+    store = dict(
+      kind=kind,
+      valid_kinds=hints,
+      method=method.__name__, )
+    setattr(values, key, store)
+
+  if False in [
+    'expected' in passed,
+    'output' in passed,
+  ]:
+    return sns(
+      passed=False,
+      output=values.output,
+      expected=values.expected, )
+
+  return method(
+    module=module,
+    output=output,
+    expected=expected, )
+
+
+def type_checks(method: Callable) -> Callable:
+
+  @functools.wraps(method)
+  def inner(
+    output: Any | None = None,
+    expected: Any | None = None,
+    module: ModuleType | None = None,
+  ) -> sns:
+    return type_checks_inner(
+      expected=expected,
+      module=module,
+      method=method,
+      output=output, )
+
+  return inner
 
 
 def check_sns(

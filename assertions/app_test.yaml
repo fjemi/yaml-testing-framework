@@ -14,6 +14,119 @@ configurations:
 
 
 tests:
+- function: type_checks_inner
+  description: >
+    Called by the `type_checks` decorator. Verifies the types of the expected
+    and output values passed to an assertion method coincide with the method's
+    type hints for its expected and output parameters.
+  cast_arguments:
+  - method: resource.get_method
+    field: method
+  - method: resource.get_module_resource
+    field: module
+  tests:
+  - description: Undefined arguments
+    arguments: {}
+    assertions:
+    - method: check_exception
+      expected: AttributeError
+  - description: >
+      Method where expected is a list and output is a dict. Check passes.
+    arguments:
+      module: module_resource
+      expected: []
+      output: {}
+      method: check_method_a
+    assertions:
+    - method: check_equals
+      expected: passed
+  - description: >
+      Method where expected is a list and output is a dict. Check fails.
+    arguments:
+      module: module_resource
+      expected: expected
+      output: 1
+      method: check_method_a
+    assertions:
+    - method: check_sns
+      expected:
+        expected:
+          kind: str
+          method: check_method_a
+          valid_kinds:
+          - list
+        output:
+          kind: int
+          method: check_method_a
+          valid_kinds:
+          - dict
+        passed: false
+  - description: >
+      Method has expected and output parameters with type hints that are Any
+      and a union. Checks pass.
+    arguments:
+      module: module_resource
+      method: check_method_b
+      output: output
+      expected: expected
+    assertions:
+    - method: check_equals
+      expected: passed
+  - description: >
+      Method has expected and output parameters with type hints that are Any
+      and a union. Checks fail.
+    arguments:
+      module: module_resource
+      method: check_method_b
+      output: {}
+      expected: expected
+    assertions:
+    - method: check_sns
+      expected:
+        expected:
+          kind: str
+          method: check_method_b
+          valid_kinds:
+          - any
+        output:
+          kind: dict
+          method: check_method_b
+          valid_kinds:
+          - list
+          - str
+        passed: false
+- function: type_checks
+  description: >
+    Decorates assertions methods. Perform type checks on expected and output
+    values based on method's type hints set for the parameters.
+  patches:
+  - method: callable
+    value: value
+    route: type_checks_inner
+  cast_arguments:
+  - method: resource.get_method
+    field: method
+  tests:
+  - description: Undefined arguments
+    arguments:
+      method: null
+    assertions:
+    - method: check_equals
+      field: __name__
+      expected: inner
+  - description: Synchronous method
+    arguments:
+      method: assertion_method
+    assertions:
+    - method: check_equals
+      field: __name__
+      expected: assertion_method
+    - method: check_equals
+      field: __class__.__name__
+      expected: function
+    - method: check_equals
+      field: __wrapped__.__name__
+      expected: assertion_method
 - function: check_sns
   description: >
     Verify the output is a SimpleNamespace object and contains specified
