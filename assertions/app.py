@@ -9,7 +9,7 @@ import os
 import threading
 from types import ModuleType
 from types import SimpleNamespace as sns
-from typing import Any, Awaitable, Callable
+from typing import Any, Awaitable, Callable, Protocol, runtime_checkable
 
 from main.process import casts
 from main.utils import get_object, independent
@@ -24,8 +24,9 @@ CONFIG = '''
 CONFIG = independent.format_configurations_defined_in_module(config=CONFIG)
 
 
+@runtime_checkable
 @dc.dataclass
-class DataClass:
+class DataClass(Protocol):
   pass
 
 
