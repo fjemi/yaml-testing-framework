@@ -7,14 +7,23 @@ import functools
 import inspect
 import os
 import threading
-from types import ModuleType
+from types import FunctionType, ModuleType
 from types import SimpleNamespace as sns
-from typing import Any, Awaitable, Callable, Protocol, runtime_checkable
+from typing import (
+  Any,
+  Awaitable,
+  Callable,
+  Iterable,
+  Protocol,
+  Type,
+  runtime_checkable,
+)
 
 from main.process import casts
 from main.utils import get_object, independent
 
 
+MODULE = __file__
 
 CONFIG = '''
   union_types:
@@ -119,20 +128,13 @@ def type_checks(method: Callable) -> Callable:
   return inner
 
 
+@type_checks
 def check_sns(
   module: ModuleType | None = None,
   expected: dict | None = None,
   output: sns | None = None,
 ) -> sns:
   _ = module
-
-  type_checks = perform_type_checks(
-    output=output,
-    output_check=isinstance(output, sns),
-    expected=expected,
-    expected_check=isinstance(expected, dict), )
-  if type_checks != 'passed':
-    return type_checks
 
   store = {}
   for key, value in expected.items():
@@ -171,20 +173,13 @@ def failed_type_check(
     expected=expected, )
 
 
+@type_checks
 def check_exception(
+  expected: str,
+  output: Exception,
   module: ModuleType | None = None,
-  expected: str | None = None,
-  output: Exception | dict | None = None,
 ) -> sns:
   _ = module
-
-  type_checks = perform_type_checks(
-    output=output,
-    output_check=isinstance(output, Exception),
-    expected=expected,
-    expected_check=isinstance(expected, str), )
-  if type_checks != 'passed':
-    return type_checks
 
   output = type(output).__name__
   passed = expected == output
@@ -194,24 +189,13 @@ def check_exception(
     output=output, )
 
 
+@type_checks
 def check_module(
+  output: ModuleType,
+  expected: dict,
   module: ModuleType | None = None,
-  output: ModuleType | None = None,
-  expected: dict | None = None,
 ) -> sns:
   _ = module
-
-  if not isinstance(output, ModuleType):
-    return sns(
-      passed=False,
-      output=f'Output is a {type(output).__name__} not a module',
-      expected=expected, )
-
-  if not isinstance(expected, dict):
-    return sns(
-      passed=False,
-      output=f'Expected is a {type(expected).__name__} not a dict',
-      expected=expected, )
 
   output = sns(
     location=getattr(output, '__file__', None), )
@@ -223,6 +207,7 @@ def check_module(
     expected=expected, )
 
 
+@type_checks
 def check_equals(
   module: ModuleType | None = None,
   output: Any | None = None,
@@ -237,22 +222,13 @@ def check_equals(
     passed=passed, )
 
 
+@type_checks
 def check_function(
+  output: Callable | FunctionType,
+  expected: dict,
   module: ModuleType | None = None,
-  output: Callable | None = None,
-  expected: dict | None = None,
 ) -> sns:
   _ = module
-
-  if not isinstance(output, Callable):
-    return failed_type_check(
-      output=output,
-      output_wanted='Callable', )
-
-  if not isinstance(expected, dict):
-    return failed_type_check(
-      expected=expected,
-      expected_wanted='dict', )
 
   temp = independent.get_decorated_function(function=output)
   if isinstance(temp, Callable):
@@ -268,40 +244,13 @@ def check_function(
     expected=expected, )
 
 
-def perform_type_checks(
-  output: Any | None = None,
-  output_check: bool | None = None,
-  expected: Any | None = None,
-  expected_check: bool | None = None,
-) -> sns | str:
-  if expected_check and output_check:
-    return 'passed'
-
-  output = [
-    f'Output is of type {type(output).__name__}',
-    f'Expected is of type {type(expected).__name__}', ]
-  return sns(
-    passed=False,
-    output=output,
-    expected=expected, )
-
-
+@type_checks
 def check_dataclass(
+  output: DataClass,
+  expected: dict,
   module: ModuleType | None = None,
-  output: DataClass | None = None,
-  expected: dict | None = None,
 ) -> sns:
   _ = module
-
-  output_check = dc.is_dataclass(output)
-  expected_check = isinstance(expected, dict)
-  type_checks = perform_type_checks(
-    output=output,
-    output_check=output_check,
-    expected=expected,
-    expected_check=expected_check, )
-  if type_checks != 'passed':
-    return type_checks
 
   name = type(output).__name__
   output = dc.asdict(output)
@@ -318,21 +267,13 @@ def check_dataclass(
     output=output, )
 
 
+@type_checks
 def check_class(
+  output: Type | object,
+  expected: dict,
   module: ModuleType | None = None,
-  output: object | None = None,
-  expected: dict | None = None,
 ) -> sns:
   _ = module
-
-  output_check = inspect.isclass(output) or hasattr(object, '__bases__')
-  type_checks = perform_type_checks(
-    output=output,
-    output_check=output_check,
-    expected=expected,
-    expected_check=isinstance(expected, dict), )
-  if type_checks != 'passed':
-    return type_checks
 
   fields = {}
   expected_fields = expected.get('fields', {})
@@ -347,22 +288,13 @@ def check_class(
   return sns(output=output, expected=expected, passed=passed)
 
 
+@type_checks
 def check_length(
+  output: Iterable,
+  expected: int | float,
   module: ModuleType | None = None,
-  output: Any | None = None,
-  expected: Any | None = None,
 ) -> sns:
   _ = module
-
-  output_check = hasattr(output, '__len__')
-  expected_check = isinstance(expected, int)
-  type_checks = perform_type_checks(
-    output=output,
-    output_check=output_check,
-    expected=expected,
-    expected_check=expected_check, )
-  if type_checks != 'passed':
-    return type_checks
 
   passed = len(output) == expected
   return sns(
@@ -371,21 +303,13 @@ def check_length(
     expected=expected, )
 
 
+@type_checks
 def check_type(
+  output: Any,
+  expected: str | list,
   module: ModuleType | None = None,
-  output: Any | None = None,
-  expected: Any | None = None,
 ) -> sns:
   _ = module
-
-  expected_check = isinstance(expected, str | list)
-  type_checks = perform_type_checks(
-    output=output,
-    output_check=True,
-    expected=expected,
-    expected_check=expected_check, )
-  if type_checks != 'passed':
-    return type_checks
 
   passed = False
 
@@ -414,20 +338,13 @@ def check_type(
     expected=expected, )
 
 
+@type_checks
 def check_substring_in_string(
+  output: str,
+  expected: list | str,
   module: ModuleType | None = None,
-  output: str | None = None,
-  expected: list | str | None = None,
 ) -> sns:
   _ = module
-
-  type_checks = perform_type_checks(
-    output=output,
-    output_check=isinstance(output, str | list),
-    expected=expected,
-    expected_check=isinstance(expected, str | list), )
-  if type_checks != 'passed':
-    return type_checks
 
   if not isinstance(expected, list):
     expected = [expected]
@@ -442,20 +359,13 @@ def check_substring_in_string(
     passed=passed, )
 
 
+@type_checks
 def check_item_in_list(
+  output: list | tuple,
+  expected: Any | list,
   module: ModuleType | None = None,
-  output: list | tuple | None = None,
-  expected: Any | None = None,
 ) -> sns:
   _ = module
-
-  type_checks = perform_type_checks(
-    output=output,
-    output_check=isinstance(output, list | tuple),
-    expected=expected,
-    expected_check=True, )
-  if type_checks != 'passed':
-    return type_checks
 
   if not isinstance(expected, list):
     expected = [expected]
@@ -469,20 +379,13 @@ def check_item_in_list(
     output=output, )
 
 
+@type_checks
 def check_list_contains_item(
   module: ModuleType | None = None,
   output: Any | None = None,
   expected: list | None = None,
 ) -> sns:
   _ = module
-
-  type_checks = perform_type_checks(
-    output=output,
-    output_check=True,
-    expected=expected,
-    expected_check=isinstance(expected, list | tuple), )
-  if type_checks != 'passed':
-    return type_checks
 
   if not isinstance(output, list):
     output = [output]
@@ -497,20 +400,13 @@ def check_list_contains_item(
     passed=passed, )
 
 
+@type_checks
 def check_key_in_dict(
+  output: dict,
+  expected: list | str,
   module: ModuleType | None = None,
-  output: dict | None = None,
-  expected: list | str | None = None,
 ) -> sns:
   _ = module
-
-  type_checks = perform_type_checks(
-    output=output,
-    output_check=isinstance(output, dict),
-    expected=expected,
-    expected_check=True, )
-  if type_checks != 'passed':
-    return type_checks
 
   if not isinstance(expected, list):
     expected = [expected]
@@ -523,20 +419,13 @@ def check_key_in_dict(
     passed=passed, )
 
 
+@type_checks
 def check_range(
+  output: range,
+  expected: dict,
   module: ModuleType | None = None,
-  output: dict | None = None,
-  expected: dict | None = None,
 ) -> sns:
   _ = module
-
-  type_checks = perform_type_checks(
-    output=output,
-    output_check=isinstance(output, range),
-    expected=expected,
-    expected_check=isinstance(expected, dict), )
-  if type_checks != 'passed':
-    return type_checks
 
   store = {}
   for key in expected:
@@ -546,20 +435,13 @@ def check_range(
   return sns(passed=passed, output=store, expected=expected)
 
 
+@type_checks
 def check_key_value_in_dict(
+  output: dict,
+  expected: dict,
   module: ModuleType | None = None,
-  output: dict | None = None,
-  expected: dict | None = None,
 ) -> sns:
   _ = module
-
-  type_checks = perform_type_checks(
-    output=output,
-    output_check=isinstance(output, dict),
-    expected=expected,
-    expected_check=isinstance(expected, dict), )
-  if type_checks != 'passed':
-    return type_checks
 
   fields = {}
   for key in expected:
@@ -569,22 +451,15 @@ def check_key_value_in_dict(
   return sns(passed=passed, output=fields, expected=expected)
 
 
+@type_checks
 def check_thread(
+  output: list| threading.Thread,
+  expected: list | dict,
   module: ModuleType | None = None,
-  output: list| threading.Thread | None = None,
-  expected: list | dict | None = None,
 ) -> sns:
   _ = module
 
   data = sns(**locals())
-
-  type_checks = perform_type_checks(
-    output=output,
-    output_check=isinstance(output, list | threading.Thread),
-    expected=expected,
-    expected_check=isinstance(expected, dict | list), )
-  if type_checks != 'passed':
-    return type_checks
 
   if not isinstance(output, list):
     output = [output]
@@ -647,20 +522,13 @@ def call_function(
   return result
 
 
+@type_checks
 def check_function_output(
+  output: Callable | FunctionType,
+  expected: Any | None,
   module: ModuleType | None = None,
-  output: Callable | Awaitable | None = None,
-  expected: Any | None = None,
 ) -> sns:
   _ = module
-
-  type_checks = perform_type_checks(
-    output=output,
-    output_check=isinstance(output, Callable | Awaitable),
-    expected=expected,
-    expected_check=isinstance(expected, dict), )
-  if type_checks != 'passed':
-    return type_checks
 
   expected = sns(**expected)
   output = [call_function(
@@ -678,6 +546,7 @@ def check_function_output(
     passed=passed, )
 
 
+@type_checks
 def check_file_exists(
   module: ModuleType | None = None,
   output: str | None = None,
@@ -692,10 +561,11 @@ def check_file_exists(
   return data
 
 
+@type_checks
 def check_spies(
+  output: Any,
+  expected: dict,
   module: ModuleType | None = None,
-  output: str | None = None,
-  expected: str | None = None,
 ) -> sns:
   _ = output
 
@@ -721,7 +591,7 @@ def check_spies(
 def examples() -> None:
   from main.utils import invoke_testing_method
 
-  invoke_testing_method.main()
+  invoke_testing_method.main(location=MODULE)
 
 
 if __name__ == '__main__':
