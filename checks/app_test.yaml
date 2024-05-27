@@ -10,7 +10,7 @@ resources:
 
 configurations:
   resources:
-  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/assertions/resource.py
+  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/resource.py
 
 
 tests:
@@ -280,14 +280,14 @@ tests:
     arguments:
       output: module_resource
       expected:
-        location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/assertions/module_resource.py
+        location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/module_resource.py
     assertions:
     - method: check_sns
       expected:
         output:
-          location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/assertions/module_resource.py
+          location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/module_resource.py
         expected:
-          location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/assertions/module_resource.py
+          location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/module_resource.py
         passed: true
   - description: Output is the builtins module
     arguments:
@@ -381,65 +381,65 @@ tests:
       output: callable_method
       expected:
         name: callable_method
-        location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/assertions/resource.py
+        location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/resource.py
     assertions:
     - method: check_sns
       expected:
         passed: true
         output:
           name: callable_method
-          location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/assertions/resource.py
+          location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/resource.py
         expected:
           name: callable_method
-          location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/assertions/resource.py
+          location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/resource.py
   - description: Awaitable function
     arguments:
       output: awaitable_method
       expected:
         name: awaitable_method
-        location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/assertions/resource.py
+        location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/resource.py
     assertions:
     - method: check_sns
       expected:
         passed: true
         output:
           name: awaitable_method
-          location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/assertions/resource.py
+          location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/resource.py
         expected:
           name: awaitable_method
-          location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/assertions/resource.py
+          location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/resource.py
   - description: Decorated function
     arguments:
       output: wrapped_awaitable_method
       expected:
         name: wrapped_awaitable_method
-        location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/assertions/resource.py
+        location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/resource.py
     assertions:
     - method: check_sns
       expected:
         passed: true
         output:
           name: wrapped_awaitable_method
-          location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/assertions/resource.py
+          location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/resource.py
         expected:
           name: wrapped_awaitable_method
-          location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/assertions/resource.py
+          location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/resource.py
   - description: Decorated awaitable function
     arguments:
       output: wrapped_awaitable_method
       expected:
         name: wrapped_awaitable_method
-        location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/assertions/resource.py
+        location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/resource.py
     assertions:
     - method: check_sns
       expected:
         passed: true
         output:
           name: wrapped_awaitable_method
-          location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/assertions/resource.py
+          location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/resource.py
         expected:
           name: wrapped_awaitable_method
-          location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/assertions/resource.py
+          location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/resource.py
 - function: check_dataclass
   description: >
     Verify that the output is a dataclass; check name and specified fields and
@@ -1248,7 +1248,7 @@ tests:
         output:
         - '1'
         - '3'
-        module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/assertions/resource.py
+        module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/resource.py
         cast_output:
         - method: __builtins__.str
     assertions:

@@ -1,6 +1,6 @@
 configurations:
   resources:
-  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/assertions/app.py
+  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/app.py
   - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/set_object/resource.py
 
 
@@ -13,7 +13,7 @@ tests:
   - description: Undefined arguments
     arguments: {}
     assertions:
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       expected: null
   - description: Route is an empty string
     arguments:
@@ -21,7 +21,7 @@ tests:
       value: null
       route: ''
     assertions:
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       expected: parent
   - description: Route to a value in a dict
     arguments:
@@ -30,7 +30,7 @@ tests:
       value: new_value
       route: key
     assertions:
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       expected:
         key: new_value
   - description: Route to a non-existing value in a nested dick
@@ -41,7 +41,7 @@ tests:
       value: value_b
       route: key.key_b
     assertions:
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       expected:
         key:
           key_a: value_a
@@ -52,7 +52,7 @@ tests:
       value: value
       route: field
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         field: value
 - function: get_route_values
@@ -69,7 +69,7 @@ tests:
       route: null
       value: null
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         route: null
         objects:
@@ -81,7 +81,7 @@ tests:
       route: ''
       value: value
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         route: ''
         objects:
@@ -95,7 +95,7 @@ tests:
       route: key_a.key_b
       value: value
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         route:
         - key_a
@@ -117,7 +117,7 @@ tests:
       route: field_a.field_b.field_c
       value: value
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         route:
         - field_a
@@ -141,7 +141,7 @@ tests:
   - description: Child are parent is undefined
     arguments: {}
     assertions:
-    - method: assertions.app.check_exception
+    - method: checks.app.check_exception
       expected: AttributeError
   - description: Set child when parent is dict
     arguments:
@@ -151,7 +151,7 @@ tests:
         value: value
         name: key
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         name: null
         value:
@@ -164,10 +164,10 @@ tests:
         value: value
         name: name
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         name: null
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       field: value
       expected:
         name: value
@@ -183,10 +183,10 @@ tests:
         value: value_b
         name: field_b
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         name: null
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       field: value
       expected:
         field_a: value_a
@@ -203,7 +203,7 @@ tests:
     arguments:
       objects: null
     assertions:
-    - method: assertions.app.check_exception
+    - method: checks.app.check_exception
       expected: TypeError
   - description: Set child value in a nested dictionary
     arguments:
@@ -218,7 +218,7 @@ tests:
       - name: key_0
         value: value_0
     assertions:
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       expected:
         key_a:
           key_0 : value_0
@@ -234,7 +234,7 @@ tests:
       - name: field
         value: set_value
     assertions:
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       expected:
         field: set_value
 - function: get_slice_start_and_end_indices
@@ -246,7 +246,7 @@ tests:
     arguments:
       name: null
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         start: null
         end: null
@@ -254,7 +254,7 @@ tests:
     arguments:
       name: 0|0
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         start: 0
         end: 0
@@ -262,7 +262,7 @@ tests:
     arguments:
       name: 0|4
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         start: 0
         end: 4
@@ -270,7 +270,7 @@ tests:
     arguments:
       name: 0
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         start: 0
         end: null
@@ -278,7 +278,7 @@ tests:
     arguments:
       name: '|5'
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         start: null
         end: 5
@@ -297,7 +297,7 @@ tests:
       child_value: null
       indices: null
     assertions:
-    - method: assertions.app.check_exception
+    - method: checks.app.check_exception
       expected: AttributeError
   - description: Replace value at single index of parent value
     arguments:
@@ -310,7 +310,7 @@ tests:
         start: 0
         end: 0
     assertions:
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       expected:
       - A
       - b
@@ -329,7 +329,7 @@ tests:
         start: null
         end: null
     assertions:
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       expected:
       - A
       - B
@@ -349,7 +349,7 @@ tests:
         start: 1
         end: 3
     assertions:
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       expected:
       - a
       - A
@@ -371,7 +371,7 @@ tests:
         start: 2
         end: null
     assertions:
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       expected:
       - 1
       - 2
@@ -393,7 +393,7 @@ tests:
         start: null
         end: 3
     assertions:
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       expected:
       - a
       - b

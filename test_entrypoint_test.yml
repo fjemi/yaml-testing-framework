@@ -14,7 +14,7 @@ configurations:
   # filter_resources_patterns:
   resources:
   - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/resources/test_entrypoint/app.py
-  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/assertions/app.py
+  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/app.py
 
 
 tests:
@@ -30,19 +30,19 @@ tests:
       val:
         id: null
     assertions:
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       expected: null
   - arguments:
       val:
         id: id_b
     assertions:
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       expected: id_b
   - arguments:
       val:
         id: id_a
     assertions:
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       expected: id_a
 - function: get_yaml_tests
   description: >
@@ -58,12 +58,12 @@ tests:
       pytest:
         yaml_tests: null
     assertions:
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       expected: []
   - description: Attribute is defined
     arguments:
       pytest:
         yaml_tests: yaml_tests
     assertions:
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       expected: yaml_tests

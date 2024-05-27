@@ -11,7 +11,7 @@ from types import SimpleNamespace as sns
 from typing import Any, Awaitable, Callable
 
 # trunk-ignore(ruff/F401)
-from assertions import module_resource
+from checks import module_resource
 
 
 LOCALS = locals()

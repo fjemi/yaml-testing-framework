@@ -5,7 +5,7 @@ todo:
 configurations:
   resources:
   - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/get_tests/resources/expand_node.py
-  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/assertions/app.py
+  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/app.py
 
 
 tests:
@@ -22,7 +22,7 @@ tests:
       root_node: null
       configurations: null
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         nodes: []
   - description: Arguments are empty
@@ -30,7 +30,7 @@ tests:
       root_node: {}
       configurations: {}
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         nodes:
         - arguments: {}
@@ -67,7 +67,7 @@ tests:
         module_route: module_route
         resources: resources
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         nodes:
         - arguments: {}
@@ -130,7 +130,7 @@ tests:
         module_route: configurations
         resources: configurations
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         nodes:
         - arguments: {}
@@ -213,7 +213,7 @@ tests:
       root_node: {}
       configurations: {}
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       field: root_node
       expected:
         arguments: {}
@@ -251,7 +251,7 @@ tests:
         resources: configurations
         yaml: configurations
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       field: root_node
       expected:
         arguments: {}
@@ -293,7 +293,7 @@ tests:
       node: {}
       nested_nodes: []
     assertions:
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       expected: {}
   - description: Two nested nodes
     arguments:
@@ -308,7 +308,7 @@ tests:
       - description: nest_node_a
       - description: nest_node_b
     assertions:
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       expected:
         key.0:
           arguments: {}
@@ -378,7 +378,7 @@ tests:
     arguments:
       root_node: {}
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         expanded_keys: []
         nodes:
@@ -388,7 +388,7 @@ tests:
       root_node:
         description: root_node
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         expanded_keys: []
         nodes:
@@ -403,7 +403,7 @@ tests:
         - description: nested_1
         - description: nested_2
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         expanded_keys: ['0']
         nodes:
@@ -494,7 +494,7 @@ tests:
       expanded_keys: []
       nodes: {}
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         expanded_keys: null
         nodes: []
@@ -506,7 +506,7 @@ tests:
         2: 2
       expanded_keys: [0]
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         expanded_keys: null
         nodes:
@@ -522,7 +522,7 @@ tests:
         4: 4
       expanded_keys: [0, 1, 5]
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         expanded_keys: null
         nodes:

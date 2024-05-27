@@ -12,7 +12,7 @@ resources:
 
 configurations:
   resources:
-  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/assertions/app.py
+  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/app.py
   - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/resources/setup
 
 
@@ -23,12 +23,12 @@ tests:
   - arguments:
       location: null
     assertions:
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       expected: null
   - arguments:
       location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/resources/setup/hello_world.yml
     assertions:
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       expected: >
         hello: world
 - function: get_contents
@@ -37,13 +37,13 @@ tests:
   - arguments:
       directory: null
     assertions:
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       expected:
         directory: null
   - arguments:
       directory: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/resources/setup
     assertions:
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       expected:
         directory: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/resources/setup
         long_description: '# README.md'
@@ -138,7 +138,7 @@ tests:
       pipfile_lock:
         default: {}
     assertions:
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       expected: []
   - description: One package
     arguments:
@@ -147,10 +147,10 @@ tests:
           package_0:
             version: ==version_0
     assertions:
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       expected:
       - package_0==version_0
-    - method: assertions.app.check_length
+    - method: checks.app.check_length
       expected: 1
   - description: Three packages
     arguments:
@@ -163,12 +163,12 @@ tests:
           package_2:
             version: <=version_2
     assertions:
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       expected:
       - package_0==version_0
       - package_1>=version_1
       - package_2<=version_2
-    - method: assertions.app.check_length
+    - method: checks.app.check_length
       expected: 3
 - function: get_python_requires
   description: Returns the minimum python version associated supported by the packages in the `Pipfile.lock`
@@ -183,9 +183,9 @@ tests:
           package_2:
             markers: python_version >= '3.11'
     assertions:
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       expected: '>=3.7'
-    - method: assertions.app.check_type
+    - method: checks.app.check_type
       expected: str
 - function: merge_pip_lock_and_setup_yaml
   description: Returns a dataclass with installation requirements and python version added the `setup_yml` field.
@@ -207,7 +207,7 @@ tests:
         python_requires: {}
       long_description: long_description
     assertions:
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       expected:
         setup_requires:
         - package_0==version_0
@@ -222,7 +222,7 @@ tests:
     arguments:
       directory: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/resources/setup
     assertions:
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       expected:
         author: author
         author_email: author_email

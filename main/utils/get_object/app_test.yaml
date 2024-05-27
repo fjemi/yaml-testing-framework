@@ -4,7 +4,7 @@ resources:
 
 configurations:
   resources:
-  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/assertions/app.py
+  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/app.py
   - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/get_object/resource.py
 
 
@@ -19,14 +19,14 @@ tests:
       parent: null
       name: null
     assertions:
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       expected: null
   - description: Name is not a string
     arguments:
       parent: parent
       name: []
     assertions:
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       expected: parent
   - description: Parent is a module and child is route to builtins function str
     cast_arguments:
@@ -36,7 +36,7 @@ tests:
       parent: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/get_object/resource.py
       route: __builtins__.str
     assertions:
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       field: __name__
       expected: str
 - function: slice_iterable
@@ -45,21 +45,21 @@ tests:
   - description: Undefined arguments
     arguments: {}
     assertions:
-    - method: assertions.app.check_exception
+    - method: checks.app.check_exception
       expected: TypeError
   - description: Parent is an string. Return char at index 1
     arguments:
       parent: parent
       child: 1
     assertions:
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       expected: p
   - description: Parent is an string. Return chars from index to ending
     arguments:
       parent: parent
       child: 2|
     assertions:
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       expected: rent
   - description: Parent is a list. Return items between indices 2 and 3
     arguments:
@@ -70,7 +70,7 @@ tests:
       - d
       child: 1|3
     assertions:
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       expected:
       - b
       - c
@@ -80,7 +80,7 @@ tests:
   - description: Undefined arguments
     arguments: {}
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         parent: null
         child: null
@@ -89,7 +89,7 @@ tests:
       parent: parent
       child: 1
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         parent: p
         child: null
@@ -98,7 +98,7 @@ tests:
       parent: parent
       child: 2|
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         parent: rent
         child: null
@@ -111,7 +111,7 @@ tests:
       - d
       child: 1|3
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         parent:
         - b
@@ -123,7 +123,7 @@ tests:
         key: value
       child: key
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         parent: value
         child: null
@@ -136,7 +136,7 @@ tests:
         field: value
       child: field
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         parent: value
         child: null

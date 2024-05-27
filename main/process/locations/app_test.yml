@@ -10,7 +10,7 @@ locations:
 
 configurations:
   resources:
-  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/assertions/app.py
+  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/app.py
   - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/locations/resources/app.py
 
 
@@ -29,12 +29,12 @@ tests:
       exclude_files: exclusion_pattern
       yaml_suffix: _test
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       field: log
       expected:
         level: error
         message: No modules at location does/not/exist
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         locations: []
   - description: Project path is a directory
@@ -43,7 +43,7 @@ tests:
       exclude_files: exclusion_pattern
       yaml_suffix: _test
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         locations:
         - module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/locations/resources/exclusion_pattern.py
@@ -61,9 +61,9 @@ tests:
     arguments:
       path: null
     assertions:
-    - method: assertions.app.check_type
+    - method: checks.app.check_type
       expected: SimpleNamespace
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       field: paths
       expected:
         directory: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}
@@ -74,7 +74,7 @@ tests:
     arguments:
       path: does_not_exist
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       field: paths
       expected:
         root: *ROOT
@@ -85,7 +85,7 @@ tests:
     arguments:
       path: *RESOURCES
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       field: paths
       expected:
         root: *ROOT
@@ -96,7 +96,7 @@ tests:
     arguments:
       path: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/locations/resources/app.py
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       field: paths
       expected:
         root: *ROOT
@@ -110,14 +110,14 @@ tests:
     arguments:
       yaml_suffix: null
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         yaml_suffix: _test
   - description: Argument is defined
     arguments:
       yaml_suffix: yaml_suffix
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         yaml_suffix: _yaml_suffix
 - function: format_exclude_files
@@ -129,7 +129,7 @@ tests:
     arguments:
       exclude_files: null
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         exclude_files:
         - .venv
@@ -143,7 +143,7 @@ tests:
     arguments:
       exclude_files: exclude_files
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         exclude_files:
         - exclude_files
@@ -160,7 +160,7 @@ tests:
       - exclude_files_a
       - exclude_files_b
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         exclude_files:
         - exclude_files_a
@@ -179,14 +179,14 @@ tests:
     arguments:
       resources: null
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         resources: []
   - description: Argument is a string
     arguments:
       resources: resources
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         resources:
         - resources
@@ -196,7 +196,7 @@ tests:
       - resource_a
       - resource_b
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         resources:
         - resource_a
@@ -209,7 +209,7 @@ tests:
       root: null
       exclude_files: null
     assertions:
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       expected: False
   - description: Path flagged for exclusion
     arguments:
@@ -217,7 +217,7 @@ tests:
       exclude_files:
       - pattern_a
     assertions:
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       expected: True
   - description: Path is not flagged for exclusion
     arguments:
@@ -226,7 +226,7 @@ tests:
       - pattern_a
       - pattern_b
     assertions:
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       expected: False
 - function: get_route_for_module
   description: Format's the module location for use in a test id
@@ -236,28 +236,28 @@ tests:
       root: null
       module: null
     assertions:
-    - method: assertions.app.check_exception
+    - method: checks.app.check_exception
       expected: AttributeError
   - description: Root is an empty string
     arguments:
       module: location/module.py
       root: ''
     assertions:
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       expected: location.module
   - description: Defined module location
     arguments:
       module: location_a/location_b/module.py
       root: location_a
     assertions:
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       expected: .location_b.module
   - description: Location is a string 1
     arguments:
       module: /project_path/module_route.py
       root: /project_path
     assertions:
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       expected: .module_route
 - function: get_module_and_yaml_location_when_path_kind_is_file
   description: >
@@ -273,7 +273,7 @@ tests:
   - description: Undefined arguments
     arguments: {}
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         locations: []
   - description: Path is not a file
@@ -281,7 +281,7 @@ tests:
       paths:
         kind: directory
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         locations: []
   - description: Path is the location of a module file
@@ -293,7 +293,7 @@ tests:
         root: *ROOT
         path: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/locations/resources/exclusion_pattern.py
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         locations:
         - module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/locations/resources/exclusion_pattern.py
@@ -308,7 +308,7 @@ tests:
         root: *ROOT
         path: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/locations/resources/exclusion_pattern_test.yml
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         locations:
         - module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/locations/resources/exclusion_pattern.py
@@ -328,14 +328,14 @@ tests:
   - description: Undefined arguments
     arguments: {}
     assertions:
-    - method: assertions.app.check_exception
+    - method: checks.app.check_exception
       expected: AttributeError
   - description: Path is a file
     arguments:
       paths:
         kind: file
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected: {}
   - description: Path is a directory
     arguments:
@@ -347,7 +347,7 @@ tests:
         kind: directory
       yaml_suffix: _test
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         locations:
         - module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/locations/resources/exclusion_pattern.py

@@ -5,7 +5,7 @@ TODO:
 
 configurations:
   resources:
-  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/assertions/app.py
+  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/app.py
   - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/examples/operations_resource.py
 
 
@@ -21,9 +21,9 @@ tests:
       b: '1'
       method: subtract
     assertions:
-    - method: assertions.app.check_exception
+    - method: checks.app.check_exception
       expected: TypeError
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       field: __class__.__name__
       expected: TypeError
   - description: Add two integers
@@ -32,17 +32,17 @@ tests:
       b: 1
       method: add
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         a: 1
         b: 1
         result: 2
         method: add
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       cast_output:
       - method: __builtins__.str
       expected: namespace(a=1, b=1, method='add', result=2)
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       field: result
       expected: 2
   - description: Method does not exist
@@ -51,7 +51,7 @@ tests:
       b: 1
       method: method_does_not_exist
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         a: 1
         b: 1
@@ -64,7 +64,7 @@ tests:
   #     b: 1
   #     method: subtract
   #   assertions:
-  #   - method: assertions.app.check_sns
+  #   - method: checks.app.check_sns
   #     expected:
   #       a: 1
   #       b: 1
@@ -81,7 +81,7 @@ tests:
     - method: operations_resource.inverse
       field: result
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         result: 0.1
         method: constant
@@ -98,7 +98,7 @@ tests:
         b: b
         method: method_name
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         a: a
         b: b
@@ -108,7 +108,7 @@ tests:
     arguments:
       data: data
     assertions:
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       expected: data
   - description: Patch a function as a side effect dict
     patches:
@@ -123,7 +123,7 @@ tests:
         a: a
         c: c
       assertions:
-      - method: assertions.app.check_equals
+      - method: checks.app.check_equals
         expected:
           a: A
           c: c
@@ -132,7 +132,7 @@ tests:
         b: b
         d: D
       assertions:
-      - method: assertions.app.check_equals
+      - method: checks.app.check_equals
         expected:
           b: B
           d: D
@@ -149,7 +149,7 @@ tests:
         b: 2
         method: add
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         a: 1
         b: 2
@@ -161,7 +161,7 @@ tests:
         b: -2
         method: add
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         a: -1
         b: -2
@@ -173,7 +173,7 @@ tests:
         b: 0
         method: add
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         a: 0
         b: 0
@@ -192,7 +192,7 @@ tests:
         b: 2
         method: subtract
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         a: 1
         b: 2
@@ -204,7 +204,7 @@ tests:
         b: -2
         method: subtract
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         a: -1
         b: -2
@@ -216,7 +216,7 @@ tests:
         b: 0
         method: subtract
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         a: 0
         b: 0
@@ -234,7 +234,7 @@ tests:
       data:
         method: constant
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         a: null
         b: null
@@ -246,7 +246,7 @@ tests:
         b: 3
         method: constant
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         a: 3
         b: 3
@@ -262,7 +262,7 @@ tests:
         data:
           method: constant
       assertions:
-      - method: assertions.app.check_sns
+      - method: checks.app.check_sns
         expected:
           a: null
           b: null
@@ -273,7 +273,7 @@ tests:
     #     data:
     #       method: constant
     #   assertions:
-    #   - method: assertions.app.check_sns
+    #   - method: checks.app.check_sns
     #     expected:
     #       a: null
     #       b: null
@@ -288,7 +288,7 @@ tests:
       route: CONSTANT
     arguments: {}
     assertions:
-    - method: assertions.app.check_function_output
+    - method: checks.app.check_function_output
       field: result
       expected:
         arguments:
@@ -315,7 +315,7 @@ tests:
       data:
         a: 5
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         a: 5
         result: 120
@@ -330,7 +330,7 @@ tests:
       data:
         a: 5
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         a: 5
         result: 15
@@ -351,12 +351,12 @@ tests:
         a: 3
         b: 4
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         a: 3
         b: 4
         result: 12
-    - method: assertions.app.check_spies
+    - method: checks.app.check_spies
       expected:
         add:
           called: true

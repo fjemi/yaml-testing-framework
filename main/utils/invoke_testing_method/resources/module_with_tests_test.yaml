@@ -1,6 +1,6 @@
 configurations:
   resources:
-  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/assertions/app.py
+  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/app.py
 
 
 tests:
@@ -9,10 +9,10 @@ tests:
   tests:
   - arguments: {}
     assertions:
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       expected: Hello World
   - arguments:
       name: Earth
     assertions:
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       expected: Hello Earth

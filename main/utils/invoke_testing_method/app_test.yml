@@ -3,7 +3,7 @@ configurations:
   - run_pytest
   resources:
   - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/invoke_testing_method/resources/app.py
-  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/assertions/app.py
+  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/app.py
 
 
 arguments:
@@ -26,7 +26,7 @@ tests:
   - description: Undefined arguments
     arguments:  {}
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         exclude_files:
         - ignore
@@ -53,7 +53,7 @@ tests:
       root_flag: root_flag
       logging_enabled: logging_enabled
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         exclude_files: exclude_files
         location: location
@@ -74,7 +74,7 @@ tests:
       resource_module: null
       resource_suffix: null
     assertions:
-    - method: assertions.app.check_exception
+    - method: checks.app.check_exception
       expected: TypeError
   - description: Undefined arguments
     arguments:
@@ -82,27 +82,27 @@ tests:
       resource_module: directory/module_resource
       resource_suffix: _resource
     assertions:
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       expected: directory/module
   - description: Resource module and suffix are defined
     arguments:
       resource_module: directory/module_resource.py
       resource_suffix: _resource
     assertions:
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       expected: directory/module.py
   - description: Resource module and folder name are defined
     arguments:
       resource_module: directory/_resource/module.py
     assertions:
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       expected: directory/_resource/module.py
   - description: Resource module parent module filename are defined
     arguments:
       resource_module: directory/module_resource.py
       parent_filename: module
     assertions:
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       expected: directory/module.py
   - description: All arguments are defined
     arguments:
@@ -110,7 +110,7 @@ tests:
       parent_filename: app
       resource_suffix: _resource
     assertions:
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       expected: directory/_resource/app.py
 - function: set_location
   description: Set the location of a file or directory of files to test
@@ -118,7 +118,7 @@ tests:
   - description: Undefined arguments
     arguments: {}
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         location: null
         module: null
@@ -128,7 +128,7 @@ tests:
     arguments:
       location: location
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         location: location
         module: null
@@ -138,7 +138,7 @@ tests:
     arguments:
       root_flag: true
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         location: .
         module: null
@@ -152,7 +152,7 @@ tests:
       root_flag: false
       location: null
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         location: module
         module: null
@@ -164,7 +164,7 @@ tests:
       module: _resource/module_resource.py
       resource_suffix: _resource
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         location: _resource/module.py
         module: null
@@ -177,10 +177,10 @@ tests:
     arguments:
       << : *MODULE_WITH_TESTS_ARGUMENTS
     assertions:
-    - method: assertions.app.check_length
+    - method: checks.app.check_length
       field: result
       expected: 2
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       cast_output:
       - field: result
         method: resources.app.list_sns_to_list_dict
@@ -206,7 +206,7 @@ tests:
     arguments:
       <<: *MODULE_WITHOUT_TESTS_ARGUMENTS
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         result: []
 - function: invoke_pytest
@@ -216,9 +216,9 @@ tests:
     arguments:
       <<: *MODULE_WITH_TESTS_ARGUMENTS
     assertions:
-    - method: assertions.app.check_type
+    - method: checks.app.check_type
       expected: SimpleNamespace
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       field: process.returncode
       expected: 0
 - function: run_tests_using_invocation_method
@@ -232,7 +232,7 @@ tests:
       <<: *MODULE_WITH_TESTS_ARGUMENTS
       method: plugin
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         result:
         - expected: Hello Earth
@@ -261,7 +261,7 @@ tests:
       <<: *MODULE_WITH_TESTS_ARGUMENTS
       method: pytest
     assertions:
-    - method: assertions.app.check_type
+    - method: checks.app.check_type
       expected: SimpleNamespace
   - description: Run tests on modules in a directory using plugin invocation method
     arguments:
@@ -273,7 +273,7 @@ tests:
     - field: result
       method: resources.app.list_sns_to_list_dict
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         result:
         - expected: Hello World

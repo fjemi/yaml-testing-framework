@@ -19,7 +19,7 @@ configurations:
   # - pytest_configure
   resources:
   - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/plugin/resources/app.py
-  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/assertions/app.py
+  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/app.py
 
 
 tests:
@@ -35,7 +35,7 @@ tests:
       - option_0
       - option_2
     assertions:
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       expected:
         option_0: value_0
         option_2: value_2
@@ -47,14 +47,14 @@ tests:
       option: null
       config: null
     assertions:
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       expected: []
   - description: Option is a string
     arguments:
       option: option
       config: null
     assertions:
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       expected:
       - option
   - description: Option is a list
@@ -64,7 +64,7 @@ tests:
       - option_1
       config: null
     assertions:
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       expected:
       - option_0
       - option_1
@@ -78,35 +78,35 @@ tests:
       option: null
       config: null
     assertions:
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       expected: YAML_TESTING_FRAMEWORK_ROOT_DIR
   - description: Option is a single dot representing root directory
     arguments:
       option: .
       config: config
     assertions:
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       expected: YAML_TESTING_FRAMEWORK_ROOT_DIR
   - description: Option is path to directory within the root directory
     arguments:
       option: ./path_to_directory
       config: config
     assertions:
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       expected: /path_to_directory
   - description: Option is path to directory in test resources
     arguments:
       option: path_to_directory
       config: config
     assertions:
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       expected: path_to_directory
   - description: Option is path to directory in root directory
     arguments:
       option: root_directory/sub_directory
       config: config
     assertions:
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       expected: root_directory/sub_directory
 - function: get_pytest_parser
   description: Returns the parser from pytest for adding configuration options
@@ -122,23 +122,23 @@ tests:
     arguments:
       pytest_instance: pytest_instance
     assertions:
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       expected:  <class '_pytest.config.argparsing.Parser'>
   - description: Null instance of pytest
     arguments:
       pytest_instance: null
     assertions:
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       expected:  <class '_pytest.config.argparsing.Parser'>
 - function: get_pytest_instance
   description: Returns an instance of the pytest module
   tests:
   - arguments: {}
     assertions:
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       field: __name__
       expected: pytest
-    - method: assertions.app.check_type
+    - method: checks.app.check_type
       expected: module
 - function: add_args_and_ini_options_to_parser
   description: >
@@ -151,7 +151,7 @@ tests:
   - arguments:
       parser: parser
     assertions:
-    - method: assertions.app.check_class
+    - method: checks.app.check_class
       expected:
         name: Parser
         fields:
@@ -162,7 +162,7 @@ tests:
           - exclude-files
           - yaml-suffix
           - logging-enabled
-    - method: assertions.app.check_length
+    - method: checks.app.check_length
       field: _anonymous.options
       expected: 6
 - function: pass_through
@@ -173,14 +173,14 @@ tests:
       option: null
       config: null
     assertions:
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       expected: null
   - description: Option is defined
     arguments:
       option: option
       config: null
     assertions:
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       expected: option
 # - function: pytest_configure
 #   description: >
@@ -193,7 +193,7 @@ tests:
 #   - arguments:
 #       config: config
 #     assertions:
-#     - method: assertions.app.check_equals
+#     - method: checks.app.check_equals
 #       expected: null
 - function: set_node_ids
   description: Sets node ids that are displayed in pytest report summaries
@@ -205,19 +205,19 @@ tests:
     arguments:
       item: null
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         _nodeid: None
   - arguments:
       item: short_id_a
     assertions:
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       field: _nodeid
       expected: short_id_a
   - arguments:
       item: short_id_b
     assertions:
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       field: _nodeid
       expected: short_id_b
 - function: format_report_nodeid
@@ -228,17 +228,17 @@ tests:
   - arguments:
       nodeid: null
     assertions:
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       expected: None
   - arguments:
       nodeid: ::test_[nodeid
     assertions:
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       expected: nodeid
   - arguments:
       nodeid: nodeid <- test_entrypoint.py
     assertions:
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       expected: nodeid
 - function: pytest_itemcollected
   description: Handles the collection of pytest test items
@@ -253,9 +253,9 @@ tests:
     arguments:
       item: null
     assertions:
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       expected: null
-    - method: assertions.app.check_spies
+    - method: checks.app.check_spies
       expected:
         set_node_ids:
           called: True

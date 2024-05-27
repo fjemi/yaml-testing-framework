@@ -1,6 +1,6 @@
 configurations:
   resources:
-  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/assertions/app.py
+  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/app.py
   - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/casts/app_resource.py
 
 
@@ -11,7 +11,7 @@ tests:
   - description: Undefined arguments
     arguments: {}
     assertions:
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       expected: null
   - cast_arguments:
     - method: app_resource.module_resource
@@ -24,7 +24,7 @@ tests:
         - method: __builtins__.int
         object: '1111'
       assertions:
-      - method: assertions.app.check_equals
+      - method: checks.app.check_equals
         expected: 1111
     - description: Cast dict as simple name space
       arguments:
@@ -34,7 +34,7 @@ tests:
         object:
           key: value
       assertions:
-      - method: assertions.app.check_sns
+      - method: checks.app.check_sns
         expected:
           key: value
     - description: Cast list into string with unpacking
@@ -45,7 +45,7 @@ tests:
           unpack: true
         object: [a, b, c]
       assertions:
-      - method: assertions.app.check_equals
+      - method: checks.app.check_equals
         expected: abc
 - function: get_cast_method
   description: >
@@ -58,7 +58,7 @@ tests:
   - description: Undefined data
     arguments: {}
     assertions:
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       field: log.__dict__
       expected:
         level: error
@@ -68,7 +68,7 @@ tests:
       method: __builtins__.str
       module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/casts/app_resource.py
     assertions:
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       field: method.__name__
       expected: str
   - description: Return the int class from builtins
@@ -76,7 +76,7 @@ tests:
       method: __builtins__.int
       module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/casts/app_resource.py
     assertions:
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       field: method.__name__
       expected: int
   - description: >
@@ -86,7 +86,7 @@ tests:
       method: pass_through
       module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/casts/app_resource.py
     assertions:
-    - method: assertions.app.check_function
+    - method: checks.app.check_function
       field: method
       expected:
         name: pass_through
@@ -96,7 +96,7 @@ tests:
       method: does_not_exist
       module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/casts/app_resource.py
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       field: log
       expected:
         message: Cast method does_not_exist not in module ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/casts/app_resource.py
@@ -107,7 +107,7 @@ tests:
   - description: Undefined arguments
     arguments: {}
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         temp_object: null
   - description: Field is undefined and object is defined
@@ -115,7 +115,7 @@ tests:
       object: object
       field: null
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         temp_object: object
   - description: Object is a dict and field is an existing key
@@ -124,7 +124,7 @@ tests:
         key: value
       field: key
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         temp_object: value
 - function: reset_object
@@ -133,7 +133,7 @@ tests:
   - description: Undefined arguments
     arguments: {}
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         None: null
   - description: Set object as temp object
@@ -142,7 +142,7 @@ tests:
       object: object
       field: null
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         object: temp_object
         temp_object: null
@@ -152,7 +152,7 @@ tests:
       object: {}
       field: key
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         object:
           key: temp_object
@@ -164,7 +164,7 @@ tests:
         key: value
       field: key
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         object:
           key: temp_object
@@ -176,7 +176,7 @@ tests:
     arguments:
       module: null
     assertions:
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       expected: null
   - description: Module is a module
     cast_arguments:
@@ -185,13 +185,13 @@ tests:
     arguments:
       module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/casts/app_resource.py
     assertions:
-    - method: assertions.app.check_module
+    - method: checks.app.check_module
       expected:
         location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/casts/app_resource.py
   - description: Module is a string
     arguments:
       module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/casts/app_resource.py
     assertions:
-    - method: assertions.app.check_module
+    - method: checks.app.check_module
       expected:
         location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/casts/app_resource.py

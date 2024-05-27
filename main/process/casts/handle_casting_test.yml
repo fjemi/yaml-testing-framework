@@ -1,6 +1,6 @@
 configurations:
   resources:
-  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/assertions/app.py
+  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/app.py
   - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/casts/handle_casting_resource.py
   - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/casts/app_resource.py
 
@@ -15,14 +15,14 @@ tests:
   - description: Undefined arguments
     arguments: {}
     assertions:
-    - method: assertions.app.check_exception
+    - method: checks.app.check_exception
       expected: TypeError
   - description: Cast as string
     arguments:
       method: cast_as_str
       temp_object: null
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         temp_object: None
         method: null
@@ -31,7 +31,7 @@ tests:
       method: cast_as_int
       temp_object: '1'
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         temp_object: 1
         method: null
@@ -40,7 +40,7 @@ tests:
       method: cast_as_split
       temp_object: a.b.c
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         temp_object:
         - a
@@ -53,13 +53,13 @@ tests:
   - description: Data is undefined
     arguments: {}
     assertions:
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       expected: null
   - description: Data is a string
     arguments:
       temp_object: temp_object
     assertions:
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       expected: temp_object
 - function: cast_dict_unpacked
   description: Unpacks a dictionary into a method
@@ -70,7 +70,7 @@ tests:
   - description: Undefined arguments
     arguments: {}
     assertions:
-    - method: assertions.app.check_exception
+    - method: checks.app.check_exception
       expected: TypeError
   - description: Unpack dict into casting method
     arguments:
@@ -80,7 +80,7 @@ tests:
         c: c
       method: cast_list_to_string
     assertions:
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       expected: abc
   - description: Unpack dict into casting method
     arguments:
@@ -89,7 +89,7 @@ tests:
         b: 2
       method: add
     assertions:
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       expected: 3
 - function: cast_dict_packed
   description: Unpacks a list into a method
@@ -100,7 +100,7 @@ tests:
   - description: Undefined arguments
     arguments: {}
     assertions:
-    - method: assertions.app.check_exception
+    - method: checks.app.check_exception
       expected: TypeError
   - description: Call casting method with packed dict
     arguments:
@@ -109,7 +109,7 @@ tests:
         b: 1
       method: add_dict
     assertions:
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       expected: 2
   - description: Convert dict to sns
     arguments:
@@ -118,7 +118,7 @@ tests:
         b: 2
       method: cast_dict_as_sns
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         a: 2
         b: 2
@@ -132,14 +132,14 @@ tests:
   - description: Undefined arguments
     arguments: {}
     assertions:
-    - method: assertions.app.check_exception
+    - method: checks.app.check_exception
       expected: TypeError
   - description: Undefined arguments
     arguments:
       method: pack_nonetype
       temp_object: null
     assertions:
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       expected: output
 - function: cast_nonetype_unpacked
   description: >
@@ -151,14 +151,14 @@ tests:
   - description: Undefined arguments
     arguments: {}
     assertions:
-    - method: assertions.app.check_exception
+    - method: checks.app.check_exception
       expected: TypeError
   - description: Undefined arguments
     arguments:
       method: unpack_nonetype
       temp_object: null
     assertions:
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       expected: output
 - function: cast_list_unpacked
   description: Unpacks a list into a method
@@ -169,28 +169,28 @@ tests:
   - description: Undefined arguments
     arguments: {}
     assertions:
-    - method: assertions.app.check_exception
+    - method: checks.app.check_exception
       expected: TypeError
   - description: Unpack list into add method
     arguments:
       temp_object: [2, 3]
       method: add
     assertions:
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       expected: 5
   - description: Unpack list into add method
     arguments:
       temp_object: [2, 3]
       method: add
     assertions:
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       expected: 5
   - description: Unpack list into method
     arguments:
       temp_object: [a, b, c]
       method: cast_list_to_string
     assertions:
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       expected: abc
 - function: cast_list_packed
   description: Calls a casting method with a packed list
@@ -201,14 +201,14 @@ tests:
   - description: Undefined arguments
     arguments: {}
     assertions:
-    - method: assertions.app.check_exception
+    - method: checks.app.check_exception
       expected: TypeError
   - description: Sum list of numbers
     arguments:
       temp_object: [0, 0]
       method: add_list
     assertions:
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       expected: 0
 - function: cast_any_packed
   description: Pass packed data to calling method
@@ -219,21 +219,21 @@ tests:
   - description: Undefined arguments
     arguments: {}
     assertions:
-    - method: assertions.app.check_exception
+    - method: checks.app.check_exception
       expected: TypeError
   - description: Inverse of number
     arguments:
       temp_object: 1
       method: inverse
     assertions:
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       expected: 1
   - description: Negate number
     arguments:
       temp_object: 2
       method: negate
     assertions:
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       expected: -2
 - function: cast_any_unpacked
   description: Pass packed data to calling method
@@ -244,7 +244,7 @@ tests:
   - description: Undefined arguments
     arguments: {}
     assertions:
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       expected: null
   - description: Temp object is a dict with correct keyword arguments
     arguments:
@@ -252,7 +252,7 @@ tests:
         a: 1
       method: inverse
     assertions:
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       expected: 1
   - description: Temp object is a dict with incorrect keyword arguments
     arguments:
@@ -261,7 +261,7 @@ tests:
         b: 1
       method: inverse
     assertions:
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       expected: null
   - description: Temp object is an simple name space object
     cast_arguments:
@@ -273,7 +273,7 @@ tests:
         a: 1
       method: inverse
     assertions:
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       expected: null
   - description: Temp object is a list with nested dict
     arguments:
@@ -281,7 +281,7 @@ tests:
       - {}
       method: negate
     assertions:
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       expected: null
   - description: Temp object is a list
     arguments:
@@ -289,5 +289,5 @@ tests:
       - 1
       method: negate
     assertions:
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       expected: -1

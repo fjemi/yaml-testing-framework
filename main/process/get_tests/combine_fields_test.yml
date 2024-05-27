@@ -1,6 +1,6 @@
 configurations:
   resources:
-  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/assertions/app.py
+  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/app.py
 
 
 tests:
@@ -10,7 +10,7 @@ tests:
   - description: Undefined child and parent
     arguments: {}
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected: {}
   - description: Field is description
     arguments:
@@ -20,7 +20,7 @@ tests:
       - description_b
       field: description
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         output:
         - description
@@ -39,7 +39,7 @@ tests:
         high: []
         low: []
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         output: []
   - description: Defined levels
@@ -48,7 +48,7 @@ tests:
         high: [a, b]
         low: [c]
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         output: [a, b, c]
 - function: combine_levels_as_dict
@@ -66,7 +66,7 @@ tests:
         high: {}
         low: {}
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         output: {}
   - description: Dictionary with defined key/values
@@ -79,7 +79,7 @@ tests:
           a: A
           b: b
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         output:
           a: A
@@ -93,7 +93,7 @@ tests:
           c: c
         low: null
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         output:
           a: a
@@ -111,7 +111,7 @@ tests:
         high: null
         low: null
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         output: null
   - description: Low and high values are defined
@@ -120,7 +120,7 @@ tests:
         high: high
         low: low
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         output: low
   - description: High value is defined
@@ -129,7 +129,7 @@ tests:
         high: high
         low: null
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         output: high
 - function: combine_levels_as_high_or_low
@@ -145,7 +145,7 @@ tests:
         high: null
         low: null
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         output: null
   - description: Low and high values are defined
@@ -154,7 +154,7 @@ tests:
         high: high
         low: low
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         output: high
   - description: High value is undefined
@@ -163,7 +163,7 @@ tests:
         high: null
         low: low
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         output: low
 - function: combine_levels_as_high
@@ -179,7 +179,7 @@ tests:
         high: null
         low: null
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         output: null
   - description: Low and high values are defined
@@ -188,7 +188,7 @@ tests:
         high: high
         low: low
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         output: high
   - description: High value is defined
@@ -197,7 +197,7 @@ tests:
         high: high
         low: null
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         output: high
 - function: combine_levels_as_low
@@ -213,7 +213,7 @@ tests:
         high: null
         low: null
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         output: null
   - description: Low and high values are defined
@@ -222,7 +222,7 @@ tests:
         high: high
         low: low
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         output: low
   - description: Low is undefined
@@ -231,6 +231,6 @@ tests:
         high: high
         low: null
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         output: null

@@ -7,5 +7,5 @@ tests:
       a: 0
       b: 0
     assertions:
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       expected: 0

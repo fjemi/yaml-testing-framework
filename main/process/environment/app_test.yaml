@@ -1,6 +1,6 @@
 configurations:
   resources:
-  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/assertions/app.py
+  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/app.py
   - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/environment/resources/app.py
 
 
@@ -17,10 +17,10 @@ tests:
       environment: null
       module: null
     assertions:
-    - method: assertions.app.check_equals
+    - method: checks.app.check_equals
       field: __dict__
       expected: {}
-    # - method: assertions.app.check_sns
+    # - method: checks.app.check_sns
     #   field: log
     #   expected:
     #     level: warning
@@ -32,12 +32,12 @@ tests:
         VAR_B: B
       module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/environment/resources/no_config.py
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       field: module.CONFIG.environment
       expected:
         VAR_A: A
         VAR_B: B
-    # - method: assertions.app.check_sns
+    # - method: checks.app.check_sns
     #   expected:
     #     log: CONFIG added to module at location ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/environment/resources/no_config.py
   - description: Module has CONFIG with no environment
@@ -48,7 +48,7 @@ tests:
         VAR_C: 3
       module:  ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/environment/resources/no_config.py
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       field: module.CONFIG.environment
       expected:
         VAR_A: 1
@@ -62,7 +62,7 @@ tests:
         VAR_3: 3
       module:  ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/environment/resources/config_with_environment.py
     assertions:
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       field: module.CONFIG.environment
       expected:
         VAR_1: 1
@@ -71,6 +71,6 @@ tests:
         VAR_A: A
         VAR_B: B
         VAR_C: C
-    - method: assertions.app.check_sns
+    - method: checks.app.check_sns
       expected:
         log: null
