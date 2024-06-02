@@ -6,7 +6,7 @@ TODO:
 configurations:
   resources:
   - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/app.py
-  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/examples/operations_resource.py
+  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/examples/resource.py
 
 
 tests:
@@ -78,7 +78,7 @@ tests:
     arguments:
       method: constant
     cast_output:
-    - method: operations_resource.inverse
+    - method: resource.inverse
       field: result
     assertions:
     - method: checks.app.check_sns
@@ -324,7 +324,7 @@ tests:
       an integer a
     patches:
     - route: factorial
-      callable_route: operations_resource.sum_patch
+      callable_route: resource.sum_patch
       method: callable
     arguments:
       data:
