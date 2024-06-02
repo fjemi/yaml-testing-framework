@@ -3,4 +3,4 @@
 
 
 # trunk-ignore(ruff/F401)
-from . import assertions, casts, environment, locations, nodes, patches
+from . import casts, checks, environment, locations, nodes, patches

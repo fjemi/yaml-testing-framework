@@ -6,6 +6,6 @@ tests:
   - arguments:
       a: 0
       b: 0
-    assertions:
+    checks:
     - method: checks.app.check_equals
       expected: 0

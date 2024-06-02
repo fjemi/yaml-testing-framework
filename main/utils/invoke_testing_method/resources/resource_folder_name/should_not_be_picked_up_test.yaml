@@ -8,11 +8,11 @@ tests:
   description: Returns a greeting
   tests:
   - arguments: {}
-    assertions:
+    checks:
     - method: checks.app.check_equals
       expected: Hello World
   - arguments:
       name: Earth
-    assertions:
+    checks:
     - method: checks.app.check_equals
       expected: Hello Earth

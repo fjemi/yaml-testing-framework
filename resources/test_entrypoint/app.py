@@ -21,11 +21,11 @@ def test_resource(test: dict | None = None):
   return test
 
 
-def assertions_resource(assertions: list | None = None) -> list:
-  if not isinstance(assertions, list):
-    return assertions
+def checks_resource(checks: list | None = None) -> list:
+  if not isinstance(checks, list):
+    return checks
 
-  return [sns(**assertion) for assertion in assertions]
+  return [sns(**check) for check in checks]
 
 
 def examples() -> None:

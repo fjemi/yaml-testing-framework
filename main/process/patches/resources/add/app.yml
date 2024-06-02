@@ -9,7 +9,7 @@ tests:
         b: 0
     cast_arguments:
       data: DataClass
-    assertions:
+    checks:
     - method: checks.app.check_equals
       expected: 0
     - method: checks.app.check_type
@@ -24,7 +24,7 @@ tests:
   - arguments:
       a: 1
       b: 2
-    assertions:
+    checks:
     - method: checks.app.check_equals
       expected: 3
     - method: checks.app.check_type
@@ -36,7 +36,7 @@ tests:
       data:
         a: 1
         b: 2
-    assertions:
+    checks:
     - method: checks.app.check_equals
       expected: 3
     - method: checks.app.check_type

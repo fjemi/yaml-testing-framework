@@ -20,12 +20,12 @@ CONFIG = get_config.main(module=PARENT_MODULE)
 LOCALS = locals()
 
 
-def set_exception(assertion: Any) -> Any:
+def set_exception(check: Any) -> Any:
   try:
     sum([1, '1'])
   except Exception as exception:
-    assertion.exception = exception
-  return assertion
+    check.exception = exception
+  return check
 
 
 def check_equals(
@@ -49,26 +49,26 @@ def get_module_wrapper(module: str | None = None) -> ModuleType:
   return get_module.main(location=module, pool=False)
 
 
-def assertions_resource(
+def checks_resource(
   case_: Any | None = None,
-  assertions: list[dict] | None = None,
+  checks: list[dict] | None = None,
 ) -> Any:
-  if assertions:
+  if checks:
     return [
       schema.get_model(
-        name='process_assertion.Assertion',
-        data=assertion,
-      ) for assertion in assertions
+        name='process_check.Assertion',
+        data=check,
+      ) for check in checks
     ]
 
-  if case_ == 'undefined_assertions':
-    return sns(assertions=None)
+  if case_ == 'undefined_checks':
+    return sns(checks=None)
 
-  if case_ == 'defined_assertions':
+  if case_ == 'defined_checks':
     case_ = sns()
     case_.result = {'key': 'value'}
     case_.exception = {'name': 'name'}
-    case_.assertions = '''
+    case_.checks = '''
     - method: checks.app.check_type
       field: key
       expected: str
@@ -76,16 +76,16 @@ def assertions_resource(
       expected:
         key: value
     '''
-    case_.assertions = yaml.safe_load(case_.assertions)
+    case_.checks = yaml.safe_load(case_.checks)
     return case_
 
 
-def assertion_resource(
-  assertion: dict | None = None,
+def check_resource(
+  check: dict | None = None,
 ) -> sns:
-  assertion = assertion or {}
-  assertion = sns(**assertion)
-  return assertion
+  check = check or {}
+  check = sns(**check)
+  return check
 
 
 def method_resource(method: str | None = None) -> None | Callable:
@@ -110,49 +110,49 @@ def main_cast_arguments(output: dict | None = None) -> sns:
   module = getattr(output, 'module', None)
   output.module = get_module.main(location=module, pool=False)
 
-  output.assertions = getattr(output, 'assertions', [])
+  output.checks = getattr(output, 'checks', [])
 
   return output.__dict__
 
 
-def list_sns_to_list_dict(assertions: list) -> list:
-  if not isinstance(assertions, list):
-    return assertions
+def list_sns_to_list_dict(checks: list) -> list:
+  if not isinstance(checks, list):
+    return checks
 
   def inner(item: sns) -> dict:
     return item.__dict__
 
-  return [inner(item=item) for item in assertions]
+  return [inner(item=item) for item in checks]
 
 
-def main_cast_output(assertions: list | None = None) -> list | None:
-  if not isinstance(assertions, list):
-    return assertions
+def main_cast_output(checks: list | None = None) -> list | None:
+  if not isinstance(checks, list):
+    return checks
 
-  def inner(assertion: sns) -> dict:
-    if isinstance(assertion.method, Callable):
-      assertion.method = assertion.method.__name__
-    return assertion.__dict__
+  def inner(check: sns) -> dict:
+    if isinstance(check.method, Callable):
+      check.method = check.method.__name__
+    return check.__dict__
 
-  return [inner(assertion=item) for item in assertions]
+  return [inner(check=item) for item in checks]
 
 
 def convert_expected_and_output_to_yaml_cast_arguments(
-  assertion: dict | None = None,
+  check: dict | None = None,
 ) -> sns:
-  assertion = assertion or {}
-  return sns(**assertion)
+  check = check or {}
+  return sns(**check)
 
 
 def compare_expected_and_output_cast_arguments(
-  assertion: dict | None = None,
+  check: dict | None = None,
 ) -> sns:
-  assertion = assertion or {}
-  assertion = sns(**assertion)
+  check = check or {}
+  check = sns(**check)
 
-  assertion.method = check_equals
-  assertion.module = get_module.main(location=MODULE, pool=False)
-  return assertion
+  check.method = check_equals
+  check.module = get_module.main(location=MODULE, pool=False)
+  return check
 
 
 def sns_to_dict(output: sns) -> dict:

@@ -19,58 +19,58 @@ LOCALS = locals()
 
 
 def main(
-  assertions: List[dict] | None = None,
+  checks: List[dict] | None = None,
   output: Any | None = None,
   module: ModuleType | None = None,
   id: str | None = None,
   id_short: str | None = None,
 ) -> sns:
-  assertions = assertions or []
+  checks = checks or []
 
-  for i, item in enumerate(assertions):
-    assertion = pre_processing(
-      assertion=item,
+  for i, item in enumerate(checks):
+    check = pre_processing(
+      check=item,
       module=module,
       output=output,
       id=id,
       id_short=id_short, )
-    assertion = independent.process_operations(
-      data=assertion,
+    check = independent.process_operations(
+      data=check,
       functions=LOCALS,
       operations=CONFIG.operations.main, )
-    assertions[i] = assertion
+    checks[i] = check
 
-  n = len(assertions)
+  n = len(checks)
   plural = 's' if n != 1 else ''
   level = 'info' if n != 0 else 'warning'
   log = sns(
     level=level,
-    message=f'Processed {n} assertion{plural} for {id_short}', )
+    message=f'Processed {n} check{plural} for {id_short}', )
 
   data = sns(
-    assertions=assertions,
+    checks=checks,
     _cleanup=['module', 'output'],
     log=log, )
   return data
 
 
 def pre_processing(
-  assertion: dict | None = None,
+  check: dict | None = None,
   output: Any | None = None,
   module: ModuleType | None = None,
   id: str | None = None,
   id_short: str | None = None,
 ) -> sns:
-  assertion = assertion or {}
+  check = check or {}
   locals_ = locals()
   fields = list(locals_.keys())
-  fields.remove('assertion')
+  fields.remove('check')
   for field in fields:
-    assertion = set_object.main(
-      parent=assertion,
+    check = set_object.main(
+      parent=check,
       route=field,
       value=locals_[field], )
-  return schema.get_model(name='process_assertions.Assertion', data=assertion)
+  return schema.get_model(name='process_checks.Assertion', data=check)
 
 
 def pass_through(method: str | None = None) -> Callable:
@@ -90,7 +90,7 @@ def pass_through(method: str | None = None) -> Callable:
   return pass_through_inner
 
 
-def get_assertion_method(
+def get_check_method(
   method: str | None = None,
   module: ModuleType | None = None,
 ) -> sns:
@@ -140,7 +140,7 @@ def cast_output(
   return sns(output=output, _cleanup=['cast_output'])
 
 
-def get_assertion_result(
+def get_check_result(
   module: ModuleType | None = None,
   method: Callable | None = None,
   output: Any | None = None,
@@ -173,7 +173,7 @@ def convert_to_yaml(
   return data
 
 
-def handle_failed_assertion(
+def handle_failed_check(
   passed: bool | None = None,
   output: Any | None = None,
   expected: Any | None = None,

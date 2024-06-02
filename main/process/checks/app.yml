@@ -18,7 +18,7 @@ convert_fields_to_yaml:
 - output
 
 
-add_assertion_fields:
+add_check_fields:
 - output
 - module
 - id
@@ -27,11 +27,11 @@ add_assertion_fields:
 
 schema:
   Assertion: &ASSERTION
-    description: Store data needed to process an assertion form a test
+    description: Store data needed to process an check form a test
     fields:
     - name: method
       type: str
-      description: The assertion method
+      description: The check method
     - name: field
       type: str
       description: Dot-delimited path to an attribute or key of the result
@@ -52,8 +52,8 @@ schema:
 
 operations:
   main:
-  - get_assertion_method
+  - get_check_method
   - reset_output_value
   - cast_output
-  - get_assertion_result
-  - handle_failed_assertion
+  - get_check_result
+  - handle_failed_check

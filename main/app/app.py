@@ -7,8 +7,8 @@ from types import ModuleType
 from types import SimpleNamespace as sns
 from typing import Any, Callable, Iterable, List
 
-from main.process import assertions as _assertions
 from main.process import casts, locations
+from main.process import checks as _checks
 from main.process import environment as _environment
 from main.process import nodes as _nodes
 from main.process import patches as _patches
@@ -93,15 +93,15 @@ def set_environment(
   return _environment.main(**arguments)
 
 
-def process_assertions(
-  assertions: list | None,
+def process_checks(
+  checks: list | None,
   module: ModuleType,
   output: Any,
   id: str,
   id_short: str,
 ) -> ModuleType:
   arguments = locals()
-  return _assertions.main(**arguments)
+  return _checks.main(**arguments)
 
 
 def nodes(
@@ -343,7 +343,7 @@ def run_test_for_function(test: sns | None = None) -> sns:
     operations=CONFIG.operations.run_test_for_functions,
     functions=LOCALS,
     data=test, )
-  return test.assertions
+  return test.checks
 
 
 def run_test_handler(tests: list | None = None) -> sns:

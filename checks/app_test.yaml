@@ -1,7 +1,7 @@
 TODO:
-- Check if the "contains" assertions can be combined to reduce duplication of code
-- Need assertion for string/regex
-- Add ability to cast expected in assertions
+- Check if the "contains" checks can be combined to reduce duplication of code
+- Need check for string/regex
+- Add ability to cast expected in checks
 
 
 resources:
@@ -17,7 +17,7 @@ tests:
 - function: type_checks_inner
   description: >
     Called by the `type_checks` decorator. Verifies the types of the expected
-    and output values passed to an assertion method coincide with the method's
+    and output values passed to an check method coincide with the method's
     type hints for its expected and output parameters.
   cast_arguments:
   - method: resource.get_method
@@ -27,7 +27,7 @@ tests:
   tests:
   - description: Undefined arguments
     arguments: {}
-    assertions:
+    checks:
     - method: check_exception
       expected: AttributeError
   - description: >
@@ -37,7 +37,7 @@ tests:
       expected: []
       output: {}
       method: check_method_a
-    assertions:
+    checks:
     - method: check_equals
       expected: passed
   - description: >
@@ -47,7 +47,7 @@ tests:
       expected: expected
       output: 1
       method: check_method_a
-    assertions:
+    checks:
     - method: check_sns
       expected:
         expected:
@@ -69,7 +69,7 @@ tests:
       method: check_method_b
       output: output
       expected: expected
-    assertions:
+    checks:
     - method: check_equals
       expected: passed
   - description: >
@@ -80,7 +80,7 @@ tests:
       method: check_method_b
       output: {}
       expected: expected
-    assertions:
+    checks:
     - method: check_sns
       expected:
         expected:
@@ -97,7 +97,7 @@ tests:
         passed: false
 - function: type_checks
   description: >
-    Decorates assertions methods. Perform type checks on expected and output
+    Decorates checks methods. Perform type checks on expected and output
     values based on method's type hints set for the parameters.
   patches:
   - method: callable
@@ -110,23 +110,23 @@ tests:
   - description: Undefined arguments
     arguments:
       method: null
-    assertions:
+    checks:
     - method: check_equals
       field: __name__
       expected: inner
   - description: Synchronous method
     arguments:
-      method: assertion_method
-    assertions:
+      method: check_method
+    checks:
     - method: check_equals
       field: __name__
-      expected: assertion_method
+      expected: check_method
     - method: check_equals
       field: __class__.__name__
       expected: function
     - method: check_equals
       field: __wrapped__.__name__
-      expected: assertion_method
+      expected: check_method
 - function: check_sns
   description: >
     Verify the output is a SimpleNamespace object and contains specified
@@ -139,7 +139,7 @@ tests:
     arguments:
       output: null
       expected: expected
-    assertions:
+    checks:
     - method: check_sns
       expected:
         expected:
@@ -164,7 +164,7 @@ tests:
       expected:
         a: a
         b: b
-    assertions:
+    checks:
     - method: check_sns
       expected:
         output:
@@ -182,7 +182,7 @@ tests:
       expected:
         a: a
         d: d
-    assertions:
+    checks:
     - method: check_sns
       expected:
         output:
@@ -202,7 +202,7 @@ tests:
   tests:
   - description: Output is not an Exception or expected is not a str
     arguments: {}
-    assertions:
+    checks:
     - method: check_sns
       expected:
         expected:
@@ -220,7 +220,7 @@ tests:
     arguments:
       output: TypeError
       expected: TypeError
-    assertions:
+    checks:
     - method: check_sns
       expected:
         output: TypeError
@@ -230,7 +230,7 @@ tests:
     arguments:
       output: RuntimeError
       expected: RuntimeError
-    assertions:
+    checks:
     - method: check_sns
       expected:
         output: RuntimeError
@@ -244,7 +244,7 @@ tests:
   tests:
   - description: Undefined arguments
     arguments: {}
-    assertions:
+    checks:
     - method: check_sns
       expected:
         expected:
@@ -262,7 +262,7 @@ tests:
     arguments:
       output: module
       expected: expected
-    assertions:
+    checks:
     - method: check_sns
       expected:
         expected:
@@ -281,7 +281,7 @@ tests:
       output: module_resource
       expected:
         location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/module_resource.py
-    assertions:
+    checks:
     - method: check_sns
       expected:
         output:
@@ -294,7 +294,7 @@ tests:
       output: builtins
       expected:
         location: null
-    assertions:
+    checks:
     - method: check_sns
       expected:
         output:
@@ -306,7 +306,7 @@ tests:
   description: Verifies that the output and expected out are equal
   tests:
   - arguments: {}
-    assertions:
+    checks:
     - method: check_sns
       expected:
         output: null
@@ -315,7 +315,7 @@ tests:
   - arguments:
       expected: 1
       output: 1
-    assertions:
+    checks:
     - method: check_sns
       expected:
         output: 1
@@ -324,7 +324,7 @@ tests:
   - arguments:
       expected: true
       output: false
-    assertions:
+    checks:
     - method: check_sns
       expected:
         output: false
@@ -342,7 +342,7 @@ tests:
     arguments:
       output: output
       expected: null
-    assertions:
+    checks:
     - method: check_sns
       expected:
         expected:
@@ -361,7 +361,7 @@ tests:
     arguments:
       output: callable_method
       expected: expected
-    assertions:
+    checks:
     - method: check_sns
       expected:
         expected:
@@ -382,7 +382,7 @@ tests:
       expected:
         name: callable_method
         location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/resource.py
-    assertions:
+    checks:
     - method: check_sns
       expected:
         passed: true
@@ -398,7 +398,7 @@ tests:
       expected:
         name: awaitable_method
         location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/resource.py
-    assertions:
+    checks:
     - method: check_sns
       expected:
         passed: true
@@ -414,7 +414,7 @@ tests:
       expected:
         name: wrapped_awaitable_method
         location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/resource.py
-    assertions:
+    checks:
     - method: check_sns
       expected:
         passed: true
@@ -430,7 +430,7 @@ tests:
       expected:
         name: wrapped_awaitable_method
         location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/resource.py
-    assertions:
+    checks:
     - method: check_sns
       expected:
         passed: true
@@ -452,7 +452,7 @@ tests:
     arguments:
       output: null
       expected: null
-    assertions:
+    checks:
     - method: check_sns
       expected:
         passed: False
@@ -470,7 +470,7 @@ tests:
     arguments:
       output: dataclass
       expected: null
-    assertions:
+    checks:
     - method: check_sns
       expected:
         passed: False
@@ -492,7 +492,7 @@ tests:
         fields:
           a: a
           b: b
-    assertions:
+    checks:
     - method: check_sns
       expected:
         passed: true
@@ -515,7 +515,7 @@ tests:
           a: a
           b: b
           c: c
-    assertions:
+    checks:
     - method: check_sns
       expected:
         passed: false
@@ -542,7 +542,7 @@ tests:
     arguments:
       output: null
       expected: null
-    assertions:
+    checks:
     - method: check_sns
       expected:
         passed: False
@@ -565,7 +565,7 @@ tests:
         fields:
           a: a
           b: b
-    assertions:
+    checks:
     - method: check_sns
       expected:
         passed: true
@@ -585,7 +585,7 @@ tests:
       expected:
         name: type
         fields: {}
-    assertions:
+    checks:
     - method: check_sns
       expected:
         passed: true
@@ -602,7 +602,7 @@ tests:
     arguments:
       output: null
       expected: 0
-    assertions:
+    checks:
     - method: check_sns
       expected:
         expected:
@@ -621,7 +621,7 @@ tests:
     arguments:
       expected: 0
       output: ''
-    assertions:
+    checks:
     - method: check_sns
       expected:
         output: 0
@@ -631,7 +631,7 @@ tests:
     arguments:
       expected: 0
       output: []
-    assertions:
+    checks:
     - method: check_sns
       expected:
         output: 0
@@ -644,7 +644,7 @@ tests:
       - a
       - b
       - c
-    assertions:
+    checks:
     - method: check_sns
       expected:
         output: 3
@@ -657,7 +657,7 @@ tests:
       - a
       - b
       - c
-    assertions:
+    checks:
     - method: check_sns
       expected:
         output: 3
@@ -668,7 +668,7 @@ tests:
   tests:
   - description: Expected is not a string or list of strings
     arguments: {}
-    assertions:
+    checks:
     - method: check_sns
       expected:
         output:
@@ -687,7 +687,7 @@ tests:
     arguments:
       expected: str
       output: string
-    assertions:
+    checks:
     - method: check_sns
       expected:
         expected: str
@@ -699,7 +699,7 @@ tests:
       - int
       - float
       output: 1
-    assertions:
+    checks:
     - method: check_sns
       expected:
         expected: int
@@ -711,7 +711,7 @@ tests:
       - int
       - float
       output: 1.1
-    assertions:
+    checks:
     - method: check_sns
       expected:
         expected: float
@@ -724,7 +724,7 @@ tests:
       - float
       - list
       output: {}
-    assertions:
+    checks:
     - method: check_sns
       expected:
         expected:
@@ -740,7 +740,7 @@ tests:
   tests:
   - description: Output is not a string, or expected string or list of strings
     arguments: {}
-    assertions:
+    checks:
     - method: check_sns
       expected:
         expected:
@@ -759,7 +759,7 @@ tests:
     arguments:
       output: output
       expected: expected
-    assertions:
+    checks:
     - method: check_sns
       expected:
         expected:
@@ -773,7 +773,7 @@ tests:
       - a
       - b
       - c
-    assertions:
+    checks:
     - method: check_sns
       expected:
         expected:
@@ -791,7 +791,7 @@ tests:
       expected:
       - sub
       - string
-    assertions:
+    checks:
     - method: check_sns
       expected:
         expected:
@@ -808,7 +808,7 @@ tests:
     arguments:
       output: {}
       expected: null
-    assertions:
+    checks:
     - method: check_sns
       expected:
         passed: False
@@ -830,7 +830,7 @@ tests:
       - item_0
       - item_1
       expected: item
-    assertions:
+    checks:
     - method: check_sns
       expected:
         passed: False
@@ -843,7 +843,7 @@ tests:
       - item_0
       - item_1
       expected: item_0
-    assertions:
+    checks:
     - method: check_sns
       expected:
         passed: true
@@ -859,7 +859,7 @@ tests:
       expected:
       - item_0
       - item_1
-    assertions:
+    checks:
     - method: check_sns
       expected:
         passed: true
@@ -874,7 +874,7 @@ tests:
   tests:
   - description: Expected is not a list or tuple
     arguments: {}
-    assertions:
+    checks:
     - method: check_sns
       expected:
         output:
@@ -887,7 +887,7 @@ tests:
       output: output
       expected:
       - expected
-    assertions:
+    checks:
     - method: check_sns
       expected:
         passed: False
@@ -899,7 +899,7 @@ tests:
       output: expected
       expected:
       - expected
-    assertions:
+    checks:
     - method: check_sns
       expected:
         passed: true
@@ -916,7 +916,7 @@ tests:
       - output_0
       - output_1
       - output_3
-    assertions:
+    checks:
     - method: check_sns
       expected:
         passed: true
@@ -931,7 +931,7 @@ tests:
   tests:
   - description: Output is not a dictionary
     arguments: {}
-    assertions:
+    checks:
     - method: check_sns
       expected:
         expected:
@@ -952,7 +952,7 @@ tests:
         a: a
         b: b
       expected: a
-    assertions:
+    checks:
     - method: check_sns
       expected:
         expected:
@@ -968,7 +968,7 @@ tests:
       expected:
       - a
       - c
-    assertions:
+    checks:
     - method: check_sns
       expected:
         expected:
@@ -986,7 +986,7 @@ tests:
       expected:
       - a
       - b
-    assertions:
+    checks:
     - method: check_sns
       expected:
         expected:
@@ -1004,7 +1004,7 @@ tests:
   tests:
   - description: Output is not a range object or expected not a dict
     arguments: {}
-    assertions:
+    checks:
     - method: check_sns
       expected:
         passed: false
@@ -1026,7 +1026,7 @@ tests:
       expected:
         start: 0
         stop: 3
-    assertions:
+    checks:
     - method: check_sns
       expected:
         expected:
@@ -1045,7 +1045,7 @@ tests:
       expected:
         start: 0
         stop: 1
-    assertions:
+    checks:
     - method: check_sns
       expected:
         expected:
@@ -1060,7 +1060,7 @@ tests:
   tests:
   - description: Output or expected is not of type dict
     arguments: {}
-    assertions:
+    checks:
     - method: check_sns
       expected:
         passed: False
@@ -1081,7 +1081,7 @@ tests:
         b: b
       expected:
         a: a
-    assertions:
+    checks:
     - method: check_sns
       expected:
         expected:
@@ -1096,7 +1096,7 @@ tests:
         b: b
       expected:
         c: c
-    assertions:
+    checks:
     - method: check_sns
       expected:
         expected:
@@ -1113,7 +1113,7 @@ tests:
       expected:
         a: a
         b: b
-    assertions:
+    checks:
     - method: check_sns
       expected:
         expected:
@@ -1131,7 +1131,7 @@ tests:
   tests:
   - description: Output is not of type thread or expected is not a dict
     arguments: {}
-    assertions:
+    checks:
     - method: check_sns
       expected:
         passed: False
@@ -1152,7 +1152,7 @@ tests:
       output: thread
       expected:
         target_name: target
-    assertions:
+    checks:
     - method: check_sns
       expected:
         passed: true
@@ -1168,7 +1168,7 @@ tests:
   tests:
   - description: Arguments are undefined
     arguments: {}
-    assertions:
+    checks:
     - method: check_sns
       expected:
         passed: false
@@ -1192,7 +1192,7 @@ tests:
         - {}
         output:
         - Hello world
-    assertions:
+    checks:
     - method: check_sns
       expected:
         passed: true
@@ -1210,7 +1210,7 @@ tests:
         output:
         - Hello mars
         - Hello world
-    assertions:
+    checks:
     - method: check_sns
       expected:
         passed: false
@@ -1228,7 +1228,7 @@ tests:
         - null
         output:
         - Hello earth
-    assertions:
+    checks:
     - method: check_sns
       expected:
         passed: true
@@ -1251,7 +1251,7 @@ tests:
         module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/resource.py
         cast_output:
         - method: __builtins__.str
-    assertions:
+    checks:
     - method: check_sns
       expected:
         passed: true
@@ -1264,7 +1264,7 @@ tests:
 - function: check_spies
   description: >
     Verifies that spied on functions were called. Functions to check are listed
-    as keys in dictionary under the `expected` key under assertions. And the values
+    as keys in dictionary under the `expected` key under checks. And the values
     of keys in the dictionary should be `called` and/or `called_width`
   cast_arguments:
   - method: sns
@@ -1277,7 +1277,7 @@ tests:
         SPIES: {}
       expected: {}
       output: null
-    assertions:
+    checks:
     - method: check_sns
       expected:
         output: {}
@@ -1295,7 +1295,7 @@ tests:
           called: false
           called_with: None
       output: null
-    assertions:
+    checks:
     - method: check_sns
       expected:
         output:

@@ -22,7 +22,7 @@ tests:
     arguments:
       spies: null
       module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/spies/resource.py
-    assertions:
+    checks:
     - method: checks.app.check_type
       expected: SimpleNamespace
     - method: checks.app.check_module
@@ -38,7 +38,7 @@ tests:
       - add
       - subtract
       module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/spies/resource.py
-    assertions:
+    checks:
     - method: checks.app.check_equals
       field: module.SPIES
       cast_output:
@@ -61,7 +61,7 @@ tests:
 - function: do_nothing
   description: Returns a null object
   arguments: {}
-  assertions:
+  checks:
   - method: checks.app.check_equals
     expect: null
 - function: spy_on_method
@@ -71,7 +71,7 @@ tests:
   tests:
   - description: Undefined arguments
     arguments: {}
-    assertions:
+    checks:
     - method: checks.app.check_exception
       expected: TypeError
   - cast_arguments:
@@ -82,7 +82,7 @@ tests:
       arguments:
         module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/spies/resource.py
         route: method_does_not_exist
-      assertions:
+      checks:
       - method: checks.app.check_module
         field: module
         expected:
@@ -104,7 +104,7 @@ tests:
       arguments:
         module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/spies/resource.py
         route: add
-      assertions:
+      checks:
       - method: checks.app.check_equals
         field: module.SPIES
         cast_output:
@@ -117,7 +117,7 @@ tests:
       arguments:
         module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/spies/resource.py
         route: add
-      assertions:
+      checks:
       - method: checks.app.check_equals
         cast_output:
         - method: resource.call_spy

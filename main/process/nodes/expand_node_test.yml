@@ -21,7 +21,7 @@ tests:
     arguments:
       root_node: null
       configurations: null
-    assertions:
+    checks:
     - method: checks.app.check_sns
       expected:
         nodes: []
@@ -29,12 +29,12 @@ tests:
     arguments:
       root_node: {}
       configurations: {}
-    assertions:
+    checks:
     - method: checks.app.check_sns
       expected:
         nodes:
         - arguments: {}
-          assertions: []
+          checks: []
           cast_arguments: []
           cast_output: []
           description: []
@@ -66,12 +66,12 @@ tests:
         module: module
         module_route: module_route
         resources: resources
-    assertions:
+    checks:
     - method: checks.app.check_sns
       expected:
         nodes:
         - arguments: {}
-          assertions: []
+          checks: []
           cast_arguments: []
           cast_output: []
           description: []
@@ -94,7 +94,7 @@ tests:
           tests: null
           yaml: yaml
         - arguments: {}
-          assertions: []
+          checks: []
           cast_arguments: []
           cast_output: []
           description: []
@@ -129,12 +129,12 @@ tests:
         module: configurations
         module_route: configurations
         resources: configurations
-    assertions:
+    checks:
     - method: checks.app.check_sns
       expected:
         nodes:
         - arguments: {}
-          assertions: []
+          checks: []
           cast_arguments: []
           cast_output: []
           description:
@@ -158,7 +158,7 @@ tests:
           tests: null
           yaml: configurations
         - arguments: {}
-          assertions: []
+          checks: []
           cast_arguments: []
           cast_output: []
           description:
@@ -182,7 +182,7 @@ tests:
           tests: null
           yaml: configurations
         - arguments: {}
-          assertions: []
+          checks: []
           cast_arguments: []
           cast_output: []
           description:
@@ -212,12 +212,12 @@ tests:
     arguments:
       root_node: {}
       configurations: {}
-    assertions:
+    checks:
     - method: checks.app.check_sns
       field: root_node
       expected:
         arguments: {}
-        assertions: []
+        checks: []
         cast_arguments: []
         cast_output: []
         description: []
@@ -250,12 +250,12 @@ tests:
         module_route: configurations
         resources: configurations
         yaml: configurations
-    assertions:
+    checks:
     - method: checks.app.check_sns
       field: root_node
       expected:
         arguments: {}
-        assertions: []
+        checks: []
         cast_arguments: []
         cast_output: []
         description: []
@@ -292,7 +292,7 @@ tests:
       key: key
       node: {}
       nested_nodes: []
-    assertions:
+    checks:
     - method: checks.app.check_equals
       expected: {}
   - description: Two nested nodes
@@ -307,12 +307,12 @@ tests:
       nested_nodes:
       - description: nest_node_a
       - description: nest_node_b
-    assertions:
+    checks:
     - method: checks.app.check_equals
       expected:
         key.0:
           arguments: {}
-          assertions: []
+          checks: []
           cast_arguments: []
           cast_output: []
           description:
@@ -338,7 +338,7 @@ tests:
           yaml: root_node
         key.1:
           arguments: {}
-          assertions: []
+          checks: []
           cast_arguments: []
           cast_output: []
           description:
@@ -377,7 +377,7 @@ tests:
   - description: Root node is empty
     arguments:
       root_node: {}
-    assertions:
+    checks:
     - method: checks.app.check_sns
       expected:
         expanded_keys: []
@@ -387,7 +387,7 @@ tests:
     arguments:
       root_node:
         description: root_node
-    assertions:
+    checks:
     - method: checks.app.check_sns
       expected:
         expanded_keys: []
@@ -402,7 +402,7 @@ tests:
         - description: nested_0
         - description: nested_1
         - description: nested_2
-    assertions:
+    checks:
     - method: checks.app.check_sns
       expected:
         expanded_keys: ['0']
@@ -411,7 +411,7 @@ tests:
             description: root_node
           '0.0':
             arguments: {}
-            assertions: []
+            checks: []
             cast_arguments: []
             cast_output: []
             description:
@@ -436,7 +436,7 @@ tests:
             yaml: null
           '0.1':
             arguments: {}
-            assertions: []
+            checks: []
             cast_arguments: []
             cast_output: []
             description:
@@ -461,7 +461,7 @@ tests:
             yaml: null
           '0.2':
             arguments: {}
-            assertions: []
+            checks: []
             cast_arguments: []
             cast_output: []
             description:
@@ -493,7 +493,7 @@ tests:
     arguments:
       expanded_keys: []
       nodes: {}
-    assertions:
+    checks:
     - method: checks.app.check_sns
       expected:
         expanded_keys: null
@@ -505,7 +505,7 @@ tests:
         1: 1
         2: 2
       expanded_keys: [0]
-    assertions:
+    checks:
     - method: checks.app.check_sns
       expected:
         expanded_keys: null
@@ -521,7 +521,7 @@ tests:
         3: 3
         4: 4
       expanded_keys: [0, 1, 5]
-    assertions:
+    checks:
     - method: checks.app.check_sns
       expected:
         expanded_keys: null
