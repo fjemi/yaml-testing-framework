@@ -1,6 +1,6 @@
 configurations:
   resources:
-  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/get_tests/resources/app.py
+  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/nodes/resources/app.py
   - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/app.py
 
 
@@ -17,11 +17,11 @@ tests:
         tests: []
   - description: Defined arguments
     arguments:
-      yaml: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/get_tests/resources/app_test.yml
-      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/get_tests/resources/app.py
-      module_route: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/get_tests/resources/app.py
+      yaml: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/nodes/resources/app_test.yml
+      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/nodes/resources/app.py
+      module_route: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/nodes/resources/app.py
       resources:
-      - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/get_tests/resources/resource.py
+      - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/nodes/resources/resource.py
     cast_output:
     - method: checks.app.check_equals
       expected:
@@ -41,16 +41,16 @@ tests:
           id_long: null
           id_short: null
           key: null
-          module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/get_tests/resources/app.py
-          module_route: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/get_tests/resources/app.py
+          module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/nodes/resources/app.py
+          module_route: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/nodes/resources/app.py
           output: null
           patches: []
           resources:
-          - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/get_tests/resources/resource.py
+          - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/nodes/resources/resource.py
           - resource_configuration
           spies: []
           tests: null
-          yaml: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/get_tests/resources/app_test.yml
+          yaml: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/nodes/resources/app_test.yml
         - arguments: {}
           assertions: []
           cast_arguments: []
@@ -67,16 +67,16 @@ tests:
           id_long: null
           id_short: null
           key: '0.0'
-          module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/get_tests/resources/app.py
-          module_route: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/get_tests/resources/app.py
+          module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/nodes/resources/app.py
+          module_route: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/nodes/resources/app.py
           output: null
           patches: []
           spies: []
           resources:
-          - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/get_tests/resources/resource.py
+          - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/nodes/resources/resource.py
           - resource_configuration
           tests: null
-          yaml: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/get_tests/resources/app_test.yml
+          yaml: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/nodes/resources/app_test.yml
         - arguments: {}
           assertions: []
           cast_arguments: []
@@ -93,16 +93,16 @@ tests:
           id_long: null
           id_short: null
           key: '0.1'
-          module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/get_tests/resources/app.py
-          module_route: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/get_tests/resources/app.py
+          module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/nodes/resources/app.py
+          module_route: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/nodes/resources/app.py
           output: null
           patches: []
           spies: []
           resources:
-          - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/get_tests/resources/resource.py
+          - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/nodes/resources/resource.py
           - resource_configuration
           tests: null
-          yaml: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/get_tests/resources/app_test.yml
+          yaml: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/nodes/resources/app_test.yml
 - function: get_configurations_and_tests
   description: >
     Returns the contents of a YAML file or an empty dictionary if the file
@@ -125,7 +125,7 @@ tests:
         tests: []
   - description: YAML location does exist
     arguments:
-      yaml: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/get_tests/resources/app_test.yml
+      yaml: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/nodes/resources/app_test.yml
     assertions:
     - method: checks.app.check_sns
       expected:

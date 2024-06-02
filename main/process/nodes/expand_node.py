@@ -4,7 +4,7 @@
 
 from types import SimpleNamespace as sns
 
-from main.process.get_tests import combine_fields
+from main.process.nodes import combine_fields
 from main.utils import get_config, independent, schema
 
 

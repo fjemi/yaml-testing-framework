@@ -10,7 +10,7 @@ from typing import Any, Callable, Iterable, List
 from main.process import assertions as _assertions
 from main.process import casts, locations
 from main.process import environment as _environment
-from main.process import get_tests as _get_tests
+from main.process import nodes as _nodes
 from main.process import patches as _patches
 from main.process import spies as _spies
 from main.utils import (
@@ -104,14 +104,14 @@ def process_assertions(
   return _assertions.main(**arguments)
 
 
-def get_tests(
+def nodes(
   yaml: str | None = None,
   module: str | None = None,
   module_route: str | None = None,
   resources: str | None = None,
 ) -> sns:
   arguments = locals()
-  return _get_tests.main(**arguments)
+  return _nodes.main(**arguments)
 
 
 def handle_id(

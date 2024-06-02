@@ -82,7 +82,7 @@ operations:
   - handle_casting_output
   - process_assertions
   run_tests:
-  - get_tests
+  - nodes
   - run_test_handler
   main:
   - get_locations

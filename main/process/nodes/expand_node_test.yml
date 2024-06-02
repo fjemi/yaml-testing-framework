@@ -4,7 +4,7 @@ todo:
 
 configurations:
   resources:
-  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/get_tests/resources/expand_node.py
+  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/nodes/resources/expand_node.py
   - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/app.py
 
 
