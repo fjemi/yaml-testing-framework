@@ -16,7 +16,7 @@ tests:
     arguments:
       environment: null
       module: null
-    assertions:
+    checks:
     - method: checks.app.check_equals
       field: __dict__
       expected: {}
@@ -31,7 +31,7 @@ tests:
         VAR_A: A
         VAR_B: B
       module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/environment/resources/no_config.py
-    assertions:
+    checks:
     - method: checks.app.check_sns
       field: module.CONFIG.environment
       expected:
@@ -47,7 +47,7 @@ tests:
         VAR_B: 2
         VAR_C: 3
       module:  ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/environment/resources/no_config.py
-    assertions:
+    checks:
     - method: checks.app.check_sns
       field: module.CONFIG.environment
       expected:
@@ -61,7 +61,7 @@ tests:
         VAR_2: 2
         VAR_3: 3
       module:  ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/environment/resources/config_with_environment.py
-    assertions:
+    checks:
     - method: checks.app.check_sns
       field: module.CONFIG.environment
       expected:

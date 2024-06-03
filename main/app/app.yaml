@@ -80,9 +80,9 @@ operations:
   - get_function
   - get_function_output
   - handle_casting_output
-  - process_assertions
+  - process_checks
   run_tests:
-  - get_tests
+  - nodes
   - run_test_handler
   main:
   - get_locations

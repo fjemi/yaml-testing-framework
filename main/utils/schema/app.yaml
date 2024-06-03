@@ -49,11 +49,11 @@ Test: &TEST
     type: dict
     default: {}
     description: Keyword arguments to pass to functions
-  - name: assertions
+  - name: checks
     type: List[dict]
     default: []
     description: >
-      A list of assertions and expected results to verify against
+      A list of checks and expected results to verify against
       the actual result
   - name: yaml
     type: str
@@ -309,8 +309,8 @@ process_casts.Data: &CAST_DATA
     default: null
 
 
-process_assertions.Assertion: &PROCESS_ASSERTIONS_ASSERTION
-  description: Store data needed to process an assertion form a test
+process_checks.Assertion: &PROCESS_ASSERTIONS_ASSERTION
+  description: Store data needed to process an check form a test
   fields:
   - name: id
     description: >
@@ -329,7 +329,7 @@ process_assertions.Assertion: &PROCESS_ASSERTIONS_ASSERTION
     default: null
   - name: method
     type: str
-    description: The assertion method
+    description: The check method
   - name: field
     type: str
     description: Dot-delimited path to an attribute or key of the result
@@ -346,16 +346,16 @@ process_assertions.Assertion: &PROCESS_ASSERTIONS_ASSERTION
     type: bool
     default: false
     description: Flag indicating whether a test was passed or not
-process_assertions.Data: &PROCESS_ASSERTIONS_ASSERTION_DATA
+process_checks.Data: &PROCESS_ASSERTIONS_ASSERTION_DATA
   description: Store data used by the functions within the module
   fields:
   - name: module
     type: Any
-    description: Module containing the verification or assertion functions
+    description: Module containing the verification or check functions
     default: null
-  - name: assertions
+  - name: checks
     type: list
-    description: List of dictionaries or assertion objects
+    description: List of dictionaries or check objects
     default: []
   - name: output
     type: Any
@@ -365,9 +365,9 @@ process_assertions.Data: &PROCESS_ASSERTIONS_ASSERTION_DATA
     type: int
     description: Value of the current iteration in a loop
     default: 0
-  - name: assertion
+  - name: check
     type: dict
-    description: The ith assertion from a list of assertions
+    description: The ith check from a list of checks
     default: {}
   - name: id
     type: str

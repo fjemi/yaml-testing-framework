@@ -10,7 +10,7 @@ tests:
   tests:
   - description: Undefined arguments
     arguments: {}
-    assertions:
+    checks:
     - method: checks.app.check_equals
       expected: null
   - cast_arguments:
@@ -23,7 +23,7 @@ tests:
         casts:
         - method: __builtins__.int
         object: '1111'
-      assertions:
+      checks:
       - method: checks.app.check_equals
         expected: 1111
     - description: Cast dict as simple name space
@@ -33,7 +33,7 @@ tests:
         - method: cast_dict_as_sns
         object:
           key: value
-      assertions:
+      checks:
       - method: checks.app.check_sns
         expected:
           key: value
@@ -44,7 +44,7 @@ tests:
         - method: cast_list_to_string
           unpack: true
         object: [a, b, c]
-      assertions:
+      checks:
       - method: checks.app.check_equals
         expected: abc
 - function: get_cast_method
@@ -57,7 +57,7 @@ tests:
   tests:
   - description: Undefined data
     arguments: {}
-    assertions:
+    checks:
     - method: checks.app.check_equals
       field: log.__dict__
       expected:
@@ -67,7 +67,7 @@ tests:
     arguments:
       method: __builtins__.str
       module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/casts/app_resource.py
-    assertions:
+    checks:
     - method: checks.app.check_equals
       field: method.__name__
       expected: str
@@ -75,7 +75,7 @@ tests:
     arguments:
       method: __builtins__.int
       module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/casts/app_resource.py
-    assertions:
+    checks:
     - method: checks.app.check_equals
       field: method.__name__
       expected: int
@@ -85,7 +85,7 @@ tests:
     arguments:
       method: pass_through
       module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/casts/app_resource.py
-    assertions:
+    checks:
     - method: checks.app.check_function
       field: method
       expected:
@@ -95,7 +95,7 @@ tests:
     arguments:
       method: does_not_exist
       module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/casts/app_resource.py
-    assertions:
+    checks:
     - method: checks.app.check_sns
       field: log
       expected:
@@ -106,7 +106,7 @@ tests:
   tests:
   - description: Undefined arguments
     arguments: {}
-    assertions:
+    checks:
     - method: checks.app.check_sns
       expected:
         temp_object: null
@@ -114,7 +114,7 @@ tests:
     arguments:
       object: object
       field: null
-    assertions:
+    checks:
     - method: checks.app.check_sns
       expected:
         temp_object: object
@@ -123,7 +123,7 @@ tests:
       object:
         key: value
       field: key
-    assertions:
+    checks:
     - method: checks.app.check_sns
       expected:
         temp_object: value
@@ -132,7 +132,7 @@ tests:
   tests:
   - description: Undefined arguments
     arguments: {}
-    assertions:
+    checks:
     - method: checks.app.check_sns
       expected:
         None: null
@@ -141,7 +141,7 @@ tests:
       temp_object: temp_object
       object: object
       field: null
-    assertions:
+    checks:
     - method: checks.app.check_sns
       expected:
         object: temp_object
@@ -151,7 +151,7 @@ tests:
       temp_object: temp_object
       object: {}
       field: key
-    assertions:
+    checks:
     - method: checks.app.check_sns
       expected:
         object:
@@ -163,7 +163,7 @@ tests:
       object:
         key: value
       field: key
-    assertions:
+    checks:
     - method: checks.app.check_sns
       expected:
         object:
@@ -175,7 +175,7 @@ tests:
   - description: Module is undefined
     arguments:
       module: null
-    assertions:
+    checks:
     - method: checks.app.check_equals
       expected: null
   - description: Module is a module
@@ -184,14 +184,14 @@ tests:
       method: app_resource.module_resource
     arguments:
       module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/casts/app_resource.py
-    assertions:
+    checks:
     - method: checks.app.check_module
       expected:
         location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/casts/app_resource.py
   - description: Module is a string
     arguments:
       module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/casts/app_resource.py
-    assertions:
+    checks:
     - method: checks.app.check_module
       expected:
         location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/casts/app_resource.py

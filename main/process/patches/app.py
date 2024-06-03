@@ -6,8 +6,7 @@ from types import ModuleType
 from types import SimpleNamespace as sns
 from typing import Any, Callable, List
 
-from main.utils import independent, schema, get_object, set_object
-from main.utils import get_config
+from main.utils import get_config, get_object, independent, schema, set_object
 
 
 MODULE = __file__

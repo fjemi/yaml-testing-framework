@@ -20,7 +20,7 @@ packages:
 - main.process
 - main.utils
 - main.process.casts
-- main.process.get_tests
+- main.process.nodes
 package_data:
   '':
   - '*.yaml'

@@ -1,5 +1,5 @@
 TODO:
-- Add support for user defined logic (example, run_test_for_*) following the example for assertions
+- Add support for user defined logic (example, run_test_for_*) following the example for checks
 - Add logic for testing APIs
 - Make timestamps a list and append timestamp at each logical operation
 - Add logic for safe loading or regular loading data from yaml files -> configuration safe_load=true
@@ -26,7 +26,7 @@ tests:
       yaml_suffix: _test
       resources:
       - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/app.py
-    assertions:
+    checks:
     - method: checks.app.check_equals
       expected:
       - expected: TypeError
@@ -48,7 +48,7 @@ tests:
   tests:
   - description: Undefined arguments
     arguments: {}
-    assertions:
+    checks:
     - method: checks.app.check_sns
       expected:
         id: ' None.None - None '
@@ -64,7 +64,7 @@ tests:
       - description_a
       - description_b
       key: key
-    assertions:
+    checks:
     - method: checks.app.check_sns
       expected:
         id: ' module_route.function - key - description_b '
@@ -75,7 +75,7 @@ tests:
   tests:
   - description: Undefined arguments
     arguments: {}
-    assertions:
+    checks:
     - method: checks.app.check_sns
       field: log
       expected:
@@ -84,7 +84,7 @@ tests:
   - description: Module does not exist at location
     arguments:
       module: module_location_does_not_exist
-    assertions:
+    checks:
     - method: checks.app.check_sns
       field: log
       expected:
@@ -94,7 +94,7 @@ tests:
     arguments:
       module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/app/resources/app.py
       module_route: .main.resources.app
-    assertions:
+    checks:
     - method: checks.app.check_module
       field: module
       expected:
@@ -108,42 +108,42 @@ tests:
     arguments:
       module: null
       resource: null
-    assertions:
+    checks:
     - method: checks.app.check_equals
       expected: None
   - description: Defined arguments
     arguments:
       module: module.py
       resource: resource.py
-    assertions:
+    checks:
     - method: checks.app.check_equals
       expected: resource
   - description: Resource and module in shared directory
     arguments:
       module: directory/module.py
       resource: directory/resource.py
-    assertions:
+    checks:
     - method: checks.app.check_equals
       expected: resource
   - description: Module in sub directory of resource's directory
     arguments:
       module: directory/sub_directory/module.py
       resource: directory/resource.py
-    assertions:
+    checks:
     - method: checks.app.check_equals
       expected: resource
   - description: Module and resource are in different directories
     arguments:
       module: directory_a/module.py
       resource: directory_b/resource.py
-    assertions:
+    checks:
     - method: checks.app.check_equals
       expected: directory_b.resource
   - description: Resource in sub directory of module's directory
     arguments:
       module: directory/module.py
       resource: directory/sub_directory/resource.py
-    assertions:
+    checks:
     - method: checks.app.check_equals
       expected: sub_directory.resource
 - function: handle_resources
@@ -154,7 +154,7 @@ tests:
   tests:
   - description: Undefined arguments
     arguments: {}
-    assertions:
+    checks:
     - method: checks.app.check_sns
       expected:
         module: null
@@ -169,7 +169,7 @@ tests:
       - does_not_exist.py
       - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/app/resources/resource.js
       - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/app/resources/resource.py
-    assertions:
+    checks:
     - method: checks.app.check_sns
       expected:
         _cleanup:
@@ -202,7 +202,7 @@ tests:
       cast_arguments: null
       module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/app/resources/app.py
       arguments: arguments
-    assertions:
+    checks:
     - method: checks.app.check_sns
       expected:
         _cleanup:
@@ -213,7 +213,7 @@ tests:
       cast_arguments: []
       module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/app/resources/app.py
       arguments: arguments
-    assertions:
+    checks:
     - method: checks.app.check_sns
       expected:
         _cleanup:
@@ -225,7 +225,7 @@ tests:
       - method: __builtins__.int
       module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/app/resources/app.py
       arguments: '0000'
-    assertions:
+    checks:
     - method: checks.app.check_sns
       expected:
         _cleanup:
@@ -239,7 +239,7 @@ tests:
       module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/app/resources/app.py
       arguments:
         key: '0000'
-    assertions:
+    checks:
     - method: checks.app.check_sns
       expected:
         _cleanup:
@@ -256,7 +256,7 @@ tests:
     arguments:
       function: null
       module: ${PWD}/main/app/resources/resource.py
-    assertions:
+    checks:
     - method: checks.app.check_sns
       field: log
       expected:
@@ -269,7 +269,7 @@ tests:
     arguments:
       function: add
       module: ${PWD}/main/app/resources/app.py
-    assertions:
+    checks:
     - method: checks.app.check_function
       field: function
       expected:
@@ -287,7 +287,7 @@ tests:
       function: callable
       arguments: {}
       output: OUTPUT
-    assertions:
+    checks:
     - method: checks.app.check_sns
       expected:
         output: OUTPUT
@@ -298,7 +298,7 @@ tests:
       arguments:
         a: 1
         b: 1
-    assertions:
+    checks:
     - method: checks.app.check_sns
       expected:
         output: 2
@@ -310,7 +310,7 @@ tests:
         data:
           a: 1
           b: 1
-    assertions:
+    checks:
     - method: checks.app.check_exception
       field: output
       expected: TypeError
@@ -324,7 +324,7 @@ tests:
       arguments:
         a: 1
         b: 1
-    assertions:
+    checks:
     - method: checks.app.check_sns
       expected:
         output: 0
@@ -342,7 +342,7 @@ tests:
   tests: &GET_FUNCTION_OUTPUT_UNPACK_ARGUMENTS_TESTS
   - description: Undefined arguments
     arguments: {}
-    assertions:
+    checks:
     - method: checks.app.check_sns
       field: log
       expected:
@@ -362,7 +362,7 @@ tests:
       arguments:
         a: 1
         b: 1
-    assertions:
+    checks:
     - method: checks.app.check_sns
       expected:
         output: 1
@@ -372,7 +372,7 @@ tests:
       arguments:
       - 1
       - 1
-    assertions:
+    checks:
     - method: checks.app.check_sns
       expected:
         output: 1
@@ -381,7 +381,7 @@ tests:
     arguments:
       function: multiply
       arguments: [1, 2, 3]
-    assertions:
+    checks:
     - method: checks.app.check_sns
       field: log
       expected:
@@ -402,7 +402,7 @@ tests:
         data:
           a: 0
           b: 1
-    assertions:
+    checks:
     - method: checks.app.check_sns
       expected:
         output: 1
@@ -412,7 +412,7 @@ tests:
       arguments:
         a: 3
         b: 4
-    assertions:
+    checks:
     - method: checks.app.check_sns
       expected:
         output: 12
@@ -423,7 +423,7 @@ tests:
         data:
           b: 3
           a: 1
-    assertions:
+    checks:
     - method: checks.app.check_sns
       expected:
         output: 2
@@ -433,7 +433,7 @@ tests:
       arguments:
         a: 2
         b: 2
-    assertions:
+    checks:
     - method: checks.app.check_sns
       expected:
         output: 4
@@ -443,7 +443,7 @@ tests:
       arguments:
       - 0
       - 1
-    assertions:
+    checks:
     - method: checks.app.check_sns
       expected:
         output: 0
@@ -458,7 +458,7 @@ tests:
       cast_output: null
       module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/app/resources/app.py
       output: null
-    assertions:
+    checks:
     - method: checks.app.check_sns
       expected:
         _cleanup:
@@ -469,7 +469,7 @@ tests:
       cast_output: []
       module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/app/resources/app.py
       output: output
-    assertions:
+    checks:
     - method: checks.app.check_sns
       expected:
         _cleanup:
@@ -481,7 +481,7 @@ tests:
       - method: __builtins__.str
       module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/app/resources/app.py
       output: 1
-    assertions:
+    checks:
     - method: checks.app.check_sns
       expected:
         _cleanup:
@@ -499,14 +499,14 @@ tests:
       module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/app/resources/app.py
       output:
         key: '0000'
-    assertions:
+    checks:
     - method: checks.app.check_sns
       field: output
       expected:
         key: 0
 - function: run_test_for_function
   description: >
-    Returns assertions from performing operations needed to process a test for a function
+    Returns checks from performing operations needed to process a test for a function
   cast_arguments:
   - method: sns
     field: test
@@ -516,10 +516,10 @@ tests:
   tests:
   - description: Undefined test results in empty list
     arguments: {}
-    assertions:
+    checks:
     - method: checks.app.check_equals
       expected: []
-  - description: Defined test returns a list containing assertions
+  - description: Defined test returns a list containing checks
     arguments:
       test:
         project_path: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/app/resources/add.py
@@ -534,10 +534,10 @@ tests:
           b: 11
         resources:
         - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/app.py
-        assertions:
+        checks:
         - method: checks.app.check_equals
           expected: 11
-    assertions:
+    checks:
     - method: checks.app.check_equals
       cast_output:
       - method: resources.app.list_sns_to_list_dict
@@ -558,7 +558,7 @@ tests:
   - description: Tests is undefined
     arguments:
       tests: null
-    assertions:
+    checks:
     - method: checks.app.check_sns
       expected:
         tests: []
@@ -573,14 +573,14 @@ tests:
         arguments:
           a: 1
           b: 1
-        assertions:
+        checks:
         - method: checks.app.check_equals
           expected: 2
         yaml: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/app/resources/add_test.yaml
         project_path: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/app/resources/add.py
         module_route: app.add.app
         key: 0.0
-    assertions:
+    checks:
     - method: checks.app.check_sns
       cast_output:
       - method: resources.app.list_sns_to_list_dict
@@ -605,7 +605,7 @@ tests:
   - description: Locations is an empty dictionary
     arguments:
       locations: []
-    assertions:
+    checks:
     - method: checks.app.check_sns
       field: log
       expected:
@@ -622,7 +622,7 @@ tests:
         - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/app.py
         - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/app/resources/add/resources_folder_name/app.py
         project_path: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/app/resources/add/resources_folder_name/app.py
-    assertions:
+    checks:
     - method: checks.app.check_sns
       cast_output:
       - field: tests

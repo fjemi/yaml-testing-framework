@@ -29,19 +29,19 @@ tests:
   - arguments:
       val:
         id: null
-    assertions:
+    checks:
     - method: checks.app.check_equals
       expected: null
   - arguments:
       val:
         id: id_b
-    assertions:
+    checks:
     - method: checks.app.check_equals
       expected: id_b
   - arguments:
       val:
         id: id_a
-    assertions:
+    checks:
     - method: checks.app.check_equals
       expected: id_a
 - function: get_yaml_tests
@@ -57,13 +57,13 @@ tests:
     arguments:
       pytest:
         yaml_tests: null
-    assertions:
+    checks:
     - method: checks.app.check_equals
       expected: []
   - description: Attribute is defined
     arguments:
       pytest:
         yaml_tests: yaml_tests
-    assertions:
+    checks:
     - method: checks.app.check_equals
       expected: yaml_tests

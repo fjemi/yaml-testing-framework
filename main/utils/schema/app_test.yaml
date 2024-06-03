@@ -15,7 +15,7 @@ tests:
       module: null
       yaml: null
       sns_models_flag: null
-    assertions:
+    checks:
     - method: checks.app.check_type
       expected: SimpleNamespace
   - description: YAML is defined
@@ -23,7 +23,7 @@ tests:
       module: null
       yaml: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/schema/resources/app.yaml
       sns_models_flag: null
-    assertions:
+    checks:
     - method: checks.app.check_equals
       field: Example_1
       expected:
@@ -39,7 +39,7 @@ tests:
       module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/schema/resources/app.py
       yaml: null
       sns_models_flag: true
-    assertions:
+    checks:
     - method: checks.app.check_sns
       field: Example_1
       expected:
@@ -59,7 +59,7 @@ tests:
     arguments:
       module: null
       yaml: null
-    assertions:
+    checks:
     - method: checks.app.check_sns
       expected:
         location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/schema/app.yaml
@@ -67,7 +67,7 @@ tests:
     arguments:
       module: null
       yaml: YAML
-    assertions:
+    checks:
     - method: checks.app.check_sns
       expected:
         location: YAML
@@ -75,7 +75,7 @@ tests:
     arguments:
       module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/schema/app.py
       yaml: null
-    assertions:
+    checks:
     - method: checks.app.check_sns
       expected:
         location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/schema/app.yaml
@@ -86,7 +86,7 @@ tests:
     arguments:
       content: {}
       location: location
-    assertions:
+    checks:
     - method: checks.app.check_sns
       field: log
       expected:
@@ -111,7 +111,7 @@ tests:
             type: list
             default: []
       sns_models_flag: False
-    assertions:
+    checks:
     - method: checks.app.check_sns
       field: models
       expected:
@@ -138,7 +138,7 @@ tests:
             type: list
             default: []
       sns_models_flag: true
-    assertions:
+    checks:
     - method: checks.app.check_sns
       field: models.Scheme
       expected:
@@ -152,7 +152,7 @@ tests:
   tests:
   - description: Arguments as undefined
     arguments: {}
-    assertions:
+    checks:
     - method: checks.app.check_equals
       field: __dict__
       expected: {}
@@ -169,7 +169,7 @@ tests:
             a: a
             b: b
             c: c
-      assertions:
+      checks:
       - method: checks.app.check_sns
         expected:
           a: a
@@ -186,7 +186,7 @@ tests:
             a: a
             b: b
             c: c
-      assertions:
+      checks:
       - method: checks.app.check_sns
         expected:
           a: A

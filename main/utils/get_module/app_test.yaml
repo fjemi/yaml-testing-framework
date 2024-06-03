@@ -18,7 +18,7 @@ tests:
     arguments:
       location: /main/utils/get_module/resource.py
       name: null
-    assertions:
+    checks:
     - method: checks.app.check_sns
       expected:
         name: .main.utils.get_module.resource
@@ -26,7 +26,7 @@ tests:
     arguments:
       name: name
       location: null
-    assertions:
+    checks:
     - method: checks.app.check_sns
       expected:
         name: name
@@ -35,7 +35,7 @@ tests:
   #   arguments:
   #     name: location to temp file
   #     location: null
-  #   assertions:
+  #   checks:
   #   - method: checks.app.check_sns
   #     expected:
   #       name: name
@@ -43,7 +43,7 @@ tests:
     arguments:
       name: null
       location: null
-    assertions:
+    checks:
     - method: checks.app.check_sns
       expected:
         name: app
@@ -51,7 +51,7 @@ tests:
     arguments:
       name: null
       location: null
-    assertions:
+    checks:
     - method: checks.app.check_sns
       expected:
         name: app
@@ -62,7 +62,7 @@ tests:
     arguments:
       location: DOES_NOT_EXIST/app.py
       name: name
-    assertions:
+    checks:
     - method: checks.app.check_equals
       field: __dict__
       expected:  {}
@@ -70,7 +70,7 @@ tests:
     arguments:
       name: name
       location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/get_module/resource.py
-    assertions:
+    checks:
     - method: checks.app.check_module
       field: module
       expected:
@@ -79,7 +79,7 @@ tests:
     arguments:
       name: app
       location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/get_module/resource.py
-    assertions:
+    checks:
     - method: checks.app.check_module
       field: module
       expected:
@@ -90,7 +90,7 @@ tests:
     arguments:
       pool: false
       location: location
-    assertions:
+    checks:
     - method: checks.app.check_sns
       expected:
         module: null
@@ -103,7 +103,7 @@ tests:
       route: POOL
       value:
         location: module_from_pool
-    assertions:
+    checks:
     - method: checks.app.check_sns
       expected:
         module: module_from_pool
@@ -115,7 +115,7 @@ tests:
       location: location
       module: module
       pool: false
-    assertions:
+    checks:
     - method: checks.app.check_sns
       expected: {}
   - description: Do not add module to pool
@@ -123,7 +123,7 @@ tests:
       location: location
       module: module
       pool: true
-    assertions:
+    checks:
     - method: checks.app.check_sns
       expected: {}
 - function: main
@@ -134,7 +134,7 @@ tests:
       pool: false
       location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/get_module/resource.py
       name: app
-    assertions:
+    checks:
     - method: checks.app.check_module
       expected:
         location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/get_module/resource.py
@@ -147,6 +147,6 @@ tests:
     arguments:
       pool: true
       location: location
-    assertions:
+    checks:
     - method: checks.app.check_equals
       expected: module

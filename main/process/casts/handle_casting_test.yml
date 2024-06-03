@@ -14,14 +14,14 @@ tests:
   tests:
   - description: Undefined arguments
     arguments: {}
-    assertions:
+    checks:
     - method: checks.app.check_exception
       expected: TypeError
   - description: Cast as string
     arguments:
       method: cast_as_str
       temp_object: null
-    assertions:
+    checks:
     - method: checks.app.check_sns
       expected:
         temp_object: None
@@ -30,7 +30,7 @@ tests:
     arguments:
       method: cast_as_int
       temp_object: '1'
-    assertions:
+    checks:
     - method: checks.app.check_sns
       expected:
         temp_object: 1
@@ -39,7 +39,7 @@ tests:
     arguments:
       method: cast_as_split
       temp_object: a.b.c
-    assertions:
+    checks:
     - method: checks.app.check_sns
       expected:
         temp_object:
@@ -52,13 +52,13 @@ tests:
   tests:
   - description: Data is undefined
     arguments: {}
-    assertions:
+    checks:
     - method: checks.app.check_equals
       expected: null
   - description: Data is a string
     arguments:
       temp_object: temp_object
-    assertions:
+    checks:
     - method: checks.app.check_equals
       expected: temp_object
 - function: cast_dict_unpacked
@@ -69,7 +69,7 @@ tests:
   tests:
   - description: Undefined arguments
     arguments: {}
-    assertions:
+    checks:
     - method: checks.app.check_exception
       expected: TypeError
   - description: Unpack dict into casting method
@@ -79,7 +79,7 @@ tests:
         b: b
         c: c
       method: cast_list_to_string
-    assertions:
+    checks:
     - method: checks.app.check_equals
       expected: abc
   - description: Unpack dict into casting method
@@ -88,7 +88,7 @@ tests:
         a: 1
         b: 2
       method: add
-    assertions:
+    checks:
     - method: checks.app.check_equals
       expected: 3
 - function: cast_dict_packed
@@ -99,7 +99,7 @@ tests:
   tests:
   - description: Undefined arguments
     arguments: {}
-    assertions:
+    checks:
     - method: checks.app.check_exception
       expected: TypeError
   - description: Call casting method with packed dict
@@ -108,7 +108,7 @@ tests:
         a: 1
         b: 1
       method: add_dict
-    assertions:
+    checks:
     - method: checks.app.check_equals
       expected: 2
   - description: Convert dict to sns
@@ -117,7 +117,7 @@ tests:
         a: 2
         b: 2
       method: cast_dict_as_sns
-    assertions:
+    checks:
     - method: checks.app.check_sns
       expected:
         a: 2
@@ -131,14 +131,14 @@ tests:
   tests:
   - description: Undefined arguments
     arguments: {}
-    assertions:
+    checks:
     - method: checks.app.check_exception
       expected: TypeError
   - description: Undefined arguments
     arguments:
       method: pack_nonetype
       temp_object: null
-    assertions:
+    checks:
     - method: checks.app.check_equals
       expected: output
 - function: cast_nonetype_unpacked
@@ -150,14 +150,14 @@ tests:
   tests:
   - description: Undefined arguments
     arguments: {}
-    assertions:
+    checks:
     - method: checks.app.check_exception
       expected: TypeError
   - description: Undefined arguments
     arguments:
       method: unpack_nonetype
       temp_object: null
-    assertions:
+    checks:
     - method: checks.app.check_equals
       expected: output
 - function: cast_list_unpacked
@@ -168,28 +168,28 @@ tests:
   tests:
   - description: Undefined arguments
     arguments: {}
-    assertions:
+    checks:
     - method: checks.app.check_exception
       expected: TypeError
   - description: Unpack list into add method
     arguments:
       temp_object: [2, 3]
       method: add
-    assertions:
+    checks:
     - method: checks.app.check_equals
       expected: 5
   - description: Unpack list into add method
     arguments:
       temp_object: [2, 3]
       method: add
-    assertions:
+    checks:
     - method: checks.app.check_equals
       expected: 5
   - description: Unpack list into method
     arguments:
       temp_object: [a, b, c]
       method: cast_list_to_string
-    assertions:
+    checks:
     - method: checks.app.check_equals
       expected: abc
 - function: cast_list_packed
@@ -200,14 +200,14 @@ tests:
   tests:
   - description: Undefined arguments
     arguments: {}
-    assertions:
+    checks:
     - method: checks.app.check_exception
       expected: TypeError
   - description: Sum list of numbers
     arguments:
       temp_object: [0, 0]
       method: add_list
-    assertions:
+    checks:
     - method: checks.app.check_equals
       expected: 0
 - function: cast_any_packed
@@ -218,21 +218,21 @@ tests:
   tests:
   - description: Undefined arguments
     arguments: {}
-    assertions:
+    checks:
     - method: checks.app.check_exception
       expected: TypeError
   - description: Inverse of number
     arguments:
       temp_object: 1
       method: inverse
-    assertions:
+    checks:
     - method: checks.app.check_equals
       expected: 1
   - description: Negate number
     arguments:
       temp_object: 2
       method: negate
-    assertions:
+    checks:
     - method: checks.app.check_equals
       expected: -2
 - function: cast_any_unpacked
@@ -243,7 +243,7 @@ tests:
   tests:
   - description: Undefined arguments
     arguments: {}
-    assertions:
+    checks:
     - method: checks.app.check_equals
       expected: null
   - description: Temp object is a dict with correct keyword arguments
@@ -251,7 +251,7 @@ tests:
       temp_object:
         a: 1
       method: inverse
-    assertions:
+    checks:
     - method: checks.app.check_equals
       expected: 1
   - description: Temp object is a dict with incorrect keyword arguments
@@ -260,7 +260,7 @@ tests:
         a: 1
         b: 1
       method: inverse
-    assertions:
+    checks:
     - method: checks.app.check_equals
       expected: null
   - description: Temp object is an simple name space object
@@ -272,7 +272,7 @@ tests:
       temp_object:
         a: 1
       method: inverse
-    assertions:
+    checks:
     - method: checks.app.check_equals
       expected: null
   - description: Temp object is a list with nested dict
@@ -280,7 +280,7 @@ tests:
       temp_object:
       - {}
       method: negate
-    assertions:
+    checks:
     - method: checks.app.check_equals
       expected: null
   - description: Temp object is a list
@@ -288,6 +288,6 @@ tests:
       temp_object:
       - 1
       method: negate
-    assertions:
+    checks:
     - method: checks.app.check_equals
       expected: -1

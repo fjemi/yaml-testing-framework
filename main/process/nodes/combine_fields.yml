@@ -31,7 +31,7 @@ combine_fields_as:
   description: list
   cast_output: list
   cast_arguments: list
-  assertions: list
+  checks: list
   patches: list
   resources: list
   exclude_resources: list

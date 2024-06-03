@@ -13,7 +13,7 @@ tests:
       module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/get_config/resources/app.py
       config: null
       environment: null
-    assertions:
+    checks:
     - method: checks.app.check_sns
       expected:
         a: a
@@ -47,7 +47,7 @@ tests:
       module: null
       config: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/get_config/resources/app.yaml
       environment: null
-    assertions:
+    checks:
     - method: checks.app.check_sns
       expected:
         a: a
@@ -72,7 +72,7 @@ tests:
     arguments:
       module: null
       config: null
-    assertions:
+    checks:
     - method: checks.app.check_sns
       expected:
         config: None
@@ -87,14 +87,14 @@ tests:
   - description: Config location is set
     arguments:
       config: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/get_config/resources/app.yaml
-    assertions:
+    checks:
     - method: checks.app.check_sns
       expected:
         config: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/get_config/resources/app.yaml
   - description: Module locations is set
     arguments:
       module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/get_config/resources/app.py
-    assertions:
+    checks:
     - method: checks.app.check_sns
       expected:
         config: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/get_config/resources/app.yaml
@@ -104,21 +104,21 @@ tests:
   - description: Undefined arguments
     arguments:
       location: null
-    assertions:
+    checks:
     - method: checks.app.check_sns
       expected:
         content: {}
   - description: YAML location does not exist
     arguments:
       location: yaml
-    assertions:
+    checks:
     - method: checks.app.check_sns
       expected:
         content: {}
   - description: YAML location exists
     arguments:
       location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/get_config/resources/app.yaml
-    assertions:
+    checks:
     - method: checks.app.check_sns
       expected:
         content:
@@ -173,7 +173,7 @@ tests:
     arguments:
       environment: null
       config: null
-    assertions:
+    checks:
     - method: checks.app.check_sns
       field: log
       expected:
@@ -192,7 +192,7 @@ tests:
     arguments:
       environment: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/get_config/resources/environment.yml
       config: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/get_config/resources/config.yml
-    assertions:
+    checks:
     - method: checks.app.check_sns
       field: log
       expected:
@@ -211,7 +211,7 @@ tests:
     arguments:
       operations: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/get_config/resources/operations.yml
       config: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/get_config/resources/config.yml
-    assertions:
+    checks:
     - method: checks.app.check_sns
       field: log
       expected:
@@ -244,7 +244,7 @@ tests:
   - description: Undefined arguments
     arguments:
       content: null
-    assertions:
+    checks:
     - method: checks.app.check_equals
       field: content.config.schema.__dict__
       expected: {}
@@ -257,7 +257,7 @@ tests:
         config:
           environment: {}
           schema: {}
-    assertions:
+    checks:
     - method: checks.app.check_type
       field: content.config.environment
       expected: SimpleNamespace
@@ -282,7 +282,7 @@ tests:
                 default: b0
               - name: b1
                 default: b1
-    assertions:
+    checks:
     - method: checks.app.check_sns
       field: content.config.environment
       expected:
@@ -307,7 +307,7 @@ tests:
   tests:
   - description: Undefined arguments
     arguments: {}
-    assertions:
+    checks:
     - method: checks.app.check_exception
       expected: AttributeError
   - description: Defined arguments
@@ -316,7 +316,7 @@ tests:
         a: A
         b: $B
         c: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}
-    assertions:
+    checks:
     - method: checks.app.check_sns
       expected:
         a: A
@@ -329,7 +329,7 @@ tests:
   tests:
   - description: Undefined arguments
     arguments: {}
-    assertions:
+    checks:
     - method: checks.app.check_equals
       field: __dict__
       expected: {}
@@ -350,7 +350,7 @@ tests:
             default: 1
           - name: b
             default: 2
-    assertions:
+    checks:
     - method: checks.app.check_sns
       field: a
       expected:

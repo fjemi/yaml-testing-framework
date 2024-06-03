@@ -25,7 +25,7 @@ tests:
   tests:
   - description: Undefined arguments
     arguments:  {}
-    assertions:
+    checks:
     - method: checks.app.check_sns
       expected:
         exclude_files:
@@ -52,7 +52,7 @@ tests:
       resource_suffix: resource_suffix
       root_flag: root_flag
       logging_enabled: logging_enabled
-    assertions:
+    checks:
     - method: checks.app.check_sns
       expected:
         exclude_files: exclude_files
@@ -73,7 +73,7 @@ tests:
       parent_filename: null
       resource_module: null
       resource_suffix: null
-    assertions:
+    checks:
     - method: checks.app.check_exception
       expected: TypeError
   - description: Undefined arguments
@@ -81,27 +81,27 @@ tests:
       parent_filename: null
       resource_module: directory/module_resource
       resource_suffix: _resource
-    assertions:
+    checks:
     - method: checks.app.check_equals
       expected: directory/module
   - description: Resource module and suffix are defined
     arguments:
       resource_module: directory/module_resource.py
       resource_suffix: _resource
-    assertions:
+    checks:
     - method: checks.app.check_equals
       expected: directory/module.py
   - description: Resource module and folder name are defined
     arguments:
       resource_module: directory/_resource/module.py
-    assertions:
+    checks:
     - method: checks.app.check_equals
       expected: directory/_resource/module.py
   - description: Resource module parent module filename are defined
     arguments:
       resource_module: directory/module_resource.py
       parent_filename: module
-    assertions:
+    checks:
     - method: checks.app.check_equals
       expected: directory/module.py
   - description: All arguments are defined
@@ -109,7 +109,7 @@ tests:
       resource_module: directory/_resource/module_resource.py
       parent_filename: app
       resource_suffix: _resource
-    assertions:
+    checks:
     - method: checks.app.check_equals
       expected: directory/_resource/app.py
 - function: set_location
@@ -117,7 +117,7 @@ tests:
   tests:
   - description: Undefined arguments
     arguments: {}
-    assertions:
+    checks:
     - method: checks.app.check_sns
       expected:
         location: null
@@ -127,7 +127,7 @@ tests:
   - description: Location is defined
     arguments:
       location: location
-    assertions:
+    checks:
     - method: checks.app.check_sns
       expected:
         location: location
@@ -137,7 +137,7 @@ tests:
   - description: Root flag is true
     arguments:
       root_flag: true
-    assertions:
+    checks:
     - method: checks.app.check_sns
       expected:
         location: .
@@ -151,7 +151,7 @@ tests:
       resource_flag: false
       root_flag: false
       location: null
-    assertions:
+    checks:
     - method: checks.app.check_sns
       expected:
         location: module
@@ -163,7 +163,7 @@ tests:
       resource_flag: true
       module: _resource/module_resource.py
       resource_suffix: _resource
-    assertions:
+    checks:
     - method: checks.app.check_sns
       expected:
         location: _resource/module.py
@@ -176,7 +176,7 @@ tests:
   - description: Location is a module with defined tests
     arguments:
       << : *MODULE_WITH_TESTS_ARGUMENTS
-    assertions:
+    checks:
     - method: checks.app.check_length
       field: result
       expected: 2
@@ -205,7 +205,7 @@ tests:
   - description: Location is a module with no defined tests
     arguments:
       <<: *MODULE_WITHOUT_TESTS_ARGUMENTS
-    assertions:
+    checks:
     - method: checks.app.check_sns
       expected:
         result: []
@@ -215,7 +215,7 @@ tests:
   - description: Location is a module with defined tests
     arguments:
       <<: *MODULE_WITH_TESTS_ARGUMENTS
-    assertions:
+    checks:
     - method: checks.app.check_type
       expected: SimpleNamespace
     - method: checks.app.check_equals
@@ -231,7 +231,7 @@ tests:
     arguments:
       <<: *MODULE_WITH_TESTS_ARGUMENTS
       method: plugin
-    assertions:
+    checks:
     - method: checks.app.check_sns
       expected:
         result:
@@ -260,7 +260,7 @@ tests:
     arguments:
       <<: *MODULE_WITH_TESTS_ARGUMENTS
       method: pytest
-    assertions:
+    checks:
     - method: checks.app.check_type
       expected: SimpleNamespace
   - description: Run tests on modules in a directory using plugin invocation method
@@ -272,7 +272,7 @@ tests:
     cast_output:
     - field: result
       method: resources.app.list_sns_to_list_dict
-    assertions:
+    checks:
     - method: checks.app.check_sns
       expected:
         result:

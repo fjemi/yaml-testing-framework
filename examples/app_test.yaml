@@ -6,7 +6,7 @@ TODO:
 configurations:
   resources:
   - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/app.py
-  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/examples/operations_resource.py
+  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/examples/resource.py
 
 
 tests:
@@ -20,7 +20,7 @@ tests:
       a: 1
       b: '1'
       method: subtract
-    assertions:
+    checks:
     - method: checks.app.check_exception
       expected: TypeError
     - method: checks.app.check_equals
@@ -31,7 +31,7 @@ tests:
       a: 1
       b: 1
       method: add
-    assertions:
+    checks:
     - method: checks.app.check_sns
       expected:
         a: 1
@@ -50,7 +50,7 @@ tests:
       a: 1
       b: 1
       method: method_does_not_exist
-    assertions:
+    checks:
     - method: checks.app.check_sns
       expected:
         a: 1
@@ -63,7 +63,7 @@ tests:
   #     a: 1
   #     b: 1
   #     method: subtract
-  #   assertions:
+  #   checks:
   #   - method: checks.app.check_sns
   #     expected:
   #       a: 1
@@ -78,9 +78,9 @@ tests:
     arguments:
       method: constant
     cast_output:
-    - method: operations_resource.inverse
+    - method: resource.inverse
       field: result
-    assertions:
+    checks:
     - method: checks.app.check_sns
       expected:
         result: 0.1
@@ -97,7 +97,7 @@ tests:
         a: a
         b: b
         method: method_name
-    assertions:
+    checks:
     - method: checks.app.check_sns
       expected:
         a: a
@@ -107,7 +107,7 @@ tests:
   - description: Return object passed into the function
     arguments:
       data: data
-    assertions:
+    checks:
     - method: checks.app.check_equals
       expected: data
   - description: Patch a function as a side effect dict
@@ -122,7 +122,7 @@ tests:
       arguments:
         a: a
         c: c
-      assertions:
+      checks:
       - method: checks.app.check_equals
         expected:
           a: A
@@ -131,7 +131,7 @@ tests:
       arguments:
         b: b
         d: D
-      assertions:
+      checks:
       - method: checks.app.check_equals
         expected:
           b: B
@@ -148,7 +148,7 @@ tests:
         a: 1
         b: 2
         method: add
-    assertions:
+    checks:
     - method: checks.app.check_sns
       expected:
         a: 1
@@ -160,7 +160,7 @@ tests:
         a: -1
         b: -2
         method: add
-    assertions:
+    checks:
     - method: checks.app.check_sns
       expected:
         a: -1
@@ -172,7 +172,7 @@ tests:
         a: 0
         b: 0
         method: add
-    assertions:
+    checks:
     - method: checks.app.check_sns
       expected:
         a: 0
@@ -191,7 +191,7 @@ tests:
         a: 1
         b: 2
         method: subtract
-    assertions:
+    checks:
     - method: checks.app.check_sns
       expected:
         a: 1
@@ -203,7 +203,7 @@ tests:
         a: -1
         b: -2
         method: subtract
-    assertions:
+    checks:
     - method: checks.app.check_sns
       expected:
         a: -1
@@ -215,7 +215,7 @@ tests:
         a: 0
         b: 0
         method: subtract
-    assertions:
+    checks:
     - method: checks.app.check_sns
       expected:
         a: 0
@@ -233,7 +233,7 @@ tests:
     arguments:
       data:
         method: constant
-    assertions:
+    checks:
     - method: checks.app.check_sns
       expected:
         a: null
@@ -245,7 +245,7 @@ tests:
         a: 3
         b: 3
         method: constant
-    assertions:
+    checks:
     - method: checks.app.check_sns
       expected:
         a: 3
@@ -261,7 +261,7 @@ tests:
       arguments:
         data:
           method: constant
-      assertions:
+      checks:
       - method: checks.app.check_sns
         expected:
           a: null
@@ -272,7 +272,7 @@ tests:
     #   arguments:
     #     data:
     #       method: constant
-    #   assertions:
+    #   checks:
     #   - method: checks.app.check_sns
     #     expected:
     #       a: null
@@ -287,7 +287,7 @@ tests:
       - tres
       route: CONSTANT
     arguments: {}
-    assertions:
+    checks:
     - method: checks.app.check_function_output
       field: result
       expected:
@@ -314,7 +314,7 @@ tests:
     arguments:
       data:
         a: 5
-    assertions:
+    checks:
     - method: checks.app.check_sns
       expected:
         a: 5
@@ -324,12 +324,12 @@ tests:
       an integer a
     patches:
     - route: factorial
-      callable_route: operations_resource.sum_patch
+      callable_route: resource.sum_patch
       method: callable
     arguments:
       data:
         a: 5
-    assertions:
+    checks:
     - method: checks.app.check_sns
       expected:
         a: 5
@@ -350,7 +350,7 @@ tests:
       data:
         a: 3
         b: 4
-    assertions:
+    checks:
     - method: checks.app.check_sns
       expected:
         a: 3

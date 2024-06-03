@@ -30,7 +30,7 @@ tests:
   - description: Logging is not enabled
     arguments:
       enabled: false
-    assertions:
+    checks:
     - method: checks.app.check_equals
       expected: 0
   - description: Logger has not been created
@@ -40,7 +40,7 @@ tests:
       route: LOGGER
     arguments:
       enabled: true
-    assertions:
+    checks:
     - method: checks.app.check_equals
       expected: 0
   # - description: Log info
@@ -50,7 +50,7 @@ tests:
   #     debug: True
   #     enabled: True
   #     standard_output: true
-  #   assertions:
+  #   checks:
   #   - method: checks.app.check_equals
   #     expected: 1
   # - description: Only logging enabled
@@ -100,37 +100,37 @@ tests:
 #       an Exception
 #     arguments:
 #       object: string
-#     assertions:
+#     checks:
 #     - method: checks.app.check_equals
 #       expected: string
 #   - description: Undefined object produces an error
 #     arguments:
 #       object: null
-#     assertions:
+#     checks:
 #     - method: checks.app.check_equals
 #       expected: None
 #   - description: When the object is a module, return its location
 #     arguments:
 #       object: module
-#     assertions:
+#     checks:
 #     - method: checks.app.check_equals
 #       expected: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/_resources/logger/module.py
 #   - description: Object is a function
 #     arguments:
 #       object: function_
-#     assertions:
+#     checks:
 #     - method: checks.app.check_equals
 #       expected: function_
 #   - description: Object is of type sh`Test`
 #     arguments:
 #       object: Test
-#     assertions:
+#     checks:
 #     - method: checks.app.check_substring_in_string
 #       expected: .main.logger._resources.app.Test
 #   - description: Object is of type sh`Exception`
 #     arguments:
 #       object: Exception
-#     assertions:
+#     checks:
 #     - method: checks.app.check_equals
 #       expected:
 #         exception: TypeError
@@ -140,7 +140,7 @@ tests:
 #   tests:
 #   - description:
 #     arguments:
-#     assertions:
+#     checks:
 #     - method: checks.app.check_equals
 #       expected: 
 - function: format_as_json
@@ -148,20 +148,20 @@ tests:
   tests:
   - arguments:
       log: {}
-    assertions:
+    checks:
     - method: checks.app.check_equals
       expected: '{}'
   - arguments:
       log:
         key: value
-    assertions:
+    checks:
     - method: checks.app.check_equals
       expected: '{"key": "value"}'
   - arguments:
       log:
         a: a
         b: b
-    assertions:
+    checks:
     - method: checks.app.check_equals
       expected: '{"a": "a", "b": "b"}'
 - function: format_as_yaml
@@ -170,7 +170,7 @@ tests:
   - description: Empty dictionary
     arguments:
       log: {}
-    assertions:
+    checks:
     - method: checks.app.check_equals
       expected: '{}
 
@@ -180,7 +180,7 @@ tests:
       log:
         a: a
         b: b
-    assertions:
+    checks:
     - method: checks.app.check_equals
       expected: 'a: a
 
@@ -191,7 +191,7 @@ tests:
   description: Returns a timestamp that is seconds since epoch
   tests:
   - arguments: {}
-    assertions:
+    checks:
     - method: checks.app.check_type
       expected: float
 - function: get_log_file_location
@@ -205,7 +205,7 @@ tests:
     arguments:
       root_directory: root
       project_path: root/project
-    assertions:
+    checks:
     - method: checks.app.check_equals
       expected: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/.logs/root.project.log
   - description: Log directory environment variable is set
@@ -216,7 +216,7 @@ tests:
     arguments:
       root_directory: root
       project_path: root/project
-    assertions:
+    checks:
     - method: checks.app.check_equals
       expected: .logs/root.project.log
 - function: get_logger
@@ -225,13 +225,13 @@ tests:
   # - description: Location is undefined
   #   arguments:
   #     location: null
-  #   assertions:
+  #   checks:
   #   - method: checks.app.check_exception
   #     expected: TypeError
   - description: Location is defined
     arguments:
       location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/logger/resources/data/log_file.log
-    assertions:
+    checks:
     - method: checks.app.check_type
       expected: Logger
     - method: checks.app.check_equals
@@ -246,7 +246,7 @@ tests:
     arguments:
       logging_enabled: null
       project_path: null
-    assertions:
+    checks:
     - method: checks.app.check_sns
       expected:
         status: 0
@@ -254,7 +254,7 @@ tests:
     arguments:
       logging_enabled: False
       project_path: null
-    assertions:
+    checks:
     - method: checks.app.check_sns
       expected:
         status: 0
@@ -262,7 +262,7 @@ tests:
     arguments:
       logging_enabled: true
       project_path: project_path
-    assertions:
+    checks:
     - method: checks.app.check_sns
       expected:
         status: 1

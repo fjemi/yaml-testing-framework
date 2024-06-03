@@ -33,7 +33,7 @@ def test_(test: sns) -> None:
   assert test.expected == test.output
 ```
 
-- `assertions.py` - contains logic for verifying the output from a function
+- `checks.py` - contains logic for verifying the output from a function
 ```python
 from types import SimpleNamespace as sns
 from typing import Any
@@ -54,7 +54,7 @@ from typing import Any
 ```yaml
 configurations:
   resources:
-  - assertions.py
+  - checks.py
 
 tests:
 - function: main
@@ -62,20 +62,20 @@ tests:
   - arguments:
       a: 1
       b: 1
-    assertions:
-    - method: assertions.equals
+    checks:
+    - method: checks.equals
       expected: 2
   - arguments:
       a: 1
       b: 2
-    assertions:
-    - method: assertions.equals
+    checks:
+    - method: checks.equals
       expected: 3
   - arguments:
       a: 1
       b: '1'
-    assertions:
-    - method: assertions.equals
+    checks:
+    - method: checks.equals
       field: 2
 ```
 
@@ -229,7 +229,7 @@ fields can be defined globally or at different test levels.
 | patches | dict or list | Objects in a module to patch for tests | append |
 | cast_arguments | dict or list | Convert function arguments to other data types | append |
 | cast_output | dict or list | Convert function output to other data types | append |
-| assertions | dict or list | Verifies the output of functions | append |
+| checks | dict or list | Verifies the output of functions | append |
 | spies | list or str | List of methods to spy on and see if called during test | append |
 | tests | dict or list | Nested configurations that get expanded into individual tests | append |
 
@@ -261,7 +261,7 @@ project in a way to avoid naming conflicts.
 
 ### Methods
 
-We can define methods to compare expected and actual output from a function being tested. Methods should have the parameters `expected` and `output`, and return a **SimpleNamespace** object containing `expected`, `output`, `passed` (a boolean indicating whether the assertion passed or failed). Methods can also be reused between tests.
+We can define methods to compare expected and actual output from a function being tested. Methods should have the parameters `expected` and `output`, and return a **SimpleNamespace** object containing `expected`, `output`, `passed` (a boolean indicating whether the check passed or failed). Methods can also be reused between tests.
 
 #### Example
 
@@ -282,21 +282,21 @@ def check_type(
 
 ### Schema
 
-Assertions are defined in YAML test files under the key `assertions`, and a
-single assertion has the following fields:
+Assertions are defined in YAML test files under the key `checks`, and a
+single check has the following fields:
 
 | Field | Type | Description | Default |
 | - | - | - | - |
 | method | str | Function or method used to verify the result of test | pass_through |
 | expected | Any | The expected output of the function | null |
 | field | str | Sets the output to a dot-delimited route to an attribute or key within the output. | null |
-| cast_output | dict or list | Converts output or an attribute or key in the output before processing an assertion method | null |
+| cast_output | dict or list | Converts output or an attribute or key in the output before processing an check method | null |
 
 
-And single test can have multiple assertions
+And single test can have multiple checks
 
 ```yaml
-assertions:
+checks:
 - method: method_1
   expected: expected_1
   field: null
@@ -309,7 +309,7 @@ assertions:
 
 ## Cast arguments and output
 
-We can convert arguments passed to functions and output from functions to other data types. To do this we define cast objects and list them under the keys `cast_arguments` and `cast_output` for tests or `cast_output` for assertions.
+We can convert arguments passed to functions and output from functions to other data types. To do this we define cast objects and list them under the keys `cast_arguments` and `cast_output` for tests or `cast_output` for checks.
 
 ### Schema
 
@@ -338,7 +338,7 @@ cast_output:
   field: field_1
   unpack: false
 
-assertions:
+checks:
 - cast_output:
   - method: method_2
     field: field_2
@@ -406,11 +406,11 @@ tests:
 
 ## Spies
 
-We can spy on methods to verify that the methods are called when the function being tested is executed. To do this we list the dot delimited routes to the methods to spy on under the key `spies` in YAML test files. Spies can be defined at the global, configuration, and test levels; and are combined into one. Spies are saved to the attribute `SPIES` in the module of the function being tests, and are accessible from an assertion method.
+We can spy on methods to verify that the methods are called when the function being tested is executed. To do this we list the dot delimited routes to the methods to spy on under the key `spies` in YAML test files. Spies can be defined at the global, configuration, and test levels; and are combined into one. Spies are saved to the attribute `SPIES` in the module of the function being tests, and are accessible from an check method.
 
 ### Example
 
-In this example, the methods to spy on are listed under the `spies` key at the individual test level, and an assertion method to verify spies is defined as a function.
+In this example, the methods to spy on are listed under the `spies` key at the individual test level, and an check method to verify spies is defined as a function.
 
 
 ```yaml
@@ -420,7 +420,7 @@ tests:
 - spies:
   - route.method_a
   - route.method_b
-  assertions:
+  checks:
   - method: check_spies
     expected:
       route.method_a:
@@ -432,7 +432,7 @@ tests:
 ```
 
 ```python
-# ./assertions.py
+# ./checks.py
 
 from types import ModuleType
 from types import SimpleNamespace as sns
@@ -443,7 +443,7 @@ def check_spies(
   output: Any,
   expected: dict
 ) -> sns:
-  '''Example assertion method for verifying that a function was called'''
+  '''Example check method for verifying that a function was called'''
   spies = {}
   for key, value for expected.items():
     spy = module.SPIES.get(key, {})

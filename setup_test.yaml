@@ -22,12 +22,12 @@ tests:
   tests:
   - arguments:
       location: null
-    assertions:
+    checks:
     - method: checks.app.check_equals
       expected: null
   - arguments:
       location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/resources/setup/hello_world.yml
-    assertions:
+    checks:
     - method: checks.app.check_equals
       expected: >
         hello: world
@@ -36,13 +36,13 @@ tests:
   tests:
   - arguments:
       directory: null
-    assertions:
+    checks:
     - method: checks.app.check_equals
       expected:
         directory: null
   - arguments:
       directory: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/resources/setup
-    assertions:
+    checks:
     - method: checks.app.check_equals
       expected:
         directory: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/resources/setup
@@ -137,7 +137,7 @@ tests:
     arguments:
       pipfile_lock:
         default: {}
-    assertions:
+    checks:
     - method: checks.app.check_equals
       expected: []
   - description: One package
@@ -146,7 +146,7 @@ tests:
         default:
           package_0:
             version: ==version_0
-    assertions:
+    checks:
     - method: checks.app.check_equals
       expected:
       - package_0==version_0
@@ -162,7 +162,7 @@ tests:
             version: '>=version_1'
           package_2:
             version: <=version_2
-    assertions:
+    checks:
     - method: checks.app.check_equals
       expected:
       - package_0==version_0
@@ -182,7 +182,7 @@ tests:
             markers: python_version >= '3.7.*'
           package_2:
             markers: python_version >= '3.11'
-    assertions:
+    checks:
     - method: checks.app.check_equals
       expected: '>=3.7'
     - method: checks.app.check_type
@@ -206,7 +206,7 @@ tests:
         setup_requires: {}
         python_requires: {}
       long_description: long_description
-    assertions:
+    checks:
     - method: checks.app.check_equals
       expected:
         setup_requires:
@@ -221,7 +221,7 @@ tests:
   - description: Test 0
     arguments:
       directory: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/resources/setup
-    assertions:
+    checks:
     - method: checks.app.check_equals
       expected:
         author: author

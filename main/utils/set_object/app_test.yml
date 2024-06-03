@@ -12,7 +12,7 @@ tests:
   tests:
   - description: Undefined arguments
     arguments: {}
-    assertions:
+    checks:
     - method: checks.app.check_equals
       expected: null
   - description: Route is an empty string
@@ -20,7 +20,7 @@ tests:
       parent: parent
       value: null
       route: ''
-    assertions:
+    checks:
     - method: checks.app.check_equals
       expected: parent
   - description: Route to a value in a dict
@@ -29,7 +29,7 @@ tests:
         key: value
       value: new_value
       route: key
-    assertions:
+    checks:
     - method: checks.app.check_equals
       expected:
         key: new_value
@@ -40,7 +40,7 @@ tests:
           key_a: value_a
       value: value_b
       route: key.key_b
-    assertions:
+    checks:
     - method: checks.app.check_equals
       expected:
         key:
@@ -51,7 +51,7 @@ tests:
       parent: null
       value: value
       route: field
-    assertions:
+    checks:
     - method: checks.app.check_sns
       expected:
         field: value
@@ -68,7 +68,7 @@ tests:
       parent: null
       route: null
       value: null
-    assertions:
+    checks:
     - method: checks.app.check_sns
       expected:
         route: null
@@ -80,7 +80,7 @@ tests:
       parent: parent
       route: ''
       value: value
-    assertions:
+    checks:
     - method: checks.app.check_sns
       expected:
         route: ''
@@ -94,7 +94,7 @@ tests:
           key_b: value_b
       route: key_a.key_b
       value: value
-    assertions:
+    checks:
     - method: checks.app.check_sns
       expected:
         route:
@@ -116,7 +116,7 @@ tests:
         field_a: {}
       route: field_a.field_b.field_c
       value: value
-    assertions:
+    checks:
     - method: checks.app.check_sns
       expected:
         route:
@@ -140,7 +140,7 @@ tests:
   tests:
   - description: Child are parent is undefined
     arguments: {}
-    assertions:
+    checks:
     - method: checks.app.check_exception
       expected: AttributeError
   - description: Set child when parent is dict
@@ -150,7 +150,7 @@ tests:
       child:
         value: value
         name: key
-    assertions:
+    checks:
     - method: checks.app.check_sns
       expected:
         name: null
@@ -163,7 +163,7 @@ tests:
       child:
         value: value
         name: name
-    assertions:
+    checks:
     - method: checks.app.check_sns
       expected:
         name: null
@@ -182,7 +182,7 @@ tests:
       child:
         value: value_b
         name: field_b
-    assertions:
+    checks:
     - method: checks.app.check_sns
       expected:
         name: null
@@ -202,7 +202,7 @@ tests:
   - description: Undefined arguments
     arguments:
       objects: null
-    assertions:
+    checks:
     - method: checks.app.check_exception
       expected: TypeError
   - description: Set child value in a nested dictionary
@@ -217,7 +217,7 @@ tests:
           key_0 : value_0
       - name: key_0
         value: value_0
-    assertions:
+    checks:
     - method: checks.app.check_equals
       expected:
         key_a:
@@ -233,7 +233,7 @@ tests:
           field: value
       - name: field
         value: set_value
-    assertions:
+    checks:
     - method: checks.app.check_equals
       expected:
         field: set_value
@@ -245,7 +245,7 @@ tests:
   - description: Start and end indices are undefined
     arguments:
       name: null
-    assertions:
+    checks:
     - method: checks.app.check_sns
       expected:
         start: null
@@ -253,7 +253,7 @@ tests:
   - description: Start and end indices are the same integer
     arguments:
       name: 0|0
-    assertions:
+    checks:
     - method: checks.app.check_sns
       expected:
         start: 0
@@ -261,7 +261,7 @@ tests:
   - description: Start and end indices are different integers
     arguments:
       name: 0|4
-    assertions:
+    checks:
     - method: checks.app.check_sns
       expected:
         start: 0
@@ -269,7 +269,7 @@ tests:
   - description: Start index is an integer and end index is undefined
     arguments:
       name: 0
-    assertions:
+    checks:
     - method: checks.app.check_sns
       expected:
         start: 0
@@ -277,7 +277,7 @@ tests:
   - description: Start index is undefined and end index is an integer
     arguments:
       name: '|5'
-    assertions:
+    checks:
     - method: checks.app.check_sns
       expected:
         start: null
@@ -296,7 +296,7 @@ tests:
       parent_value: null
       child_value: null
       indices: null
-    assertions:
+    checks:
     - method: checks.app.check_exception
       expected: AttributeError
   - description: Replace value at single index of parent value
@@ -309,7 +309,7 @@ tests:
       indices:
         start: 0
         end: 0
-    assertions:
+    checks:
     - method: checks.app.check_equals
       expected:
       - A
@@ -328,7 +328,7 @@ tests:
       indices:
         start: null
         end: null
-    assertions:
+    checks:
     - method: checks.app.check_equals
       expected:
       - A
@@ -348,7 +348,7 @@ tests:
       indices:
         start: 1
         end: 3
-    assertions:
+    checks:
     - method: checks.app.check_equals
       expected:
       - a
@@ -370,7 +370,7 @@ tests:
       indices:
         start: 2
         end: null
-    assertions:
+    checks:
     - method: checks.app.check_equals
       expected:
       - 1
@@ -392,7 +392,7 @@ tests:
       indices:
         start: null
         end: 3
-    assertions:
+    checks:
     - method: checks.app.check_equals
       expected:
       - a

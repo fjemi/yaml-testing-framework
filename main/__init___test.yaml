@@ -14,12 +14,12 @@ tests:
 - function: allow_nested_event_loops
   description: Allows asyncio event loop to be nested
   arguments: {}
-  assertions:
+  checks:
   - method: checks.app.check_equals
     expected: 1
 - function: allow_nested_event_loops
   description: Allows asyncio event loop to be nested
   arguments: {}
-  assertions:
+  checks:
   - method: checks.app.check_equals
     expected: 1

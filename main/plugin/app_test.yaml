@@ -34,7 +34,7 @@ tests:
       option_names:
       - option_0
       - option_2
-    assertions:
+    checks:
     - method: checks.app.check_equals
       expected:
         option_0: value_0
@@ -46,14 +46,14 @@ tests:
     arguments:
       option: null
       config: null
-    assertions:
+    checks:
     - method: checks.app.check_equals
       expected: []
   - description: Option is a string
     arguments:
       option: option
       config: null
-    assertions:
+    checks:
     - method: checks.app.check_equals
       expected:
       - option
@@ -63,7 +63,7 @@ tests:
       - option_0
       - option_1
       config: null
-    assertions:
+    checks:
     - method: checks.app.check_equals
       expected:
       - option_0
@@ -77,35 +77,35 @@ tests:
     arguments:
       option: null
       config: null
-    assertions:
+    checks:
     - method: checks.app.check_equals
       expected: YAML_TESTING_FRAMEWORK_ROOT_DIR
   - description: Option is a single dot representing root directory
     arguments:
       option: .
       config: config
-    assertions:
+    checks:
     - method: checks.app.check_equals
       expected: YAML_TESTING_FRAMEWORK_ROOT_DIR
   - description: Option is path to directory within the root directory
     arguments:
       option: ./path_to_directory
       config: config
-    assertions:
+    checks:
     - method: checks.app.check_equals
       expected: /path_to_directory
   - description: Option is path to directory in test resources
     arguments:
       option: path_to_directory
       config: config
-    assertions:
+    checks:
     - method: checks.app.check_equals
       expected: path_to_directory
   - description: Option is path to directory in root directory
     arguments:
       option: root_directory/sub_directory
       config: config
-    assertions:
+    checks:
     - method: checks.app.check_equals
       expected: root_directory/sub_directory
 - function: get_pytest_parser
@@ -121,20 +121,20 @@ tests:
       unpack: false
     arguments:
       pytest_instance: pytest_instance
-    assertions:
+    checks:
     - method: checks.app.check_equals
       expected:  <class '_pytest.config.argparsing.Parser'>
   - description: Null instance of pytest
     arguments:
       pytest_instance: null
-    assertions:
+    checks:
     - method: checks.app.check_equals
       expected:  <class '_pytest.config.argparsing.Parser'>
 - function: get_pytest_instance
   description: Returns an instance of the pytest module
   tests:
   - arguments: {}
-    assertions:
+    checks:
     - method: checks.app.check_equals
       field: __name__
       expected: pytest
@@ -150,7 +150,7 @@ tests:
   tests:
   - arguments:
       parser: parser
-    assertions:
+    checks:
     - method: checks.app.check_class
       expected:
         name: Parser
@@ -172,14 +172,14 @@ tests:
     arguments:
       option: null
       config: null
-    assertions:
+    checks:
     - method: checks.app.check_equals
       expected: null
   - description: Option is defined
     arguments:
       option: option
       config: null
-    assertions:
+    checks:
     - method: checks.app.check_equals
       expected: option
 # - function: pytest_configure
@@ -192,7 +192,7 @@ tests:
 #   tests:
 #   - arguments:
 #       config: config
-#     assertions:
+#     checks:
 #     - method: checks.app.check_equals
 #       expected: null
 - function: set_node_ids
@@ -204,19 +204,19 @@ tests:
   - description: Item is undefined
     arguments:
       item: null
-    assertions:
+    checks:
     - method: checks.app.check_sns
       expected:
         _nodeid: None
   - arguments:
       item: short_id_a
-    assertions:
+    checks:
     - method: checks.app.check_equals
       field: _nodeid
       expected: short_id_a
   - arguments:
       item: short_id_b
-    assertions:
+    checks:
     - method: checks.app.check_equals
       field: _nodeid
       expected: short_id_b
@@ -227,17 +227,17 @@ tests:
   tests:
   - arguments:
       nodeid: null
-    assertions:
+    checks:
     - method: checks.app.check_equals
       expected: None
   - arguments:
       nodeid: ::test_[nodeid
-    assertions:
+    checks:
     - method: checks.app.check_equals
       expected: nodeid
   - arguments:
       nodeid: nodeid <- test_entrypoint.py
-    assertions:
+    checks:
     - method: checks.app.check_equals
       expected: nodeid
 - function: pytest_itemcollected
@@ -252,7 +252,7 @@ tests:
   - description: Undefined arguments
     arguments:
       item: null
-    assertions:
+    checks:
     - method: checks.app.check_equals
       expected: null
     - method: checks.app.check_spies

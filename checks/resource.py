@@ -29,8 +29,8 @@ def check_exception_resource(output: str | None = None) -> Exception | None:
     return getattr(exceptions, output, None)
 
 
-def assertion_method() -> str:
-  return 'assertion_method_output'
+def check_method() -> str:
+  return 'check_method_output'
 
 
 async def coroutine_method() -> str:
