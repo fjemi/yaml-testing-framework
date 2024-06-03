@@ -281,7 +281,7 @@ def check_class(
     if hasattr(output, name):
       fields[name] = get_object.main(
         parent=output,
-        name=name, )
+        route=name, )
 
   output = sns(name=output.__class__.__name__, fields=fields).__dict__
   passed = output == expected

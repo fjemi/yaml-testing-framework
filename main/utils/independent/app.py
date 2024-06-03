@@ -393,7 +393,7 @@ def format_configurations_defined_in_module(
   fields = [*FORMAT_CONFIG_FIELDS, *sns_fields]
 
   for field in fields:
-    value = get_object.main(config, field)
+    value = get_object.main(parent=config, route=field)
     if isinstance(value, dict):
       config[field] = sns(**value)
   return sns(**config)

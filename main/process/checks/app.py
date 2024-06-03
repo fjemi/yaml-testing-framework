@@ -95,7 +95,7 @@ def get_check_method(
   module: ModuleType | None = None,
 ) -> sns:
   name = str(method)
-  method = get_object.main(parent=module, name=name)
+  method = get_object.main(parent=module, route=name)
   if isinstance(method, Callable):
     return sns(method=method)
 
@@ -115,7 +115,7 @@ def reset_output_value(
   output: Any | None = None,
   field: str | None = None,
 ) -> sns:
-  output = get_object.main(parent=output, name=field)
+  output = get_object.main(parent=output, route=field)
   log = None
   if output is None and field:
     type_ = type(output).__name__

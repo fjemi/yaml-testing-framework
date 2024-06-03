@@ -1,0 +1,25 @@
+operations:
+  main:
+  - spy_on_method
+
+  
+schema:
+  main:
+    description: Data processed within the main function of the module
+    fields:
+    - name: store
+      description: Store spies placed on methods
+      default: {}
+      type: dict
+    - name: module
+      description: The module containing the function being tests
+      type: ModuleType
+      default: null
+    - name: spies
+      type: list
+      default: null
+      description: A list of methods to spy on
+    - name: route
+      description: The route to a method
+      default: null
+      type: str

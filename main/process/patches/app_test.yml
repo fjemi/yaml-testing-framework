@@ -70,7 +70,7 @@ tests:
     checks:
     - method: checks.app.check_sns
       expected:
-        route: null
+        route: None
         method: null
         module: null
         value: null
