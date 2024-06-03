@@ -66,11 +66,11 @@ def get_cast_method(
   method: str | None = None,
 ) -> sns:
   name = str(method)
-  method = get_object.main(parent=module, name=name)
+  method = get_object.main(parent=module, route=name)
   if isinstance(method, Callable):
     return sns(method=method)
 
-  method = get_object.main(parent=module, name='pass_through')
+  method = get_object.main(parent=module, route='pass_through')
   module = getattr(module, '__file__', None)
   log = sns(
     level='error',
@@ -84,7 +84,7 @@ def get_temp_object(
   field: str | None = None
 ) -> sns:
   data = sns(temp_object=object)
-  data.temp_object = get_object.main(parent=data.temp_object, name=field)
+  data.temp_object = get_object.main(parent=data.temp_object, route=field)
   if data.temp_object is None:
     data.log = f'Field {field} not in object of type {type(object).__name__}'
   return data

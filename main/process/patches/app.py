@@ -40,7 +40,11 @@ def pre_processing(
   patch = schema.get_model(name='Patch', data=patch)
   patch.module = module
   patch.timestamp = independent.get_timestamp()
-  patch.route = patch.route or patch.name
+
+  patch.route = str(patch.route)
+  if patch.route.find('.') == 0:
+    patch.route = patch.route[1:]
+
   patch.original = get_object.main(parent=module, route=patch.route)
   return patch
 
@@ -89,12 +93,10 @@ def get_value_patch_method(
 ) -> Any:
   _ = timestamp, callable_route, module
 
-  def patch(value: Any | None = None) -> Any:
+  def patch() -> Any:
     return value
 
-  patch.__wrapped__ = original
-
-  return patch(value=value)
+  return patch()
 
 
 def get_callable_patch_method(
@@ -187,7 +189,7 @@ def patch_module(
 def examples() -> None:
   from main.utils import invoke_testing_method
 
-  invoke_testing_method.main(location='.')
+  invoke_testing_method.main(location=MODULE)
 
 
 if __name__ == '__main__':

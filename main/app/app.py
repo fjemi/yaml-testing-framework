@@ -229,7 +229,7 @@ def get_function(
   if isinstance(function, Callable):
     return sns()
 
-  function_ = get_object.main(parent=module, name=function)
+  function_ = get_object.main(parent=module, route=function)
   if isinstance(function_, Callable):
     return sns(function=function_, function_name=function)
 

@@ -380,13 +380,13 @@ Patches are defined at a list of objects in YAML test files under the key
 patches:
 - method: value
   value: value
-  name: name
+  route: route
 ```
 
 
 ## Environment
 
-For modules containing a global variable `CONFIG`, we can perform tests using different environment variables by the variables as adding key/value pairs under the key `set_environment` in YAML files. The environment variables are accessible from `CONFIG.environment.[name]`, where `[name]` is the name of the variable.
+For modules containing a global variable `CONFIG`, we can perform tests using different environment variables by the variables as adding key/value pairs under the key `set_environment` in YAML files. The environment variables are accessible from `CONFIG.environment.[route]`, where `[route]` is the dot-delimited route to the variable within the module.
 
 ### Example
 

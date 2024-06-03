@@ -40,7 +40,7 @@ def get_route_values(
     last = data.objects[-1]
     current = sns(name=data.route[i])
     current_route = '.'.join(data.route[:i + 1])
-    current.value = get_object.main(parent=last.value, name=current_route)
+    current.value = get_object.main(parent=last.value, route=current_route)
     if current.value is None and i != len(data.route) - 1:
       current.value = sns()
     data.objects.append(current)
