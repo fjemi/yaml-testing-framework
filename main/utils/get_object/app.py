@@ -12,18 +12,15 @@ TWO = 2
 
 def main(
   parent: Any | None = None,
-  name: str | None = None,
   route: str | None = None
 ) -> Any:
-  name = name or route
-
-  if parent is None or not isinstance(name, str):
+  if parent is None or not isinstance(route, str):
     return parent
 
   data = sns(parent=parent, child=None)
-  names = name.strip().split('.')
+  routes = route.strip().split('.')
 
-  for child in names:
+  for child in routes:
     data.child = child
     data = get_child_object(**data.__dict__)
 

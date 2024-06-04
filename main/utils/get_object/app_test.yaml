@@ -17,14 +17,14 @@ tests:
   - description: Parent is undefined
     arguments:
       parent: null
-      name: null
+      route: null
     checks:
     - method: checks.app.check_equals
       expected: null
   - description: Name is not a string
     arguments:
       parent: parent
-      name: []
+      route: []
     checks:
     - method: checks.app.check_equals
       expected: parent
