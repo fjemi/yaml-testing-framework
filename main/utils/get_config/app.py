@@ -46,7 +46,10 @@ def main(
     operations=CONFIG.operations.main,
     functions=LOCALS,
     data=data, )
-  data = get_object.main(parent=data, route='content.config') or {}
+  data = get_object.main(
+    parent=data,
+    route='content.config',
+    default={}, )
   return sns(**data)
 
 

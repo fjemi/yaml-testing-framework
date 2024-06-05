@@ -12,7 +12,7 @@ from main.utils import get_module
 LOCALS = locals()
 
 
-def get_module_wrapper(module: str) -> ModuleType:
+def wrapper_get_module(module: str) -> ModuleType:
   return get_module.main(location=module, pool=False)
 
 

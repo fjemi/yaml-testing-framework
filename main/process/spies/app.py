@@ -47,7 +47,10 @@ def spy_on_method(
   module: ModuleType,
   route: str,
 ) -> sns:
-  original = get_object.main(parent=module, route=route) or do_nothing
+  original = get_object.main(
+    parent=module,
+    route=route,
+    default=do_nothing, )
 
   def spy(*args, **kwargs) -> Callable:
     called_with = args or kwargs

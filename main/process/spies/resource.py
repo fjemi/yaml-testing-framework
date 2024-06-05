@@ -11,7 +11,7 @@ MODULE = __file__
 LOCALS = locals()
 
 
-def get_module_wrapper(module: str) -> ModuleType:
+def wrapper_get_module(module: str) -> ModuleType:
   module = get_module.main(location=module, pool=False)
   if isinstance(module, ModuleType):
     module.SPIES = getattr(module, 'SPIES', None) or {}

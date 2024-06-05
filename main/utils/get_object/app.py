@@ -6,33 +6,35 @@ from types import SimpleNamespace as sns
 from typing import Any, Iterable
 
 
+LOCALS = locals()
 MODULE = __file__
 
 TWO = 2
 
+
 def main(
   parent: Any | None = None,
-  name: str | None = None,
-  route: str | None = None
+  route: str | None = None,
+  default: Any | None = None,
 ) -> Any:
-  name = name or route
+  if parent is None or not isinstance(route, str):
+    return default or parent
 
-  if parent is None or not isinstance(name, str):
-    return parent
+  routes = str(route).strip().split('.')
 
-  data = sns(parent=parent, child=None)
-  names = name.strip().split('.')
+  for route in routes:
+    parent = get_child(
+      default=default,
+      parent=parent,
+      route=route, )
 
-  for child in names:
-    data.child = child
-    data = get_child_object(**data.__dict__)
-
-  return data.parent
+  return parent
 
 
-def slice_iterable(
+def get_child_from_iterable(
   parent: Iterable | None = None,
-  child: int | str | None = None,
+  route: int | str | None = None,
+  default: Any | None = None,
 ) -> Iterable | None:
 
   def inner(
@@ -44,42 +46,69 @@ def slice_iterable(
     elif i == TWO and item is None:
       return 1
 
-  parameters = str(child).split('|')
+  parameters = str(route).split('|')
   parameters = [inner(item=item, i=i) for i, item in enumerate(parameters)]
-  return parent[slice(*parameters)]
+  return parent[slice(*parameters)] or default
 
 
-def get_child_object(
-  parent: Any | None = None,
-  child: str | None = None,
-) -> sns:
+def get_parent_kind(parent: Any | None = None) -> str:
   kinds = [
     'dict' * int(isinstance(parent, dict)),
     'none' * int(parent is None),
     'iterable' * int(isinstance(parent, Iterable)), ]
 
-  kind = 'other'
+  kind = 'any'
   for item in kinds:
     if item:
       kind = item
       break
 
-  if kind == 'other':
-    child = getattr(parent, child, None)
-  elif kind == 'dict':
-    child = parent.get(child, None)
-  elif kind == 'iterable':
-    child = slice_iterable(parent=parent, child=child)
-  elif kind == 'none':
-    child = None
+  return kind
 
-  return sns(parent=child, child=None)
+
+def get_child_from_any(
+  parent: Any | None = None,
+  route: str | None = None,
+  default: Any | None = None,
+) -> Any:
+  return getattr(parent, route, default)
+
+
+def get_child_from_dict(
+  parent: dict | None = None,
+  route: str | None = None,
+  default: Any | None = None,
+) -> Any:
+  return parent.get(route, default)
+
+
+def get_child_from_none(
+  parent: None = None,
+  route: str | None = None,
+  default: Any | None = None,
+) -> Any:
+  _ = parent, route
+  return default
+
+
+def get_child(
+  parent: Any | None = None,
+  route: str | None = None,
+  default: Any | None = None,
+) -> sns:
+  kind = get_parent_kind(parent=parent)
+  handler = f'get_child_from_{kind}'
+  handler = LOCALS[handler]
+  return handler(
+    parent=parent,
+    route=route,
+    default=default, )
 
 
 def examples() -> None:
   from main.utils import invoke_testing_method
 
-  invoke_testing_method.main()
+  invoke_testing_method.main(location=MODULE)
 
 
 if __name__ == '__main__':

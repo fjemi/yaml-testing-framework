@@ -18,7 +18,7 @@ tests:
     Patches an object within the module to test or modules used as resources
     during testing
   cast_arguments:
-  - method: resources.app.get_module_wrapper
+  - method: resources.app.wrapper_get_module
     field: module
   tests:
   - description: No defined patches
@@ -247,11 +247,16 @@ tests:
       value: patch_value
       timestamp: timestamp
     checks:
-    # Use caster to call the patch and verify output
-    - method: checks.app.check_equals
-      expected: patch_value
-      cast_output:
-      - method: resources.app.get_patch_for_callable_cast_output
+    - method: checks.app.check_function
+      expected:
+        name: patch
+        location: ${PWD}/main/process/patches/app.py
+    - method: checks.app.check_function_output
+      expected:
+        arguments:
+        - {}
+        output:
+        - patch_value
 - function: get_side_effect_list_patch_method
   description: Sets the patch for a side effect list
   checks:
@@ -350,7 +355,7 @@ tests:
 - function: patch_module
   description: Returns a module with a patched object
   cast_arguments:
-  - method: resources.app.get_module_wrapper
+  - method: resources.app.wrapper_get_module
     field: module
   tests:
   - description: Undefined arguments

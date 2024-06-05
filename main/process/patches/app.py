@@ -113,12 +113,14 @@ def get_callable_patch_method(
 
     return value
 
-  if callable_route:
-    patch = get_object.main(parent=module, route=callable_route)
-  patch.__wrapped__ = original
-  patch._method = 'callable'
+  temp = get_object.main(
+    parent=module,
+    route=callable_route,
+    default=patch, )
+  temp.__wrapped__ = original
+  temp._method = 'callable'
 
-  return patch
+  return temp
 
 
 def get_side_effect_list_patch_method(

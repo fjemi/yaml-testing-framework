@@ -15,22 +15,20 @@ tests:
     to the object
   tests:
   - description: Parent is undefined
-    arguments:
-      parent: null
-      name: null
+    arguments: {}
     checks:
     - method: checks.app.check_equals
       expected: null
   - description: Name is not a string
     arguments:
       parent: parent
-      name: []
+      route: []
     checks:
     - method: checks.app.check_equals
       expected: parent
   - description: Parent is a module and child is route to builtins function str
     cast_arguments:
-    - method: resource.get_module_wrapper
+    - method: resource.wrapper_get_module
       field: parent
     arguments:
       parent: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/get_object/resource.py
@@ -39,7 +37,15 @@ tests:
     - method: checks.app.check_equals
       field: __name__
       expected: str
-- function: slice_iterable
+  - description: Return default when child does not exist in parent
+    arguments:
+      parent: {}
+      route: does_not_exist
+      default: default
+    checks:
+    - method: checks.app.check_equals
+      expected: default
+- function: get_child_from_iterable
   description: Returns a slice of an iterable
   tests:
   - description: Undefined arguments
@@ -50,14 +56,14 @@ tests:
   - description: Parent is an string. Return char at index 1
     arguments:
       parent: parent
-      child: 1
+      route: 1
     checks:
     - method: checks.app.check_equals
       expected: p
   - description: Parent is an string. Return chars from index to ending
     arguments:
       parent: parent
-      child: 2|
+      route: 2|
     checks:
     - method: checks.app.check_equals
       expected: rent
@@ -68,75 +74,131 @@ tests:
       - b
       - c
       - d
-      child: 1|3
+      route: 1|3
     checks:
     - method: checks.app.check_equals
       expected:
       - b
       - c
-- function: get_child_object
-  description: Returns the value of child within a parent object
+- function: get_parent_kind
+  description: |
+    Return type of an object from a list of defined types: dict, none, iterable, any
+  tests:
+  - description: Parent is undefined
+    arguments: {}
+    checks:
+    - method: checks.app.check_equals
+      expected: none
+  - description: Parent is a list
+    arguments:
+      parent: []
+    checks:
+    - method: checks.app.check_equals
+      expected: iterable
+  - description: Parent is a dict
+    arguments:
+      parent: {}
+    checks:
+    - method: checks.app.check_equals
+      expected: dict
+  - description: Parent is a module
+    cast_arguments:
+    - method: resource.wrapper_get_module
+      field: parent
+    arguments:
+      parent: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/get_object/resource.py
+    checks:
+    - method: checks.app.check_equals
+      expected: any
+- function: get_child_from_dict
+  description: >
+    Returns the value associated with a key in dictionary if the key/value
+    exists, otherwise returns a default value
+  tests:
+  - description: Key exists
+    arguments:
+      parent:
+        route: value
+      route: route
+    checks:
+    - method: checks.app.check_equals
+      expected: value
+  - description: Key does not exist
+    arguments:
+      parent:
+        route: value
+      route: does_not_exist
+      default: default
+    checks:
+    - method: checks.app.check_equals
+      expected: default
+- function: get_child_from_none
+  description: Return `None`
+  arguments: {}
+  checks:
+  - method: checks.app.check_equals
+    expected: null
+- function: get_child_from_any
+  description: >
+    Returns the value of an attribute if it exists in object or a default value
+    if it does not exist
+  cast_arguments:
+  - method: sns
+    field: parent
+    unpack: true
+  tests:
+  - description: Attribute does not exist in simple name space object
+    arguments:
+      parent: {}
+      route: route
+      default: default
+    checks:
+    - method: checks.app.check_equals
+      expected: default
+  - description: Attribute exists in simple name space object
+    arguments:
+      parent:
+        route: value
+      route: route
+      default: default
+    checks:
+    - method: checks.app.check_equals
+      expected: value
+  - description: Attribute exists in a module
+    cast_arguments:
+    - method: resource.wrapper_get_module
+      field: parent
+    arguments:
+      parent: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/get_object/resource.py
+      route: MODULE
+      default: default
+    checks:
+    - method: checks.app.check_equals
+      expected: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/get_object/resource.py
+
+
+
+- function: get_child
+  description: >
+    Handles getting the value of a child object at a route in a parent object
   tests:
   - description: Undefined arguments
     arguments: {}
     checks:
-    - method: checks.app.check_sns
-      expected:
-        parent: null
-        child: null
+    - method: checks.app.check_equals
+      expected: null
   - description: Parent is an string. Return char at index 1
     arguments:
       parent: parent
-      child: 1
+      route: 1
     checks:
-    - method: checks.app.check_sns
-      expected:
-        parent: p
-        child: null
-  - description: Parent is an string. Return chars from index to ending
-    arguments:
-      parent: parent
-      child: 2|
-    checks:
-    - method: checks.app.check_sns
-      expected:
-        parent: rent
-        child: null
-  - description: Parent is a list. Return items between indices 2 and 3
-    arguments:
-      parent:
-      - a
-      - b
-      - c
-      - d
-      child: 1|3
-    checks:
-    - method: checks.app.check_sns
-      expected:
-        parent:
-        - b
-        - c
-        child: null
+    - method: checks.app.check_equals
+      expected: p
   - description: Parent is a dict
     arguments:
       parent:
         key: value
-      child: key
+      route: key
     checks:
-    - method: checks.app.check_sns
-      expected:
-        parent: value
-        child: null
-  - description: Parent is a simple name space
-    cast_arguments:
-    - method: resource.parent_to_sns
-      field: parent
-    arguments:
-      parent:
-        field: value
-      child: field
-    checks:
-    - method: checks.app.check_sns
-      expected:
-        parent: value
-        child: null
+    - method: checks.app.check_equals
+      expected: value
