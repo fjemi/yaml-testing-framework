@@ -410,6 +410,28 @@ def get_path_of_yaml_associated_with_module(
         return path
 
 
+def get_model(
+  schema: dict | sns | None = None,
+  data: dict | sns | None = None,
+) -> sns:
+  temp = get_object.main(
+    parent=schema,
+    route='__dict__',
+    default=schema, )
+
+  for route, default in temp.items():
+    value = get_object.main(
+      default=default,
+      route=route,
+      parent=data, )
+    temp = set_object.main(
+      parent=temp,
+      route=route,
+      value=value, )
+
+  return sns(**temp)
+
+
 CONFIG = format_configurations_defined_in_module(config=CONFIG)
 
 
