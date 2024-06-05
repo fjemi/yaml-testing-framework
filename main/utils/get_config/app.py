@@ -6,7 +6,8 @@ import inspect
 import os
 from types import SimpleNamespace as sns
 
-from main.utils import get_object, independent, schema
+from main.utils import get_object, independent
+from main.utils import schema as _schema
 
 
 MODULE = __file__
@@ -130,9 +131,12 @@ def format_environment_content(value: dict | None = None) -> sns:
 
 
 def format_schema_content(value: dict | None = None) -> sns:
-  value = schema.get_models_from_schema(
+  value = _schema.get_models_from_schema(
     content=value,
     dot_notation=True, )
+  value = value.models.__dict__
+  value.update(_schema.MODELS.__dict__)
+  return sns(**value)
 
 
 def format_operations_content(value: dict | None = None) -> sns:
