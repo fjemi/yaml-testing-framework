@@ -32,7 +32,7 @@ def main(
 
   for cast in casts:
     data = sns(**cast)
-    data.module = get_module_wrapper(module=module)
+    data.module = wrapper_get_module(module=module)
     data.object = object_
     data = independent.process_operations(
       operations=CONFIG.operations.main,
@@ -54,7 +54,7 @@ def handle_casting_wrapper(
     unpack=unpack, )
 
 
-def get_module_wrapper(module: ModuleType | str) -> ModuleType | None:
+def wrapper_get_module(module: ModuleType | str) -> ModuleType | None:
   if isinstance(module, ModuleType):
     return module
   if isinstance(module, str):

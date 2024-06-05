@@ -15,7 +15,7 @@ tests:
     in the module, and the key for spy on a method is the route to the method
     from the module of the function being tested.
   cast_arguments:
-  - method: resource.get_module_wrapper
+  - method: resource.wrapper_get_module
     field: module
   tests:
   - description: No spies defined
@@ -76,7 +76,7 @@ tests:
       expected: TypeError
   - cast_arguments:
       field: module
-      method: resource.get_module_wrapper
+      method: resource.wrapper_get_module
     tests:
     - description: Method does not exist in module
       arguments:

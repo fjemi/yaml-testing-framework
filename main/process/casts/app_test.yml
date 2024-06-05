@@ -169,7 +169,7 @@ tests:
         object:
           key: temp_object
         temp_object: null
-- function: get_module_wrapper
+- function: wrapper_get_module
   description: Returns an existing module at a location or null
   tests:
   - description: Module is undefined

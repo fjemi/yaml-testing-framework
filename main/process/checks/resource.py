@@ -45,7 +45,7 @@ def check_method_a() -> None:
   return
 
 
-def get_module_wrapper(module: str | None = None) -> ModuleType:
+def wrapper_get_module(module: str | None = None) -> ModuleType:
   return get_module.main(location=module, pool=False)
 
 
