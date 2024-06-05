@@ -132,8 +132,7 @@ def format_environment_content(value: dict | None = None) -> sns:
 def format_schema_content(value: dict | None = None) -> sns:
   value = schema.get_models_from_schema(
     content=value,
-    sns_models_flag=True, )
-  return value.models
+    dot_notation=True, )
 
 
 def format_operations_content(value: dict | None = None) -> sns:

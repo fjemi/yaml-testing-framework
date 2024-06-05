@@ -14,7 +14,7 @@ tests:
     arguments:
       module: null
       yaml: null
-      sns_models_flag: null
+      dot_notation: null
     checks:
     - method: checks.app.check_type
       expected: SimpleNamespace
@@ -22,7 +22,7 @@ tests:
     arguments:
       module: null
       yaml: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/schema/resources/app.yaml
-      sns_models_flag: null
+      dot_notation: null
     checks:
     - method: checks.app.check_equals
       field: Example_1
@@ -38,7 +38,7 @@ tests:
     arguments:
       module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/schema/resources/app.py
       yaml: null
-      sns_models_flag: true
+      dot_notation: true
     checks:
     - method: checks.app.check_sns
       field: Example_1
@@ -110,7 +110,7 @@ tests:
             description: List field
             type: list
             default: []
-      sns_models_flag: False
+      dot_notation: False
     checks:
     - method: checks.app.check_sns
       field: models
@@ -137,7 +137,7 @@ tests:
             description: List field
             type: list
             default: []
-      sns_models_flag: true
+      dot_notation: true
     checks:
     - method: checks.app.check_sns
       field: models.Scheme

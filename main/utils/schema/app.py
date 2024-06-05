@@ -32,9 +32,8 @@ CONFIG = independent.format_configurations_defined_in_module(
 def main(
   module: str | None = None,
   yaml: str | None = None,
-  sns_models_flag: bool | None = None,
+  dot_notation: bool | None = None,
 ) -> sns:
-  data = sns(**locals())
   data = independent.process_operations(
     data=data,
     functions=LOCALS,
@@ -62,7 +61,7 @@ def get_yaml_content_wrapper(location: str | None = None) -> sns:
 
 def get_models_from_schema(
   content: dict | None = None,
-  sns_models_flag: bool | None = None,
+  dot_notation: bool | None = None,
   location: str | None = None,
 ) -> sns:
   data = sns(models=sns())
@@ -76,7 +75,7 @@ def get_models_from_schema(
       default = field.get('default', None)
       model[field_name] = default
 
-    if sns_models_flag:
+    if dot_notation:
       model = sns(**model)
 
     setattr(data.models, name, model)
