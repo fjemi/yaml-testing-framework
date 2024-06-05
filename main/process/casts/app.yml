@@ -57,3 +57,33 @@ operations:
   - get_temp_object
   - handle_casting_wrapper
   - reset_object
+
+
+schema:
+  Cast:
+    description: Store data needed to cast an object
+    fields:
+    - name: method
+      type: str
+      description: Dot-delimited path to the casting method
+      default: null
+    - name: unpack
+      type: bool
+      description: Cast an packed or unpacked object
+      default: true
+    - name: module
+      type: ModuleType
+      description: Module containing the cast object
+      default: null
+    - name: object
+      type: Any
+      description: Any object
+      default: null
+    - name: temp_object
+      type: str
+      description: The result from casting an object
+      default: null
+    - name: field
+      type: str
+      description: The name of a field or attribute of an object
+      default: ''

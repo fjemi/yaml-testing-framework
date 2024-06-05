@@ -94,3 +94,51 @@ unpack_kinds:
 - dict
 - list
 - tuple
+
+
+schema:
+  App:
+    description: Store data used by the functions in a module
+    fields:
+    - name: project_path
+      type: str
+      description: >
+        The directory containing files to test or path to a module or
+        YAML file to test
+    - name: exclude_files
+      type: str | list
+      description: Patterns to match to files for excluding files from testing
+      default: null
+    - name: include_files
+      type: str | list
+      description: Patterns to match to files for including files from testing
+      default: null
+    - name: exclude_functions
+      type: str | list
+      description: Functions to exclude from testing
+      default: null
+    - name: include_functions
+      type: str | list
+      description: Functions to filter or include for testing
+      default: null
+    - name: yaml_suffix
+      type: str
+      description: Suffix for YAML files containing tests
+      default: null
+    - name: timestamp
+      type: str | list
+      description: Seconds since epoch
+      default: null
+    - name: locations
+      type: dict
+      description: The locations of modules, YAML files, and resources
+      default: null
+    - name: resources
+      type: list
+      description: >
+        A list of resource module locations. The modules are used for all tests
+      default: []
+    - name: logging_enabled
+      type: bool
+      description: Flag to enable or disable logging
+      default: False

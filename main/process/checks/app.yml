@@ -26,24 +26,44 @@ add_check_fields:
 
 
 schema:
-  Assertion: &ASSERTION
+  Check:
     description: Store data needed to process an check form a test
     fields:
+    - name: id
+      description: >
+        A unique ID for each test consisting of the route to the function, the
+        tests unique key or number, and a description of the test
+      type: str
+      default: ''
+    - name: id_short
+      description: The route to the function
+      type: str
+      default: ''
+    - name: module
+      type: ModuleType | str
+      description: >
+        The module containing the function to test or the module's location
+      default: null
     - name: method
       type: str
       description: The check method
+      default: null
     - name: field
       type: str
       description: Dot-delimited path to an attribute or key of the result
+      default: null
     - name: expected
       type: Any
+      default: null
       description: Expected value
     - name: output
       type: Any
       description: Output from the function to verify
+      default: null
     - name: cast_output
       type: list
       description: Casts to perform on the output before verifying expected output
+      default: null
     - name: passed
       type: bool
       default: false

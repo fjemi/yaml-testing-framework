@@ -19,7 +19,6 @@ from main.utils import (
   get_object,
   independent,
   logger,
-  schema,
   set_object,
 )
 
@@ -46,7 +45,7 @@ def main(
   logger.create_logger(
     logging_enabled=logging_enabled,
     project_path=project_path, )
-  data = schema.get_model(name='main.app.Data', data=locals())
+  data = independent.get_model(schema=CONFIG.schema.App, data=locals())
   data = independent.process_operations(
     operations=CONFIG.operations.main,
     functions=LOCALS,

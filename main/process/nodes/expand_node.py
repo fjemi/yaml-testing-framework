@@ -5,13 +5,15 @@
 from types import SimpleNamespace as sns
 
 from main.process.nodes import combine_fields
-from main.utils import get_config, independent, schema
+from main.utils import get_config, independent
 
 
 MODULE = __file__
 LOCALS = locals()
 
 CONFIG = get_config.main(module=MODULE)
+
+TEST_FIELDS = list(CONFIG.schema.Test.keys())
 
 
 def main(
@@ -31,7 +33,9 @@ def add_configurations_to_root_node(
   configurations: dict | None = None,
 ) -> sns:
   data = sns(root_node=root_node)
-  data.root_node = schema.get_model(name='Test', data=data.root_node)
+  data.root_node = independent.get_model(
+    schema=CONFIG.schema.Test,
+    data=data.root_node, )
 
   for field, value in data.root_node.__dict__.items():
     configuration = configurations.get(field, None)
@@ -44,10 +48,6 @@ def add_configurations_to_root_node(
   return data
 
 
-TEST_FIELDS = schema.get_model(name='Test', data={})
-TEST_FIELDS = list(TEST_FIELDS.__dict__.keys())
-
-
 def expand_nested_nodes(
   key: str | None = None,
   node: sns | None = None,
@@ -58,7 +58,9 @@ def expand_nested_nodes(
   del node.tests
 
   for i, item  in enumerate(nested_nodes):
-    nested_node = schema.get_model(name='Test', data=item)
+    nested_node = independent.get_model(
+      schema=CONFIG.schema.Test,
+      data=item, )
     for field in TEST_FIELDS:
       low = getattr(nested_node, field, None)
       high = getattr(node, field, None)
