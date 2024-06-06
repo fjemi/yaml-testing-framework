@@ -234,7 +234,6 @@ tests:
           two:
           - 1
           - 2
-
 - function: format_content_keys
   description: Formats specified keys in config content
   cast_arguments:
@@ -245,9 +244,8 @@ tests:
     arguments:
       content: null
     checks:
-    - method: checks.app.check_equals
-      field: content.config.schema.__dict__
-      expected: {}
+    - method: checks.app.check_type
+      expected: SimpleNamespace
     - method: checks.app.check_equals
       field: content.config.environment.__dict__
       expected: {}
@@ -330,9 +328,8 @@ tests:
   - description: Undefined arguments
     arguments: {}
     checks:
-    - method: checks.app.check_equals
-      field: __dict__
-      expected: {}
+    - method: checks.app.check_type
+      expected: SimpleNamespace
     - method: checks.app.check_type
       expected: SimpleNamespace
   - description: Defined arguments
