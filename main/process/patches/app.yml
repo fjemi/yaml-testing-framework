@@ -17,3 +17,55 @@ empty_values:
 - '[]'
 - '{}'
 - {}
+
+
+schema:
+  Patch:
+    description: Data needed to perform a patch operation
+    fields:
+    - name: name
+      description: Dot-delimited name of the object to patch
+      type: str
+    - name: route
+      description: Dot-delimited route of the object to be patched
+      type: str
+      default: null
+    - name: callable_route
+      description: Dot-delimited route to a callable within the module to test
+      type: str
+      default: null
+    - name: method
+      description: Method for how to patch the object
+      type: str
+      default: null
+    - name: value
+      description: Value used to patch an object
+      type: Any
+      default: null
+    - name: timestamp
+      description: A timestamp of key used to access patches
+      type: int
+      default: 0
+    - name: patch
+      description: The object used as a patch
+      type: Any
+      default: null
+    - name: module
+      description: Module containing the object to patch
+      type:  ModuleType
+      default: null
+    - name: do_nothing
+      description: Flag to do nothing if patch method is not found
+      type:  bool
+      default: False
+  Patch_Side_Effect_List:
+    description: DataClass needed to create a list side effect
+    fields:
+    - name: value
+      description: List of values for the side effect
+      type: List[Any]
+      default: []
+    - name: count
+      type: int
+      default: 0
+      description: Track the number of times the side effect has been called

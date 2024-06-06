@@ -10,10 +10,10 @@ import os
 import os as patch_os
 # trunk-ignore(ruff/F401)
 import sys
-from types import ModuleType, SimpleNamespace as sns
+from types import ModuleType
 from typing import Any, Callable, List
 
-from main.utils import get_config, invoke_testing_method, schema, get_module
+from main.utils import get_config, invoke_testing_method, get_module
 
 import yaml
 
@@ -309,37 +309,6 @@ def get_parent_cast_output(output: list | None) -> list:
 def patch_resource(patch: str | None = None) -> None | str:
   if patch == 'value':
     return 'patched_value'
-
-
-def parents_resource(parents: dict | str | None = None) -> Any:
-  if isinstance(parents, dict):
-    return schema.get_model(data=parents, name='process_patches.Data')
-  from main.process_patches._resources import app_a
-
-  data = sns(
-    values=[
-      app_a,
-      app_a.EXAMPLE_OBJECT,
-      'value',  ],
-    types=[
-      'object',
-      'object',
-      'object', ],
-    names=[
-      '',
-      'EXAMPLE_OBJECT',
-      'field', ],
-  )
-  if parents == 'parents_length_three':
-    return schema.get_model(data=data, name='process_patches.Data')
-
-  if parents == 'parents_length_one':
-    from main.process_patches._resources import app_a
-    return sns(
-      values=[app_a],
-      types=['object'],
-      names=[''],
-    )
 
 
 def get_patch_for_callable_cast_output(

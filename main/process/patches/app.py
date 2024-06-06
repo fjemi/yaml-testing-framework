@@ -6,7 +6,7 @@ from types import ModuleType
 from types import SimpleNamespace as sns
 from typing import Any, Callable, List
 
-from main.utils import get_config, get_object, independent, schema, set_object
+from main.utils import get_config, get_object, independent, set_object
 
 
 MODULE = __file__
@@ -37,7 +37,8 @@ def pre_processing(
   patch: dict | None = None,
   module: ModuleType | None = None,
 ) -> sns:
-  patch = schema.get_model(name='Patch', data=patch)
+  patch = independent.get_model(
+    schema=CONFIG.schema.Patch, data=patch, )
   patch.module = module
   patch.timestamp = independent.get_timestamp()
 
@@ -135,9 +136,9 @@ def get_side_effect_list_patch_method(
   global SIDE_EFFECTS
 
   data = sns(value=value, count=0)
-  SIDE_EFFECTS[timestamp] = schema.get_model(
+  SIDE_EFFECTS[timestamp] = independent.get_model(
     data=data,
-    name='Patch_Side_Effect_List', )
+    schema=CONFIG.schema.Patch_Side_Effect_List, )
 
   def patch(*args, **kwargs) -> Any:
     _ = args, kwargs

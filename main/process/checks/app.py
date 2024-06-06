@@ -70,7 +70,7 @@ def pre_processing(
       parent=check,
       route=field,
       value=locals_[field], )
-  return schema.get_model(name='process_checks.Assertion', data=check)
+  return independent.get_model(schema=CONFIG.schema.Check, data=check)
 
 
 def pass_through(method: str | None = None) -> Callable:

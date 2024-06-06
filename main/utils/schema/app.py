@@ -4,7 +4,7 @@
 
 from types import SimpleNamespace as sns
 
-from main.utils import independent
+from main.utils import get_object, independent
 
 
 LOCALS = locals()
@@ -30,22 +30,29 @@ CONFIG = independent.format_configurations_defined_in_module(
 
 
 def main(
+  content: dict | None = None,
   module: str | None = None,
   yaml: str | None = None,
-  sns_models_flag: bool | None = None,
+  dot_notation: bool | None = None,
 ) -> sns:
-  data = sns(**locals())
   data = independent.process_operations(
-    data=data,
+    data=locals(),
     functions=LOCALS,
     operations=CONFIG.operations.main, )
-  return getattr(data, 'models', None) or {}
+  return get_object.main(
+    parent=data,
+    route='models',
+    default={}, )
 
 
 def get_yaml_location(
   module: str | None = None,
   yaml: str | None = None,
+  content: dict | None = None,
 ) -> sns:
+  if content:
+    return sns()
+
   if yaml:
     return sns(location=yaml)
 
@@ -53,16 +60,23 @@ def get_yaml_location(
   location = independent.get_path_of_yaml_associated_with_module(
     module=module,
     extensions=CONFIG.extensions, )
+
   return sns(location=location)
 
 
-def get_yaml_content_wrapper(location: str | None = None) -> sns:
+def get_yaml_content_wrapper(
+  content: dict | None = None,
+  location: str | None = None,
+) -> sns:
+  if content:
+    return sns()
+
   return independent.get_yaml_content(location=location)
 
 
 def get_models_from_schema(
   content: dict | None = None,
-  sns_models_flag: bool | None = None,
+  dot_notation: bool | None = None,
   location: str | None = None,
 ) -> sns:
   data = sns(models=sns())
@@ -76,7 +90,7 @@ def get_models_from_schema(
       default = field.get('default', None)
       model[field_name] = default
 
-    if sns_models_flag:
+    if dot_notation:
       model = sns(**model)
 
     setattr(data.models, name, model)

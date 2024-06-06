@@ -1012,3 +1012,57 @@ tests:
         expected:
           name: awaitable_decorated_closure
           location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/independent/resource.py
+- function: get_model
+  description: Returns a model based on a defined schema and available data
+  tests:
+  - description: Undefined arguments
+    arguments: {}
+    checks:
+    - method: checks.app.check_exception
+      expected: AttributeError
+  - description: Available data is an empty dictionary
+    arguments:
+      schema:
+        a: a
+        b: b
+      data: {}
+    checks:
+    - method: checks.app.check_sns
+      expected:
+        a: a
+        b: b
+  - description: Available data is non-empty dictionary
+    arguments:
+      schema:
+        a: a
+        b: b
+        d: d
+      data:
+        a: A
+        b: B
+        c: C
+    checks:
+    - method: checks.app.check_sns
+      expected:
+        a: A
+        b: B
+        d: d
+  - description: Schema is a simple name space object
+    cast_arguments:
+    - method: sns
+      field: schema
+      unpack: true
+    arguments:
+      schema:
+        a: A
+        b: B
+        c: C
+      data:
+        a: 1
+        b: 2
+    checks:
+    - method: checks.app.check_sns
+      expected:
+        a: 1
+        b: 2
+        c: C
