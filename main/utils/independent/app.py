@@ -419,17 +419,19 @@ def get_model(
     route='__dict__',
     default=schema, )
 
+  store = {}
+
   for route, default in temp.items():
     value = get_object.main(
       default=default,
       route=route,
       parent=data, )
-    temp = set_object.main(
-      parent=temp,
+    store = set_object.main(
+      parent=store,
       route=route,
       value=value, )
 
-  return sns(**temp)
+  return sns(**store)
 
 
 CONFIG = format_configurations_defined_in_module(config=CONFIG)
