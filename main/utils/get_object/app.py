@@ -43,7 +43,7 @@ def get_child_from_iterable(
   ) -> int | None:
     if item.isdigit():
       return int(item)
-    elif i == TWO and item is None:
+    if i == TWO and item is None:
       return 1
 
   parameters = str(route).split('|')

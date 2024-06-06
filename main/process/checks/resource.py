@@ -6,8 +6,6 @@ from types import ModuleType
 from types import SimpleNamespace as sns
 from typing import Any, Callable
 
-import yaml
-
 from main.utils import get_config, get_module, invoke_testing_method, schema
 
 
@@ -47,37 +45,6 @@ def check_method_a() -> None:
 
 def wrapper_get_module(module: str | None = None) -> ModuleType:
   return get_module.main(location=module, pool=False)
-
-
-def checks_resource(
-  case_: Any | None = None,
-  checks: list[dict] | None = None,
-) -> Any:
-  if checks:
-    return [
-      schema.get_model(
-        name='process_check.Assertion',
-        data=check,
-      ) for check in checks
-    ]
-
-  if case_ == 'undefined_checks':
-    return sns(checks=None)
-
-  if case_ == 'defined_checks':
-    case_ = sns()
-    case_.result = {'key': 'value'}
-    case_.exception = {'name': 'name'}
-    case_.checks = '''
-    - method: checks.app.check_type
-      field: key
-      expected: str
-    - method: checks.app.check_substring_in_string
-      expected:
-        key: value
-    '''
-    case_.checks = yaml.safe_load(case_.checks)
-    return case_
 
 
 def check_resource(

@@ -4,7 +4,7 @@
 
 from types import SimpleNamespace as sns
 
-from main.utils import invoke_testing_method, schema
+from main.utils import invoke_testing_method
 
 
 MODULE = __file__
@@ -15,21 +15,11 @@ def get_ids_resource(val: dict | None = None) -> sns:
   return sns(**val)
 
 
-def test_resource(test: dict | None = None):
-  test = test or {}
-  test = schema.get_model(data=test, name='Test')
-  return test
-
-
-def checks_resource(checks: list | None = None) -> list:
-  if not isinstance(checks, list):
-    return checks
-
-  return [sns(**check) for check in checks]
-
-
 def examples() -> None:
-  invoke_testing_method.main(resource_flag=True)
+  invoke_testing_method.main(
+    resource_flag=True,
+    resources_folder_name='resources',
+    module_filename='test_entrypoint', )
 
 
 if __name__ == '__main__':
