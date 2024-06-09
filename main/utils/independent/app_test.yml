@@ -1066,3 +1066,43 @@ tests:
         a: 1
         b: 2
         c: C
+- function: format_schema_defined_in_config
+  description: Parses schema key in YAML content to create models for a schema
+  tests:
+  - description: Content is empty
+    arguments:
+      content: {}
+      location: location
+    checks:
+    - method: checks.app.check_sns
+      field: log
+      expected:
+        message: No schema defined in YAML at location location
+        level: warning
+  - description: Content contains schema
+    arguments:
+      content:
+        Scheme:
+          description: Example scheme
+          fields:
+          - name: field_a
+            description: String field
+            type: str
+            default: ''
+          - name: field_b
+            description: Integer field
+            type: int
+            default: 0
+          - name: field_c
+            description: List field
+            type: list
+            default: []
+      dot_notation: False
+    checks:
+    - method: checks.app.check_sns
+      field: models
+      expected:
+        Scheme:
+          field_a: ''
+          field_b: 0
+          field_c: []

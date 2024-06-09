@@ -131,7 +131,7 @@ def format_environment_content(value: dict | None = None) -> sns:
 
 
 def format_schema_content(value: dict | None = None) -> sns:
-  value = _schema.get_models_from_schema(
+  value = independent.format_schema_defined_in_config(
     content=value,
     dot_notation=True, )
   value = value.models.__dict__

@@ -434,6 +434,37 @@ def get_model(
   return sns(**store)
 
 
+def format_schema_defined_in_config(
+  content: dict | None = None,
+  dot_notation: bool | None = None,
+  location: str | None = None,
+) -> sns:
+  data = sns(models=sns())
+
+  content = content or {}
+  for name, scheme in content.items():
+    model = {}
+
+    for field in scheme.get('fields'):
+      field_name = field.get('name', '')
+      default = field.get('default', None)
+      model[field_name] = default
+
+    model = model if not dot_notation else sns(**model)
+    data.models = set_object.main(
+      parent=data.models,
+      route=name,
+      value=model, )
+
+  if not data.models.__dict__:
+    data.log = sns(
+      message=f'No schema defined in YAML at location {location}',
+      level='warning',
+      debug=CONFIG.environment.DEBUG, )
+
+  return data
+
+
 CONFIG = format_configurations_defined_in_module(config=CONFIG)
 
 

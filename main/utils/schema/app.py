@@ -17,7 +17,7 @@ CONFIG = '''
     main:
     - get_yaml_location
     - get_yaml_content_wrapper
-    - get_models_from_schema
+    - wrapper_format_schema_defined_in_config
   extensions:
     module:
     - .py
@@ -43,6 +43,15 @@ def main(
     parent=data,
     route='models',
     default={}, )
+
+
+def wrapper_format_schema_defined_in_config(
+  content: dict | None = None,
+  dot_notation: bool | None = None,
+  location: str | None = None,
+) -> sns:
+  arguments = locals()
+  return independent.format_schema_defined_in_config(**arguments)
 
 
 def get_yaml_location(
@@ -74,60 +83,7 @@ def get_yaml_content_wrapper(
   return independent.get_yaml_content(location=location)
 
 
-def get_models_from_schema(
-  content: dict | None = None,
-  dot_notation: bool | None = None,
-  location: str | None = None,
-) -> sns:
-  data = sns(models=sns())
-
-  content = content or {}
-  for name, scheme in content.items():
-    model = {}
-
-    for field in scheme.get('fields'):
-      field_name = field.get('name', '')
-      default = field.get('default', None)
-      model[field_name] = default
-
-    if dot_notation:
-      model = sns(**model)
-
-    setattr(data.models, name, model)
-
-  if not data.models.__dict__:
-    data.log = sns(
-      message=f'No schema defined in YAML at location {location}',
-      level='warning',
-      debug=CONFIG.environment.DEBUG, )
-
-  return data
-
-
 MODELS = main()
-
-
-def get_model(
-  name: str | None = None,
-  data: dict | sns | None = None,
-  models: sns | None = None,
-) -> sns:
-  models = models or MODELS
-
-  model = getattr(models, str(name), {})
-  store = sns()
-
-  data = data or {}
-  if hasattr(data, '__dict__'):
-    data = data.__dict__
-  if hasattr(model, '__dict__'):
-    model = model.__dict__
-
-  for key, default in model.items():
-    value = data.get(key, default)
-    setattr(store, key, value)
-
-  return store
 
 
 if __name__ == '__main__':
