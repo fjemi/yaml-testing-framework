@@ -40,7 +40,7 @@ CONFIG = '''
     - set_location
     - run_tests_using_invocation_method
 '''
-CONFIG = independent.format_configurations_defined_in_module(
+CONFIG = independent.format_module_defined_config(
   config=CONFIG)
 
 

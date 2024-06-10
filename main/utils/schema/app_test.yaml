@@ -14,7 +14,6 @@ tests:
     arguments:
       module: null
       yaml: null
-      dot_notation: null
     checks:
     - method: checks.app.check_type
       expected: SimpleNamespace
@@ -22,14 +21,13 @@ tests:
     arguments:
       module: null
       yaml: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/schema/resources/app.yaml
-      dot_notation: null
     checks:
-    - method: checks.app.check_equals
+    - method: checks.app.check_sns
       field: Example_1
       expected:
         integer: 1
         string: ''
-    - method: checks.app.check_equals
+    - method: checks.app.check_sns
       field: Example_2
       expected:
         list: []
@@ -38,7 +36,6 @@ tests:
     arguments:
       module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/schema/resources/app.py
       yaml: null
-      dot_notation: true
     checks:
     - method: checks.app.check_sns
       field: Example_1
@@ -79,116 +76,3 @@ tests:
     - method: checks.app.check_sns
       expected:
         location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/schema/app.yaml
-- function: get_models_from_schema
-  description: Parses schema key in YAML content to create models for a schema
-  tests:
-  - description: Content is empty
-    arguments:
-      content: {}
-      location: location
-    checks:
-    - method: checks.app.check_sns
-      field: log
-      expected:
-        message: No schema defined in YAML at location location
-        level: warning
-  - description: Content contains schema
-    arguments:
-      content:
-        Scheme:
-          description: Example scheme
-          fields:
-          - name: field_a
-            description: String field
-            type: str
-            default: ''
-          - name: field_b
-            description: Integer field
-            type: int
-            default: 0
-          - name: field_c
-            description: List field
-            type: list
-            default: []
-      dot_notation: False
-    checks:
-    - method: checks.app.check_sns
-      field: models
-      expected:
-        Scheme:
-          field_a: ''
-          field_b: 0
-          field_c: []
-  - description: Content contains schema. Returns models as sns when flag is true.
-    arguments:
-      content:
-        Scheme:
-          description: Example scheme
-          fields:
-          - name: field_a
-            description: String field
-            type: str
-            default: ''
-          - name: field_b
-            description: Integer field
-            type: int
-            default: 0
-          - name: field_c
-            description: List field
-            type: list
-            default: []
-      dot_notation: true
-    checks:
-    - method: checks.app.check_sns
-      field: models.Scheme
-      expected:
-        field_a: ''
-        field_b: 0
-        field_c: []
-- function: get_model
-  description: >
-    Returns a model with default values of values from data passed into the
-    function
-  tests:
-  - description: Arguments as undefined
-    arguments: {}
-    checks:
-    - method: checks.app.check_equals
-      field: __dict__
-      expected: {}
-  - cast_arguments:
-    - method: sns
-      field: models
-      unpack: true
-    tests:
-    - description: Return model with default values
-      arguments:
-        name: Example
-        models:
-          Example:
-            a: a
-            b: b
-            c: c
-      checks:
-      - method: checks.app.check_sns
-        expected:
-          a: a
-          b: b
-          c: c
-    - description: Return model with values from data
-      arguments:
-        data:
-          a: A
-          b: B
-        name: Example
-        models:
-          Example:
-            a: a
-            b: b
-            c: c
-      checks:
-      - method: checks.app.check_sns
-        expected:
-          a: A
-          b: B
-          c: c

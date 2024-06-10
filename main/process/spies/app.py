@@ -17,7 +17,7 @@ CONFIG = '''
     main:
     - spy_on_method
 '''
-CONFIG = independent.format_configurations_defined_in_module(config=CONFIG)
+CONFIG = independent.format_module_defined_config(config=CONFIG)
 
 
 def main(
