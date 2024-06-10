@@ -13,7 +13,7 @@ LOCALS = locals()
 
 CONFIG = get_config.main(module=MODULE)
 
-TEST_FIELDS = list(CONFIG.schema.Test.keys())
+TEST_FIELDS = list(CONFIG.schema.Test.__dict__.keys())
 
 
 def main(

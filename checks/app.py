@@ -30,7 +30,7 @@ CONFIG = '''
   - _UnionGenericAlias
   - UnionType
 '''
-CONFIG = independent.format_configurations_defined_in_module(config=CONFIG)
+CONFIG = independent.format_module_defined_config(config=CONFIG)
 
 
 @runtime_checkable

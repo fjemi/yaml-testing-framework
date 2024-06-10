@@ -29,7 +29,7 @@ CONFIG = '''
   - schema
   - operations
 '''
-CONFIG = independent.format_configurations_defined_in_module(
+CONFIG = independent.format_module_defined_config(
   config=CONFIG, sns_fields=['extensions'])
 
 LOCALS= locals()
@@ -109,10 +109,10 @@ def format_content_keys(content: sns | None = None) -> sns:
     value = {}
     content = content or sns(config={})
 
-    if getattr(content, key, None):
-      value = getattr(content, key)
-    if content.config.get(key, None):
-      value = content.config.get(key)
+    temp = [
+      get_object.main(parent=content, route=key),
+      get_object.main(parent=content, route=f'config.{key}'), ]
+    value = temp[0] or temp[1]
 
     handler = f'format_{key}_content'
     handler = LOCALS[handler]
@@ -123,20 +123,20 @@ def format_content_keys(content: sns | None = None) -> sns:
 
 
 def format_environment_content(value: dict | None = None) -> sns:
-  value = value.__dict__ if hasattr(value, '__dict__') else value
+  value = get_object.main(
+    parent=value,
+    route='__dict__',
+    default=value, ) or {}
   for name, variable in value.items():
-    if str(variable).find('$') == 0:
-      value[name] = None
+    value[name] = None if str(variable).find('$') == 0 else variable
   return sns(**value)
 
 
 def format_schema_content(value: dict | None = None) -> sns:
-  value = independent.format_schema_defined_in_config(
-    content=value,
-    dot_notation=True, )
-  value = value.models.__dict__
-  value.update(_schema.MODELS.__dict__)
-  return sns(**value)
+  temp = independent.format_config_schema(content=value)
+  temp = temp.models.__dict__
+  temp.update(_schema.MODELS.__dict__)
+  return sns(**temp)
 
 
 def format_operations_content(value: dict | None = None) -> sns:

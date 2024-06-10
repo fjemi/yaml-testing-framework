@@ -306,8 +306,9 @@ tests:
   - description: Undefined arguments
     arguments: {}
     checks:
-    - method: checks.app.check_exception
-      expected: AttributeError
+    - method: checks.app.check_equals
+      field: __dict__
+      expected: {}
   - description: Defined arguments
     arguments:
       value:

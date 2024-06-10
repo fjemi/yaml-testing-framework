@@ -13,8 +13,7 @@ LOCALS = locals()
 def format_environment_content_cast_arguments(
   content: dict | None = None,
 ) -> sns | None:
-  if isinstance(content, dict):
-    return sns(**content)
+  return content if not isinstance(content, dict) else sns(**content)
 
 
 def examples() -> None:

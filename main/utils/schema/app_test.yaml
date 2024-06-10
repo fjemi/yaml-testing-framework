@@ -14,7 +14,6 @@ tests:
     arguments:
       module: null
       yaml: null
-      dot_notation: null
     checks:
     - method: checks.app.check_type
       expected: SimpleNamespace
@@ -22,14 +21,13 @@ tests:
     arguments:
       module: null
       yaml: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/schema/resources/app.yaml
-      dot_notation: null
     checks:
-    - method: checks.app.check_equals
+    - method: checks.app.check_sns
       field: Example_1
       expected:
         integer: 1
         string: ''
-    - method: checks.app.check_equals
+    - method: checks.app.check_sns
       field: Example_2
       expected:
         list: []
@@ -38,7 +36,6 @@ tests:
     arguments:
       module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/schema/resources/app.py
       yaml: null
-      dot_notation: true
     checks:
     - method: checks.app.check_sns
       field: Example_1

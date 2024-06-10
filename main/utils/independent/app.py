@@ -381,9 +381,10 @@ def exit_loop() -> None:
   raise StopIteration
 
 
-def format_configurations_defined_in_module(
+def format_module_defined_config(
   config: str | dict,
   sns_fields: list | None = None,
+  location: str | None = None,
 ) -> sns:
   if isinstance(config, str):
     config = os.path.expandvars(config)
@@ -394,8 +395,13 @@ def format_configurations_defined_in_module(
 
   for field in fields:
     value = get_object.main(parent=config, route=field)
-    if isinstance(value, dict):
-      config[field] = sns(**value)
+    handler = f'format_config_{field}'
+    handler = LOCALS.get(handler, pass_through)
+    value = handler(
+      location=location,
+      content=value,
+      module_defined=True, )
+    config[field] = value if not isinstance(value, dict) else sns(**value)
   return sns(**config)
 
 
@@ -434,38 +440,51 @@ def get_model(
   return sns(**store)
 
 
-def format_schema_defined_in_config(
+def get_model_from_scheme(scheme: dict | None = None) -> sns:
+  store = {}
+  fields = get_object.main(parent=scheme, route='fields')
+  for item in fields:
+    name = get_object.main(parent=item, route='name')
+    default = get_object.main(parent=item, route='default')
+    store.update({name: default})
+  return sns(**store)
+
+
+def format_config_schema(
   content: dict | None = None,
-  dot_notation: bool | None = None,
   location: str | None = None,
+  module_defined: bool | None = None,
 ) -> sns:
-  data = sns(models=sns())
+  models = {}
 
   content = content or {}
   for name, scheme in content.items():
-    model = {}
+    model = get_model_from_scheme(scheme=scheme)
+    models[name] = model
 
-    for field in scheme.get('fields'):
-      field_name = field.get('name', '')
-      default = field.get('default', None)
-      model[field_name] = default
-
-    model = model if not dot_notation else sns(**model)
-    data.models = set_object.main(
-      parent=data.models,
-      route=name,
-      value=model, )
-
-  if not data.models.__dict__:
-    data.log = sns(
+  log = None
+  if not models:
+    log = sns(
       message=f'No schema defined in YAML at location {location}',
-      level='warning',
-      debug=CONFIG.environment.DEBUG, )
+      level='warning', )
 
-  return data
+  models = sns(**models)
+  if module_defined:
+    return models
+
+  return sns(log=log, models=models)
 
 
-CONFIG = format_configurations_defined_in_module(config=CONFIG)
+def pass_through(
+  location: str | None = None,
+  content: Any | None = None,
+  module_defined: bool | None = None,
+) -> Any:
+  _ = location, module_defined
+  return content
+
+
+CONFIG = format_module_defined_config(config=CONFIG)
 
 
 def examples() -> None:

@@ -8,7 +8,7 @@ import os
 from types import ModuleType
 from types import SimpleNamespace as sns
 
-from main.utils import independent
+from main.utils import get_object, independent
 
 
 MODULE = __file__
@@ -16,6 +16,26 @@ ROOT_DIR = os.path.normpath(os.path.abspath(os.path.curdir))
 LOCALS = locals()
 
 CONFIG = '''
+  schema:
+    Data:
+      description: Data processed through the functions of the module
+      fields:
+      - name: location
+        type: str
+        default: null
+        description: Path to the module
+      - name: name
+        default: null
+        type: str
+        description: Name to import module as
+      - name: key
+        default: null
+        type: str
+        description: Key to store module under in pool
+      - name: pool
+        default: False
+        type: bool
+        description: Flag to store module in pool
   operations:
     main:
     - format_module_name
@@ -25,7 +45,7 @@ CONFIG = '''
   module_extensions:
   - .py
 '''
-CONFIG = independent.format_configurations_defined_in_module(
+CONFIG = independent.format_module_defined_config(
   config=CONFIG)
 
 POOL = {}
@@ -37,12 +57,12 @@ def main(
   key: str | None = None,
   pool: bool | None = None,
 ) -> ModuleType | None:
-  data = sns(**locals())
+  data = independent.get_model(schema=CONFIG.schema.Data, data=locals())
   data = independent.process_operations(
     functions=LOCALS,
     operations=CONFIG.operations.main,
     data=data, )
-  return getattr(data, 'module', None)
+  return get_object.main(parent=data, route='module')
 
 
 def format_module_name(

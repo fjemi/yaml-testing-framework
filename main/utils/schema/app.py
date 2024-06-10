@@ -17,7 +17,7 @@ CONFIG = '''
     main:
     - get_yaml_location
     - get_yaml_content_wrapper
-    - wrapper_format_schema_defined_in_config
+    - wrapper_format_config_schema
   extensions:
     module:
     - .py
@@ -25,7 +25,7 @@ CONFIG = '''
     - .yaml
     - .yml
 '''
-CONFIG = independent.format_configurations_defined_in_module(
+CONFIG = independent.format_module_defined_config(
   config=CONFIG, sns_fields=['extensions'])
 
 
@@ -33,7 +33,6 @@ def main(
   content: dict | None = None,
   module: str | None = None,
   yaml: str | None = None,
-  dot_notation: bool | None = None,
 ) -> sns:
   data = independent.process_operations(
     data=locals(),
@@ -45,13 +44,12 @@ def main(
     default={}, )
 
 
-def wrapper_format_schema_defined_in_config(
+def wrapper_format_config_schema(
   content: dict | None = None,
-  dot_notation: bool | None = None,
   location: str | None = None,
 ) -> sns:
   arguments = locals()
-  return independent.format_schema_defined_in_config(**arguments)
+  return independent.format_config_schema(**arguments)
 
 
 def get_yaml_location(

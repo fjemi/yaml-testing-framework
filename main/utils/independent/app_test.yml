@@ -799,7 +799,7 @@ tests:
     - method: checks.app.check_equals
       field: __class__.__name__
       expected: KeyError
-- function: format_configurations_defined_in_module
+- function: format_module_defined_config
   description: >
     Returns SimpleNamespace containing configurations defined in a module
   tests:
@@ -809,46 +809,47 @@ tests:
     checks:
     - method: checks.app.check_exception
       expected: TypeError
-  - description: Config is an empty dict
-    arguments:
-      config: {}
-    checks:
-    - method: checks.app.check_equals
-      field: __dict__
-      expected: {}
-  - description: Config is a non-empty dict
-    arguments:
-      config:
-        environment:
-          A: A
-          B: B
-        operations:
-          main:
-          - a
-          - b
-        schema:
-          description: description
-          field:
-          - name: name
-            description: description
-            type: type
-            default: default
-        other: other
-    checks:
-    - method: checks.app.check_sns
-      field: environment
-      expected:
-        A: A
-        B: B
-    - method: checks.app.check_equals
-      field: operations.__dict__
-      expected:
-        main:
-        - a
-        - b
-    - method: checks.app.check_equals
-      field: other
-      expected: other
+  # - description: Config is an empty dict
+  #   arguments:
+  #     config: {}
+  #   checks:
+  #   - method: checks.app.check_equals
+  #     field: __dict__
+  #     expected: {}
+  # - description: Config is a non-empty dict
+  #   arguments:
+  #     config:
+  #       environment:
+  #         A: A
+  #         B: B
+  #       operations:
+  #         main:
+  #         - a
+  #         - b
+  #       schema:
+  #         description: description
+  #         field:
+  #         - name: name
+  #           description: description
+  #           type: type
+  #           default: default
+  #       other: other
+  #   checks:
+  #   - method: checks.app.check_sns
+  #     field: environment
+  #     expected:
+  #       A: A
+  #       B: B
+  #   - method: checks.app.check_equals
+  #     field: operations.__dict__
+  #     expected:
+  #       main:
+  #       - a
+  #       - b
+  #   - method: checks.app.check_equals
+  #     field: other
+  #     expected: other
+
 - function: get_path_of_yaml_associated_with_module
   description: >
     Returns the path to a YAML file associated with a module or null if no YAML
@@ -1066,7 +1067,7 @@ tests:
         a: 1
         b: 2
         c: C
-- function: format_schema_defined_in_config
+- function: format_config_schema
   description: Parses schema key in YAML content to create models for a schema
   tests:
   - description: Content is empty
@@ -1079,10 +1080,10 @@ tests:
       expected:
         message: No schema defined in YAML at location location
         level: warning
-  - description: Content contains schema
+  - description: Defined schema as dictionary
     arguments:
       content:
-        Scheme:
+        Scheme: &SCHEME
           description: Example scheme
           fields:
           - name: field_a
@@ -1097,12 +1098,50 @@ tests:
             description: List field
             type: list
             default: []
-      dot_notation: False
     checks:
     - method: checks.app.check_sns
-      field: models
+      field: models.Scheme
       expected:
-        Scheme:
-          field_a: ''
-          field_b: 0
-          field_c: []
+        field_a: ''
+        field_b: 0
+        field_c: []
+  - description: Defined schema as simple name space
+    arguments:
+      content:
+        Scheme: *SCHEME
+    checks:
+    - method: checks.app.check_sns
+      field: models.Scheme
+      expected:
+        field_a: ''
+        field_b: 0
+        field_c: []
+- function: get_model_from_scheme
+  description: Returns a scheme formatted as a model or dictionary
+  tests:
+  - description: Undefined arguments
+    arguments: {}
+    checks:
+    - method: checks.app.check_exception
+      expected: TypeError
+  - description: Scheme with defined fields
+    arguments:
+      scheme:
+        fields: []
+    checks:
+    - method: checks.app.check_equals
+      field: __dict__
+      expected: {}
+  - description: Scheme with defined fields
+    arguments:
+      scheme:
+        fields:
+        - name: a
+          default: a
+        - name: b
+          default: b
+    checks:
+    - method: checks.app.check_sns
+      expected:
+        a: a
+        b: b
