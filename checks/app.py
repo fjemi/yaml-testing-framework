@@ -11,7 +11,6 @@ from types import FunctionType, ModuleType
 from types import SimpleNamespace as sns
 from typing import (
   Any,
-  Awaitable,
   Callable,
   Iterable,
   Protocol,
@@ -20,7 +19,7 @@ from typing import (
 )
 
 from main.process import casts
-from main.utils import get_object, independent
+from main.utils import get_object, independent, methods
 
 
 MODULE = __file__
@@ -481,45 +480,18 @@ def check_thread(
 
 
 def call_function(
-  arguments: dict | list | tuple,
-  function: Callable | Awaitable,
+  arguments: Any | None = None,
+  function: Callable | None = None,
+  method: Callable | None = None,
   cast_output: list | None = None,
   module: ModuleType | str | None = None,
 ) -> Any:
-  result = None
-  exception = None
-
-  try:
-    if isinstance(arguments, dict):
-      result = function(**arguments)
-    elif isinstance(arguments, list | tuple):
-      result = function(*arguments)
-    else:
-      result = function(arguments)
-  except Exception as e:
-    result = e
-
-  result = independent.get_task_from_event_loop(task=result)
-
-  if isinstance(result, Exception):
-    exception = result
-
-    try:
-      result = function(arguments)
-    except Exception as e:
-      exception = e
-
-    result = independent.get_task_from_event_loop(task=result)
-
-    if isinstance(result, Exception):
-      result = exception
-
-  result = casts.main(
+  method = method or function
+  result = methods.call.main(arguments=arguments, method=method)
+  return casts.main(
     module=module,
     casts=cast_output,
-    object=result, )
-
-  return result
+    object=result.output, )
 
 
 @type_checks

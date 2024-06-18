@@ -253,201 +253,27 @@ tests:
   - method: resources.app.wrapper_get_module
     field: module
   tests:
-  - description: Undefined arguments
+  - description: Function does not exist in module
     arguments:
-      function: null
-      module: ${PWD}/main/app/resources/resource.py
+      function: does_not_exist
+      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/app/resources/app.py
     checks:
-    - method: checks.app.check_sns
-      field: log
-      expected:
-        message: Could not retrieve None from ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/app/resources/resource.py
-        level: error
     - method: checks.app.check_exception
-      field: log.error
+      field: log.exception
       expected: RuntimeError
-  - description: Defined arguments
+    - method: checks.app.check_equals
+      field: log.level
+      expected: error
+  - description: Function exists in module
     arguments:
-      function: add
-      module: ${PWD}/main/app/resources/app.py
+      function: multiply
+      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/app/resources/app.py
     checks:
     - method: checks.app.check_function
       field: function
       expected:
-        location: ${PWD}/main/app/resources/app.py
-        name: add
-- function: get_function_output_pack_arguments
-  description: Return result of calling a function with packed arguments
-  cast_arguments:
-  - field: function
-    method: resources.app.get_resource
-  tests: &GET_FUNCTION_OUTPUT_PACK_ARGUMENTS_TESTS
-  - description: Return output when exception is undefined
-    arguments:
-      exception: null
-      function: callable
-      arguments: {}
-      output: OUTPUT
-    checks:
-    - method: checks.app.check_sns
-      expected:
-        output: OUTPUT
-  - description: Call function when exception is defined
-    arguments:
-      exception: exception
-      function: add
-      arguments:
-        a: 1
-        b: 1
-    checks:
-    - method: checks.app.check_sns
-      expected:
-        output: 2
-  - description: Function call results in exception
-    arguments:
-      exception: exception
-      function: add
-      arguments:
-        data:
-          a: 1
-          b: 1
-    checks:
-    - method: checks.app.check_exception
-      field: output
-      expected: TypeError
-    - method: checks.app.check_exception
-      field: exception
-      expected: TypeError
-  - description: Function is an awaitable
-    arguments:
-      exception: exception
-      function: subtract
-      arguments:
-        a: 1
-        b: 1
-    checks:
-    - method: checks.app.check_sns
-      expected:
-        output: 0
-    # - method: checks.app.check_exception
-    #   field: output
-    #   expected: TypeError
-    # - method: checks.app.check_exception
-    #   field: exception
-    #   expected: TypeError
-- function: get_function_output_unpack_arguments
-  description: Calls a function with an unpacked dictionary as arguments
-  cast_arguments:
-  - method: resources.app.get_resource
-    field: function
-  tests: &GET_FUNCTION_OUTPUT_UNPACK_ARGUMENTS_TESTS
-  - description: Undefined arguments
-    arguments: {}
-    checks:
-    - method: checks.app.check_sns
-      field: log
-      expected:
-        level: error
-    - method: checks.app.check_exception
-      field: log.error
-      expected: TypeError
-    - method: checks.app.check_exception
-      field: output
-      expected: TypeError
-    # - method: checks.app.check_exception
-    #   field: exception
-    #   expected: TypeError
-  - description: Call function with unpacked dict
-    arguments:
-      function: multiply
-      arguments:
-        a: 1
-        b: 1
-    checks:
-    - method: checks.app.check_sns
-      expected:
-        output: 1
-  - description: Call function with unpacked list
-    arguments:
-      function: multiply
-      arguments:
-      - 1
-      - 1
-    checks:
-    - method: checks.app.check_sns
-      expected:
-        output: 1
-  - description: >
-      Argument is iterable that does not reconcile with function parameters
-    arguments:
-      function: multiply
-      arguments: [1, 2, 3]
-    checks:
-    - method: checks.app.check_sns
-      field: log
-      expected:
-        level: error
-    - method: checks.app.check_exception
-      field: output
-      expected: TypeError
-- function: get_function_output
-  description: Returns the result of running a function with arguments
-  cast_arguments:
-  - method: resources.app.get_resource
-    field: function
-  tests:
-  - description: Arguments is an empty dictionary
-    arguments:
-      function: add
-      arguments:
-        data:
-          a: 0
-          b: 1
-    checks:
-    - method: checks.app.check_sns
-      expected:
-        output: 1
-  - description: Arguments is an empty dictionary
-    arguments:
-      function: multiply
-      arguments:
-        a: 3
-        b: 4
-    checks:
-    - method: checks.app.check_sns
-      expected:
-        output: 12
-  - description: Arguments is an empty list
-    arguments:
-      function: subtract
-      arguments:
-        data:
-          b: 3
-          a: 1
-    checks:
-    - method: checks.app.check_sns
-      expected:
-        output: 2
-  - description: Arguments is a dict to unpack
-    arguments:
-      function: multiply
-      arguments:
-        a: 2
-        b: 2
-    checks:
-    - method: checks.app.check_sns
-      expected:
-        output: 4
-  - description: Arguments is not a dictionary or iterable
-    arguments:
-      function: multiply
-      arguments:
-      - 0
-      - 1
-    checks:
-    - method: checks.app.check_sns
-      expected:
-        output: 0
+        name: multiply
+        location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/app/resources/app.py
 - function: handle_casting_output
   description: Handles casting the output from calling the function to test
   cast_arguments:

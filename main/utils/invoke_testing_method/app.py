@@ -165,7 +165,6 @@ def invoke_plugin(
     project_path=location,
     yaml_suffix=yaml_suffix,
     logging_enabled=logging_enabled, )
-  independent.get_task_from_event_loop(task=result)
   return sns(result=result)
 
 

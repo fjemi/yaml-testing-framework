@@ -17,19 +17,20 @@ def main(
   n: int | None = None,
   method: str | None = None,
 ) -> sns:
-  _locals = locals()
-  data = sns()
-  for key, value in _locals.items():
-    if value is None:
-      continue
-    setattr(data, key, value)
-  method = LOCALS.get(method, do_nothing)
-  return method(data=data)
+  locals_ = locals()
+  data = sns(**locals_)
+  method = LOCALS[method] if method in LOCALS else do_nothing
+
+  try:
+    data = method(data=data)
+  except Exception as e:
+    data.result = e
+
+  return data
 
 
 def do_nothing(data: Any | None = None) -> sns:
-  if isinstance(data, sns):
-    data.result = 'Method does not exist'
+  data.result = 'Method does not exist'
   return data
 
 
