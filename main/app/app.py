@@ -228,19 +228,13 @@ def get_function(
   function: str | None = None,
   module: ModuleType | None = None,
 ) -> sns:
-  if isinstance(function, Callable):
-    return sns()
-
   function_ = get_object.main(parent=module, route=function)
   if isinstance(function_, Callable):
     return sns(function=function_, function_name=function)
 
-  location = getattr(module, '__file__', None)
-  message = f'Could not retrieve {function} from {location}'
-  log = sns(
-    message=message,
-    error=RuntimeError(message),
-    level='error', )
+  message = 'Could not retrieve {} from {}'.format(function, module.__file__)
+  log = sns(exception=RuntimeError(message), level='error', )
+
   return sns(log=log)
 
 

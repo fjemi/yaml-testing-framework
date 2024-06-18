@@ -253,28 +253,27 @@ tests:
   - method: resources.app.wrapper_get_module
     field: module
   tests:
-  - description: Undefined arguments
+  - description: Function does not exist in module
     arguments:
-      function: null
-      module: ${PWD}/main/app/resources/resource.py
+      function: does_not_exist
+      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/app/resources/app.py
     checks:
-    - method: checks.app.check_sns
-      field: log
-      expected:
-        message: Could not retrieve None from ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/app/resources/resource.py
-        level: error
     - method: checks.app.check_exception
-      field: log.error
+      field: log.exception
       expected: RuntimeError
-  - description: Defined arguments
+    - method: checks.app.check_equals
+      field: log.level
+      expected: error
+  - description: Function exists in module
     arguments:
-      function: add
-      module: ${PWD}/main/app/resources/app.py
+      function: multiply
+      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/app/resources/app.py
     checks:
     - method: checks.app.check_function
       field: function
       expected:
-
+        name: multiply
+        location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/app/resources/app.py
 - function: handle_casting_output
   description: Handles casting the output from calling the function to test
   cast_arguments:

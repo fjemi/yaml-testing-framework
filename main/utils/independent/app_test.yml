@@ -656,49 +656,58 @@ tests:
     arguments:
       config: null
     checks:
-    - method: checks.app.check_exception
-      expected: TypeError
-  # - description: Config is an empty dict
-  #   arguments:
-  #     config: {}
-  #   checks:
-  #   - method: checks.app.check_equals
-  #     field: __dict__
-  #     expected: {}
-  # - description: Config is a non-empty dict
-  #   arguments:
-  #     config:
-  #       environment:
-  #         A: A
-  #         B: B
-  #       operations:
-  #         main:
-  #         - a
-  #         - b
-  #       schema:
-  #         description: description
-  #         field:
-  #         - name: name
-  #           description: description
-  #           type: type
-  #           default: default
-  #       other: other
-  #   checks:
-  #   - method: checks.app.check_sns
-  #     field: environment
-  #     expected:
-  #       A: A
-  #       B: B
-  #   - method: checks.app.check_equals
-  #     field: operations.__dict__
-  #     expected:
-  #       main:
-  #       - a
-  #       - b
-  #   - method: checks.app.check_equals
-  #     field: other
-  #     expected: other
-
+    - method: checks.app.check_sns
+      expected:
+        config: null
+        environment: null
+        operations: null
+    - method: checks.app.check_equals
+      field: schema.__dict__
+      expected: {}
+  - description: Config is an empty dict
+    arguments:
+      config: {}
+    checks:
+    - method: checks.app.check_sns
+      expected:
+        environment: null
+        operations: null
+    - method: checks.app.check_equals
+      field: schema.__dict__
+      expected: {}
+  - description: Config is a non-empty dict
+    arguments:
+      config:
+        environment:
+          A: A
+          B: B
+        operations:
+          main:
+          - a
+          - b
+        schema:
+          description: description
+          field:
+          - name: name
+            description: description
+            type: type
+            default: default
+        other: other
+    checks:
+    - method: checks.app.check_sns
+      field: environment
+      expected:
+        A: A
+        B: B
+    - method: checks.app.check_equals
+      field: operations.__dict__
+      expected:
+        main:
+        - a
+        - b
+    - method: checks.app.check_equals
+      field: other
+      expected: other
 - function: get_path_of_yaml_associated_with_module
   description: >
     Returns the path to a YAML file associated with a module or null if no YAML
@@ -868,8 +877,9 @@ tests:
   - description: Undefined arguments
     arguments: {}
     checks:
-    - method: checks.app.check_exception
-      expected: AttributeError
+    - method: checks.app.check_equals
+      field: __dict__
+      expected: {}
   - description: Available data is an empty dictionary
     arguments:
       schema:

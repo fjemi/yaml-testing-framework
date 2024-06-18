@@ -22,10 +22,13 @@ tests:
       method: subtract
     checks:
     - method: checks.app.check_exception
+      field: result
       expected: TypeError
-    - method: checks.app.check_equals
-      field: __class__.__name__
-      expected: TypeError
+    - method: checks.app.check_sns
+      expected:
+        a: 1
+        b: '1'
+        n: null
   - description: Add two integers
     arguments:
       a: 1
@@ -41,7 +44,7 @@ tests:
     - method: checks.app.check_equals
       cast_output:
       - method: __builtins__.str
-      expected: namespace(a=1, b=1, method='add', result=2)
+      expected: namespace(a=1, b=1, n=None, method='add', result=2)
     - method: checks.app.check_equals
       field: result
       expected: 2
@@ -55,6 +58,7 @@ tests:
       expected:
         a: 1
         b: 1
+        n: null
         result: Method does not exist
         method: method_does_not_exist
   # # Assertion fails when uncommented
@@ -105,11 +109,16 @@ tests:
         result: Method does not exist
         method: method_name
   - description: Return object passed into the function
+    cast_arguments:
+    - method: sns
+      field: data
+      unpack: true
     arguments:
-      data: data
+      data: {}
     checks:
-    - method: checks.app.check_equals
-      expected: data
+    - method: checks.app.check_sns
+      expected:
+        result: Method does not exist
   - description: Patch a function as a side effect dict
     patches:
     - value:
