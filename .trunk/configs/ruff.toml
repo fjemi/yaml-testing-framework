@@ -47,6 +47,7 @@ indent-style = "space"
 
 [isort]
 lines-after-imports = 2
+ensure-newline-before-comments = false
 
 
 [pylint]
