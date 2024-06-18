@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 
-import asyncio
 import inspect
 import os
 import time
@@ -97,31 +96,6 @@ def get_yaml_content(location: str | None = None) -> sns:
     data.log = f'No YAML file at {location}'
 
   return data
-
-
-def is_coroutine(object: Any | None = None) -> bool:
-  flag = False
-  if True in [
-    inspect.iscoroutinefunction(obj=object),
-    inspect.iscoroutine(object=object),
-    inspect.isawaitable(object=object),
-  ]:
-    flag = True
-  return flag
-
-
-def get_task_from_event_loop(task: Any | None = None) -> Any:
-  if is_coroutine(object=task) and not isinstance(task, Callable):
-    loop = asyncio.new_event_loop()
-    asyncio.set_event_loop(loop)
-
-    try:
-      task = loop.run_until_complete(task)
-    finally:
-      loop.close()
-      asyncio.set_event_loop(None)
-
-  return task
 
 
 def get_decorated_function_from_closure(
@@ -368,7 +342,6 @@ def process_operations(
       function=store.function,
       data=store.data, )
     store = get_function_output(data=store)
-    store.output = get_task_from_event_loop(task=store.output)
     store.output = format_output(output=store.output)
     store = purge_data_and_output_fields(data=store)
     store = update_data_fields(data=store)

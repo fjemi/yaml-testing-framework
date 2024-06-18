@@ -5,7 +5,7 @@
 import os
 from types import ModuleType
 from types import SimpleNamespace as sns
-from typing import Any, Callable, Iterable, List
+from typing import Any, Callable, List
 
 from main.process import casts, locations
 from main.process import checks as _checks
@@ -21,6 +21,9 @@ from main.utils import (
   logger,
   set_object,
 )
+
+# trunk-ignore(ruff/F401)
+from main.utils.methods.call import main as get_function_output
 
 
 MODULE = __file__
@@ -251,78 +254,6 @@ def handle_casting_arguments(
     module=module,
     object=arguments, )
   return sns(arguments=arguments, _cleanup=['cast_arguments'])
-
-
-def get_function_output(
-  arguments: sns | dict | None = None,
-  function: Callable | None = None,
-) -> sns:
-  if isinstance(arguments, sns):
-    arguments = arguments.__dict__
-
-  kind = type(arguments).__name__.lower()
-  handler = 'unpack'
-  if kind not in CONFIG.unpack_kinds:
-    handler = 'pack'
-  handler = f'get_function_output_{handler}_arguments'
-  handler = LOCALS[handler]
-  return handler(function=function, arguments=arguments)
-
-
-def get_function_output_unpack_arguments(
-  function: Callable | None = None,
-  arguments: dict | Iterable | None = None,
-) -> sns:
-  output = None
-
-  try:
-    if isinstance(arguments, dict):
-      output = function(**arguments)
-    elif isinstance(arguments, list | tuple):
-      output = function(*arguments)
-    else:
-      output = function(arguments)
-  except Exception as e:
-    output = e
-  finally:
-    output = independent.get_task_from_event_loop(task=output)
-
-  log = None
-  exception = None
-  if isinstance(output, Exception):
-    log = sns(error=output, level='error')
-    exception = output
-
-  return sns(
-    output=output,
-    log=log,
-    exception=exception, )
-
-
-def get_function_output_pack_arguments(
-  function: Callable | None = None,
-  arguments: Any | None = None,
-  exception: Exception | None = None,
-  output: Any | None = None,
-) -> sns:
-  data = sns(output=output)
-
-  if not exception:
-    return data
-
-  try:
-    data.output = function(arguments)
-  except Exception as e:
-    print(e)
-    data.output = e
-  finally:
-    data.output = independent.get_task_from_event_loop(task=data.output)
-
-  if isinstance(data.output, Exception):
-    data.exception = data.output
-    message = f'{type(data.exception).__name__} occurred calling the function'
-    data.log = sns(level='warning', message=message)
-  return data
 
 
 def handle_casting_output(
