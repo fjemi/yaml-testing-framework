@@ -5,6 +5,118 @@ configurations:
 
 
 tests:
+- function: process_cast_arguments
+  description: Handles casting arguments used to call test function
+  cast_arguments:
+  - method: resources.app.wrapper_get_module
+    field: module
+  tests:
+  - description: Undefined arguments
+    arguments:
+      cast_arguments: null
+      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/app/resources/app.py
+      arguments: arguments
+    checks:
+    - method: checks.app.check_sns
+      expected:
+        _cleanup:
+        - cast_arguments
+        arguments: arguments
+  - description: Cast arguments is empty
+    arguments:
+      cast_arguments: []
+      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/app/resources/app.py
+      arguments: arguments
+    checks:
+    - method: checks.app.check_sns
+      expected:
+        _cleanup:
+        - cast_arguments
+        arguments: arguments
+  - description: Cast string arguments as integer
+    arguments:
+      cast_arguments:
+      - method: __builtins__.int
+      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/app/resources/app.py
+      arguments: '0000'
+    checks:
+    - method: checks.app.check_sns
+      expected:
+        _cleanup:
+        - cast_arguments
+        arguments: 0
+  - description: Cast specific key/value in dictionary
+    arguments:
+      cast_arguments:
+      - method: __builtins__.int
+        field: key
+      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/app/resources/app.py
+      arguments:
+        key: '0000'
+    checks:
+    - method: checks.app.check_sns
+      expected:
+        _cleanup:
+        - cast_arguments
+        arguments:
+          key: 0
+- function: process_cast_output
+  description: Handles casting the output from calling the function to test
+  cast_arguments:
+  - method: resources.app.wrapper_get_module
+    field: module
+  tests:
+  - description: Undefined arguments
+    arguments:
+      cast_output: null
+      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/app/resources/app.py
+      output: null
+    checks:
+    - method: checks.app.check_sns
+      expected:
+        _cleanup:
+        - cast_output
+        output: null
+  - description: Cast output is an empty list
+    arguments:
+      cast_output: []
+      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/app/resources/app.py
+      output: output
+    checks:
+    - method: checks.app.check_sns
+      expected:
+        _cleanup:
+        - cast_output
+        output: output
+  - description: Cast output as a string
+    arguments:
+      cast_output:
+      - method: __builtins__.str
+      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/app/resources/app.py
+      output: 1
+    checks:
+    - method: checks.app.check_sns
+      expected:
+        _cleanup:
+        - cast_output
+        output: '1'
+  - description: Cast specific field in output of type simple name space
+    cast_arguments:
+    - method: sns
+      unpack: true
+      field: output
+    arguments:
+      cast_output:
+      - method: __builtins__.int
+        field: key
+      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/app/resources/app.py
+      output:
+        key: '0000'
+    checks:
+    - method: checks.app.check_sns
+      field: output
+      expected:
+        key: 0
 - function: main
   description: Returns the resulting of casting an object
   tests:

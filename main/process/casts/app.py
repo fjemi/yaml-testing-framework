@@ -22,6 +22,30 @@ LOCALS = locals()
 CONFIG = get_config.main(module=MODULE)
 
 
+def process_cast_arguments(
+  cast_arguments: list | None = None,
+  module: ModuleType | None = None,
+  arguments: dict | None = None,
+) -> sns:
+  temp = main(
+    casts=cast_arguments,
+    module=module,
+    object=arguments, )
+  return sns(arguments=temp, _cleanup=['cast_arguments'])
+
+
+def process_cast_output(
+  cast_output: list | None = None,
+  module: ModuleType | None = None,
+  output: dict | None = None,
+) -> sns:
+  temp = main(
+    casts=cast_output,
+    module=module,
+    object=output, )
+  return sns(output=temp, _cleanup=['cast_output'])
+
+
 def main(
   module: ModuleType | None = None,
   casts: List[dict | sns] | None = None,
