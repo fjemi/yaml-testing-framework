@@ -253,7 +253,7 @@ tests:
           valid_kinds:
           - dict
         output:
-          kind: nonetype
+          kind: dict
           method: check_module
           valid_kinds:
           - module
@@ -1142,7 +1142,7 @@ tests:
           - list
           - dict
         output:
-          kind: nonetype
+          kind: dict
           method: check_thread
           valid_kinds:
           - list
@@ -1179,7 +1179,7 @@ tests:
           - any
           - nonetype
         output:
-          kind: nonetype
+          kind: dict
           method: check_function_output
           valid_kinds:
           - callable

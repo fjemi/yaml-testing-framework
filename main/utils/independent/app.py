@@ -7,7 +7,7 @@ import os
 import time
 from types import ModuleType
 from types import SimpleNamespace as sns
-from typing import Any, Awaitable, Callable, List
+from typing import Any, Callable, List
 
 import yaml as pyyaml
 
@@ -104,9 +104,7 @@ def get_yaml_content(
   return sns(content=content)
 
 
-def get_decorated_function_from_closure(
-  function: Callable | Awaitable,
-) -> Callable | Awaitable:
+def get_decorated_function_from_closure(function: Callable) -> Callable:
   closure = getattr(function, '__closure__', None) or []
   for item in closure:
     contents = item.cell_contents
@@ -124,18 +122,14 @@ def get_decorated_function_from_closure(
   return function
 
 
-def get_decorated_function_from_wrapped(
-  function: Callable | Awaitable,
-) -> Callable | Awaitable:
+def get_decorated_function_from_wrapped(function: Callable) -> Callable:
   wrapped = getattr(function, '__wrapped__', None)
   if not wrapped:
     return function
   return get_decorated_function_from_wrapped(function=wrapped)
 
 
-def get_decorated_function(
-  function: Callable | Awaitable,
-) -> Callable | Awaitable:
+def get_decorated_function(function: Callable) -> Callable:
   wrapped = get_decorated_function_from_wrapped(function=function)
   if wrapped != function:
     return wrapped
@@ -147,7 +141,7 @@ def get_decorated_function(
   return function
 
 
-def get_function_parameters(function: Awaitable | Callable) -> list:
+def get_function_parameters(function: Callable) -> list:
   global PARAMETERS
   function_ = get_decorated_function(function=function)
 

@@ -72,7 +72,7 @@ schema:
     - name: unpack
       type: bool
       description: Cast an packed or unpacked object
-      default: true
+      default: false
     - name: module
       type: ModuleType
       description: Module containing the cast object
