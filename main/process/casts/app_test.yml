@@ -1,10 +1,122 @@
 configurations:
   resources:
   - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/app.py
-  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/casts/app_resource.py
+  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/casts/resource.py
 
 
 tests:
+- function: process_cast_arguments
+  description: Handles casting arguments used to call test function
+  cast_arguments:
+  - method: resource.get_module
+    field: module
+  tests:
+  - description: Undefined arguments
+    arguments:
+      cast_arguments: null
+      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/app/resources/app.py
+      arguments: arguments
+    checks:
+    - method: checks.app.check_sns
+      expected:
+        _cleanup:
+        - cast_arguments
+        arguments: arguments
+  - description: Cast arguments is empty
+    arguments:
+      cast_arguments: []
+      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/app/resources/app.py
+      arguments: arguments
+    checks:
+    - method: checks.app.check_sns
+      expected:
+        _cleanup:
+        - cast_arguments
+        arguments: arguments
+  - description: Cast string arguments as integer
+    arguments:
+      cast_arguments:
+      - method: __builtins__.int
+      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/app/resources/app.py
+      arguments: '0000'
+    checks:
+    - method: checks.app.check_sns
+      expected:
+        _cleanup:
+        - cast_arguments
+        arguments: 0
+  - description: Cast specific key/value in dictionary
+    arguments:
+      cast_arguments:
+      - method: __builtins__.int
+        field: key
+      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/app/resources/app.py
+      arguments:
+        key: '0000'
+    checks:
+    - method: checks.app.check_sns
+      expected:
+        _cleanup:
+        - cast_arguments
+        arguments:
+          key: 0
+- function: process_cast_output
+  description: Handles casting the output from calling the function to test
+  cast_arguments:
+  - method: resource.get_module
+    field: module
+  tests:
+  - description: Undefined arguments
+    arguments:
+      cast_output: null
+      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/app/resources/app.py
+      output: null
+    checks:
+    - method: checks.app.check_sns
+      expected:
+        _cleanup:
+        - cast_output
+        output: null
+  - description: Cast output is an empty list
+    arguments:
+      cast_output: []
+      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/app/resources/app.py
+      output: output
+    checks:
+    - method: checks.app.check_sns
+      expected:
+        _cleanup:
+        - cast_output
+        output: output
+  - description: Cast output as a string
+    arguments:
+      cast_output:
+      - method: __builtins__.str
+      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/app/resources/app.py
+      output: 1
+    checks:
+    - method: checks.app.check_sns
+      expected:
+        _cleanup:
+        - cast_output
+        output: '1'
+  - description: Cast specific field in output of type simple name space
+    cast_arguments:
+    - method: sns
+      unpack: true
+      field: output
+    arguments:
+      cast_output:
+      - method: __builtins__.int
+        field: key
+      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/app/resources/app.py
+      output:
+        key: '0000'
+    checks:
+    - method: checks.app.check_sns
+      field: output
+      expected:
+        key: 0
 - function: main
   description: Returns the resulting of casting an object
   tests:
@@ -14,12 +126,12 @@ tests:
     - method: checks.app.check_equals
       expected: null
   - cast_arguments:
-    - method: app_resource.module_resource
+    - method: resource.get_module
       field: module
     tests:
     - description: Cast string as integer
       arguments:
-        module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/casts/app_resource.py
+        module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/casts/resource.py
         casts:
         - method: __builtins__.int
         object: '1111'
@@ -28,7 +140,7 @@ tests:
         expected: 1111
     - description: Cast dict as simple name space
       arguments:
-        module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/casts/app_resource.py
+        module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/casts/resource.py
         casts:
         - method: cast_dict_as_sns
         object:
@@ -39,7 +151,7 @@ tests:
           key: value
     - description: Cast list into string with unpacking
       arguments:
-        module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/casts/app_resource.py
+        module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/casts/resource.py
         casts:
         - method: cast_list_to_string
           unpack: true
@@ -53,20 +165,20 @@ tests:
     Otherwise, returns the name and a log
   cast_arguments:
   - field: module
-    method: app_resource.module_resource
+    method: resource.module_resource
   tests:
   - description: Undefined data
     arguments: {}
     checks:
-    - method: checks.app.check_equals
-      field: log.__dict__
+    - method: checks.app.check_function
+      field: method
       expected:
-        level: error
-        message: Cast method None not in module None
+        name: do_nothing
+        location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/casts/app.py
   - description: Return the str class from builtins
     arguments:
       method: __builtins__.str
-      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/casts/app_resource.py
+      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/casts/resource.py
     checks:
     - method: checks.app.check_equals
       field: method.__name__
@@ -74,7 +186,7 @@ tests:
   - description: Return the int class from builtins
     arguments:
       method: __builtins__.int
-      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/casts/app_resource.py
+      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/casts/resource.py
     checks:
     - method: checks.app.check_equals
       field: method.__name__
@@ -84,23 +196,23 @@ tests:
       resources directory
     arguments:
       method: pass_through
-      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/casts/app_resource.py
+      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/casts/resource.py
     checks:
     - method: checks.app.check_function
       field: method
       expected:
         name: pass_through
-        location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/casts/app_resource.py
+        location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/casts/resource.py
   - description: Method not in module
     arguments:
       method: does_not_exist
-      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/casts/app_resource.py
+      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/casts/resource.py
     checks:
-    - method: checks.app.check_sns
-      field: log
+    - method: checks.app.check_function
+      field: method
       expected:
-        message: Cast method does_not_exist not in module ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/casts/app_resource.py
-        level: error
+        name: do_nothing
+        location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/casts/app.py
 - function: get_temp_object
   description: Set a temporary object as the object to cast or field within it
   tests:
@@ -169,29 +281,3 @@ tests:
         object:
           key: temp_object
         temp_object: null
-- function: wrapper_get_module
-  description: Returns an existing module at a location or null
-  tests:
-  - description: Module is undefined
-    arguments:
-      module: null
-    checks:
-    - method: checks.app.check_equals
-      expected: null
-  - description: Module is a module
-    cast_arguments:
-    - field: module
-      method: app_resource.module_resource
-    arguments:
-      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/casts/app_resource.py
-    checks:
-    - method: checks.app.check_module
-      expected:
-        location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/casts/app_resource.py
-  - description: Module is a string
-    arguments:
-      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/casts/app_resource.py
-    checks:
-    - method: checks.app.check_module
-      expected:
-        location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/casts/app_resource.py

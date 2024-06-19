@@ -7,7 +7,7 @@ from types import ModuleType
 from types import SimpleNamespace as sns
 from typing import Any, Callable
 
-from main.utils import get_module
+from main.utils.get_module import main as get_module
 
 
 MODULE = __file__
@@ -154,7 +154,7 @@ def casted_object_resource(object: Any | None = None) -> Callable:
 
 def module_resource(module: str | None = None) -> ModuleType | None:
   if isinstance(module, str):
-    module = get_module.main(location=module, pool=False)
+    module = get_module(location=module, pool=False)
     return module
 
 

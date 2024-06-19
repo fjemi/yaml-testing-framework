@@ -150,3 +150,9 @@ tests:
     checks:
     - method: checks.app.check_equals
       expected: module
+  - description: Return the module value when the argument is not a string
+    arguments:
+      module: 1
+    checks:
+    - method: checks.app.check_equals
+      expected: 1

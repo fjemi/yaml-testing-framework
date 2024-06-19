@@ -73,19 +73,19 @@ operations:
   - handle_id
   - handle_module
   - handle_resources
-  - set_environment
-  - set_patches
-  - handle_casting_arguments
-  - set_spies
+  - process_environment
+  - process_patches
+  - process_cast_arguments
+  - process_spies
   - get_function
   - get_function_output
-  - handle_casting_output
+  - process_cast_output
   - process_checks
   run_tests:
-  - nodes
+  - process_nodes
   - run_test_handler
   main:
-  - get_locations
+  - process_locations
   - run_tests
 
 

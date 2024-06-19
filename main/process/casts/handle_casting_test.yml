@@ -2,14 +2,14 @@ configurations:
   resources:
   - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/app.py
   - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/casts/handle_casting_resource.py
-  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/casts/app_resource.py
+  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/casts/resource.py
 
 
 tests:
 - function: main
   description: Return the result of casting an object using a method
   cast_arguments:
-  - method: app_resource.get_method
+  - method: resource.get_method
     field: method
   tests:
   - description: Undefined arguments
@@ -64,7 +64,7 @@ tests:
 - function: cast_dict_unpacked
   description: Unpacks a dictionary into a method
   cast_arguments:
-  - method: app_resource.get_method
+  - method: resource.get_method
     field: method
   tests:
   - description: Undefined arguments
@@ -94,7 +94,7 @@ tests:
 - function: cast_dict_packed
   description: Unpacks a list into a method
   cast_arguments:
-  - method: app_resource.get_method
+  - method: resource.get_method
     field: method
   tests:
   - description: Undefined arguments
@@ -126,7 +126,7 @@ tests:
   description: >
     Calls a casting method with a null object or unpacked empty dict
   cast_arguments:
-  - method: app_resource.get_method
+  - method: resource.get_method
     field: method
   tests:
   - description: Undefined arguments
@@ -145,7 +145,7 @@ tests:
   description: >
     Calls a casting method with a null object or unpacked empty dict
   cast_arguments:
-  - method: app_resource.get_method
+  - method: resource.get_method
     field: method
   tests:
   - description: Undefined arguments
@@ -163,7 +163,7 @@ tests:
 - function: cast_list_unpacked
   description: Unpacks a list into a method
   cast_arguments:
-  - method: app_resource.get_method
+  - method: resource.get_method
     field: method
   tests:
   - description: Undefined arguments
@@ -195,7 +195,7 @@ tests:
 - function: cast_list_packed
   description: Calls a casting method with a packed list
   cast_arguments:
-  - method: app_resource.get_method
+  - method: resource.get_method
     field: method
   tests:
   - description: Undefined arguments
@@ -213,7 +213,7 @@ tests:
 - function: cast_any_packed
   description: Pass packed data to calling method
   cast_arguments:
-  - method: app_resource.get_method
+  - method: resource.get_method
     field: method
   tests:
   - description: Undefined arguments
@@ -238,7 +238,7 @@ tests:
 - function: cast_any_unpacked
   description: Pass packed data to calling method
   cast_arguments:
-  - method: app_resource.get_method
+  - method: resource.get_method
     field: method
   tests:
   - description: Undefined arguments

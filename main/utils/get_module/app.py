@@ -52,11 +52,16 @@ POOL = {}
 
 
 def main(
+  module: ModuleType | str | None = None,
   location: str | None = None,
   name: str | None = None,
   key: str | None = None,
   pool: bool | None = None,
 ) -> ModuleType | None:
+  location = location or module
+  if not isinstance(location, str):
+    return location
+
   data = independent.get_model(schema=CONFIG.schema.Data, data=locals())
   data = independent.process_operations(
     functions=LOCALS,

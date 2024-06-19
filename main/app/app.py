@@ -5,14 +5,22 @@
 import os
 from types import ModuleType
 from types import SimpleNamespace as sns
-from typing import Any, Callable, List
+from typing import Callable, List
 
-from main.process import casts, locations
-from main.process import checks as _checks
-from main.process import environment as _environment
-from main.process import nodes as _nodes
-from main.process import patches as _patches
-from main.process import spies as _spies
+# trunk-ignore(ruff/F401)
+from main.process.casts import process_cast_arguments, process_cast_output
+# trunk-ignore(ruff/F401)
+from main.process.checks import main as process_checks
+# trunk-ignore(ruff/F401)
+from main.process.environment import main as process_environment
+# trunk-ignore(ruff/F401)
+from main.process.locations import main as process_locations
+# trunk-ignore(ruff/F401)
+from main.process.nodes import main as process_nodes
+# trunk-ignore(ruff/F401)
+from main.process.patches import main as process_patches
+# trunk-ignore(ruff/F401)
+from main.process.spies import main as process_spies
 from main.utils import (
   get_config,
   get_module,
@@ -21,7 +29,6 @@ from main.utils import (
   logger,
   set_object,
 )
-
 # trunk-ignore(ruff/F401)
 from main.utils.methods.call import main as get_function_output
 
@@ -54,66 +61,6 @@ def main(
     functions=LOCALS,
     data=data, )
   return getattr(data, 'tests', None) or []
-
-
-def set_spies(
-  spies: list | None,
-  module: ModuleType,
-) -> ModuleType:
-  arguments = locals()
-  return _spies.main(**arguments)
-
-
-def set_patches(
-  patches: list | None,
-  module: ModuleType,
-) -> ModuleType:
-  arguments = locals()
-  return _patches.main(**arguments)
-
-
-def get_locations(
-  project_path: Any | None = None,
-  include_files: str | List[str] | None = None,
-  include_functions: str | List[str] | None = None,
-  exclude_files: str | List[str] | None = None,
-  exclude_functions: str | List[str] | None = None,
-  yaml_suffix: str | None = None,
-  resources: list | str | None = None,
-  logging_enabled: bool | None = None,
-  timestamp: int | float | None = None,
-) -> sns:
-  arguments = locals()
-  return locations.main(**arguments)
-
-
-def set_environment(
-  environment: dict | None,
-  module: ModuleType,
-) -> ModuleType:
-  arguments = locals()
-  return _environment.main(**arguments)
-
-
-def process_checks(
-  checks: list | None,
-  module: ModuleType,
-  output: Any,
-  id: str,
-  id_short: str,
-) -> ModuleType:
-  arguments = locals()
-  return _checks.main(**arguments)
-
-
-def nodes(
-  yaml: str | None = None,
-  module: str | None = None,
-  module_route: str | None = None,
-  resources: str | None = None,
-) -> sns:
-  arguments = locals()
-  return _nodes.main(**arguments)
 
 
 def handle_id(
@@ -236,30 +183,6 @@ def get_function(
   log = sns(exception=RuntimeError(message), level='error', )
 
   return sns(log=log)
-
-
-def handle_casting_arguments(
-  cast_arguments: list | None = None,
-  module: ModuleType | None = None,
-  arguments: dict | None = None,
-) -> sns:
-  arguments = casts.main(
-    casts=cast_arguments,
-    module=module,
-    object=arguments, )
-  return sns(arguments=arguments, _cleanup=['cast_arguments'])
-
-
-def handle_casting_output(
-  cast_output: list | None = None,
-  module: ModuleType | None = None,
-  output: dict | None = None,
-) -> sns:
-  output = casts.main(
-    casts=cast_output,
-    module=module,
-    object=output, )
-  return sns(output=output, _cleanup=['cast_output'])
 
 
 def run_test_for_function(test: sns | None = None) -> sns:

@@ -52,10 +52,12 @@ empty_values:
 
 operations:
   main:
-  - wrapper_get_module
+  - pre_processing
+  - process_casts
+  process_casts:
   - get_cast_method
   - get_temp_object
-  - handle_casting_wrapper
+  - handle_casting
   - reset_object
 
 
@@ -70,7 +72,7 @@ schema:
     - name: unpack
       type: bool
       description: Cast an packed or unpacked object
-      default: true
+      default: false
     - name: module
       type: ModuleType
       description: Module containing the cast object

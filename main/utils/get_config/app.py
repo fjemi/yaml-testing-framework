@@ -6,7 +6,7 @@ import inspect
 import os
 from types import SimpleNamespace as sns
 
-from main.utils import get_object, independent
+from main.utils import get_object, independent, set_object
 from main.utils import schema as _schema
 
 
@@ -78,10 +78,6 @@ def format_config_location(
   return sns(config=config, log=log)
 
 
-def get_yaml_content_wrapper(location: str | None = None) -> sns:
-  return independent.get_yaml_content(location=location)
-
-
 def get_content_from_files(
   environment: str | None = None,
   schema: str | None = None,
@@ -89,19 +85,13 @@ def get_content_from_files(
   operations: str | None = None,
 ) -> sns:
   locals_ = locals()
-  data = sns(content=sns())
-  message = []
+  content = {}
 
   for name, location in locals_.items():
-    content = get_yaml_content_wrapper(location=location)
-    setattr(data.content, name, content.content)
-    if getattr(content, 'log', None):
-      message.append({name: content.log})
+    content[name] = independent.get_yaml_content(location=location).content
 
-  if message:
-    data.log = sns(message=message, level='warning')
-
-  return data
+  content = sns(**content)
+  return sns(content=content)
 
 
 def format_content_keys(content: sns | None = None) -> sns:

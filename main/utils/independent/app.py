@@ -7,7 +7,7 @@ import os
 import time
 from types import ModuleType
 from types import SimpleNamespace as sns
-from typing import Any, Awaitable, Callable, List
+from typing import Any, Callable, List
 
 import yaml as pyyaml
 
@@ -77,30 +77,34 @@ def get_yaml_loader() -> ModuleType:
   return LOADER
 
 
-def get_yaml_content(location: str | None = None) -> sns:
+def get_yaml_content(
+  location: str | None = None,
+  content: dict | None = None,
+) -> sns:
+  if content:
+    return sns()
+
+  content = {}
   location = str(location)
-  data = sns(content={})
+  if not os.path.isfile(location):
+    log = sns(message=f'No YAML file at {location}', level='warning')
+    return sns(log=log, content=content)
 
-  if os.path.isfile(location):
-    with open(
-        file=location,
-        encoding='utf-8',
-        mode='r',
-    ) as file:
-      data.content = file.read()
-      data.content = os.path.expandvars(data.content)
-      loader = get_yaml_loader()
-      # trunk-ignore(bandit/B506)
-      data.content = pyyaml.load(data.content, Loader=loader)
-  else:
-    data.log = f'No YAML file at {location}'
+  with open(
+      file=location,
+      encoding='utf-8',
+      mode='r',
+  ) as file:
+    content = file.read()
 
-  return data
+  content = os.path.expandvars(content)
+  loader = get_yaml_loader()
+  # trunk-ignore(bandit/B506)
+  content = pyyaml.load(content, Loader=loader)
+  return sns(content=content)
 
 
-def get_decorated_function_from_closure(
-  function: Callable | Awaitable,
-) -> Callable | Awaitable:
+def get_decorated_function_from_closure(function: Callable) -> Callable:
   closure = getattr(function, '__closure__', None) or []
   for item in closure:
     contents = item.cell_contents
@@ -118,18 +122,14 @@ def get_decorated_function_from_closure(
   return function
 
 
-def get_decorated_function_from_wrapped(
-  function: Callable | Awaitable,
-) -> Callable | Awaitable:
+def get_decorated_function_from_wrapped(function: Callable) -> Callable:
   wrapped = getattr(function, '__wrapped__', None)
   if not wrapped:
     return function
   return get_decorated_function_from_wrapped(function=wrapped)
 
 
-def get_decorated_function(
-  function: Callable | Awaitable,
-) -> Callable | Awaitable:
+def get_decorated_function(function: Callable) -> Callable:
   wrapped = get_decorated_function_from_wrapped(function=function)
   if wrapped != function:
     return wrapped
@@ -141,7 +141,7 @@ def get_decorated_function(
   return function
 
 
-def get_function_parameters(function: Awaitable | Callable) -> list:
+def get_function_parameters(function: Callable) -> list:
   global PARAMETERS
   function_ = get_decorated_function(function=function)
 

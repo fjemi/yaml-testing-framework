@@ -5,6 +5,8 @@
 from types import SimpleNamespace as sns
 
 from main.utils import get_object, independent
+# trunk-ignore(ruff/F401)
+from main.utils.independent import format_config_schema, get_yaml_content
 
 
 LOCALS = locals()
@@ -16,8 +18,8 @@ CONFIG = '''
   operations:
     main:
     - get_yaml_location
-    - get_yaml_content_wrapper
-    - wrapper_format_config_schema
+    - get_yaml_content
+    - format_config_schema
   extensions:
     module:
     - .py
@@ -44,14 +46,6 @@ def main(
     default={}, )
 
 
-def wrapper_format_config_schema(
-  content: dict | None = None,
-  location: str | None = None,
-) -> sns:
-  arguments = locals()
-  return independent.format_config_schema(**arguments)
-
-
 def get_yaml_location(
   module: str | None = None,
   yaml: str | None = None,
@@ -69,16 +63,6 @@ def get_yaml_location(
     extensions=CONFIG.extensions, )
 
   return sns(location=location)
-
-
-def get_yaml_content_wrapper(
-  content: dict | None = None,
-  location: str | None = None,
-) -> sns:
-  if content:
-    return sns()
-
-  return independent.get_yaml_content(location=location)
 
 
 MODELS = main()
