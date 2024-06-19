@@ -8,7 +8,8 @@ from typing import Any, Callable, List
 
 import yaml
 
-from main.process import casts
+# trunk-ignore(ruff/F401)
+from main.process.casts import process_cast_output
 from main.utils import get_config, get_object, independent, schema, set_object
 
 
@@ -126,18 +127,6 @@ def reset_output_value(
     output=output,
     _cleanup=['field'],
     log=log, )
-
-
-def cast_output(
-  output: Any | None = None,
-  cast_output: list | None = None,
-  module: ModuleType | None = None,
-) -> sns:
-  output = casts.main(
-    module=module,
-    casts=cast_output,
-    object=output, )
-  return sns(output=output, _cleanup=['cast_output'])
 
 
 def get_check_result(

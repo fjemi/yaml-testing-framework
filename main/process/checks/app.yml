@@ -74,6 +74,6 @@ operations:
   main:
   - get_check_method
   - reset_output_value
-  - cast_output
+  - process_cast_output
   - get_check_result
   - handle_failed_check

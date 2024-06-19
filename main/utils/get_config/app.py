@@ -78,10 +78,6 @@ def format_config_location(
   return sns(config=config, log=log)
 
 
-def get_yaml_content_wrapper(location: str | None = None) -> sns:
-  return independent.get_yaml_content(location=location)
-
-
 def get_content_from_files(
   environment: str | None = None,
   schema: str | None = None,
@@ -93,7 +89,7 @@ def get_content_from_files(
   message = []
 
   for name, location in locals_.items():
-    content = get_yaml_content_wrapper(location=location)
+    content = independent.get_yaml_content(location=location)
     setattr(data.content, name, content.content)
     if getattr(content, 'log', None):
       message.append({name: content.log})
