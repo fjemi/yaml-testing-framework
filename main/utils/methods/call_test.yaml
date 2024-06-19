@@ -178,7 +178,9 @@ tests:
         output: 0
         exception: null
 - function: get_handlers
-  description:
+  description: >
+    Returns handlers or methods used to call a function with packed or unpacked
+    arguments
   tests:
   - description: Arguments is not a mapping or list
     arguments:
@@ -294,8 +296,7 @@ tests:
   - field: method
     method: resource.get_method
   tests:
-  - description:
-    arguments:
+  - arguments:
       method: greetings
     checks:
     - method: checks.app.check_equals
