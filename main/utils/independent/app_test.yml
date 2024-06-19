@@ -115,6 +115,13 @@ tests:
       field: content
       expected:
         hello: world
+  - description: Content is defined
+    arguments:
+      content: content
+    checks:
+    - method: checks.app.check_equals
+      field: __dict__
+      expected: {}
 - function: format_output
   description: Formats output from performing an operation as a dictionary
   tests:

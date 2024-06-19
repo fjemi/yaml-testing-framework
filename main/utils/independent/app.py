@@ -77,7 +77,12 @@ def get_yaml_loader() -> ModuleType:
   return LOADER
 
 
-def get_yaml_content(location: str | None = None) -> sns:
+def get_yaml_content(
+  location: str | None = None,
+  content: dict | None = None,
+) -> sns:
+  if content:
+    return sns()
   location = str(location)
   data = sns(content={})
 
