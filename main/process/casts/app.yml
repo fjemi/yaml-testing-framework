@@ -52,7 +52,9 @@ empty_values:
 
 operations:
   main:
-  - get_module
+  - pre_processing
+  - process_casts
+  process_casts:
   - get_cast_method
   - get_temp_object
   - handle_casting

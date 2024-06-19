@@ -83,24 +83,25 @@ def get_yaml_content(
 ) -> sns:
   if content:
     return sns()
+
+  content = {}
   location = str(location)
-  data = sns(content={})
+  if not os.path.isfile(location):
+    log = sns(message=f'No YAML file at {location}', level='warning')
+    return sns(log=log, content=content)
 
-  if os.path.isfile(location):
-    with open(
-        file=location,
-        encoding='utf-8',
-        mode='r',
-    ) as file:
-      data.content = file.read()
-      data.content = os.path.expandvars(data.content)
-      loader = get_yaml_loader()
-      # trunk-ignore(bandit/B506)
-      data.content = pyyaml.load(data.content, Loader=loader)
-  else:
-    data.log = f'No YAML file at {location}'
+  with open(
+      file=location,
+      encoding='utf-8',
+      mode='r',
+  ) as file:
+    content = file.read()
 
-  return data
+  content = os.path.expandvars(content)
+  loader = get_yaml_loader()
+  # trunk-ignore(bandit/B506)
+  content = pyyaml.load(content, Loader=loader)
+  return sns(content=content)
 
 
 def get_decorated_function_from_closure(

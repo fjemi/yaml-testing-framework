@@ -49,41 +49,49 @@ def process_cast_output(
 
 def main(
   module: ModuleType | None = None,
-  casts: List[dict | sns] | None = None,
+  casts: list | None = None,
   object: Any | None = None,
 ) -> sns:
-  object_ = object
+  data = locals()
+  data = independent.process_operations(
+    operations=CONFIG.operations.main,
+    functions=LOCALS,
+    data=data, )
+  return get_object.main(parent=data, route='object')
+
+
+def pre_processing(
+  casts: list | None = None,
+  module: ModuleType | str | None = None,
+) -> sns:
   casts = casts or []
+  module = module if not isinstance(module, str) else get_module.main(module=module)
+  locals_ = locals()
+  return sns(**locals_)
+
+
+def process_casts(
+  casts: list | None = None,
+  module: ModuleType | None = None,
+  object: Any | None = None,
+) -> sns:
+  locals_ = locals()
 
   for cast in casts:
-    data = sns(**cast)
-    data.module = wrapper_get_module(module=module)
-    data.object = object_
+    cast.update(locals_)
+    data = independent.get_model(schema=CONFIG.schema.Cast, data=cast)
     data = independent.process_operations(
-      operations=CONFIG.operations.main,
+      operations=CONFIG.operations.process_casts,
       functions=LOCALS,
       data=data, )
-    object_ = data.object
+    data = get_object.main(parent=data, route='object')
+    locals_.update(dict(object=data))
 
-  return object_
-
-
-def handle_casting_wrapper(
-  temp_object: Any,
-  method: Any,
-  unpack: bool,
-) -> sns:
-  return handle_casting.main(
-    temp_object=temp_object,
-    method=method,
-    unpack=unpack, )
+  return sns(object=get_object.main(parent=locals_, route='object'))
 
 
-def wrapper_get_module(module: ModuleType | str) -> ModuleType | None:
-  if isinstance(module, ModuleType):
-    return module
-  if isinstance(module, str):
-    return get_module.main(location=module, pool=False)
+def do_nothing(*args, **kwargs) -> None:
+  _ = args, kwargs
 
 
 def get_cast_method(
@@ -91,28 +99,24 @@ def get_cast_method(
   method: str | None = None,
 ) -> sns:
   name = str(method)
-  method = get_object.main(parent=module, route=name)
-  if isinstance(method, Callable):
-    return sns(method=method)
-
-  method = get_object.main(parent=module, route='pass_through')
-  module = getattr(module, '__file__', None)
-  log = sns(
-    level='error',
-    message=f'Cast method {name} not in module {module}', )
-
-  return sns(method=method, log=log)
+  method = get_object.main(
+    parent=module,
+    route=name,
+    default=do_nothing, )
+  return sns(method=method)
 
 
 def get_temp_object(
   object: Any | None = None,
   field: str | None = None
 ) -> sns:
-  data = sns(temp_object=object)
-  data.temp_object = get_object.main(parent=data.temp_object, route=field)
-  if data.temp_object is None:
-    data.log = f'Field {field} not in object of type {type(object).__name__}'
-  return data
+  temp = object
+  if field:
+    temp = get_object.main(
+      parent=temp,
+      route=field,
+      default=temp, )
+  return sns(temp_object=temp)
 
 
 def reset_object(
@@ -120,20 +124,19 @@ def reset_object(
   object: Any | None = None,
   field: str | None = None,
 ) -> sns:
-  if not field:
-    object_ = temp_object
-  elif field:
+  object_ = temp_object
+  if field:
     object_ = set_object.main(
       parent=object,
       value=temp_object,
       route=field, )
-  return sns(object=object_, temp_object=None)
+  return sns(object=object_)
 
 
 def examples() -> None:
   from main.utils import invoke_testing_method
 
-  invoke_testing_method.main()
+  invoke_testing_method.main(location='.checks')
 
 
 if __name__ == '__main__':
