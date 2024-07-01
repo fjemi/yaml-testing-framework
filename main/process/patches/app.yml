@@ -20,6 +20,18 @@ empty_values:
 
 
 schema:
+  Entry:
+    description: Store data passed into the `main` function of the module
+    fields:
+    - name: patches
+      description: list of patches to process
+      type: list
+      default: null
+    - &MODULE
+      name: module
+      description: Module containing the object to patch
+      type:  ModuleType
+      default: null
   Patch:
     description: Data needed to perform a patch operation
     fields:
@@ -50,8 +62,9 @@ schema:
       description: The object used as a patch
       type: Any
       default: null
-    - name: module
-      description: Module containing the object to patch
+    - *MODULE
+    - name: resource
+      description: Module containing the methods or objects to use when patching
       type:  ModuleType
       default: null
     - name: do_nothing
