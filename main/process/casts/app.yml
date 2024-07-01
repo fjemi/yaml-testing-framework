@@ -52,12 +52,12 @@ empty_values:
 
 operations:
   main:
-  - pre_processing
   - process_casts
   process_casts:
+  - format_data
   - get_cast_method
   - get_temp_object
-  - handle_casting
+  - handle_casting.main
   - reset_object
 
 

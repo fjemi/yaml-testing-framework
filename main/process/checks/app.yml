@@ -88,11 +88,16 @@ schema:
 
 operations:
   main:
+  - process_checks
+  process_checks:
+  - pre_processing
+  - get_module.main
   - get_check_method
   - reset_output_value
   - process_cast_output
   - get_check_result
   - handle_failed_check
+  - post_processing
 
 
 preferred_fields:

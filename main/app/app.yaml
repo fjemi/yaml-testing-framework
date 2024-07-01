@@ -71,21 +71,21 @@ test_kinds:
 operations:
   run_test_for_functions:
   - handle_id
-  - handle_module
+  - get_module.main
   - handle_resources
-  - process_environment
-  - process_patches
-  - process_cast_arguments
-  - process_spies
+  - environment.main
+  - patches.main
+  - casts.process_cast_arguments
+  - spies.main
   - get_function
-  - get_function_output
-  - process_cast_output
-  - process_checks
+  - methods.call.main
+  - casts.process_cast_output
+  - checks.main
   run_tests:
-  - process_nodes
+  - nodes.main
   - run_test_handler
   main:
-  - process_locations
+  - locations.main
   - run_tests
 
 

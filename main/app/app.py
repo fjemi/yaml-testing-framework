@@ -7,20 +7,15 @@ from types import ModuleType
 from types import SimpleNamespace as sns
 from typing import Callable, List
 
-# trunk-ignore(ruff/F401)
-from main.process.casts import process_cast_arguments, process_cast_output
-# trunk-ignore(ruff/F401)
-from main.process.checks import main as process_checks
-# trunk-ignore(ruff/F401)
-from main.process.environment import main as process_environment
-# trunk-ignore(ruff/F401)
-from main.process.locations import main as process_locations
-# trunk-ignore(ruff/F401)
-from main.process.nodes import main as process_nodes
-# trunk-ignore(ruff/F401)
-from main.process.patches import main as process_patches
-# trunk-ignore(ruff/F401)
-from main.process.spies import main as process_spies
+from main.process import (
+  spies,
+  casts,
+  checks,
+  patches,
+  environment,
+  locations,
+  nodes,
+)
 from main.utils import (
   get_config,
   get_module,
@@ -28,10 +23,8 @@ from main.utils import (
   independent,
   logger,
   set_object,
+  methods,
 )
-# trunk-ignore(ruff/F401)
-from main.utils.methods.call import main as get_function_output
-
 
 MODULE = __file__
 CONFIG = get_config.main()
@@ -84,25 +77,6 @@ def handle_id(
     id=id_,
     id_short=id_short,
     log=log, )
-
-
-def handle_module(
-  module: str | None = None,
-  module_route: List[str] | str | None = None,
-  key: str | None = None,
-) -> sns:
-  temp = get_module.main(
-    location=module,
-    name=module_route,
-    key=key,
-    pool=False, )
-  if isinstance(temp, ModuleType):
-    return sns(module=temp)
-
-  log = sns(
-    message=f'No module at location {module}',
-    level='warning', )
-  return sns(log=log)
 
 
 def get_resource_route(

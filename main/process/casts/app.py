@@ -6,8 +6,7 @@ from types import ModuleType
 from types import SimpleNamespace as sns
 from typing import Any, Callable, List
 
-# trunk-ignore(ruff/F401)
-from main.process.casts.handle_casting import main as handle_casting
+from main.process.casts import handle_casting
 from main.utils import (
   get_config,
   get_module,

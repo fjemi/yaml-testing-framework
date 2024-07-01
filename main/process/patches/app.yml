@@ -5,6 +5,8 @@ environment:
 
 operations:
   main:
+  - process_patches
+  process_patches:
   - pre_processing
   - get_patch_method
   - patch_module
