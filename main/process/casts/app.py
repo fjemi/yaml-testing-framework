@@ -32,7 +32,7 @@ def process_cast_arguments(
     casts=cast_arguments,
     module=module,
     object=arguments, )
-  return sns(arguments=temp, _cleanup=['cast_arguments'])
+  return sns(arguments=temp)
 
 
 def process_cast_output(
@@ -44,7 +44,7 @@ def process_cast_output(
     casts=cast_output,
     module=module,
     object=output, )
-  return sns(output=temp, _cleanup=['cast_output'])
+  return sns(output=temp)
 
 
 def main(
@@ -52,22 +52,12 @@ def main(
   casts: list | None = None,
   object: Any | None = None,
 ) -> sns:
-  data = locals()
+  data = independent.get_model(schema=CONFIG.schema.Main, data=locals())
   data = independent.process_operations(
     operations=CONFIG.operations.main,
     functions=LOCALS,
     data=data, )
-  return get_object.main(parent=data, route='object')
-
-
-def pre_processing(
-  casts: list | None = None,
-  module: ModuleType | str | None = None,
-) -> sns:
-  casts = casts or []
-  module = module if not isinstance(module, str) else get_module.main(module=module)
-  locals_ = locals()
-  return sns(**locals_)
+  return data.result
 
 
 def process_casts(
@@ -75,19 +65,29 @@ def process_casts(
   module: ModuleType | None = None,
   object: Any | None = None,
 ) -> sns:
-  locals_ = locals()
-
-  for cast in casts:
-    cast.update(locals_)
-    data = independent.get_model(schema=CONFIG.schema.Cast, data=cast)
+  casts = casts or []
+  data = sns(module=module, object=object)
+  
+  for item in casts:
+    data.item = item
     data = independent.process_operations(
       operations=CONFIG.operations.process_casts,
       functions=LOCALS,
       data=data, )
-    data = get_object.main(parent=data, route='object')
-    locals_.update(dict(object=data))
 
-  return sns(object=get_object.main(parent=locals_, route='object'))
+  return sns(result=data.object)
+
+
+def format_data(
+  module: ModuleType | str | None = None,
+  object: Any | None = None,
+  item: dict | None = None,
+) -> sns:
+  cast = independent.get_model(schema=CONFIG.schema.Cast, data=item)
+  cast.object = object
+  cast.module = cast.module or module
+  cast.module = get_module.main(module=cast.module)
+  return cast
 
 
 def do_nothing(*args, **kwargs) -> None:

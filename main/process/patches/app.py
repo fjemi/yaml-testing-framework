@@ -4,7 +4,7 @@
 
 from types import ModuleType
 from types import SimpleNamespace as sns
-from typing import Any, Callable, List
+from typing import Any, Callable
 
 from main.utils import get_config, get_object, independent, set_object
 
@@ -17,7 +17,19 @@ SIDE_EFFECTS = {}
 
 
 def main(
-  patches: List[dict | sns] | None = None,
+  patches: list | None = None,
+  module: ModuleType | None = None,
+) -> sns:
+  data = independent.get_model(schema=CONFIG.schema.Entry, data=locals())
+  data = independent.process_operations(
+    operations=CONFIG.operations.main,
+    functions=LOCALS,
+    data=data, )
+  return data.result
+
+
+def process_patches(
+  patches: list | None = None,
   module: ModuleType | None = None,
 ) -> sns:
   patches = patches or []
@@ -30,7 +42,8 @@ def main(
       data=data, )
     module = data.module
 
-  return sns(_cleanup=['patches'], module=module)
+  result = sns(module=module)
+  return sns(result=result)
 
 
 def pre_processing(
@@ -39,7 +52,7 @@ def pre_processing(
 ) -> sns:
   patch = independent.get_model(
     schema=CONFIG.schema.Patch, data=patch, )
-  patch.module = module
+  patch.resource = patch.resource or patch.module
   patch.timestamp = independent.get_timestamp()
 
   patch.route = str(patch.route)
@@ -54,15 +67,16 @@ def get_patch_method(
   method: str | None = None,
   value: Any | None = None,
   timestamp: int | None = None,
-  module: ModuleType | None = None,
+  resource: ModuleType | None = None,
   callable_route: str | None = None,
   original: Any | None = None,
 ) -> sns:
+  resource = get_module.main(module=resource)
   handler = f'get_{method}_patch_method'
   handler = LOCALS.get(handler, None) or do_nothing
   value = handler(
     value=value,
-    module=module,
+    resource=resource,
     callable_route=callable_route,
     original=original,
     timestamp=timestamp, )
@@ -74,25 +88,18 @@ def get_patch_method(
   return sns(log=log, value=value)
 
 
-def do_nothing(
-  value: Any | None = None,
-  callable_route: str | None = None,
-  timestamp: int | None = None,
-  module: ModuleType | None = None,
-  original: Any | None = None,
-) -> Any:
-  _ = value, timestamp, callable_route, module, original
-  return original
+def do_nothing(*args, **kwargs) -> None:
+  _ = args, kwargs
 
 
 def get_value_patch_method(
   value: Any | None = None,
   callable_route: str | None = None,
   timestamp: int | None = None,
-  module: ModuleType | None = None,
+  resource: ModuleType | None = None,
   original: Any | None = None,
 ) -> Any:
-  _ = timestamp, callable_route, module
+  _ = timestamp, callable_route, resource
 
   def patch() -> Any:
     return value
@@ -104,7 +111,7 @@ def get_callable_patch_method(
   value: Any | None = None,
   callable_route: str | None = None,
   timestamp: int | None = None,
-  module: ModuleType | None = None,
+  resource: ModuleType | None = None,
   original: Any | None = None,
 ) -> Callable:
   _ = timestamp
@@ -115,11 +122,11 @@ def get_callable_patch_method(
     return value
 
   temp = get_object.main(
-    parent=module,
+    parent=resource,
     route=callable_route,
     default=patch, )
   temp.__wrapped__ = original
-  temp._method = 'callable'
+  temp.__method__ = 'callable'
 
   return temp
 
@@ -128,10 +135,10 @@ def get_side_effect_list_patch_method(
   value: list | None = None,
   callable_route: str | None = None,
   timestamp: int | None = None,
-  module: ModuleType | None = None,
+  resource: ModuleType | None = None,
   original: Any | None = None,
 ) -> Callable:
-  _ = callable_route, module
+  _ = callable_route, resource
 
   global SIDE_EFFECTS
 
@@ -150,7 +157,7 @@ def get_side_effect_list_patch_method(
     return SIDE_EFFECTS[timestamp].value[SIDE_EFFECTS[timestamp].count - 1]
 
   patch.__wrapped__ = original
-  patch._method = 'side_effect_list'
+  patch.__method__ = 'side_effect_list'
 
   return patch
 
@@ -159,10 +166,10 @@ def get_side_effect_dict_patch_method(
   value: Any | None = None,
   callable_route: str | None = None,
   timestamp: int | None = None,
-  module: ModuleType | None = None,
+  resource: ModuleType | None = None,
   original: Any | None = None,
 ) -> Callable:
-  _ = callable_route, timestamp, module
+  _ = callable_route, timestamp, resource
 
   def patch(**kwargs) -> Any:
     store = {}
@@ -172,7 +179,7 @@ def get_side_effect_dict_patch_method(
     return store
 
   patch.__wrapped__ = original
-  patch._method = 'side_effect_dict'
+  patch.__method__ = 'side_effect_dict'
 
   return patch
 

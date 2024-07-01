@@ -93,3 +93,7 @@ operations:
   - process_cast_output
   - get_check_result
   - handle_failed_check
+
+
+preferred_fields:
+- module
