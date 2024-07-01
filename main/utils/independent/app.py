@@ -337,7 +337,7 @@ def process_operations(
   store = sns(**locals())
 
   for name in store.operations:
-    store.function = store.functions[name]
+    store.function = get_object.main(parent=store.functions, route=name)
     store.arguments = get_function_arguments(
       function=store.function,
       data=store.data, )
