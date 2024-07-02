@@ -121,9 +121,7 @@ def handle_resources(
       ignored.append(location)
       continue
 
-    resource = get_module.main(
-      location=location,
-      pool=False, )
+    resource = get_module.main(location=location).module
     if not isinstance(resource, ModuleType):
       ignored.append(location)
       continue

@@ -11,4 +11,4 @@ MODULE = __file__
 
 
 def wrapper_get_module(module: str | None = None) -> types.ModuleType:
-  return get_module.main(location=module, pool=False)
+  return get_module.main(location=module).module

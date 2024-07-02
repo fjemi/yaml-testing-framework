@@ -85,7 +85,7 @@ def format_data(
   cast = independent.get_model(schema=CONFIG.schema.Cast, data=item)
   cast.object = object
   cast.module = cast.module or module
-  cast.module = get_module.main(module=cast.module)
+  cast.module = get_module.main(module=cast.module, default=cast.module).module
   return cast
 
 

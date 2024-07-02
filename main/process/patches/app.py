@@ -71,7 +71,7 @@ def get_patch_method(
   callable_route: str | None = None,
   original: Any | None = None,
 ) -> sns:
-  resource = get_module.main(module=resource)
+  resource = get_module.main(module=resource).module
   handler = f'get_{method}_patch_method'
   handler = LOCALS.get(handler, None) or do_nothing
   value = handler(

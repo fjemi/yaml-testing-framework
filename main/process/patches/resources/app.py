@@ -48,7 +48,7 @@ GET_PARENT_RESOURCES = DataClass()
 
 
 def wrapper_get_module(module: str | None = None) -> ModuleType:
-  return get_module.main(location=module, pool=False)
+  return get_module.main(location=module).module
 
 
 def get_input(data: str | None = None) -> str:

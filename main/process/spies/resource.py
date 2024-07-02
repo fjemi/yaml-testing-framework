@@ -12,7 +12,7 @@ LOCALS = locals()
 
 
 def wrapper_get_module(module: str) -> ModuleType:
-  module = get_module.main(location=module, pool=False)
+  module = get_module.main(location=module).module
   if isinstance(module, ModuleType):
     module.SPIES = getattr(module, 'SPIES', None) or {}
   return module

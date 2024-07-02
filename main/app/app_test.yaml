@@ -71,35 +71,6 @@ tests:
         id: ' module_route.function - key - description_b '
         id_short: module_route.function
         log: Generated test id for module_route.function
-- function: handle_module
-  description: Returns the module at a specified location
-  tests:
-  - description: Undefined arguments
-    arguments: {}
-    checks:
-    - method: checks.app.check_sns
-      field: log
-      expected:
-        message: No module at location None
-        level: warning
-  - description: Module does not exist at location
-    arguments:
-      module: module_location_does_not_exist
-    checks:
-    - method: checks.app.check_sns
-      field: log
-      expected:
-        message: No module at location module_location_does_not_exist
-        level: warning
-  - description: Module exists at the location
-    arguments:
-      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/app/resources/app.py
-      module_route: .main.resources.app
-    checks:
-    - method: checks.app.check_module
-      field: module
-      expected:
-        location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/app/resources/app.py
 - function: get_resource_route
   description: >
     Get the route for a resource in a module based on resource and module's
