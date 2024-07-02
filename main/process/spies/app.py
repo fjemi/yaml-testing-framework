@@ -58,7 +58,7 @@ def spy_on_method(
     return original(*args, **kwargs)
 
   spy.__wrapped__ = original
-  spy._method = 'spy'
+  spy.__method__ = 'spy'
 
   module.SPIES[route] = sns(called=False, called_with=None)
   set_object.main(parent=module, value=spy, route=route)

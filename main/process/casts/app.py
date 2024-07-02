@@ -68,7 +68,10 @@ def process_casts(
   data = sns(module=module, object=object)
   
   for item in casts:
-    data.item = item
+    data = format_data(
+      object=object,
+      item=item,
+      module=module, )
     data = independent.process_operations(
       operations=CONFIG.operations.process_casts,
       functions=LOCALS,
@@ -135,7 +138,7 @@ def reset_object(
 def examples() -> None:
   from main.utils import invoke_testing_method
 
-  invoke_testing_method.main(location='.checks')
+  invoke_testing_method.main()
 
 
 if __name__ == '__main__':
