@@ -1,7 +1,8 @@
-configurations:
-  resources:
-  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/app.py
-  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/set_object/resource.py
+resources:
+- &CHECKS
+  module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/app.py
+- &RESOURCE
+  module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/set_object/resource.py
 
 
 tests:
@@ -13,7 +14,8 @@ tests:
   - description: Undefined arguments
     arguments: {}
     checks:
-    - method: checks.app.check_equals
+    - method: check_equals
+      << : *CHECKS
       expected: null
   - description: Route is an empty string
     arguments:
@@ -21,7 +23,8 @@ tests:
       value: null
       route: ''
     checks:
-    - method: checks.app.check_equals
+    - method: check_equals
+      << : *CHECKS
       expected: parent
   - description: Route to a value in a dict
     arguments:
@@ -30,7 +33,8 @@ tests:
       value: new_value
       route: key
     checks:
-    - method: checks.app.check_equals
+    - method: check_equals
+      << : *CHECKS
       expected:
         key: new_value
   - description: Route to a non-existing value in a nested dick
@@ -41,7 +45,8 @@ tests:
       value: value_b
       route: key.key_b
     checks:
-    - method: checks.app.check_equals
+    - method: check_equals
+      << : *CHECKS
       expected:
         key:
           key_a: value_a
@@ -52,7 +57,8 @@ tests:
       value: value
       route: field
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       expected:
         field: value
 - function: get_route_values
@@ -60,7 +66,8 @@ tests:
     Returns a list of simple name space objects containing the name and value of
     child objects along a dot-delimited route
   cast_output:
-  - method: resource.list_sns_to_list_dict
+  - method: list_sns_to_list_dict
+    << : *RESOURCE
     field: objects
   tests:
   - description: Undefined arguments
@@ -69,7 +76,8 @@ tests:
       route: null
       value: null
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       expected:
         route: null
         objects:
@@ -81,7 +89,8 @@ tests:
       route: ''
       value: value
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       expected:
         route: ''
         objects:
@@ -95,7 +104,8 @@ tests:
       route: key_a.key_b
       value: value
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       expected:
         route:
         - key_a
@@ -117,7 +127,8 @@ tests:
       route: field_a.field_b.field_c
       value: value
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       expected:
         route:
         - field_a
@@ -133,110 +144,6 @@ tests:
           value: {}
         - name: field_c
           value: value
-- function: set_child_in_parent
-  cast_arguments:
-  - method: resource.set_child_in_parent_cast_arguments
-  description: Sets the value of a a child object inside of a parent object
-  tests:
-  - description: Child are parent is undefined
-    arguments: {}
-    checks:
-    - method: checks.app.check_exception
-      expected: AttributeError
-  - description: Set child when parent is dict
-    arguments:
-      parent:
-        value: {}
-      child:
-        value: value
-        name: key
-    checks:
-    - method: checks.app.check_sns
-      expected:
-        name: null
-        value:
-          key: value
-  - description: Set child when parent is none
-    arguments:
-      parent:
-        value: null
-      child:
-        value: value
-        name: name
-    checks:
-    - method: checks.app.check_sns
-      expected:
-        name: null
-    - method: checks.app.check_sns
-      field: value
-      expected:
-        name: value
-  - description: Set child when parent is a simple name space
-    cast_arguments:
-    - field: parent.value
-      method: resource.dict_to_sns
-    arguments:
-      parent:
-        value:
-          field_a: value_a
-      child:
-        value: value_b
-        name: field_b
-    checks:
-    - method: checks.app.check_sns
-      expected:
-        name: null
-    - method: checks.app.check_equals
-      field: value
-      expected:
-        field_a: value_a
-        field_b: value_b
-- function: reset_route_values
-  description: >
-    Sets child values inside of parents along the route to the child from top
-    to bottom
-  cast_arguments:
-  - field: objects
-    method: resource.list_dict_to_list_sns
-  tests:
-  - description: Undefined arguments
-    arguments:
-      objects: null
-    checks:
-    - method: checks.app.check_exception
-      expected: TypeError
-  - description: Set child value in a nested dictionary
-    arguments:
-      objects:
-      - name: root
-        value:
-          key_a:
-            key_0 : value_0
-      - name: key_a
-        value:
-          key_0 : value_0
-      - name: key_0
-        value: value_0
-    checks:
-    - method: checks.app.check_equals
-      expected:
-        key_a:
-          key_0 : value_0
-  - description: Set child value in a simple name space
-    cast_arguments:
-    - method: resource.reset_route_values_cast_arguments
-      field: objects.0|1
-    arguments:
-      objects:
-      - name: root
-        value:
-          field: value
-      - name: field
-        value: set_value
-    checks:
-    - method: checks.app.check_equals
-      expected:
-        field: set_value
 - function: get_slice_start_and_end_indices
   description: >
     Returns the start and end indices for slice of an Iterable object from
@@ -246,7 +153,8 @@ tests:
     arguments:
       name: null
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       expected:
         start: null
         end: null
@@ -254,7 +162,8 @@ tests:
     arguments:
       name: 0|0
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       expected:
         start: 0
         end: 0
@@ -262,7 +171,8 @@ tests:
     arguments:
       name: 0|4
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       expected:
         start: 0
         end: 4
@@ -270,7 +180,8 @@ tests:
     arguments:
       name: 0
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       expected:
         start: 0
         end: null
@@ -278,7 +189,8 @@ tests:
     arguments:
       name: '|5'
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       expected:
         start: null
         end: 5
@@ -297,7 +209,8 @@ tests:
       child_value: null
       indices: null
     checks:
-    - method: checks.app.check_exception
+    - method: check_exception
+      << : *CHECKS
       expected: AttributeError
   - description: Replace value at single index of parent value
     arguments:
@@ -310,7 +223,8 @@ tests:
         start: 0
         end: 0
     checks:
-    - method: checks.app.check_equals
+    - method: check_equals
+      << : *CHECKS
       expected:
       - A
       - b
@@ -329,7 +243,8 @@ tests:
         start: null
         end: null
     checks:
-    - method: checks.app.check_equals
+    - method: check_equals
+      << : *CHECKS
       expected:
       - A
       - B
@@ -349,7 +264,8 @@ tests:
         start: 1
         end: 3
     checks:
-    - method: checks.app.check_equals
+    - method: check_equals
+      << : *CHECKS
       expected:
       - a
       - A
@@ -371,7 +287,8 @@ tests:
         start: 2
         end: null
     checks:
-    - method: checks.app.check_equals
+    - method: check_equals
+      << : *CHECKS
       expected:
       - 1
       - 2
@@ -393,7 +310,8 @@ tests:
         start: null
         end: 3
     checks:
-    - method: checks.app.check_equals
+    - method: check_equals
+      << : *CHECKS
       expected:
       - a
       - b
@@ -401,3 +319,120 @@ tests:
       - 1
       - 2
       - 3
+- function: set_child_in_parent
+  cast_arguments:
+  - method: set_child_in_parent_cast_arguments
+    << : *RESOURCE
+  description: Sets the value of a a child object inside of a parent object
+  tests:
+  - description: Child are parent is undefined
+    arguments: {}
+    checks:
+    - method: check_exception
+      << : *CHECKS
+      expected: AttributeError
+  - description: Set child when parent is dict
+    arguments:
+      parent:
+        value: {}
+      child:
+        value: value
+        name: key
+    checks:
+    - method: check_sns
+      << : *CHECKS
+      expected:
+        name: null
+        value:
+          key: value
+  - description: Set child when parent is none
+    arguments:
+      parent:
+        value: null
+      child:
+        value: value
+        name: name
+    checks:
+    - method: check_sns
+      << : *CHECKS
+      expected:
+        name: null
+    - method: check_sns
+      << : *CHECKS
+      field: value
+      expected:
+        name: value
+  - description: Set child when parent is a simple name space
+    cast_arguments:
+    - field: parent.value
+      method: dict_to_sns
+      << : *RESOURCE
+    arguments:
+      parent:
+        value:
+          field_a: value_a
+      child:
+        value: value_b
+        name: field_b
+    checks:
+    - method: check_sns
+      << : *CHECKS
+      expected:
+        name: null
+    - method: check_equals
+      << : *CHECKS
+      field: value
+      expected:
+        field_a: value_a
+        field_b: value_b
+- function: reset_route_values
+  description: >
+    Sets child values inside of parents along the route to the child from top
+    to bottom
+  cast_arguments:
+  - field: objects
+    method: list_dict_to_list_sns
+    << : *RESOURCE
+  tests:
+  - description: Undefined arguments
+    arguments:
+      objects: null
+    checks:
+    - method: check_exception
+      << : *CHECKS
+      expected: TypeError
+  - description: Set child value in a nested dictionary
+    arguments:
+      objects:
+      - name: root
+        value:
+          key_a:
+            key_0 : value_0
+      - name: key_a
+        value:
+          key_0 : value_0
+      - name: key_0
+        value: value_0
+    checks:
+    - method: check_equals
+      << : *CHECKS
+      expected:
+        key_a:
+          key_0 : value_0
+  - description: Set child value in a simple name space
+    cast_arguments:
+    - method: reset_route_values_cast_arguments
+      << : *RESOURCE
+      field: objects.0|1
+    arguments:
+      objects:
+      - name: root
+        value:
+          field: value
+      - name: field
+        value: set_value
+    checks:
+    - method: check_equals
+      << : *CHECKS
+      expected:
+        field: set_value

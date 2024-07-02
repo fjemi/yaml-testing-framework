@@ -1,9 +1,12 @@
 configurations:
   exclude_functions:
   - run_pytest
-  resources:
-  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/invoke_testing_method/resources/app.py
-  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/app.py
+
+resources:
+- &RESOURCE
+  module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/invoke_testing_method/resources/app.py
+- &CHECKS
+  module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/app.py
 
 
 arguments:
@@ -20,13 +23,56 @@ arguments:
 
 
 tests:
+- function: main
+  description: >
+    Handles running tests for a specific module or modules within a directory
+    using the plugin or pytest
+  test:
+  - description: Run tests for module using pytest invocation method
+    arguments:
+      <<: *MODULE_WITH_TESTS_ARGUMENTS
+      method: pytest
+    checks:
+    - method: check_type
+      << : *CHECKS
+      expected: SimpleNamespace
+  - description: Run tests on modules in a directory using plugin invocation method
+    arguments:
+      location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/invoke_testing_method/resources
+      method: plugin
+      yaml_suffix: _test
+      logging_enabled: True
+    cast_output:
+    - field: result
+      method: list_sns_to_list_dict
+      << : *RESOURCE
+    checks:
+    - method: check_sns
+      << : *CHECKS
+      expected:
+        result:
+        - expected: Hello World
+          id: ' .main.utils.invoke_testing_method.resources.module_with_tests.hello_world
+            - 0.0 - Returns a greeting '
+          id_short: .main.utils.invoke_testing_method.resources.module_with_tests.hello_world
+          method: check_equals
+          output: Hello World
+          passed: true
+        - expected: Hello Earth
+          id: ' .main.utils.invoke_testing_method.resources.module_with_tests.hello_world
+            - 0.1 - Returns a greeting '
+          id_short: .main.utils.invoke_testing_method.resources.module_with_tests.hello_world
+          method: check_equals
+          output: Hello Earth
+          passed: true
 - function: set_default_values_for_arguments
   description: Sets defaults values for arguments
   tests:
   - description: Undefined arguments
     arguments:  {}
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       expected:
         exclude_files:
         - ignore
@@ -53,7 +99,8 @@ tests:
       root_flag: root_flag
       logging_enabled: logging_enabled
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       expected:
         exclude_files: exclude_files
         location: location
@@ -74,7 +121,8 @@ tests:
       resource_module: null
       resource_suffix: null
     checks:
-    - method: checks.app.check_exception
+    - method: check_exception
+      << : *CHECKS
       expected: TypeError
   - description: Undefined arguments
     arguments:
@@ -82,27 +130,31 @@ tests:
       resource_module: directory/module_resource
       resource_suffix: _resource
     checks:
-    - method: checks.app.check_equals
+    - method: check_equals
+      << : *CHECKS
       expected: directory/module
   - description: Resource module and suffix are defined
     arguments:
       resource_module: directory/module_resource.py
       resource_suffix: _resource
     checks:
-    - method: checks.app.check_equals
+    - method: check_equals
+      << : *CHECKS
       expected: directory/module.py
   - description: Resource module and folder name are defined
     arguments:
       resource_module: directory/_resource/module.py
     checks:
-    - method: checks.app.check_equals
+    - method: check_equals
+      << : *CHECKS
       expected: directory/_resource/module.py
   - description: Resource module parent module filename are defined
     arguments:
       resource_module: directory/module_resource.py
       parent_filename: module
     checks:
-    - method: checks.app.check_equals
+    - method: check_equals
+      << : *CHECKS
       expected: directory/module.py
   - description: All arguments are defined
     arguments:
@@ -110,7 +162,8 @@ tests:
       parent_filename: app
       resource_suffix: _resource
     checks:
-    - method: checks.app.check_equals
+    - method: check_equals
+      << : *CHECKS
       expected: directory/_resource/app.py
 - function: set_location
   description: Set the location of a file or directory of files to test
@@ -118,7 +171,8 @@ tests:
   - description: Undefined arguments
     arguments: {}
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       expected:
         location: null
         module: null
@@ -128,7 +182,8 @@ tests:
     arguments:
       location: location
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       expected:
         location: location
         module: null
@@ -138,7 +193,8 @@ tests:
     arguments:
       root_flag: true
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       expected:
         location: .
         module: null
@@ -152,7 +208,8 @@ tests:
       root_flag: false
       location: null
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       expected:
         location: module
         module: null
@@ -164,33 +221,33 @@ tests:
       module: _resource/module_resource.py
       resource_suffix: _resource
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       expected:
         location: _resource/module.py
         module: null
         root_flag: null
         resource_flag: null
-- function: invoke_plugin
-  description: Run tests by invoking the PYTEST YAML app
+- function: run_tests_using_invocation_method
+  description: Runs tests using one of the defined invocation methods
+  cast_output:
+  - field: result
+    method: list_sns_to_list_dict
+    << : *RESOURCE
   tests:
-  - description: Location is a module with defined tests
+  - description: Run tests by invoking plugin
     arguments:
-      << : *MODULE_WITH_TESTS_ARGUMENTS
+      <<: *MODULE_WITH_TESTS_ARGUMENTS
+      method: plugin
     checks:
-    - method: checks.app.check_length
-      field: result
-      expected: 2
-    - method: checks.app.check_sns
-      cast_output:
-      - field: result
-        method: resources.app.list_sns_to_list_dict
-      expected: &MODULE_WITH_TESTS_ASSERTION_EXPECTED
+    - method: check_sns
+      << : *CHECKS
+      expected:
         result:
         - expected: Hello Earth
           id: ' .main.utils.invoke_testing_method.resources.module_with_tests.hello_world - 0.1 - Returns
             a greeting '
           id_short: .main.utils.invoke_testing_method.resources.module_with_tests.hello_world
-          log: null
           method: check_equals
           output: Hello Earth
           passed: true
@@ -198,7 +255,39 @@ tests:
           id: ' .main.utils.invoke_testing_method.resources.module_with_tests.hello_world - 0.0 - Returns
             a greeting '
           id_short: .main.utils.invoke_testing_method.resources.module_with_tests.hello_world
-          log: null
+          method: check_equals
+          output: Hello World
+          passed: true
+- function: invoke_plugin
+  description: Run tests by invoking the PYTEST YAML app
+  tests:
+  - description: Location is a module with defined tests
+    arguments:
+      << : *MODULE_WITH_TESTS_ARGUMENTS
+    checks:
+    - method: check_length
+      << : *CHECKS
+      field: result
+      expected: 2
+    - method: check_sns
+      << : *CHECKS
+      cast_output:
+      - field: result
+        method: list_sns_to_list_dict
+        << : *RESOURCE
+      expected: &MODULE_WITH_TESTS_ASSERTION_EXPECTED
+        result:
+        - expected: Hello Earth
+          id: ' .main.utils.invoke_testing_method.resources.module_with_tests.hello_world - 0.1 - Returns
+            a greeting '
+          id_short: .main.utils.invoke_testing_method.resources.module_with_tests.hello_world
+          method: check_equals
+          output: Hello Earth
+          passed: true
+        - expected: Hello World
+          id: ' .main.utils.invoke_testing_method.resources.module_with_tests.hello_world - 0.0 - Returns
+            a greeting '
+          id_short: .main.utils.invoke_testing_method.resources.module_with_tests.hello_world
           method: check_equals
           output: Hello World
           passed: true
@@ -206,7 +295,8 @@ tests:
     arguments:
       <<: *MODULE_WITHOUT_TESTS_ARGUMENTS
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       expected:
         result: []
 - function: invoke_pytest
@@ -216,77 +306,10 @@ tests:
     arguments:
       <<: *MODULE_WITH_TESTS_ARGUMENTS
     checks:
-    - method: checks.app.check_type
+    - method: check_type
+      << : *CHECKS
       expected: SimpleNamespace
-    - method: checks.app.check_equals
+    - method: check_equals
+      << : *CHECKS
       field: process.returncode
       expected: 0
-- function: run_tests_using_invocation_method
-  description: Runs tests using one of the defined invocation methods
-  cast_output:
-  - field: result
-    method: resources.app.list_sns_to_list_dict
-  tests:
-  - description: Run tests by invoking plugin
-    arguments:
-      <<: *MODULE_WITH_TESTS_ARGUMENTS
-      method: plugin
-    checks:
-    - method: checks.app.check_sns
-      expected:
-        result:
-        - expected: Hello Earth
-          id: ' .main.utils.invoke_testing_method.resources.module_with_tests.hello_world - 0.1 - Returns
-            a greeting '
-          id_short: .main.utils.invoke_testing_method.resources.module_with_tests.hello_world
-          log: null
-          method: check_equals
-          output: Hello Earth
-          passed: true
-        - expected: Hello World
-          id: ' .main.utils.invoke_testing_method.resources.module_with_tests.hello_world - 0.0 - Returns
-            a greeting '
-          id_short: .main.utils.invoke_testing_method.resources.module_with_tests.hello_world
-          log: null
-          method: check_equals
-          output: Hello World
-          passed: true
-- function: main
-  description: >
-    Handles running tests for a specific module or modules within a directory
-    using the plugin or pytest
-  test:
-  - description: Run tests for module using pytest invocation method
-    arguments:
-      <<: *MODULE_WITH_TESTS_ARGUMENTS
-      method: pytest
-    checks:
-    - method: checks.app.check_type
-      expected: SimpleNamespace
-  - description: Run tests on modules in a directory using plugin invocation method
-    arguments:
-      location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/invoke_testing_method/resources
-      method: plugin
-      yaml_suffix: _test
-      logging_enabled: True
-    cast_output:
-    - field: result
-      method: resources.app.list_sns_to_list_dict
-    checks:
-    - method: checks.app.check_sns
-      expected:
-        result:
-        - expected: Hello World
-          id: ' .main.utils.invoke_testing_method.resources.module_with_tests.hello_world
-            - 0.0 - Returns a greeting '
-          id_short: .main.utils.invoke_testing_method.resources.module_with_tests.hello_world
-          method: check_equals
-          output: Hello World
-          passed: true
-        - expected: Hello Earth
-          id: ' .main.utils.invoke_testing_method.resources.module_with_tests.hello_world
-            - 0.1 - Returns a greeting '
-          id_short: .main.utils.invoke_testing_method.resources.module_with_tests.hello_world
-          method: check_equals
-          output: Hello Earth
-          passed: true

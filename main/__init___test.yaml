@@ -1,13 +1,12 @@
-resources:
+help:
 - https://stackoverflow.com/questions/46827007/runtimeerror-this-event-loop-is-already-running-in-python
 - https://pypi.org/project/nest-asyncio/
 - https://stackoverflow.com/questions/3108285/in-python-script-how-do-i-set-pythonpath
 
 
-configurations:
-  resources:
-  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/_resources/__init___resource.py
-  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/app.py
+resources:
+- &CHECKS
+  module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/app.py
 
 
 tests:
@@ -15,11 +14,13 @@ tests:
   description: Allows asyncio event loop to be nested
   arguments: {}
   checks:
-  - method: checks.app.check_equals
+  - method: check_equals
+    << : *CHECKS
     expected: 1
 - function: allow_nested_event_loops
   description: Allows asyncio event loop to be nested
   arguments: {}
   checks:
-  - method: checks.app.check_equals
+  - method: check_equals
+    << : *CHECKS
     expected: 1
