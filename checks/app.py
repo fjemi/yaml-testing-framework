@@ -63,6 +63,7 @@ def type_checks_inner(
   expected: Any | None = None,
   module: ModuleType | None = None,
   method: Callable | None = None,
+  __spies__: dict | None = None,
 ) -> sns:
   values = sns(output=output, expected=expected)
   type_hints = get_type_hints(method=method, filter_out=['return'])
@@ -112,6 +113,7 @@ def type_checks(method: Callable) -> Callable:
     output: Any | None = None,
     expected: Any | None = None,
     module: ModuleType | None = None,
+    __spies__: dict | None = None,
   ) -> sns:
     return type_checks_inner(
       expected=expected,

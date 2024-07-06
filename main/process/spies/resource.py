@@ -3,6 +3,7 @@
 
 from types import ModuleType
 from types import SimpleNamespace as sns
+from typing import Callable
 
 from main.utils import get_module
 
@@ -12,10 +13,7 @@ LOCALS = locals()
 
 
 def wrapper_get_module(module: str) -> ModuleType:
-  module = get_module.main(location=module).module
-  if isinstance(module, ModuleType):
-    module.SPIES = getattr(module, 'SPIES', None) or {}
-  return module
+  return get_module.main(location=module).module
 
 
 def dict_sns_to_dict_dict(output: dict) -> dict:
@@ -32,10 +30,13 @@ def subtract(a: int, b: int) -> int:
   return a - b
 
 
-def call_spy(output: sns) -> dict:
-  module = output.module
-  _ = module.add(a=1, b=1)
-  return dict_sns_to_dict_dict(output=module.SPIES)
+def call_spy(
+  output: ModuleType | Callable | None = None,
+) -> None:
+  if isinstance(output, ModuleType):
+    output = output.add
+  if isinstance(output, Callable):
+    _ = output(a=1, b=1)
 
 
 def examples() -> None:

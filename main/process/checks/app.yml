@@ -57,6 +57,11 @@ schema:
       type: list
       default: null
       description: A list of checks to process to verify output from tests
+    - &__SPIES__
+      name: __spies__
+      type: dict
+      default: null
+      description: Stores spy objects placed on methods
   Check:
     description: Store data needed to process an check form a test
     fields:
@@ -64,6 +69,7 @@ schema:
     - *ID_SHORT
     - *MODULE
     - *OUTPUT
+    - *__SPIES__
     - name: method
       type: str
       description: The check method
@@ -102,3 +108,4 @@ operations:
 
 preferred_fields:
 - module
+- __spies__

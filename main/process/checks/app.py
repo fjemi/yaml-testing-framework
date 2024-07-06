@@ -25,6 +25,7 @@ def main(
   module: ModuleType | None = None,
   id: str | None = None,
   id_short: str | None = None,
+  __spies__: dict | None = None,
 ) -> sns:
   data = independent.get_model(schema=CONFIG.schema.Entry, data=locals())
   data = independent.process_operations(
@@ -40,6 +41,7 @@ def process_checks(
   module: ModuleType | None = None,
   id: str | None = None,
   id_short: str | None = None,
+  __spies__: dict | None = None,
 ) -> sns:
   checks = checks or []
   locals_ = locals()
@@ -137,6 +139,7 @@ def get_check_result(
   method: Callable | None = None,
   output: Any | None = None,
   expected: Any | None = None,
+  __spies__: dict | None = None,
 ) -> sns:
   result.method = objects.get(
     parent=method,
