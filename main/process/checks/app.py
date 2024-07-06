@@ -10,7 +10,7 @@ import yaml
 
 # trunk-ignore(ruff/F401)
 from main.process.casts import process_cast_output
-from main.utils import get_config, get_object, independent, schema, set_object, get_module
+from main.utils import get_config, independent, objects, schema, get_module
 
 
 MODULE = __file__
@@ -65,8 +65,8 @@ def pre_processing(
   for field in CONFIG.preferred_fields:
     values = sns()
     for route, parent in locals().items():
-      value = get_object.main(parent=parent, route=field)
-      values = set_object.main(
+      value = objects.get(parent=parent, route=field)
+      values = objects.update(
         route=route,
         parent=values,
         value=value, )
@@ -99,7 +99,7 @@ def get_check_method(
   module: ModuleType | None = None,
 ) -> sns:
   name = str(method)
-  method = get_object.main(parent=module, route=name)
+  method = objects.get(parent=module, route=name)
   if isinstance(method, Callable):
     return sns(method=method)
 
@@ -119,7 +119,7 @@ def reset_output_value(
   output: Any | None = None,
   field: str | None = None,
 ) -> sns:
-  output = get_object.main(parent=output, route=field)
+  output = objects.get(parent=output, route=field)
   log = None
   if output is None and field:
     type_ = type(output).__name__
@@ -138,12 +138,10 @@ def get_check_result(
   output: Any | None = None,
   expected: Any | None = None,
 ) -> sns:
-  result = method(
-    module=module,
-    output=output,
-    expected=expected, )
-  result.method = method.__name__
-  result._cleanup = ['module']
+  result.method = objects.get(
+    parent=method,
+    route='__name__',
+    default=method, )
   return result
 
 
@@ -198,7 +196,7 @@ def post_processing(
   passed: Any | None = None,
   method: Callable | str | None = None,
 ) -> sns:
-  method = get_object.main(
+  method = objects.get(
     parent=method,
     route='__name__',
     default=method, )

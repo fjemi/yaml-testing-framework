@@ -4,7 +4,7 @@
 
 from types import SimpleNamespace as sns
 
-from main.utils import get_object, independent
+from main.utils import objects, independent
 # trunk-ignore(ruff/F401)
 from main.utils.independent import format_config_schema, get_yaml_content
 
@@ -40,7 +40,7 @@ def main(
     data=locals(),
     functions=LOCALS,
     operations=CONFIG.operations.main, )
-  return get_object.main(
+  return objects.get(
     parent=data,
     route='models',
     default={}, )

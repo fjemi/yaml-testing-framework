@@ -1,0 +1,47 @@
+resources:
+- &CHECKS
+  module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/app.py
+- &RESOURCE_PATH
+  ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/objects/delete_resource.py
+- &RESOURCE
+  module: *RESOURCE_PATH
+
+
+tests:
+- function: main
+  description: Removes an attribute from an object or a key from a dictionary
+  tests:
+  - description: Undefined arguments
+    arguments: {}
+    checks:
+    - method: check_equals
+      << : *CHECKS
+      expected: null
+  - description: Remove an attribute from a simple name space
+    cast_arguments:
+    - field: parent
+      method: sns
+      << : *RESOURCE
+      unpack: true
+    arguments:
+      parent:
+        field_a: value_a
+        field_b: value_b
+      route: field_b
+    checks:
+    - method: check_sns
+      << : *CHECKS
+      expected:
+        field_a: value_a
+        field_b: null
+  - description: Remove a key from a dictionary
+    arguments:
+      parent:
+        key_a: value_a
+        key_b: value_b
+      route: key_b
+    checks:
+    - method: check_equals
+      << : *CHECKS
+      expected:
+        key_a: value_a

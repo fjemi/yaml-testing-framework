@@ -19,10 +19,9 @@ from main.process import (
 from main.utils import (
   get_config,
   get_module,
-  get_object,
   independent,
   logger,
-  set_object,
+  objects,
   methods,
 )
 
@@ -147,7 +146,7 @@ def get_function(
   function: str | None = None,
   module: ModuleType | None = None,
 ) -> sns:
-  function_ = get_object.main(parent=module, route=function)
+  function_ = objects.get(parent=module, route=function)
   if isinstance(function_, Callable):
     return sns(function=function_, function_name=function)
 

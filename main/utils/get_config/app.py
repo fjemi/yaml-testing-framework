@@ -6,7 +6,7 @@ import inspect
 import os
 from types import SimpleNamespace as sns
 
-from main.utils import get_object, independent, set_object
+from main.utils import independent, objects
 from main.utils import schema as _schema
 
 
@@ -47,7 +47,7 @@ def main(
     operations=CONFIG.operations.main,
     functions=LOCALS,
     data=data, )
-  data = get_object.main(
+  data = objects.get(
     parent=data,
     route='content.config',
     default={}, )
@@ -100,8 +100,8 @@ def format_content_keys(content: sns | None = None) -> sns:
     content = content or sns(config={})
 
     temp = [
-      get_object.main(parent=content, route=key),
-      get_object.main(parent=content, route=f'config.{key}'), ]
+      objects.get(parent=content, route=key),
+      objects.get(parent=content, route=f'config.{key}'), ]
     value = temp[0] or temp[1]
 
     handler = f'format_{key}_content'
@@ -113,7 +113,7 @@ def format_content_keys(content: sns | None = None) -> sns:
 
 
 def format_environment_content(value: dict | None = None) -> sns:
-  value = get_object.main(
+  value = objects.get(
     parent=value,
     route='__dict__',
     default=value, ) or {}

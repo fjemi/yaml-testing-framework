@@ -9,7 +9,7 @@ from types import ModuleType
 from types import SimpleNamespace as sns
 from typing import Any
 
-from main.utils import get_object, independent
+from main.utils import independent
 
 
 MODULE = __file__

@@ -19,7 +19,7 @@ from typing import (
 )
 
 from main.process import casts
-from main.utils import get_object, independent, methods
+from main.utils import independent, objects, methods
 
 
 MODULE = __file__
@@ -68,14 +68,9 @@ def type_checks_inner(
   type_hints = get_type_hints(method=method, filter_out=['return'])
   passed = []
 
-  for key, value in values.__dict__.items():
-    kind = type(value).__name__.lower()
-    hints = get_object.main(
-      parent=type_hints,
-      route=key, )
-    if type(hints).__name__ in CONFIG.union_types:
-      hints = list(hints.__args__)
-    hints = hints if isinstance(hints, list) else [hints]
+    hints.parameter = objects.get(
+      parent=hints.method,
+      route=parameter, )
 
     for i, item in enumerate(hints):
       hints[i] = item.__name__.lower()
@@ -98,10 +93,10 @@ def type_checks_inner(
   if False in [
     'expected' in passed,
     'output' in passed,
-  ]:
-    return sns(
-      passed=False,
-      output=values.output,
+  method = objects.get(
+    parent=method,
+    route='__name__',
+    default=method, )
       expected=values.expected, )
 
   return method(
@@ -549,7 +544,7 @@ def check_spies(
 
     for field, value in values.items():
       route = f'SPIES.{key}.{field}'
-      spy_store[field] = get_object.main(parent=module, route=route)
+      spy_store[field] = objects.get(parent=__spies__, route=route)
 
     store[key] = spy_store
 

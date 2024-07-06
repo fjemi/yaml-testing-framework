@@ -10,9 +10,8 @@ from main.process.casts import handle_casting
 from main.utils import (
   get_config,
   get_module,
-  get_object,
+  objects,
   independent,
-  set_object,
 )
 
 
@@ -101,7 +100,7 @@ def get_cast_method(
   method: str | None = None,
 ) -> sns:
   name = str(method)
-  method = get_object.main(
+  method = objects.get(
     parent=module,
     route=name,
     default=do_nothing, )
@@ -114,7 +113,7 @@ def get_temp_object(
 ) -> sns:
   temp = object
   if field:
-    temp = get_object.main(
+    temp = objects.get(
       parent=temp,
       route=field,
       default=temp, )
@@ -128,7 +127,7 @@ def reset_object(
 ) -> sns:
   object_ = temp_object
   if field:
-    object_ = set_object.main(
+    object_ = objects.update(
       parent=object,
       value=temp_object,
       route=field, )

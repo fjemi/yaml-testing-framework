@@ -10,7 +10,7 @@ from typing import Any, List
 import pytest as py_test
 
 from main.app import app
-from main.utils import get_config, get_object
+from main.utils import get_config, objects
 
 
 MODULE = __file__
@@ -124,7 +124,7 @@ def pytest_configure(config: py_test.Config) -> None:
 def set_node_ids(item) -> str:
   if isinstance(item, dict):
     item = sns(**item)
-  id_ = get_object.main(
+  id_ = objects.get(
     parent=item,
     route='callspec.params.test.id_short', )
   item._nodeid = str(id_).strip()

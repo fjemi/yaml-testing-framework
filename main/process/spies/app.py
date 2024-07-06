@@ -6,7 +6,7 @@ from types import ModuleType
 from types import SimpleNamespace as sns
 from typing import Callable
 
-from main.utils import get_object, independent, set_object
+from main.utils import independent, objects
 
 
 MODULE = __file__
@@ -47,7 +47,7 @@ def spy_on_method(
   module: ModuleType,
   route: str,
 ) -> sns:
-  original = get_object.main(
+  original = objects.get(
     parent=module,
     route=route,
     default=do_nothing, )
@@ -60,8 +60,10 @@ def spy_on_method(
   spy.__wrapped__ = original
   spy.__method__ = 'spy'
 
-  module.SPIES[route] = sns(called=False, called_with=None)
-  set_object.main(parent=module, value=spy, route=route)
+  module = objects.update(
+    parent=module,
+    value=spy,
+    route=route, )
   return sns(module=module)
 
 

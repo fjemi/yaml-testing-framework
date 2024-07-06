@@ -6,7 +6,12 @@ from types import ModuleType
 from types import SimpleNamespace as sns
 from typing import Any, Callable
 
-from main.utils import get_config, get_object, independent, set_object
+from main.utils import (
+  get_config,
+  get_module,
+  independent,
+  objects,
+)
 
 
 MODULE = __file__
@@ -50,17 +55,10 @@ def pre_processing(
   patch: dict | None = None,
   module: ModuleType | None = None,
 ) -> sns:
-  patch = independent.get_model(
-    schema=CONFIG.schema.Patch, data=patch, )
-  patch.resource = patch.resource or patch.module
-  patch.timestamp = independent.get_timestamp()
-
-  patch.route = str(patch.route)
-  if patch.route.find('.') == 0:
-    patch.route = patch.route[1:]
-
-  patch.original = get_object.main(parent=module, route=patch.route)
-  return patch
+  original = objects.get(
+    parent=module,
+    route=route,
+    default=None, )
 
 
 def get_patch_method(
@@ -71,10 +69,10 @@ def get_patch_method(
   callable_route: str | None = None,
   original: Any | None = None,
 ) -> sns:
-  resource = get_module.main(module=resource).module
-  handler = f'get_{method}_patch_method'
-  handler = LOCALS.get(handler, None) or do_nothing
-  value = handler(
+  method = objects.get(
+    parent=LOCALS,
+    route=route,
+    default=do_nothing, )
     value=value,
     resource=resource,
     callable_route=callable_route,
@@ -121,7 +119,7 @@ def get_callable_patch_method(
 
     return value
 
-  temp = get_object.main(
+  temp = objects.get(
     parent=resource,
     route=callable_route,
     default=patch, )
@@ -189,11 +187,11 @@ def patch_module(
   route: str | None = None,
   value: Any | None = None,
 ) -> sns:
-  module = set_object.main(
+  temp = objects.update(
     parent=module,
     value=value,
     route=route, )
-  return sns(module=module)
+  return sns(module=temp)
 
 
 def examples() -> None:
