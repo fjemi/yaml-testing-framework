@@ -10,17 +10,18 @@ TODO:
 - Only log logs with content
 
 
-resources:
+help:
 - https://stackoverflow.com/questions/11232230/logging-to-two-files-with-different-settings
 
 
 log_dir: &LOG_DIR ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/logger/resources/data
 
 
-configurations:
-  resources:
-  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/logger/resources/app.py
-  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/app.py
+resources:
+- &RESOURCE
+  module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/logger/resources/app.py
+- &CHECKS
+  module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/app.py
 
 
 tests:
@@ -31,7 +32,8 @@ tests:
     arguments:
       enabled: false
     checks:
-    - method: checks.app.check_equals
+    - method: check_equals
+      << : *CHECKS
       expected: 0
   - description: Logger has not been created
     patch:
@@ -41,7 +43,8 @@ tests:
     arguments:
       enabled: true
     checks:
-    - method: checks.app.check_equals
+    - method: check_equals
+      << : *CHECKS
       expected: 0
   # - description: Log info
   #   arguments:
@@ -51,7 +54,8 @@ tests:
   #     enabled: True
   #     standard_output: true
   #   checks:
-  #   - method: checks.app.check_equals
+  #   - method: check_equals
+  #     << : *CHECKS
   #     expected: 1
   # - description: Only logging enabled
   #   arguments:
@@ -92,7 +96,8 @@ tests:
 # - function: set_default_arguments
 #   description: Formats and returns objects that are not JSON serializable
 #   cast_arguments:
-#   - method: _resources.app.set_default_resource
+#   - method: set_default_resource
+#     << : *RESOURCE
 #     field: object
 #   tests:
 #   - description: >
@@ -101,37 +106,43 @@ tests:
 #     arguments:
 #       object: string
 #     checks:
-#     - method: checks.app.check_equals
+#     - method: check_equals
+#       << : *CHECKS
 #       expected: string
 #   - description: Undefined object produces an error
 #     arguments:
 #       object: null
 #     checks:
-#     - method: checks.app.check_equals
+#     - method: check_equals
+#       << : *CHECKS
 #       expected: None
 #   - description: When the object is a module, return its location
 #     arguments:
 #       object: module
 #     checks:
-#     - method: checks.app.check_equals
+#     - method: check_equals
+#       << : *CHECKS
 #       expected: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/_resources/logger/module.py
 #   - description: Object is a function
 #     arguments:
 #       object: function_
 #     checks:
-#     - method: checks.app.check_equals
+#     - method: check_equals
+#       << : *CHECKS
 #       expected: function_
 #   - description: Object is of type sh`Test`
 #     arguments:
 #       object: Test
 #     checks:
-#     - method: checks.app.check_substring_in_string
+#     - method: check_substring_in_string
+#       << : *CHECKS
 #       expected: .main.logger._resources.app.Test
 #   - description: Object is of type sh`Exception`
 #     arguments:
 #       object: Exception
 #     checks:
-#     - method: checks.app.check_equals
+#     - method: check_equals
+#       << : *CHECKS
 #       expected:
 #         exception: TypeError
 #         description: 'unsupported operand type(s) for +: ''int'' and ''str'''
@@ -141,7 +152,8 @@ tests:
 #   - description:
 #     arguments:
 #     checks:
-#     - method: checks.app.check_equals
+#     - method: check_equals
+#       << : *CHECKS
 #       expected: 
 - function: format_as_json
   description: Converts data to JSON
@@ -149,20 +161,23 @@ tests:
   - arguments:
       log: {}
     checks:
-    - method: checks.app.check_equals
+    - method: check_equals
+      << : *CHECKS
       expected: '{}'
   - arguments:
       log:
         key: value
     checks:
-    - method: checks.app.check_equals
+    - method: check_equals
+      << : *CHECKS
       expected: '{"key": "value"}'
   - arguments:
       log:
         a: a
         b: b
     checks:
-    - method: checks.app.check_equals
+    - method: check_equals
+      << : *CHECKS
       expected: '{"a": "a", "b": "b"}'
 - function: format_as_yaml
   description: Convert data to YAML
@@ -171,7 +186,8 @@ tests:
     arguments:
       log: {}
     checks:
-    - method: checks.app.check_equals
+    - method: check_equals
+      << : *CHECKS
       expected: '{}
 
           '
@@ -181,7 +197,8 @@ tests:
         a: a
         b: b
     checks:
-    - method: checks.app.check_equals
+    - method: check_equals
+      << : *CHECKS
       expected: 'a: a
 
           b: b
@@ -192,7 +209,8 @@ tests:
   tests:
   - arguments: {}
     checks:
-    - method: checks.app.check_type
+    - method: check_type
+      << : *CHECKS
       expected: float
 - function: get_log_file_location
   description: Creates a log file and returns its location
@@ -206,7 +224,8 @@ tests:
       root_directory: root
       project_path: root/project
     checks:
-    - method: checks.app.check_equals
+    - method: check_equals
+      << : *CHECKS
       expected: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/.logs/root.project.log
   - description: Log directory environment variable is set
     patches:
@@ -217,7 +236,8 @@ tests:
       root_directory: root
       project_path: root/project
     checks:
-    - method: checks.app.check_equals
+    - method: check_equals
+      << : *CHECKS
       expected: .logs/root.project.log
 - function: get_logger
   description: Returns an instance of a Logger tied to the location of a log file
@@ -226,15 +246,18 @@ tests:
   #   arguments:
   #     location: null
   #   checks:
-  #   - method: checks.app.check_exception
+  #   - method: check_exception
+  #     << : *CHECKS
   #     expected: TypeError
   - description: Location is defined
     arguments:
       location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/logger/resources/data/log_file.log
     checks:
-    - method: checks.app.check_type
+    - method: check_type
+      << : *CHECKS
       expected: Logger
-    - method: checks.app.check_equals
+    - method: check_equals
+      << : *CHECKS
       field: name
       expected: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/logger/resources/data/log_file.log
 - function: create_logger
@@ -247,7 +270,8 @@ tests:
       logging_enabled: null
       project_path: null
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       expected:
         status: 0
   - description: Logging is not enabled
@@ -255,7 +279,8 @@ tests:
       logging_enabled: False
       project_path: null
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       expected:
         status: 0
   - description: Logging is enabled
@@ -263,6 +288,7 @@ tests:
       logging_enabled: true
       project_path: project_path
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       expected:
         status: 1

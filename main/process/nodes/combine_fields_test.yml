@@ -1,6 +1,6 @@
-configurations:
-  resources:
-  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/app.py
+resources:
+- &CHECKS
+  module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/app.py
 
 
 tests:
@@ -10,7 +10,8 @@ tests:
   - description: Undefined child and parent
     arguments: {}
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       expected: {}
   - description: Field is description
     arguments:
@@ -20,7 +21,8 @@ tests:
       - description_b
       field: description
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       expected:
         output:
         - description
@@ -39,7 +41,8 @@ tests:
         high: []
         low: []
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       expected:
         output: []
   - description: Defined levels
@@ -48,7 +51,8 @@ tests:
         high: [a, b]
         low: [c]
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       expected:
         output: [a, b, c]
 - function: combine_levels_as_dict
@@ -66,7 +70,8 @@ tests:
         high: {}
         low: {}
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       expected:
         output: {}
   - description: Dictionary with defined key/values
@@ -79,7 +84,8 @@ tests:
           a: A
           b: b
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       expected:
         output:
           a: A
@@ -93,7 +99,8 @@ tests:
           c: c
         low: null
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       expected:
         output:
           a: a
@@ -111,7 +118,8 @@ tests:
         high: null
         low: null
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       expected:
         output: null
   - description: Low and high values are defined
@@ -120,7 +128,8 @@ tests:
         high: high
         low: low
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       expected:
         output: low
   - description: High value is defined
@@ -129,7 +138,8 @@ tests:
         high: high
         low: null
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       expected:
         output: high
 - function: combine_levels_as_high_or_low
@@ -145,7 +155,8 @@ tests:
         high: null
         low: null
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       expected:
         output: null
   - description: Low and high values are defined
@@ -154,7 +165,8 @@ tests:
         high: high
         low: low
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       expected:
         output: high
   - description: High value is undefined
@@ -163,7 +175,8 @@ tests:
         high: null
         low: low
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       expected:
         output: low
 - function: combine_levels_as_high
@@ -179,7 +192,8 @@ tests:
         high: null
         low: null
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       expected:
         output: null
   - description: Low and high values are defined
@@ -188,7 +202,8 @@ tests:
         high: high
         low: low
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       expected:
         output: high
   - description: High value is defined
@@ -197,7 +212,8 @@ tests:
         high: high
         low: null
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       expected:
         output: high
 - function: combine_levels_as_low
@@ -213,7 +229,8 @@ tests:
         high: null
         low: null
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       expected:
         output: null
   - description: Low and high values are defined
@@ -222,7 +239,8 @@ tests:
         high: high
         low: low
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       expected:
         output: low
   - description: Low is undefined
@@ -231,6 +249,7 @@ tests:
         high: high
         low: null
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       expected:
         output: null

@@ -78,7 +78,7 @@ tests:
       << : *CHECKS
       expected:
         location: YAML
-  - description: Module is Defined
+  - description: Module is defined
     arguments:
       module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/schema/app.py
       yaml: null
@@ -87,3 +87,12 @@ tests:
       << : *CHECKS
       expected:
         location: *YAML
+  - description: Content is defined
+    arguments:
+      content:
+        key: value
+    checks:
+    - method: check_equals
+      << : *CHECKS
+      field: __dict__
+      expected: {}

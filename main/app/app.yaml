@@ -1,11 +1,3 @@
-TODO:
-- add logic to run tests for specified functions only
-
-
-resources:
-- https://stackoverflow.com/questions/5067604/determine-function-name-from-within-that-function-without-using-traceback
-
-
 environment:
   ROOT_DIR: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}
   DEBUG: ${YAML_TESTING_FRAMEWORK_DEBUG}

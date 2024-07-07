@@ -3,10 +3,13 @@ TODO:
 - if resource is a directory, then add list of modules in directory to resources
 
 
-configurations:
-  resources:
-  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/app.py
-  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/examples/resource.py
+resources:
+- &CHECKS
+  module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/app.py
+- &RESOURCE_PATH
+  ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/examples/resource.py
+- &RESOURCE
+  module: *RESOURCE_PATH
 
 
 tests:
@@ -21,10 +24,12 @@ tests:
       b: '1'
       method: subtract
     checks:
-    - method: checks.app.check_exception
+    - method: check_exception
+      << : *CHECKS
       field: result
       expected: TypeError
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       expected:
         a: 1
         b: '1'
@@ -35,17 +40,21 @@ tests:
       b: 1
       method: add
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       expected:
         a: 1
         b: 1
         result: 2
         method: add
-    - method: checks.app.check_equals
+    - method: check_equals
+      << : *CHECKS
       cast_output:
       - method: __builtins__.str
+        << : *RESOURCE
       expected: namespace(a=1, b=1, n=None, method='add', result=2)
-    - method: checks.app.check_equals
+    - method: check_equals
+      << : *CHECKS
       field: result
       expected: 2
   - description: Method does not exist
@@ -54,7 +63,8 @@ tests:
       b: 1
       method: method_does_not_exist
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       expected:
         a: 1
         b: 1
@@ -68,7 +78,8 @@ tests:
   #     b: 1
   #     method: subtract
   #   checks:
-  #   - method: checks.app.check_sns
+  #   - method: check_sns
+  #     << : *CHECKS
   #     expected:
   #       a: 1
   #       b: 1
@@ -82,10 +93,12 @@ tests:
     arguments:
       method: constant
     cast_output:
-    - method: resource.inverse
+    - method: inverse
+      << : *RESOURCE
       field: result
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       expected:
         result: 0.1
         method: constant
@@ -102,7 +115,8 @@ tests:
         b: b
         method: method_name
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       expected:
         a: a
         b: b
@@ -116,7 +130,8 @@ tests:
     arguments:
       data: {}
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       expected:
         result: Method does not exist
   - description: Patch a function as a side effect dict
@@ -132,7 +147,8 @@ tests:
         a: a
         c: c
       checks:
-      - method: checks.app.check_equals
+      - method: check_equals
+        << : *CHECKS
         expected:
           a: A
           c: c
@@ -141,7 +157,8 @@ tests:
         b: b
         d: D
       checks:
-      - method: checks.app.check_equals
+      - method: check_equals
+        << : *CHECKS
         expected:
           b: B
           d: D
@@ -158,7 +175,8 @@ tests:
         b: 2
         method: add
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       expected:
         a: 1
         b: 2
@@ -170,7 +188,9 @@ tests:
         b: -2
         method: add
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
+      << : *CHECKS
       expected:
         a: -1
         b: -2
@@ -182,7 +202,8 @@ tests:
         b: 0
         method: add
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       expected:
         a: 0
         b: 0
@@ -201,7 +222,8 @@ tests:
         b: 2
         method: subtract
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       expected:
         a: 1
         b: 2
@@ -213,7 +235,8 @@ tests:
         b: -2
         method: subtract
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       expected:
         a: -1
         b: -2
@@ -225,7 +248,8 @@ tests:
         b: 0
         method: subtract
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       expected:
         a: 0
         b: 0
@@ -243,7 +267,8 @@ tests:
       data:
         method: constant
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       expected:
         a: null
         b: null
@@ -255,7 +280,8 @@ tests:
         b: 3
         method: constant
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       expected:
         a: 3
         b: 3
@@ -271,7 +297,8 @@ tests:
         data:
           method: constant
       checks:
-      - method: checks.app.check_sns
+      - method: check_sns
+        << : *CHECKS
         expected:
           a: null
           b: null
@@ -282,7 +309,7 @@ tests:
     #     data:
     #       method: constant
     #   checks:
-    #   - method: checks.app.check_sns
+    #   - method: check_sns
     #     expected:
     #       a: null
     #       b: null
@@ -297,7 +324,8 @@ tests:
       route: CONSTANT
     arguments: {}
     checks:
-    - method: checks.app.check_function_output
+    - method: check_function_output
+      << : *CHECKS
       field: result
       expected:
         arguments:
@@ -324,7 +352,8 @@ tests:
       data:
         a: 5
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       expected:
         a: 5
         result: 120
@@ -333,13 +362,15 @@ tests:
       an integer a
     patches:
     - route: factorial
-      callable_route: resource.sum_patch
+      callable_route: sum_patch
       method: callable
+      resource: *RESOURCE_PATH
     arguments:
       data:
         a: 5
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       expected:
         a: 5
         result: 15
@@ -360,12 +391,14 @@ tests:
         a: 3
         b: 4
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       expected:
         a: 3
         b: 4
         result: 12
-    - method: checks.app.check_spies
+    - method: check_spies
+      << : *CHECKS
       expected:
         add:
           called: true

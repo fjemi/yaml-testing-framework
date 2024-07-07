@@ -3,10 +3,10 @@ help:
 
 
 resources:
-- &RESOURCE_STR
+- &RESOURCE_PATH
   ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/get_module/resource.py
 - &RESOURCE
-  module: *RESOURCE_STR
+  module: *RESOURCE_PATH
 - &CHECKS
   module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/app.py
 
@@ -17,25 +17,25 @@ tests:
   tests:
   - description: Get module at location
     arguments:
-      location: *RESOURCE_STR
+      location: *RESOURCE_PATH
       name: app
     checks:
     - method: check_equals
       << : *CHECKS
       field: module.__file__
-      expected: *RESOURCE_STR
+      expected: *RESOURCE_PATH
   - description: Return the module value when the argument is not a string
     cast_arguments:
     - method: wrapper_get_module
       << : *RESOURCE
       field: module
     arguments:
-      module: *RESOURCE_STR
+      module: *RESOURCE_PATH
     checks:
     - method: check_equals
       << : *CHECKS
       field: module.__file__
-      expected: *RESOURCE_STR
+      expected: *RESOURCE_PATH
 - function: pre_processing
   description: Sets values for arguments processed by other functions in the module
   tests:
@@ -62,12 +62,12 @@ tests:
       << : *RESOURCE
       field: location
     arguments:
-      location: *RESOURCE_STR
+      location: *RESOURCE_PATH
     checks:
     - method: check_sns
       << : *CHECKS
       expected:
-        location: *RESOURCE_STR
+        location: *RESOURCE_PATH
         flag: False
 - function: format_module_name
   description: >
@@ -135,13 +135,13 @@ tests:
   - description: Location exists
     arguments:
       name: name
-      location: *RESOURCE_STR
+      location: *RESOURCE_PATH
     checks:
     - method: check_module
       << : *CHECKS
       field: module
       expected:
-        location: *RESOURCE_STR
+        location: *RESOURCE_PATH
   - description: Location is defined
     arguments:
       name: app

@@ -112,7 +112,7 @@ tests:
       output:
         key: '0000'
     checks:
-    - method: check_equals
+    - method: check_sns
       << : *CHECKS
       field: output
       expected:
@@ -188,7 +188,7 @@ tests:
       << : *CHECKS
       expected:
         result: '1'
-  - description: Cast field withing the object
+  - description: Cast field within the object
     arguments:
       casts:
       - method: __builtins__.str

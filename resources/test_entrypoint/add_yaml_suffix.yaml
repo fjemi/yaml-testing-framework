@@ -1,3 +1,8 @@
+resources:
+- &CHECKS
+  module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/app.p
+
+
 tests:
 - function: add
   description: >
@@ -7,5 +12,6 @@ tests:
       a: 0
       b: 0
     checks:
-    - method: checks.app.check_equals
+    - method: check_equals
+      << : *CHECKS
       expected: 0

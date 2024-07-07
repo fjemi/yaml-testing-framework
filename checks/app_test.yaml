@@ -174,7 +174,7 @@ tests:
               name: output
               kind: nonetype
             passed: []
-        output:
+        output: null
         passed: false
   - description: SimpleNamespace should contain expected fields and values
     arguments:

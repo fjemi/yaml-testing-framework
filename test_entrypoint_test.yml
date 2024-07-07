@@ -1,20 +1,24 @@
 TODO:
 - Pass excluded functions and modules to coverage
 - Move some logic to plugin.py so that all that is needed is to import function test_
+- Is there a way to link these patterns with coverage
 
 
-configurations:
-  # Todo: Is there a way to link these patterns with coverage
-  # exclude_functions_patterns:
-  # - test_
-  # exclude_resources_patterns:
-  # - blank
-  # filter_functions_patterns:
-  # - blank
-  # filter_resources_patterns:
-  resources:
-  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/resources/test_entrypoint/app.py
-  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/app.py
+# configurations:
+#   exclude_functions_patterns:
+#   - test_
+#   exclude_resources_patterns:
+#   - blank
+#   filter_functions_patterns:
+#   - blank
+#   filter_resources_patterns:
+
+
+resources:
+- &RESOURCE
+  module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/resources/test_entrypoint/app.py
+- &CHECKS
+  module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/app.py
 
 
 tests:
@@ -23,6 +27,7 @@ tests:
     Returns the id for a test or creates one if the id does not exist.
   cast_arguments:
   - method: sns
+    << : *RESOURCE
     field: val
     unpack: true
   tests:
@@ -30,19 +35,22 @@ tests:
       val:
         id: null
     checks:
-    - method: checks.app.check_equals
+    - method: check_equals
+      << : *CHECKS
       expected: null
   - arguments:
       val:
         id: id_b
     checks:
-    - method: checks.app.check_equals
+    - method: check_equals
+      << : *CHECKS
       expected: id_b
   - arguments:
       val:
         id: id_a
     checks:
-    - method: checks.app.check_equals
+    - method: check_equals
+      << : *CHECKS
       expected: id_a
 - function: get_yaml_tests
   description: >
@@ -52,18 +60,21 @@ tests:
   - method: sns
     field: pytest
     unpack: true
+    << : *RESOURCE
   tests:
   - description: Attribute is undefined
     arguments:
       pytest:
         yaml_tests: null
     checks:
-    - method: checks.app.check_equals
+    - method: check_equals
+      << : *CHECKS
       expected: []
   - description: Attribute is defined
     arguments:
       pytest:
         yaml_tests: yaml_tests
     checks:
-    - method: checks.app.check_equals
+    - method: check_equals
+      << : *CHECKS
       expected: yaml_tests

@@ -1,3 +1,8 @@
+resources:
+- &CHECKS
+  ${PYTEST_YAML_ROOT_DIR}/checks/app.py
+
+
 tests:
 - functions: main
   description: Function description
@@ -10,9 +15,11 @@ tests:
     cast_arguments:
       data: DataClass
     checks:
-    - method: checks.app.check_equals
+    - method: check_equals
+      << : *CHECKS
       expected: 0
-    - method: checks.app.check_type
+    - method: check_type
+      << : *CHECKS
       expected: [int, float]
   - description: Test description
     arguments:
@@ -25,9 +32,11 @@ tests:
       a: 1
       b: 2
     checks:
-    - method: checks.app.check_equals
+    - method: check_equals
+      << : *CHECKS
       expected: 3
-    - method: checks.app.check_type
+    - method: check_type
+      << : *CHECKS
       expected: [int, float]
 - functions: add_dataclass
   description: Function description
@@ -37,7 +46,9 @@ tests:
         a: 1
         b: 2
     checks:
-    - method: checks.app.check_equals
+    - method: check_equals
+      << : *CHECKS
       expected: 3
-    - method: checks.app.check_type
+    - method: check_type
+      << : *CHECKS
       expected: [int, float]

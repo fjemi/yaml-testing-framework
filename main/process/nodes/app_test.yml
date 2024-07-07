@@ -1,7 +1,14 @@
-configurations:
-  resources:
-  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/nodes/resources/app.py
-  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/app.py
+resources:
+- &RESOURCE_RESOURCE
+  ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/nodes/resources/resource.py
+- &RESOURCE_PATH
+  ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/nodes/resources/app.py
+- &RESOURCE_TEST_YAML
+  ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/nodes/resources/app_test.yml
+- &RESOURCE
+  module: *RESOURCE_PATH
+- &CHECKS
+  module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/app.py
 
 
 tests:
@@ -12,21 +19,24 @@ tests:
   - description: Undefined arguments
     arguments: {}
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       expected:
         tests: []
   - description: Defined arguments
     arguments:
-      yaml: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/nodes/resources/app_test.yml
-      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/nodes/resources/app.py
-      module_route: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/nodes/resources/app.py
+      yaml: *RESOURCE_TEST_YAML
+      module: *RESOURCE_PATH
+      module_route: *RESOURCE_PATH
       resources:
-      - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/nodes/resources/resource.py
+      - *RESOURCE_RESOURCE
     cast_output:
-    - method: checks.app.check_equals
+    - method: check_equals
+      << : *CHECKS
       expected:
         tests:
-        - arguments: {}
+        - __spies__: null
+          arguments: {}
           checks: []
           cast_arguments: []
           cast_output: []
@@ -41,17 +51,18 @@ tests:
           id_long: null
           id_short: null
           key: null
-          module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/nodes/resources/app.py
-          module_route: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/nodes/resources/app.py
+          module: *RESOURCE_PATH
+          module_route: *RESOURCE_PATH
           output: null
           patches: []
           resources:
-          - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/nodes/resources/resource.py
+          - *RESOURCE_RESOURCE
           - resource_configuration
           spies: []
           tests: null
-          yaml: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/nodes/resources/app_test.yml
-        - arguments: {}
+          yaml: *RESOURCE_TEST_YAML
+        - __spies__: null
+          arguments: {}
           checks: []
           cast_arguments: []
           cast_output: []
@@ -67,17 +78,18 @@ tests:
           id_long: null
           id_short: null
           key: '0.0'
-          module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/nodes/resources/app.py
-          module_route: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/nodes/resources/app.py
+          module: *RESOURCE_PATH
+          module_route: *RESOURCE_PATH
           output: null
           patches: []
           spies: []
           resources:
-          - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/nodes/resources/resource.py
+          - *RESOURCE_RESOURCE
           - resource_configuration
           tests: null
-          yaml: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/nodes/resources/app_test.yml
-        - arguments: {}
+          yaml: *RESOURCE_TEST_YAML
+        - __spies__: null
+          arguments: {}
           checks: []
           cast_arguments: []
           cast_output: []
@@ -93,16 +105,16 @@ tests:
           id_long: null
           id_short: null
           key: '0.1'
-          module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/nodes/resources/app.py
-          module_route: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/nodes/resources/app.py
+          module: *RESOURCE_PATH
+          module_route: *RESOURCE_PATH
           output: null
           patches: []
           spies: []
           resources:
-          - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/nodes/resources/resource.py
+          - *RESOURCE_RESOURCE
           - resource_configuration
           tests: null
-          yaml: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/nodes/resources/app_test.yml
+          yaml: *RESOURCE_TEST_YAML
 - function: get_configurations_and_tests
   description: >
     Returns the contents of a YAML file or an empty dictionary if the file
@@ -111,7 +123,8 @@ tests:
   - description: Undefined arguments
     arguments: {}
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       expected:
         configurations: {}
         tests: []
@@ -119,18 +132,19 @@ tests:
     arguments:
       yaml: location/does/not/exist.yaml
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       expected:
         configurations: {}
         tests: []
   - description: YAML location does exist
     arguments:
-      yaml: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/nodes/resources/app_test.yml
+      yaml: *RESOURCE_TEST_YAML
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       expected:
-        configurations:
-          resources: resource_configuration
+        configurations: {}
         tests:
         - description: description_a
         - description: description_b
@@ -143,13 +157,15 @@ tests:
   - description: Undefined arguments
     arguments: {}
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       expected:
         module: null
         module_route: null
         yaml: null
         resources: null
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       field: locations
       expected:
         module: null
@@ -163,13 +179,15 @@ tests:
       yaml: yaml
       resources: resources
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       expected:
         module: null
         module_route: null
         yaml: null
         resources: null
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       field: locations
       expected:
         module: module
@@ -189,7 +207,8 @@ tests:
       configurations: {}
       locations: {}
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       expected:
         locations: null
         configurations: {}
@@ -203,7 +222,8 @@ tests:
         yaml: yaml
         resources: resources
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       expected:
         locations: null
         configurations:
@@ -217,7 +237,8 @@ tests:
   description: >
     Adds configurations to root nodes and expands data in roots to nested nodes
   cast_output:
-  - method: resources.app.sns_to_dict
+  - method: sns_to_dict
+    << : *RESOURCE
     field: tests
   tests:
   - description: Empty arguments
@@ -225,7 +246,8 @@ tests:
       configurations: {}
       tests: []
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       expected:
         tests: []
   - description: One node with no nested nodes
@@ -234,10 +256,12 @@ tests:
       tests:
       - description: description_a
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       expected:
         tests:
-        - arguments: {}
+        - __spies__: null
+          arguments: {}
           checks: []
           cast_arguments: []
           cast_output: []
@@ -269,10 +293,12 @@ tests:
         - description: nested_0
         - description: nested_1
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       expected:
         tests:
-        - arguments: {}
+        - __spies__: null
+          arguments: {}
           checks: []
           cast_arguments: []
           cast_output: []
@@ -296,7 +322,8 @@ tests:
           spies: []
           tests: null
           yaml: null
-        - arguments: {}
+        - __spies__: null
+          arguments: {}
           checks: []
           cast_arguments: []
           cast_output: []
