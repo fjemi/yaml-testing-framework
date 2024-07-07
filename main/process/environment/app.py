@@ -5,6 +5,8 @@
 from types import ModuleType
 from types import SimpleNamespace as sns
 
+from main.utils import objects
+
 
 MODULE = __file__
 
@@ -13,22 +15,30 @@ def main(
   module: ModuleType | None = None,
   environment: dict | None = None,
 ) -> sns:
-  if not environment:
-    location = module.__file__
-    log = sns(
-      level='warning',
-      message=f'No environment set for module {location}', )
-    return sns(log=log)
-
-  if not hasattr(module, 'CONFIG'):
-    config =  sns(environment=sns())
-    setattr(module, 'CONFIG', config)
-
-  if not hasattr(module.CONFIG, 'environment'):
-    setattr(module.CONFIG, 'environment', sns())
+  environment = environment or {}
+  store = objects.get(
+    route='CONFIG.environment',
+    default=sns(),
+    parent=module, )
 
   for key, value in environment.items():
-    setattr(module.CONFIG.environment, key, value)
+    store = objects.update(
+      parent=store,
+      value=value,
+      route=key, )
+
+  config = objects.get(
+    parent=module,
+    route='CONFIG',
+    default=sns(), )
+  config = objects.update(
+    route='environment',
+    value=store,
+    parent=config, )
+  module = objects.update(
+    parent=module,
+    value=config,
+    route='CONFIG', )
 
   return sns(module=module)
 

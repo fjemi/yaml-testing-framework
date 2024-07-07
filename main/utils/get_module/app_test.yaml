@@ -92,16 +92,15 @@ tests:
       << : *CHECKS
       expected:
         name: name
-  # # TODO: Need setup/teardown to finish test
-  # - description: Name is the location to a file
-  #   arguments:
-  #     name: location to temp file
-  #     location: null
-  #   checks:
-  #   - method: check_sns
-  #     << : *CHECKS
-  #     expected:
-  #       name: name
+  - description: Name is the location to a file
+    arguments:
+      name: *RESOURCE_PATH
+      location: null
+    checks:
+    - method: check_substring_in_string
+      << : *CHECKS
+      field: name
+      expected: yaml-testing-framework.main.utils.get_module.resource
   - description: Name and location are undefined
     arguments:
       name: null

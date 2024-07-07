@@ -21,14 +21,8 @@ tests:
     checks:
     - method: check_equals
       << : *CHECKS
-      field: __dict__
+      field: module.CONFIG.environment.__dict__
       expected: {}
-    # - method: check_sns
-    #   << : *CHECKS
-    #   field: log
-    #   expected:
-    #     level: warning
-    #     message: No environment set for module ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/environment/resources/no_config.py
   - description: Module with no CONFIG
     arguments:
       environment:
@@ -42,17 +36,13 @@ tests:
       expected:
         VAR_A: A
         VAR_B: B
-    # - method: check_sns
-    #   << : *CHECKS
-    #   expected:
-    #     log: CONFIG added to module at location ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/environment/resources/no_config.py
   - description: Module has CONFIG with no environment
     arguments:
       environment:
         VAR_A: 1
         VAR_B: 2
         VAR_C: 3
-      module:  ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/environment/resources/no_config.py
+      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/environment/resources/no_config.py
     checks:
     - method: check_sns
       << : *CHECKS

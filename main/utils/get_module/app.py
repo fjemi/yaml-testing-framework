@@ -109,7 +109,7 @@ def format_module_name(
 
   name = name or 'app'
   if os.path.isfile(name):
-    name = format_module_name(location=name)
+    name = format_module_name(location=name).name
 
   return sns(name=name)
 
@@ -134,8 +134,8 @@ def get_module_from_location(
     spec.loader.exec_module(module)
   except Exception as e:
     _ = e
-    module = default
 
+  module = module if isinstance(module, ModuleType) else default
   return sns(module=module)
 
 
