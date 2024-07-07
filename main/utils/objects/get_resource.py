@@ -18,7 +18,7 @@ def parent_to_sns(parent: dict | None = None) -> sns:
 
 
 def wrapper_get_module(parent: str | None = None) -> ModuleType:
-  return get_module.main(location=parent, pool=False)
+  return get_module.main(location=parent).module
 
 
 def examples() -> None:

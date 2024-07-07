@@ -3,13 +3,6 @@ environment:
 
 
 options:
-- args: resources
-  options:
-    action: store
-    help: Path to a directory python file that contains resources for the test
-    required: false
-    dest: resources
-    default: []
 - args: project-path
   options:
     action: store

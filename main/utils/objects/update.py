@@ -5,7 +5,7 @@
 from types import SimpleNamespace as sns
 from typing import Any, Iterable
 
-from main.utils import get_object
+from main.utils.objects.get import main as objects_get_main
 
 
 MODULE = __file__
@@ -40,7 +40,7 @@ def get_route_values(
     last = data.objects[-1]
     current = sns(name=data.route[i])
     current_route = '.'.join(data.route[:i + 1])
-    current.value = get_object.main(parent=last.value, route=current_route)
+    current.value = objects_get_main(parent=last.value, route=current_route)
     if current.value is None and i != len(data.route) - 1:
       current.value = sns()
     data.objects.append(current)

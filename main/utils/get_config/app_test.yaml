@@ -1,7 +1,12 @@
-configurations:
-  resources:
-  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/app.py
-  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/get_config/resources/app.py
+resources:
+- &CHECKS
+  module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/app.py
+- &RESOURCE_PATH
+  ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/get_config/resources/app.py
+- &RESOURCE
+  module: *RESOURCE_PATH
+- &RESOURCE_YAML
+  ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/get_config/resources/app.yaml
 
 
 tests:
@@ -10,11 +15,12 @@ tests:
   tests:
   - description: Module location is set
     arguments:
-      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/get_config/resources/app.py
+      module: *RESOURCE_PATH
       config: null
       environment: null
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       expected:
         a: a
         b:
@@ -22,17 +28,20 @@ tests:
         - b1
         c:
           d: e
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       field: environment
       expected:
         A: A
         B: B
         C: C
         D: D
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       field: schema
       expected: {}
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       field: schema.Example
       expected:
         str: ''
@@ -45,10 +54,11 @@ tests:
   - description: YAML location is set
     arguments:
       module: null
-      config: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/get_config/resources/app.yaml
+      config: *RESOURCE_YAML
       environment: null
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       expected:
         a: a
         b:
@@ -56,7 +66,8 @@ tests:
         - b1
         c:
           d: e
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       field: environment
       expected:
         A: A
@@ -73,10 +84,12 @@ tests:
       module: null
       config: null
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       expected:
         config: None
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       field: log
       expected:
         level: error
@@ -86,18 +99,20 @@ tests:
           config: None
   - description: Config location is set
     arguments:
-      config: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/get_config/resources/app.yaml
+      config: *RESOURCE_YAML
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       expected:
-        config: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/get_config/resources/app.yaml
+        config: *RESOURCE_YAML
   - description: Module locations is set
     arguments:
-      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/get_config/resources/app.py
+      module: *RESOURCE_PATH
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       expected:
-        config: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/get_config/resources/app.yaml
+        config: *RESOURCE_YAML
 - function: get_content_from_files
   description: Returns config and environment content from YAML locations
   tests:
@@ -106,7 +121,8 @@ tests:
       environment: null
       config: null
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       field: content
       expected:
         config: {}
@@ -116,7 +132,8 @@ tests:
       environment: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/get_config/resources/environment.yml
       config: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/get_config/resources/config.yml
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       field: content
       expected:
         config:
@@ -128,7 +145,8 @@ tests:
       operations: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/get_config/resources/operations.yml
       config: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/get_config/resources/config.yml
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       field: content
       expected:
         config:
@@ -146,16 +164,19 @@ tests:
 - function: format_content_keys
   description: Formats specified keys in config content
   cast_arguments:
-  - method: resources.app.format_environment_content_cast_arguments
+  - method: format_environment_content_cast_arguments
+    << : *RESOURCE
     field: content
   tests:
   - description: Undefined arguments
     arguments:
       content: null
     checks:
-    - method: checks.app.check_type
+    - method: check_type
+      << : *CHECKS
       expected: SimpleNamespace
-    - method: checks.app.check_equals
+    - method: check_equals
+      << : *CHECKS
       field: content.config.environment.__dict__
       expected: {}
   - description: Empty values for specified keys
@@ -165,10 +186,12 @@ tests:
           environment: {}
           schema: {}
     checks:
-    - method: checks.app.check_type
+    - method: check_type
+      << : *CHECKS
       field: content.config.environment
       expected: SimpleNamespace
-    - method: checks.app.check_type
+    - method: check_type
+      << : *CHECKS
       field: content.config.schema
       expected: SimpleNamespace
   - description: Non-empty values for specified keys
@@ -190,19 +213,23 @@ tests:
               - name: b1
                 default: b1
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       field: content.config.environment
       expected:
         a: a
         b: b
-    - method: checks.app.check_type
+    - method: check_type
+      << : *CHECKS
       field: content.config.schema
       expected: SimpleNamespace
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       field: content.config.schema.A
       expected:
         a0: a0
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       field: content.config.schema.B
       expected:
         b0: b0
@@ -215,7 +242,8 @@ tests:
   - description: Undefined arguments
     arguments: {}
     checks:
-    - method: checks.app.check_equals
+    - method: check_equals
+      << : *CHECKS
       field: __dict__
       expected: {}
   - description: Defined arguments
@@ -225,7 +253,8 @@ tests:
         b: $B
         c: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       expected:
         a: A
         b: null
@@ -238,9 +267,11 @@ tests:
   - description: Undefined arguments
     arguments: {}
     checks:
-    - method: checks.app.check_type
+    - method: check_type
+      << : *CHECKS
       expected: SimpleNamespace
-    - method: checks.app.check_type
+    - method: check_type
+      << : *CHECKS
       expected: SimpleNamespace
   - description: Defined arguments
     arguments:
@@ -258,12 +289,14 @@ tests:
           - name: b
             default: 2
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       field: a
       expected:
         b: b
         c: c
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       field: b
       expected:
         a: 1

@@ -2,10 +2,13 @@ todo:
 - rename from collating to branching
 
 
-configurations:
-  resources:
-  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/nodes/resources/expand_node.py
-  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/app.py
+resources:
+- &RESOURCE_PATH
+  ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/nodes/resources/expand_node.py
+- &RESOURCE
+  module: *RESOURCE_PATH
+- &CHECKS
+  module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/app.py
 
 
 tests:
@@ -14,7 +17,8 @@ tests:
     Expands nested tests into a single list of tests, and returns a count of the
     tests collected
   cast_output:
-  - method: resources.expand_node.list_sns_to_list_dict
+  - method: list_sns_to_list_dict
+    << : *RESOURCE
     field: nodes
   tests:
   - description: Undefined arguments
@@ -22,7 +26,8 @@ tests:
       root_node: null
       configurations: null
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       expected:
         nodes: []
   - description: Arguments are empty
@@ -30,10 +35,12 @@ tests:
       root_node: {}
       configurations: {}
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       expected:
         nodes:
-        - arguments: {}
+        - __spies__: null
+          arguments: {}
           checks: []
           cast_arguments: []
           cast_output: []
@@ -67,10 +74,12 @@ tests:
         module_route: module_route
         resources: resources
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       expected:
         nodes:
-        - arguments: {}
+        - __spies__: null
+          arguments: {}
           checks: []
           cast_arguments: []
           cast_output: []
@@ -93,7 +102,8 @@ tests:
           spies: []
           tests: null
           yaml: yaml
-        - arguments: {}
+        - __spies__: null
+          arguments: {}
           checks: []
           cast_arguments: []
           cast_output: []
@@ -130,10 +140,12 @@ tests:
         module_route: configurations
         resources: configurations
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       expected:
         nodes:
-        - arguments: {}
+        - __spies__: null
+          arguments: {}
           checks: []
           cast_arguments: []
           cast_output: []
@@ -157,7 +169,8 @@ tests:
           spies: []
           tests: null
           yaml: configurations
-        - arguments: {}
+        - __spies__: null
+          arguments: {}
           checks: []
           cast_arguments: []
           cast_output: []
@@ -181,7 +194,8 @@ tests:
           spies: []
           tests: null
           yaml: configurations
-        - arguments: {}
+        - __spies__: null
+          arguments: {}
           checks: []
           cast_arguments: []
           cast_output: []
@@ -213,7 +227,8 @@ tests:
       root_node: {}
       configurations: {}
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       field: root_node
       expected:
         arguments: {}
@@ -251,7 +266,8 @@ tests:
         resources: configurations
         yaml: configurations
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       field: root_node
       expected:
         arguments: {}
@@ -285,7 +301,8 @@ tests:
     field: node
     unpack: true
   cast_output:
-  - method: resources.expand_node.dict_sns_to_dict_dict
+  - method: dict_sns_to_dict_dict
+    << : *RESOURCE
   tests:
   - description: Empty arguments
     arguments:
@@ -293,7 +310,8 @@ tests:
       node: {}
       nested_nodes: []
     checks:
-    - method: checks.app.check_equals
+    - method: check_equals
+      << : *CHECKS
       expected: {}
   - description: Two nested nodes
     arguments:
@@ -308,9 +326,11 @@ tests:
       - description: nest_node_a
       - description: nest_node_b
     checks:
-    - method: checks.app.check_equals
+    - method: check_equals
+      << : *CHECKS
       expected:
         key.0:
+          __spies__: null
           arguments: {}
           checks: []
           cast_arguments: []
@@ -337,6 +357,7 @@ tests:
           tests: null
           yaml: root_node
         key.1:
+          __spies__: null
           arguments: {}
           checks: []
           cast_arguments: []
@@ -371,14 +392,16 @@ tests:
     field: root_node
     unpack: true
   cast_output:
-  - method: resources.expand_node.dict_sns_to_dict_dict
+  - method: dict_sns_to_dict_dict
+    << : *RESOURCE
     field: nodes
   tests:
   - description: Root node is empty
     arguments:
       root_node: {}
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       expected:
         expanded_keys: []
         nodes:
@@ -388,7 +411,8 @@ tests:
       root_node:
         description: root_node
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       expected:
         expanded_keys: []
         nodes:
@@ -403,13 +427,15 @@ tests:
         - description: nested_1
         - description: nested_2
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       expected:
         expanded_keys: ['0']
         nodes:
           '0':
             description: root_node
           '0.0':
+            __spies__: null
             arguments: {}
             checks: []
             cast_arguments: []
@@ -435,6 +461,7 @@ tests:
             tests: null
             yaml: null
           '0.1':
+            __spies__: null
             arguments: {}
             checks: []
             cast_arguments: []
@@ -460,6 +487,7 @@ tests:
             tests: null
             yaml: null
           '0.2':
+            __spies__: null
             arguments: {}
             checks: []
             cast_arguments: []
@@ -494,7 +522,8 @@ tests:
       expanded_keys: []
       nodes: {}
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       expected:
         expanded_keys: null
         nodes: []
@@ -506,7 +535,8 @@ tests:
         2: 2
       expanded_keys: [0]
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       expected:
         expanded_keys: null
         nodes:
@@ -522,7 +552,8 @@ tests:
         4: 4
       expanded_keys: [0, 1, 5]
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       expected:
         expanded_keys: null
         nodes:

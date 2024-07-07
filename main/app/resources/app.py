@@ -13,7 +13,7 @@ LOCALS = locals()
 
 
 def wrapper_get_module(module: str) -> ModuleType:
-  return get_module.main(location=module, pool=False)
+  return get_module.main(location=module).module
 
 
 def get_resource(resource: str | None = None) -> Any:

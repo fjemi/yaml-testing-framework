@@ -7,31 +7,23 @@ from types import ModuleType
 from types import SimpleNamespace as sns
 from typing import Callable, List
 
-# trunk-ignore(ruff/F401)
-from main.process.casts import process_cast_arguments, process_cast_output
-# trunk-ignore(ruff/F401)
-from main.process.checks import main as process_checks
-# trunk-ignore(ruff/F401)
-from main.process.environment import main as process_environment
-# trunk-ignore(ruff/F401)
-from main.process.locations import main as process_locations
-# trunk-ignore(ruff/F401)
-from main.process.nodes import main as process_nodes
-# trunk-ignore(ruff/F401)
-from main.process.patches import main as process_patches
-# trunk-ignore(ruff/F401)
-from main.process.spies import main as process_spies
+from main.process import (
+  spies,
+  casts,
+  checks,
+  patches,
+  environment,
+  locations,
+  nodes,
+)
 from main.utils import (
   get_config,
   get_module,
-  get_object,
   independent,
   logger,
-  set_object,
+  objects,
+  methods,
 )
-# trunk-ignore(ruff/F401)
-from main.utils.methods.call import main as get_function_output
-
 
 MODULE = __file__
 CONFIG = get_config.main()
@@ -48,7 +40,6 @@ def main(
   include_files: str | List[str] | None = None,
   exclude_functions: str | List[str] | None = None,
   include_functions: str | List[str] | None = None,
-  resources: str | list | None = None,
   yaml_suffix: str | None = None,
   logging_enabled: bool | None = None,
 ) -> list:
@@ -86,25 +77,6 @@ def handle_id(
     log=log, )
 
 
-def handle_module(
-  module: str | None = None,
-  module_route: List[str] | str | None = None,
-  key: str | None = None,
-) -> sns:
-  temp = get_module.main(
-    location=module,
-    name=module_route,
-    key=key,
-    pool=False, )
-  if isinstance(temp, ModuleType):
-    return sns(module=temp)
-
-  log = sns(
-    message=f'No module at location {module}',
-    level='warning', )
-  return sns(log=log)
-
-
 def get_resource_route(
   resource: str,
   module: str,
@@ -126,56 +98,11 @@ def get_resource_route(
   return '.'.join(routes)
 
 
-def handle_resources(
-  module: ModuleType | None = None,
-  resources: List[str] | str | None = None,
-) -> sns:
-  resources = resources or []
-  visited = []
-  ignored = []
-
-  for location in resources:
-    if location in visited:
-      continue
-    visited.append(location)
-
-    extension = os.path.splitext(location)[1]
-    if False in [
-      os.path.exists(location),
-      extension in CONFIG.module_extensions,
-    ]:
-      ignored.append(location)
-      continue
-
-    resource = get_module.main(
-      location=location,
-      pool=False, )
-    if not isinstance(resource, ModuleType):
-      ignored.append(location)
-      continue
-    route = get_resource_route(
-      module=module.__file__,
-      resource=resource.__file__, )
-    module = set_object.main(
-      parent=module,
-      value=resource,
-      route=route, )
-
-  log = None
-  if ignored:
-    log = sns(
-      resources_ignored=ignored,
-      level='warning',
-      standard_output=True, )
-
-  return sns(module=module, _cleanup=['resources'], log=log)
-
-
 def get_function(
   function: str | None = None,
   module: ModuleType | None = None,
 ) -> sns:
-  function_ = get_object.main(parent=module, route=function)
+  function_ = objects.get(parent=module, route=function)
   if isinstance(function_, Callable):
     return sns(function=function_, function_name=function)
 

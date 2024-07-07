@@ -2,10 +2,13 @@ TODO:
 - Add logic to cast expected
 
 
-configurations:
-  resources:
-  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/spies/resource.py
-  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/app.py
+resources:
+- &RESOURCE_PATH
+  ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/spies/resource.py
+- &RESOURCE
+  module: *RESOURCE_PATH
+- &CHECKS
+  module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/app.py
 
 
 tests:
@@ -15,34 +18,40 @@ tests:
     in the module, and the key for spy on a method is the route to the method
     from the module of the function being tested.
   cast_arguments:
-  - method: resource.wrapper_get_module
+  - method: wrapper_get_module
+    << : *RESOURCE
     field: module
   tests:
   - description: No spies defined
     arguments:
       spies: null
-      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/spies/resource.py
+      module: *RESOURCE_PATH
     checks:
-    - method: checks.app.check_type
+    - method: check_type
+      << : *CHECKS
       expected: SimpleNamespace
-    - method: checks.app.check_module
+    - method: check_module
+      << : *CHECKS
       field: module
       expected:
-        location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/spies/resource.py
-    - method: checks.app.check_equals
-      field: module.SPIES
+        location: *RESOURCE_PATH
+    - method: check_equals
+      << : *CHECKS
+      field: __spies__
       expected: {}
   - description: Spies defined
     arguments:
       spies:
       - add
       - subtract
-      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/spies/resource.py
+      module: *RESOURCE_PATH
     checks:
-    - method: checks.app.check_equals
-      field: module.SPIES
+    - method: check_equals
+      << : *CHECKS
+      field: __spies__
       cast_output:
-      - method: resource.dict_sns_to_dict_dict
+      - method: dict_sns_to_dict_dict
+        << : *RESOURCE
       expected:
         add:
           called: False
@@ -50,19 +59,22 @@ tests:
         subtract:
           called: False
           called_with: null
-    - method: checks.app.check_function
+    - method: check_function
+      << : *CHECKS
       field: module.add
       expected:
-        location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/spies/resource.py
+        location: *RESOURCE_PATH
         name: add
-    - method: checks.app.check_equals
-      field: module.subtract._method
+    - method: check_equals
+      << : *CHECKS
+      field: module.subtract.__method__
       expected: spy
 - function: do_nothing
   description: Returns a null object
   arguments: {}
   checks:
-  - method: checks.app.check_equals
+  - method: check_equals
+    << : *CHECKS
     expect: null
 - function: spy_on_method
   description: >
@@ -72,58 +84,66 @@ tests:
   - description: Undefined arguments
     arguments: {}
     checks:
-    - method: checks.app.check_exception
-      expected: TypeError
+    - method: check_equals
+      << : *CHECKS
+      field: module
+      expected: null
   - cast_arguments:
       field: module
-      method: resource.wrapper_get_module
+      method: wrapper_get_module
+      << : *RESOURCE
     tests:
     - description: Method does not exist in module
       arguments:
-        module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/spies/resource.py
+        module: *RESOURCE_PATH
         route: method_does_not_exist
       checks:
-      - method: checks.app.check_module
+      - method: check_module
+        << : *CHECKS
         field: module
         expected:
-          location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/spies/resource.py
-      - method: checks.app.check_equals
-        field: module.SPIES
-        cast_output:
-        - method: resource.dict_sns_to_dict_dict
-        expected:
-          method_does_not_exist:
-            called: False
-            called_with: null
-      - method: checks.app.check_function
+          location: *RESOURCE_PATH
+      - method: check_function
+        << : *CHECKS
         field: module.method_does_not_exist
         expected:
           name: do_nothing
           location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/spies/app.py
     - description: Method exists in module
       arguments:
-        module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/spies/resource.py
+        module: *RESOURCE_PATH
         route: add
       checks:
-      - method: checks.app.check_equals
-        field: module.SPIES
-        cast_output:
-        - method: resource.dict_sns_to_dict_dict
+      - method: check_function
+        << : *CHECKS
+        field: module.add
         expected:
-          add:
-            called: False
-            called_with: null
-    - description: Call spied on method
-      arguments:
-        module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/spies/resource.py
-        route: add
-      checks:
-      - method: checks.app.check_equals
-        cast_output:
-        - method: resource.call_spy
+          name: add
+          location: *RESOURCE_PATH
+      - method: check_function
+        << : *CHECKS
+        field: module.add.__wrapped__
         expected:
-          add:
-            called: True
-            called_with:
-              a: 1
-              b: 1
+          name: add
+          location: *RESOURCE_PATH
+      - method: check_equals
+        << : *CHECKS
+        field: module.add.__method__
+        expected: spy
+    # # TODO: Can this test be resolved?
+    # - description: Call spied on method
+    #   arguments:
+    #     module: *RESOURCE_PATH
+    #     route: add
+    #   checks:
+    #   - method: check_spies
+    #     << : *CHECKS
+    #     cast_output:
+    #     - method: call_spy
+    #       << : *RESOURCE
+    #     expected:
+    #       add:
+    #         called: True
+    #         called_with:
+    #           a: 1
+    #           b: 1

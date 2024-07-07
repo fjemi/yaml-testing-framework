@@ -11,6 +11,8 @@ omit = [
   '*/*resource*/**',
   '*/*resource*/*.py',
   '*/*resource*.py',
+  '**/__init__.py',
+  '**/.ignore/**',
 ]
 branch = true
 source = ['/']

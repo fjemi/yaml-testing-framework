@@ -6,12 +6,24 @@ TODO:
 - Add wrapper logic back in for external libraries
 - Consolidate duplicate code for sync and async functions -> https://stackoverflow.com/questions/27290656/should-i-use-two-asyncio-event-loops-in-one-program/27298880#27298880
 - Add shared resources files/folders
+- add logic to run tests for specified functions only
 
 
-configurations:
-  resources:
-  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/app.py
-  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/app/resources/app.py
+help:
+- https://stackoverflow.com/questions/5067604/determine-function-name-from-within-that-function-without-using-traceback
+
+
+resources:
+- &CHECKS_PATH
+  ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/app.py
+- &CHECKS
+  module: *CHECKS_PATH
+- &RESOURCE
+  module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/app/resources/app.py
+- &ADD_PATH
+  ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/app/resources/add.py
+- &ADD_TEST_PATH
+  ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/app/resources/add_test.yaml
 
 
 tests:
@@ -19,28 +31,26 @@ tests:
   description: >
     Main module of this application. Returns the results of running tests
   cast_output:
-  - method: resources.app.list_sns_to_list_dict
+  - method: list_sns_to_list_dict
+    << : *RESOURCE
   tests:
   - description: Results from running tests associated with a module
     arguments:
-      project_path: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/app/resources/add.py
+      project_path: *ADD_PATH
       yaml_suffix: _test
-      resources:
-      - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/app.py
     checks:
-    - method: checks.app.check_equals
+    - method: check_equals
+      << : *CHECKS
       expected:
       - expected: TypeError
         id: ' .main.app.resources.add.add - 0.1 - Return the result of adding two integers '
         id_short: .main.app.resources.add.add
-        log: null
         method: check_exception
         output: TypeError
         passed: true
       - expected: 3
         id: ' .main.app.resources.add.add - 0.0 - Return the result of adding two integers '
         id_short: .main.app.resources.add.add
-        log: null
         method: check_equals
         output: 3
         passed: true
@@ -50,12 +60,14 @@ tests:
   - description: Undefined arguments
     arguments: {}
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       expected:
         id: ' None.None - None '
         id_short: None.None
         log: Generated test id for None.None
-    - method: checks.app.check_type
+    - method: check_type
+      << : *CHECKS
       expected: SimpleNamespace
   - description: Defined arguments
     arguments:
@@ -66,40 +78,12 @@ tests:
       - description_b
       key: key
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       expected:
         id: ' module_route.function - key - description_b '
         id_short: module_route.function
         log: Generated test id for module_route.function
-- function: handle_module
-  description: Returns the module at a specified location
-  tests:
-  - description: Undefined arguments
-    arguments: {}
-    checks:
-    - method: checks.app.check_sns
-      field: log
-      expected:
-        message: No module at location None
-        level: warning
-  - description: Module does not exist at location
-    arguments:
-      module: module_location_does_not_exist
-    checks:
-    - method: checks.app.check_sns
-      field: log
-      expected:
-        message: No module at location module_location_does_not_exist
-        level: warning
-  - description: Module exists at the location
-    arguments:
-      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/app/resources/app.py
-      module_route: .main.resources.app
-    checks:
-    - method: checks.app.check_module
-      field: module
-      expected:
-        location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/app/resources/app.py
 - function: get_resource_route
   description: >
     Get the route for a resource in a module based on resource and module's
@@ -110,92 +94,55 @@ tests:
       module: null
       resource: null
     checks:
-    - method: checks.app.check_equals
+    - method: check_equals
+      << : *CHECKS
       expected: None
   - description: Defined arguments
     arguments:
       module: module.py
       resource: resource.py
     checks:
-    - method: checks.app.check_equals
+    - method: check_equals
+      << : *CHECKS
       expected: resource
   - description: Resource and module in shared directory
     arguments:
       module: directory/module.py
       resource: directory/resource.py
     checks:
-    - method: checks.app.check_equals
+    - method: check_equals
+      << : *CHECKS
       expected: resource
   - description: Module in sub directory of resource's directory
     arguments:
       module: directory/sub_directory/module.py
       resource: directory/resource.py
     checks:
-    - method: checks.app.check_equals
+    - method: check_equals
+      << : *CHECKS
       expected: resource
   - description: Module and resource are in different directories
     arguments:
       module: directory_a/module.py
       resource: directory_b/resource.py
     checks:
-    - method: checks.app.check_equals
+    - method: check_equals
+      << : *CHECKS
       expected: directory_b.resource
   - description: Resource in sub directory of module's directory
     arguments:
       module: directory/module.py
       resource: directory/sub_directory/resource.py
     checks:
-    - method: checks.app.check_equals
+    - method: check_equals
+      << : *CHECKS
       expected: sub_directory.resource
-- function: handle_resources
-  description: Loads resource modules into the module to test
-  cast_arguments:
-  - method: resources.app.wrapper_get_module
-    field: module
-  tests:
-  - description: Undefined arguments
-    arguments: {}
-    checks:
-    - method: checks.app.check_sns
-      expected:
-        module: null
-        _cleanup:
-        - resources
-  - description: >
-      Resources is a list containing the locations of existing python and
-      javascript modules, and the location of a non-existing module
-    arguments:
-      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/app/resources/app.py
-      resources:
-      - does_not_exist.py
-      - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/app/resources/resource.js
-      - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/app/resources/resource.py
-    checks:
-    - method: checks.app.check_sns
-      expected:
-        _cleanup:
-        - resources
-    - method: checks.app.check_sns
-      field: log
-      expected:
-        level: warning
-        standard_output: true
-        resources_ignored:
-        - does_not_exist.py
-        - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/app/resources/resource.js
-    - method: checks.app.check_module
-      field: module
-      expected:
-        location: ${PWD}/main/app/resources/app.py
-    # Verify that the resource was added to the module
-    - method: checks.app.check_module
-      field: module.resource
-      expected:
-        location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/app/resources/resource.py
+
 - function: get_function
   description: Returns an existing function to test
   cast_arguments:
-  - method: resources.app.wrapper_get_module
+  - method: wrapper_get_module
+    << : *RESOURCE
     field: module
   tests:
   - description: Function does not exist in module
@@ -203,10 +150,12 @@ tests:
       function: does_not_exist
       module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/app/resources/app.py
     checks:
-    - method: checks.app.check_exception
+    - method: check_exception
+      << : *CHECKS
       field: log.exception
       expected: RuntimeError
-    - method: checks.app.check_equals
+    - method: check_equals
+      << : *CHECKS
       field: log.level
       expected: error
   - description: Function exists in module
@@ -214,7 +163,8 @@ tests:
       function: multiply
       module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/app/resources/app.py
     checks:
-    - method: checks.app.check_function
+    - method: check_function
+      << : *CHECKS
       field: function
       expected:
         name: multiply
@@ -227,18 +177,20 @@ tests:
     field: test
     unpack: true
   cast_output:
-  - method: resources.app.list_sns_to_list_dict
+  - method: list_sns_to_list_dict
+    << : *RESOURCE
   tests:
   - description: Undefined test results in empty list
     arguments: {}
     checks:
-    - method: checks.app.check_equals
+    - method: check_equals
+      << : *CHECKS
       expected: []
   - description: Defined test returns a list containing checks
     arguments:
       test:
-        project_path: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/app/resources/add.py
-        module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/app/resources/add.py
+        project_path: *ADD_PATH
+        module: *ADD_PATH
         yaml: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/app/resources/add.yaml
         function: add
         function_name: add
@@ -247,65 +199,67 @@ tests:
         arguments:
           a: 0
           b: 11
-        resources:
-        - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/app.py
         checks:
-        - method: checks.app.check_equals
+        - method: check_equals
+          << : *CHECKS
           expected: 11
     checks:
-    - method: checks.app.check_equals
+    - method: check_equals
+      << : *CHECKS
       cast_output:
-      - method: resources.app.list_sns_to_list_dict
+      - method: list_sns_to_list_dict
+        << : *RESOURCE
       expected:
       - expected: 11
         id: ' .main.resources.add.app.add - 0.0 '
         id_short: .main.resources.add.app.add
-        log: null
         method: check_equals
         output: 11
         passed: true
 - function: run_test_handler
   description: Handles running tests of various kinds
   cast_arguments:
-  - method: resources.app.list_dict_to_list_sns
+  - method: list_dict_to_list_sns
+    << : *RESOURCE
     field: tests
   tests:
   - description: Tests is undefined
     arguments:
       tests: null
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       expected:
         tests: []
   - description: Tests is defined
     arguments:
       tests:
-      - resources:
-        - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/app.py
-        module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/app/resources/add.py
+      - module: *ADD_PATH
         function: add
         description: Return the result of adding two integers
         arguments:
           a: 1
           b: 1
         checks:
-        - method: checks.app.check_equals
+        - method: check_equals
+          << : *CHECKS
           expected: 2
-        yaml: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/app/resources/add_test.yaml
-        project_path: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/app/resources/add.py
+        yaml: *ADD_TEST_PATH
+        project_path: *ADD_PATH
         module_route: app.add.app
         key: 0.0
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       cast_output:
-      - method: resources.app.list_sns_to_list_dict
+      - method: list_sns_to_list_dict
+        << : *RESOURCE
         field: tests
       expected:
         tests:
         - expected: 2
           id: ' app.add.app.add - 0.0 - Return the result of adding two integers '
           id_short: app.add.app.add
-          log: null
           method: check_equals
           output: 2
           passed: true
@@ -314,14 +268,16 @@ tests:
     Performs a number of operations to process content or tests defined in
     YAML files provided the locations of a YAML, module, and resource files
   cast_arguments:
-  - method: resources.app.list_dict_to_list_sns
+  - method: list_dict_to_list_sns
+    << : *RESOURCE
     field: locations
   tests:
   - description: Locations is an empty dictionary
     arguments:
       locations: []
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       field: log
       expected:
         message: No tests collected
@@ -330,31 +286,28 @@ tests:
   - description: Location of files associated with an "add" module
     arguments:
       locations:
-      - module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/app/resources/add.py
+      - module: *ADD_PATH
         module_route: add.app.app
-        yaml: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/app/resources/add_test.yaml
-        resources:
-        - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/app.py
-        - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/app/resources/add/resources_folder_name/app.py
+        yaml: *ADD_TEST_PATH
         project_path: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/app/resources/add/resources_folder_name/app.py
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       cast_output:
       - field: tests
-        method: resources.app.list_sns_to_list_dict
+        method: list_sns_to_list_dict
+        << : *RESOURCE
       expected:
         tests:
         - expected: TypeError
           id: ' add.app.app.add - 0.1 - Return the result of adding two integers '
           id_short: add.app.app.add
-          log: null
           method: check_exception
           output: TypeError
           passed: true
         - expected: 3
           id: ' add.app.app.add - 0.0 - Return the result of adding two integers '
           id_short: add.app.app.add
-          log: null
           method: check_equals
           output: 3
           passed: true

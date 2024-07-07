@@ -44,7 +44,7 @@ def check_method_a() -> None:
 
 
 def wrapper_get_module(module: str | None = None) -> ModuleType:
-  return get_module.main(location=module, pool=False)
+  return get_module.main(module=module).module
 
 
 def check_resource(
@@ -75,7 +75,7 @@ def main_cast_arguments(output: dict | None = None) -> sns:
   output = sns(**output)
 
   module = getattr(output, 'module', None)
-  output.module = get_module.main(location=module, pool=False)
+  output.module = get_module.main(location=module).module
 
   output.checks = getattr(output, 'checks', [])
 
@@ -118,7 +118,7 @@ def compare_expected_and_output_cast_arguments(
   check = sns(**check)
 
   check.method = check_equals
-  check.module = get_module.main(location=MODULE, pool=False)
+  check.module = get_module.main(location=MODULE).module
   return check
 
 
@@ -127,7 +127,7 @@ def sns_to_dict(output: sns) -> dict:
 
 
 def examples() -> None:
-  invoke_testing_method.main(resource_flag=True)
+  invoke_testing_method.main(resource_flag=True, module_filename='app')
 
 
 if __name__ == '__main__':

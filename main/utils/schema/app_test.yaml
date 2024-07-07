@@ -1,8 +1,11 @@
-configurations:
-  resources:
-  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/app.py
-  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/schema/resources/app.py
-
+resources:
+- &CHECKS
+  module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/app.py
+- &RESOURCE
+  ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/schema/resources/app.py
+- &YAML
+  ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/schema/app.yaml
+  
 
 tests:
 - function: main
@@ -15,34 +18,39 @@ tests:
       module: null
       yaml: null
     checks:
-    - method: checks.app.check_type
+    - method: check_type
+      << : *CHECKS
       expected: SimpleNamespace
   - description: YAML is defined
     arguments:
       module: null
       yaml: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/schema/resources/app.yaml
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       field: Example_1
       expected:
         integer: 1
         string: ''
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       field: Example_2
       expected:
         list: []
         dictionary: {}
   - description: Module is defined and simple name space model flag is true
     arguments:
-      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/schema/resources/app.py
+      module: *RESOURCE
       yaml: null
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       field: Example_1
       expected:
         integer: 1
         string: ''
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       field: Example_2
       expected:
         list: []
@@ -57,22 +65,34 @@ tests:
       module: null
       yaml: null
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       expected:
-        location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/schema/app.yaml
+        location: *YAML
   - description: YAML is defined
     arguments:
       module: null
       yaml: YAML
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       expected:
         location: YAML
-  - description: Module is Defined
+  - description: Module is defined
     arguments:
       module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/schema/app.py
       yaml: null
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       expected:
-        location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/schema/app.yaml
+        location: *YAML
+  - description: Content is defined
+    arguments:
+      content:
+        key: value
+    checks:
+    - method: check_equals
+      << : *CHECKS
+      field: __dict__
+      expected: {}

@@ -1,7 +1,8 @@
-configurations:
-  resources:
-  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/app.py
-  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/environment/resources/app.py
+resources:
+- &CHECKS
+  module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/app.py
+- &RESOURCE
+  module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/environment/resources/app.py
 
 
 tests:
@@ -10,21 +11,18 @@ tests:
     Sets environment variables in a global CONFIG variable within a module
   cast_arguments:
   - field: module
-    method: resources.app.wrapper_get_module
+    method: wrapper_get_module
+    << : *RESOURCE
   tests:
   - description: Undefined arguments
     arguments:
       environment: null
       module: null
     checks:
-    - method: checks.app.check_equals
-      field: __dict__
+    - method: check_equals
+      << : *CHECKS
+      field: module.CONFIG.environment.__dict__
       expected: {}
-    # - method: checks.app.check_sns
-    #   field: log
-    #   expected:
-    #     level: warning
-    #     message: No environment set for module ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/environment/resources/no_config.py
   - description: Module with no CONFIG
     arguments:
       environment:
@@ -32,23 +30,22 @@ tests:
         VAR_B: B
       module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/environment/resources/no_config.py
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       field: module.CONFIG.environment
       expected:
         VAR_A: A
         VAR_B: B
-    # - method: checks.app.check_sns
-    #   expected:
-    #     log: CONFIG added to module at location ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/environment/resources/no_config.py
   - description: Module has CONFIG with no environment
     arguments:
       environment:
         VAR_A: 1
         VAR_B: 2
         VAR_C: 3
-      module:  ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/environment/resources/no_config.py
+      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/environment/resources/no_config.py
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       field: module.CONFIG.environment
       expected:
         VAR_A: 1
@@ -62,7 +59,8 @@ tests:
         VAR_3: 3
       module:  ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/environment/resources/config_with_environment.py
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       field: module.CONFIG.environment
       expected:
         VAR_1: 1
@@ -71,6 +69,7 @@ tests:
         VAR_A: A
         VAR_B: B
         VAR_C: C
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       expected:
         log: null

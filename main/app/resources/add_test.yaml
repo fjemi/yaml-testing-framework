@@ -1,6 +1,6 @@
-configurations:
-  resources:
-  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/app.py
+resources:
+- &CHECKS
+  module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/app.py
 
 
 tests:
@@ -11,11 +11,13 @@ tests:
       a: 1
       b: 2
     checks:
-    - method: checks.app.check_equals
+    - method: check_equals
+      << : *CHECKS
       expected: 3
   - arguments:
       a: 1
       b: '1'
     checks:
-    - method: checks.app.check_exception
+    - method: check_exception
+      << : *CHECKS
       expected: TypeError

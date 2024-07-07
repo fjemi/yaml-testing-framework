@@ -12,6 +12,7 @@ from typing import Any, Awaitable, Callable
 
 # trunk-ignore(ruff/F401)
 from checks import module_resource
+from main.utils import get_module
 
 
 LOCALS = locals()
@@ -23,10 +24,15 @@ def check_sns_resource(output: dict | None = None) -> sns:
     return sns(**output)
 
 
-def check_exception_resource(output: str | None = None) -> Exception | None:
-  if output:
-    exceptions = sns(RuntimeError=RuntimeError(), TypeError=TypeError())
-    return getattr(exceptions, output, None)
+def get_exception(output: str | None = None) -> Exception | None:
+  output = str(output)
+  exceptions = sns(
+    RuntimeError=RuntimeError(),
+    TypeError=TypeError(), )
+  return getattr(
+    exceptions,
+    output,
+    output, )
 
 
 def check_method() -> str:
@@ -42,6 +48,7 @@ def get_output_resource(output: str | None = None) -> ModuleType:
 
 
 def get_method(method: str | None) -> Callable | None:
+  method = str(method)
   return LOCALS.get(method, None)
 
 
@@ -58,18 +65,17 @@ def check_function_resource(output: str | None = None) -> Callable | None:
   return locals().get(output, None)
 
 
-def check_dataclass_resource(output: str | None = None) -> Any:
+def get_dataclass(output: str | None = None) -> Any:
 
   @dc.dataclass
   class DataClass:
     a: str = 'a'
     b: str = 'b'
 
-  dataclass = DataClass()
-  return locals().get(output, None)
+  return None if not output else DataClass()
 
 
-def check_class_resource(output: str | None = None) -> Any:
+def get_class(output: str | None = None) -> Any:
 
   class Class:
     pass
@@ -78,7 +84,7 @@ def check_class_resource(output: str | None = None) -> Any:
   class_.a = 'a'
   class_.b = 'b'
 
-  return locals().get(output, None)
+  return None if not output else class_
 
 
 def check_range_resource(output: dict | None = None) -> range | None:
@@ -169,8 +175,10 @@ async def wrapped_awaitable_method(*args, **kwargs) -> str:
   return 'wrapped_awaitable_output'
 
 
-def get_module_resource(module: str | None = None) -> ModuleType | None:
-  return LOCALS.get(module, None)
+def wrapper_get_module(
+  module: str | None = None,
+) -> ModuleType | None:
+  return get_module.main(module=module).module
 
 
 def examples() -> None:

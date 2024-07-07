@@ -1,5 +1,4 @@
-configurations:
-  resources: resource_configuration
+configurations: {}
 
 
 tests:

@@ -47,8 +47,14 @@ class Store:
 GET_PARENT_RESOURCES = DataClass()
 
 
-def wrapper_get_module(module: str | None = None) -> ModuleType:
-  return get_module.main(location=module, pool=False)
+def wrapper_get_module(
+  module: str | None = None,
+  resource: str | None = None,
+) -> ModuleType:
+  module = module or resource
+  return get_module.main(
+    location=module,
+    default=module, ).module
 
 
 def get_input(data: str | None = None) -> str:
@@ -175,7 +181,7 @@ def setup_0(*args, **kwargs) -> ModuleType:
   return app_a
 
 
-def setup_1(module: None = None) -> dict:
+def setup_1(module: None = None) -> str:
   _ = module
 
   text = '''

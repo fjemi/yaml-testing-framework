@@ -6,82 +6,162 @@ TODO:
 - Add flag for silent logging in cases where an exception is the expected output
 
 
-resource:
+help:
 - https://stackoverflow.com/questions/5218895/python-nested-functions-variable-scoping
 
 
-configurations:
-  resources:
-  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/app.py
-  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/methods/resource.py
+resources:
+- &CHECKS
+  module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/app.py
+- &RESOURCE
+  module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/methods/resource.py
 
 
 tests:
+- function: main
+  description: >
+    Returns of the result of calling a method with or without arguments
+  tests:
+  - description: Undefined arguments
+    arguments: {}
+    checks:
+    - method: check_exception
+      << : *CHECKS
+      field: exception
+      expected: TypeError
+    - method: check_exception
+      << : *CHECKS
+      field: output
+      expected: TypeError
+  - description: Call method and unpack list arguments.
+    cast_arguments:
+    - method: get_function
+      << : *RESOURCE
+      field: method
+    arguments:
+      arguments: [1, 1]
+      method: add
+    checks:
+    - method: check_sns
+      << : *CHECKS
+      expected:
+        exception: null
+        output: 2
+  - description: Call method, no unpacking
+    cast_arguments:
+    - method: get_function
+      << : *RESOURCE
+      field: method
+    arguments:
+      method: sum_
+      arguments: 
+        values: [2, 2]
+    checks:
+    - method: check_sns
+      << : *CHECKS
+      expected:
+        output: 4
+        exception: null
+  - description: Call method and unpack mapping arguments.
+    cast_arguments:
+    - method: get_function
+      << : *RESOURCE
+      field: method
+    arguments:
+      arguments:
+        a: 0
+        b: 0
+      method: add
+    checks:
+    - method: check_sns
+      << : *CHECKS
+      expected:
+        exception: null
+        output: 0
 - function: is_coroutine
   description: Returns True if an object is a coroutine and False otherwise
   cast_arguments:
-  - method: resource.get_method
+  - method: get_method
+    << : *RESOURCE
     field: object
   tests:
   - description: Object is undefined
     arguments:
       object: null
     checks:
-    - method: checks.app.check_equals
+    - method: check_equals
+      << : *CHECKS
       expected: False
   - description: Object is callable
     arguments:
       object: callable_function
     checks:
-    - method: checks.app.check_equals
+    - method: check_equals
+      << : *CHECKS
       expected: False
   - description: Object is awaitable
     arguments:
       object: awaitable_function
     checks:
-    - method: checks.app.check_equals
+    - method: check_equals
+      << : *CHECKS
       expected: True
 - function: get_task_from_event_loop
   description: Returns the output of an awaitable or callable function
   cast_arguments:
-  - method: resource.get_task
+  - method: get_task
+    << : *RESOURCE
     field: task
   tests:
   - description: Task is undefined
     arguments:
       task: null
     checks:
-    - method: checks.app.check_equals
+    - method: check_equals
+      << : *CHECKS
       expected: null
   - description: Task is callable output
     arguments:
       task: callable_function
     checks:
-    - method: checks.app.check_equals
+    - method: check_equals
+      << : *CHECKS
       expected: callable_output
   - description: Task is awaitable output
     arguments:
       task: awaitable_function
     checks:
-    - method: checks.app.check_equals
+    - method: check_equals
+      << : *CHECKS
       expected: awaitable_output
-- function: do_nothing
-  description: Does nothing
+- function: wrapper
+  description: Decorator that handles exceptions and formats output from "call" handlers
+  cast_arguments:
+  - field: method
+    << : *RESOURCE
+    method: get_method
   tests:
-  - arguments: {}
-    checks:
-    - method: checks.app.check_equals
-      expected: null
   - arguments:
-      field: value
+      method: greetings
     checks:
-    - method: checks.app.check_equals
-      expected: null
+    - method: check_equals
+      << : *CHECKS
+      field: __wrapped__.__name__
+      expected: greetings
+    - method: check_sns
+      << : *CHECKS
+      cast_output:
+      - method: call_output
+        << : *RESOURCE
+      expected:
+        output: Hello World
+        exception: null
 - function: unpack_mapping
   description: Returns output from passing an unpacked mapping to a method
   cast_arguments:
   - field: method
-    method: resource.get_method
+    << : *RESOURCE
+    method: get_method
   tests:
   - description: Argument is a mapping
     arguments:
@@ -90,7 +170,8 @@ tests:
         b: 0
       method: add
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       expected:
         output: 0
         exception: null
@@ -99,17 +180,20 @@ tests:
       arguments: [0, 0]
       method: add
     checks:
-    - method: checks.app.check_exception
+    - method: check_exception
+      << : *CHECKS
       field: output
       expected: TypeError
-    - method: checks.app.check_exception
+    - method: check_exception
+      << : *CHECKS
       field: exception
       expected: TypeError
 - function: unpack_list
   description: Returns output from passing an unpacked list or tuple to a method
   cast_arguments:
   - field: method
-    method: resource.get_method
+    << : *RESOURCE
+    method: get_method
   tests:
   - description: Argument is a list
     arguments:
@@ -118,7 +202,8 @@ tests:
       - 0
       method: add
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       expected:
         output: 0
         exception: null
@@ -129,7 +214,8 @@ tests:
         b: 0
       method: add
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       expected:
         output: ab
         exception: null
@@ -141,17 +227,20 @@ tests:
         c: 0
       method: add
     checks:
-    - method: checks.app.check_exception
+    - method: check_exception
+      << : *CHECKS
       field: output
       expected: TypeError
-    - method: checks.app.check_exception
+    - method: check_exception
+      << : *CHECKS
       field: exception
       expected: TypeError
 - function: pack_any
   description: Returns output from calling function with packed arguments
   cast_arguments:
   - field: method
-    method: resource.get_method
+    << : *RESOURCE
+    method: get_method
   tests:
   - description: Argument is a mapping
     arguments:
@@ -160,10 +249,12 @@ tests:
         b: 0
       method: sum_
     checks:
-    - method: checks.app.check_exception
+    - method: check_exception
+      << : *CHECKS
       field: output
       expected: TypeError
-    - method: checks.app.check_exception
+    - method: check_exception
+      << : *CHECKS
       field: exception
       expected: TypeError
   - description: Argument is a list
@@ -173,10 +264,25 @@ tests:
       - 0
       method: sum_
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       expected:
         output: 0
         exception: null
+- function: do_nothing
+  description: Does nothing
+  tests:
+  - arguments: {}
+    checks:
+    - method: check_equals
+      << : *CHECKS
+      expected: null
+  - arguments:
+      field: value
+    checks:
+    - method: check_equals
+      << : *CHECKS
+      expected: null
 - function: get_handlers
   description: >
     Returns handlers or methods used to call a function with packed or unpacked
@@ -186,24 +292,31 @@ tests:
     arguments:
       arguments: null
     checks:
-    - method: checks.app.check_length
+    - method: check_length
+      << : *CHECKS
       expected: 1
-    - method: checks.app.check_type
+    - method: check_type
+      << : *CHECKS
       expected: list
-    - method: checks.app.check_equals
+    - method: check_equals
+      << : *CHECKS
       cast_output:
-      - method: resource.list_methods_to_list_strings
+      - method: list_methods_to_list_strings
+        << : *RESOURCE
       expected:
       - pack_any
   - description: Arguments is a mapping
     arguments:
       arguments: {}
     checks:
-    - method: checks.app.check_length
+    - method: check_length
+      << : *CHECKS
       expected: 2
-    - method: checks.app.check_equals
+    - method: check_equals
+      << : *CHECKS
       cast_output:
-      - method: resource.list_methods_to_list_strings
+      - method: list_methods_to_list_strings
+        << : *RESOURCE
       expected:
       - unpack_mapping
       - pack_any
@@ -211,11 +324,14 @@ tests:
     arguments:
       arguments: []
     checks:
-    - method: checks.app.check_length
+    - method: check_length
+      << : *CHECKS
       expected: 2
-    - method: checks.app.check_equals
+    - method: check_equals
+      << : *CHECKS
       cast_output:
-      - method: resource.list_methods_to_list_strings
+      - method: list_methods_to_list_strings
+        << : *RESOURCE
       expected:
       - unpack_list
       - pack_any
@@ -225,9 +341,11 @@ tests:
     the result does not produce an exception. If all handlers produce errors return the
     first error produced.
   cast_arguments:
-  - method: resource.get_method
+  - method: get_method
+    << : *RESOURCE
     field: method
-  - method: resource.get_handlers
+  - method: get_handlers
+    << : *RESOURCE
     field: handlers
   tests:
   - description: Handlers is empty list
@@ -236,7 +354,8 @@ tests:
       method: add
       handlers: []
     checks:
-    - method: checks.app.check_exception
+    - method: check_exception
+      << : *CHECKS
       expected: IndexError
   - description: Single handler
     arguments:
@@ -247,7 +366,8 @@ tests:
       handlers:
       - pack_any
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       expected:
         output: 2
         exception: null
@@ -261,7 +381,8 @@ tests:
       - unpack_mapping
       - pack_any
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       expected:
         output: 2
         exception: null
@@ -273,7 +394,8 @@ tests:
       - unpack_list
       - pack_any
     checks:
-    - method: checks.app.check_exception
+    - method: check_exception
+      << : *CHECKS
       field: output
       expected: TypeError
   - description: list and any handlers
@@ -286,25 +408,8 @@ tests:
       - unpack_list
       - pack_any
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       expected:
         output: 2
-        exception: null
-- function: wrapper
-  description: Decorator that handles exceptions and formats output from "call" handlers
-  cast_arguments:
-  - field: method
-    method: resource.get_method
-  tests:
-  - arguments:
-      method: greetings
-    checks:
-    - method: checks.app.check_equals
-      field: __wrapped__.__name__
-      expected: greetings
-    - method: checks.app.check_sns
-      cast_output:
-      - method: resource.call_output
-      expected:
-        output: Hello World
         exception: null

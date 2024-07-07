@@ -1,0 +1,490 @@
+help:
+- https://stackoverflow.com/questions/6893968/how-to-get-the-return-value-from-a-thread
+- https://stackoverflow.com/questions/10415028/how-can-i-get-the-return-value-of-a-function-passed-to-multiprocessing-process
+- https://pypi.org/project/Pebble/
+
+
+TODO:
+- centralized module where the module to test, resource, and other test objects
+  are imported to
+- Think about adding patch, cast, and other operations to to setup/teardown
+- Make sure resources are named in relation to location to module being tests. Same directory would be .resource.path different directory would start from root -> app.resource.path
+- If app exits (error, crtl+c, etc.) setup objects should be torn down
+- Add module to casts similar to how it is done here with formatting data and preferred fields
+- independent.process_operations add do_nothing if operation not in LOCALS
+- Add logic to teardown all objects in the case of the program exit
+- Add `readme` section to test files and pull this into project's main readme.md
+
+
+configurations:
+  exclude_function:
+  - process_setup  # wrapper method
+  - process_teardown  # wrapper method
+
+
+resources:
+- &RESOURCE_PATH
+  ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/setup/resource.py
+- &RESOURCE
+  module: *RESOURCE_PATH
+- &CHECKS
+  module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/app.py
+
+
+tests:
+- function: main
+  description: >
+    Handles setting up and tearing down objects at the start and end of
+    various phases of the testing process.
+  tests:
+  - description: Undefined arguments
+    arguments: {}
+    checks:
+    - method: check_sns
+      << : *CHECKS
+      expected:
+        __setup__: {}
+  - description: No defined setup objects
+    arguments:
+      module: *RESOURCE_PATH
+      action: setup
+      setup:
+      - name: integer
+        phase: check
+        method: get_integer
+      _phase: check
+    checks:
+    - method: check_sns
+      << : *CHECKS
+      expected:
+        __setup__:
+          integer: 1
+  - description: Setup object at any phase besides test
+    arguments:
+      module: *RESOURCE_PATH
+      action: setup
+      setup:
+      - name: string
+        method: get_string
+        phase: module
+      _phase: module
+    assertions:
+    - method: check_type
+      << : *CHECKS
+      expected: SimpleNamespace
+    - method: check_equals
+      << : *CHECKS
+      field: setup.temp_dir.__dict__
+      expected:
+        phase: module
+        name: temp_dir
+        setup_arguments: {}
+        setup_method: get_setup_object
+        teardown_arguments: {}
+        teardown_method: null
+        value: setup_object
+# - function: pre_processing
+#   description: Format or update data before processing setup/teardown actions
+#   tests:
+#   - description: Undefined arguments
+#     arguments: {}
+#     checks:
+#     - method: check_sns
+#       << : *CHECKS
+#       expected:
+#         _phase: none
+#   - description: Configurations phase
+#     arguments:
+#       _phase: CONFIGURATIONS
+#     checks:
+#     - method: check_sns
+#       << : *CHECKS
+#       expected:
+#         _phase: configurations
+#   - description: Tests phase
+#     arguments:
+#       _phase: tests
+#     checks:
+#     - method: check_sns
+#       << : *CHECKS
+#       expected:
+#         _phase: tests
+- function: format_data
+  description: >
+    Returns a data model for a setup object from a combination of arguments
+    passed to the `process_actions` method (locals_) and defined fields form a setup
+    object (item). Prefer
+  tests:
+  - description: Undefined arguments
+    arguments:
+      locals_: null
+      item: null
+    checks:
+    - method: check_exception
+      << : *CHECKS
+      expected: AttributeError
+  - description: Empty arguments
+    arguments:
+      locals_: {}
+      item: {}
+    checks:
+    - method: check_sns
+      << : *CHECKS
+      expected:
+        _phase: null
+        action: null
+        arguments: {}
+        keep_alive: false
+        method: null
+        module: null
+        name: null
+        phase: null
+        result: null
+        timeout: null
+        unpack: false
+        value: null
+  - description: Preferred fields defined in `locals_` and `item`
+    arguments:
+      locals_:
+        module: locals_.module
+        timeout: locals_.timeout
+      item:
+        module: item.module
+        timeout: item.timeout
+    checks:
+    - method: check_sns
+      << : *CHECKS
+      expected:
+        _phase: null
+        action: null
+        arguments: {}
+        keep_alive: false
+        method: null
+        module: item.module
+        name: null
+        phase: null
+        result: null
+        timeout: item.timeout
+        unpack: false
+        value: null
+  - description: Preferred fields only defined in `locals_`
+    arguments:
+      locals_:
+        module: locals_.module
+        timeout: locals_.timeout
+      item: {}
+    checks:
+    - method: check_sns
+      << : *CHECKS
+      expected:
+        _phase: null
+        action: null
+        arguments: {}
+        keep_alive: false
+        method: null
+        module: locals_.module
+        name: null
+        phase: null
+        result: null
+        timeout: locals_.timeout
+        unpack: false
+        value: null 
+- function: process_actions
+  description: >
+    Iterates through a list of setup objects and performs the desired action,
+    setup or teardown, on each object where the object's phase is the same
+    as the current phase of the testing process
+  tests:
+  - description: Undefined or empty arguments
+    arguments:
+      setup: []
+    checks:
+    - method: check_equals
+      << : *CHECKS
+      field: output.__setup__
+      expected: {}
+  - description: Undefined or empty arguments
+    arguments:
+      _phase: check
+      setup:
+      - method: get_string
+        name: value
+        module: *RESOURCE_PATH
+        arguments: {}
+        phase: check
+      action: setup
+    checks:
+    - method: check_equals
+      << : *CHECKS
+      field: output.__setup__
+      expected:
+        value: value
+- function: perform_action
+  description: >
+    Handles performing a setup or teardown by calling the methods associated
+    with each action
+  cast_arguments:
+  - field: method
+    method: get_method
+    << : *RESOURCE
+  tests:
+  - description: Undefined arguments
+    arguments: {}
+    checks:
+    - method: check_equals
+      << : *CHECKS
+      expected: null
+  - description: Setup action
+    arguments:
+      method: get_string
+      action: setup
+      arguments: {}
+    checks:
+    - method: check_sns
+      << : *CHECKS
+      expected:
+        value: value
+  - description: Teardown action
+    arguments:
+      action: teardown
+      name: teardown
+    checks:
+    - method: check_sns
+      << : *CHECKS
+      expected:
+        value: null
+- function: do_nothing
+  description: Method that is called when no setup method is defined.
+  tests:
+  - description: Key in dictionary
+    arguments: {}
+    assertions:
+    - method: check_equals
+      << : *CHECKS
+      expected: null
+  - description: Key not in dictionary
+    arguments:
+      a: a
+      b: b
+    assertions:
+    - method: check_equals
+      << : *CHECKS
+      expected: null
+- function: get_method
+  description: Returns a method from a module
+  cast_arguments:
+  - field: module
+    method: wrapper_get_module
+    << : *RESOURCE
+  tests:
+  - description: Undefined arguments or method does not exist
+    arguments: {}
+    checks:
+    - method: check_function
+      << : *CHECKS
+      field: method
+      expected:
+        name: do_nothing
+        location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/setup/app.py
+  - description: Method exists in module
+    arguments:
+      module: *RESOURCE_PATH
+      method: do_nothing
+    checks:
+    - method: check_function
+      << : *CHECKS
+      field: method
+      expected:
+        name: do_nothing
+        location: *RESOURCE_PATH
+- function: get_future
+  description: >
+    Creates a task from a method and arguments and executes the task in a
+    separate thread
+  cast_arguments:
+  - method: get_method
+    << : *RESOURCE
+    field: method
+  tests:
+  - description: Undefined arguments
+    arguments: {}
+    checks:
+    - method: check_type
+      << : *CHECKS
+      expected: ProcessFuture
+    - method: check_exception
+      << : *CHECKS
+      cast_output:
+      - method: get_future_result
+        << : *RESOURCE
+      expected: TypeError
+  - description: Defined arguments
+    arguments:
+      method: do_nothing
+      arguments: {}
+    checks:
+    - method: check_type
+      << : *CHECKS
+      expected: ProcessFuture
+    - method: check_equals
+      << : *CHECKS
+      cast_output:
+      - method: get_future_result
+        << : *RESOURCE
+      expected: null
+- function: run_process_in_separate_thread
+  description: Creates a separate thread to run a setup method in
+  cast_arguments:
+  - field: method
+    method: get_method
+    << : *RESOURCE
+  tests:
+  - description: Undefined arguments
+    arguments: {}
+    checks:
+    - method: check_exception
+      << : *CHECKS
+      expected: TypeError
+  - description: Return a future for running process that should be kept alive
+    arguments:
+      method: living
+      arguments: {}
+      keep_alive: true
+    checks:
+    - method: check_type
+      << : *CHECKS
+      expected: ProcessFuture
+  - description: Timeout
+    arguments:
+      timeout: 2
+      method: keep_running
+      arguments: {}
+      keep_alive: False
+    checks:
+    - method: check_equals
+      << : *CHECKS
+      expected: dead
+- function: setup_object
+  description: Calls a method to create an object or start a process
+  cast_arguments:
+  # - module: *RESOURCE_PATH
+  #   method: get_method
+  #   field: method
+  - method: get_method
+    << : *RESOURCE
+    field: method
+    unpack: true
+  tests:
+  - description: Undefined arguments
+    arguments: {}
+    checks:
+    - method: check_exception
+      << : *CHECKS
+      field: value
+      expected: TypeError
+  - description: Defined arguments
+    arguments:
+      method: get_string
+      arguments: {}
+      keep_alive: False
+      timeout: 3
+    checks:
+    - method: check_sns
+      << : *CHECKS
+      expected:
+        value: value
+  - description: Timeout
+    arguments:
+      method: living
+      arguments: {}
+      keep_alive: False
+      timeout: 2
+    checks:
+    - method: check_sns
+      << : *CHECKS
+      expected:
+        value: timed_out
+- function: teardown_object
+  description: >
+    Tear down a setup object. If the object is a `Future` then terminate
+    the thread
+  tests:
+  - description: Undefined arguments
+    arguments: {}
+    checks:
+    - method: check_sns
+      << : *CHECKS
+      expected:
+        value: null
+  - description: Object is a dict
+    patches:
+    - route: SETUP
+      method: value
+      value:
+        setup: setup
+    arguments:
+      name: add
+    checks:
+    - method: check_sns
+      << : *CHECKS
+      expected:
+        value: null
+  # # TODO: Add casting functionality to patches
+  # - description: Object is a future
+  #   patches:
+  #   - route: SETUP
+  #     method: value
+  #     value:
+  #       setup: setup
+  #     cast:
+  #     - field: value
+  #       method: get_future
+  #       << : *RESOURCE
+  #   arguments:
+  #     name: add
+  #   checks:
+  #   - method: check_sns
+  #     << : *CHECKS
+  #     expected:
+  #       value: null
+- function: update_store
+  description: Stores the value or process associated with a setup object
+  spies:
+  - set_object.main
+  checks:
+  - method: check_equals
+    << : *CHECKS
+    expected: {}
+  tests:
+  - description: Undefined arguments
+    arguments: {}
+  - description: Defined arguments
+    arguments:
+      name: name
+      value: value
+- function: teardown_all
+  description: >
+    Tear down all objects that have been setup in case the app exits prematurely
+  tests:
+  - description: Undefined arguments
+    arguments: {}
+    checks:
+    - method: check_equals
+      << : *CHECKS
+      expected: {}
+  - patches:
+    - route: STORE
+      method: value
+      value:
+        a: A
+        b: B
+        c: C
+    description: Defined arguments
+    arguments: null
+    checks:
+    - method: check_equals
+      << : *CHECKS
+      expected:
+        a: null
+        b: null
+        c: null

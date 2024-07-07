@@ -1,81 +1,81 @@
-configurations:
-  resources:
-  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/app.py
-  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/casts/resource.py
+resources:
+- &MODULE
+  ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/casts/app.py
+- &CHECKS
+  module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/app.py
+- &RESOURCE
+  module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/casts/resource.py
 
 
 tests:
 - function: process_cast_arguments
   description: Handles casting arguments used to call test function
   cast_arguments:
-  - method: resource.get_module
+  - method: get_module
+    << : *RESOURCE
     field: module
   tests:
   - description: Undefined arguments
     arguments:
       cast_arguments: null
-      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/app/resources/app.py
-      arguments: arguments
+      module: null
+      arguments: null
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       expected:
-        _cleanup:
-        - cast_arguments
-        arguments: arguments
+        arguments: null
   - description: Cast arguments is empty
     arguments:
       cast_arguments: []
-      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/app/resources/app.py
+      << : *RESOURCE
       arguments: arguments
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       expected:
-        _cleanup:
-        - cast_arguments
         arguments: arguments
   - description: Cast string arguments as integer
     arguments:
       cast_arguments:
       - method: __builtins__.int
-      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/app/resources/app.py
+        << : *RESOURCE
       arguments: '0000'
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       expected:
-        _cleanup:
-        - cast_arguments
         arguments: 0
   - description: Cast specific key/value in dictionary
     arguments:
       cast_arguments:
       - method: __builtins__.int
+        << : *RESOURCE
         field: key
-      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/app/resources/app.py
       arguments:
         key: '0000'
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       expected:
-        _cleanup:
-        - cast_arguments
         arguments:
           key: 0
 - function: process_cast_output
   description: Handles casting the output from calling the function to test
   cast_arguments:
   - method: resource.get_module
+    << : *RESOURCE
     field: module
   tests:
   - description: Undefined arguments
     arguments:
       cast_output: null
-      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/app/resources/app.py
+      module: null
       output: null
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       expected:
-        _cleanup:
-        - cast_output
         output: null
   - description: Cast output is an empty list
     arguments:
@@ -83,22 +83,20 @@ tests:
       module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/app/resources/app.py
       output: output
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       expected:
-        _cleanup:
-        - cast_output
         output: output
   - description: Cast output as a string
     arguments:
       cast_output:
       - method: __builtins__.str
-      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/app/resources/app.py
+        << : *RESOURCE
       output: 1
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       expected:
-        _cleanup:
-        - cast_output
         output: '1'
   - description: Cast specific field in output of type simple name space
     cast_arguments:
@@ -108,12 +106,14 @@ tests:
     arguments:
       cast_output:
       - method: __builtins__.int
+        << : *RESOURCE
         field: key
       module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/app/resources/app.py
       output:
         key: '0000'
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       field: output
       expected:
         key: 0
@@ -123,54 +123,156 @@ tests:
   - description: Undefined arguments
     arguments: {}
     checks:
-    - method: checks.app.check_equals
+    - method: check_equals
+      << : *CHECKS
       expected: null
   - cast_arguments:
     - method: resource.get_module
+      << : *RESOURCE
       field: module
     tests:
     - description: Cast string as integer
       arguments:
-        module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/casts/resource.py
+        << : *RESOURCE
         casts:
         - method: __builtins__.int
+          << : *RESOURCE
         object: '1111'
       checks:
-      - method: checks.app.check_equals
+      - method: check_equals
+        << : *CHECKS
         expected: 1111
     - description: Cast dict as simple name space
       arguments:
-        module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/casts/resource.py
+        << : *RESOURCE
         casts:
         - method: cast_dict_as_sns
+          << : *RESOURCE
         object:
           key: value
       checks:
-      - method: checks.app.check_sns
+      - method: check_sns
+        << : *CHECKS
         expected:
           key: value
     - description: Cast list into string with unpacking
       arguments:
-        module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/casts/resource.py
+        << : *RESOURCE
         casts:
         - method: cast_list_to_string
+          << : *RESOURCE
           unpack: true
         object: [a, b, c]
       checks:
-      - method: checks.app.check_equals
+      - method: check_equals
+        << : *CHECKS
         expected: abc
+- function: process_casts
+  description: Handles processing cast objects
+  tests:
+  - description: Undefined arguments
+    arguments: {}
+    checks:
+    - method: check_sns
+      << : *CHECKS
+      expected:
+        result: null
+  - description: Cast integer to string
+    arguments:
+      casts:
+      - method: __builtins__.str
+      object: 1
+      << : *RESOURCE
+    checks:
+    - method: check_sns
+      << : *CHECKS
+      expected:
+        result: '1'
+  - description: Cast field within the object
+    arguments:
+      casts:
+      - method: __builtins__.str
+        field: key
+      object:
+        key: 0
+      << : *RESOURCE
+    checks:
+    - method: check_sns
+      << : *CHECKS
+      expected:
+        result:
+          key: '0'
+- function: format_data
+  tests:
+  - description: Undefined arguments
+    arguments: {}
+    checks:
+    - method: check_sns
+      << : *CHECKS
+      expected:
+        field: null
+        method: null
+        module: null
+        object: null
+        result: null
+        temp_object: null
+        unpack: null
+  - description: Defined arguments. Prefer level data.
+    arguments:
+      module: arguments.module
+      object: arguments.object
+      item: {}
+    checks:
+    - method: check_sns
+      << : *CHECKS
+      expected:
+        field: ''
+        method: null
+        module: arguments.module
+        object: arguments.object
+        result: null
+        temp_object: null
+        unpack: false
+  - description: Defined arguments. Prefer item level data.
+    arguments:
+      module: arguments.module
+      object: arguments.object
+      item:
+        module: item.module
+        object: item.object
+    checks:
+    - method: check_sns
+      << : *CHECKS
+      expected:
+        field: ''
+        method: null
+        module: item.module
+        object: arguments.object
+        result: null
+        temp_object: null
+        unpack: false
+- function: do_nothing
+  description: Returns a null object
+  arguments:
+    a: a
+  checks:
+  - << : *CHECKS
+    method: check_equals
+    expected: null
 - function: get_cast_method
   description: >
     Returns a casting method and name if the method exists in a module.
     Otherwise, returns the name and a log
   cast_arguments:
   - field: module
-    method: resource.module_resource
+    << : *RESOURCE
+    method: module_resource
   tests:
   - description: Undefined data
     arguments: {}
     checks:
-    - method: checks.app.check_function
+    - method: check_function
+      << : *CHECKS
       field: method
       expected:
         name: do_nothing
@@ -178,17 +280,19 @@ tests:
   - description: Return the str class from builtins
     arguments:
       method: __builtins__.str
-      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/casts/resource.py
+      << : *RESOURCE
     checks:
-    - method: checks.app.check_equals
+    - method: check_equals
+      << : *CHECKS
       field: method.__name__
       expected: str
   - description: Return the int class from builtins
     arguments:
       method: __builtins__.int
-      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/casts/resource.py
+      << : *RESOURCE
     checks:
-    - method: checks.app.check_equals
+    - method: check_equals
+      << : *CHECKS
       field: method.__name__
       expected: int
   - description: >
@@ -196,9 +300,10 @@ tests:
       resources directory
     arguments:
       method: pass_through
-      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/casts/resource.py
+      << : *RESOURCE
     checks:
-    - method: checks.app.check_function
+    - method: check_function
+      << : *CHECKS
       field: method
       expected:
         name: pass_through
@@ -206,20 +311,22 @@ tests:
   - description: Method not in module
     arguments:
       method: does_not_exist
-      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/casts/resource.py
+      << : *RESOURCE
     checks:
-    - method: checks.app.check_function
+    - method: check_function
+      << : *CHECKS
       field: method
       expected:
         name: do_nothing
-        location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/casts/app.py
+        location: *MODULE
 - function: get_temp_object
   description: Set a temporary object as the object to cast or field within it
   tests:
   - description: Undefined arguments
     arguments: {}
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       expected:
         temp_object: null
   - description: Field is undefined and object is defined
@@ -227,7 +334,8 @@ tests:
       object: object
       field: null
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       expected:
         temp_object: object
   - description: Object is a dict and field is an existing key
@@ -236,7 +344,8 @@ tests:
         key: value
       field: key
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       expected:
         temp_object: value
 - function: reset_object
@@ -245,7 +354,8 @@ tests:
   - description: Undefined arguments
     arguments: {}
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       expected:
         None: null
   - description: Set object as temp object
@@ -254,7 +364,8 @@ tests:
       object: object
       field: null
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       expected:
         object: temp_object
         temp_object: null
@@ -264,7 +375,8 @@ tests:
       object: {}
       field: key
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       expected:
         object:
           key: temp_object
@@ -276,7 +388,8 @@ tests:
         key: value
       field: key
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       expected:
         object:
           key: temp_object

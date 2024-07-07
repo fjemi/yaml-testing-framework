@@ -3,17 +3,18 @@ TODO:
 - Process resources if a directory is specified
 
 
-resources:
+help:
 - https://packaging.python.org/en/latest/guides/distributing-packages-using-setuptools/
 - https://stackoverflow.com/questions/7522250/how-to-include-package-data-with-setuptools-distutils
 - https://stackoverflow.com/questions/37139786/is-init-py-not-required-for-packages-in-python-3-3
 - https://setuptools.pypa.io/en/latest/userguide/package_discovery.html
 
 
-configurations:
-  resources:
-  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/app.py
-  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/resources/setup
+resources:
+- &CHECKS
+  module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/app.py
+- &RESOURCE
+  module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/resources/setup
 
 
 tests:
@@ -23,12 +24,14 @@ tests:
   - arguments:
       location: null
     checks:
-    - method: checks.app.check_equals
+    - method: check_equals
+      << : *CHECKS
       expected: null
   - arguments:
       location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/resources/setup/hello_world.yml
     checks:
-    - method: checks.app.check_equals
+    - method: check_equals
+      << : *CHECKS
       expected: >
         hello: world
 - function: get_contents
@@ -37,13 +40,15 @@ tests:
   - arguments:
       directory: null
     checks:
-    - method: checks.app.check_equals
+    - method: check_equals
+      << : *CHECKS
       expected:
         directory: null
   - arguments:
       directory: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/resources/setup
     checks:
-    - method: checks.app.check_equals
+    - method: check_equals
+      << : *CHECKS
       expected:
         directory: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/resources/setup
         long_description: '# README.md'
@@ -138,7 +143,8 @@ tests:
       pipfile_lock:
         default: {}
     checks:
-    - method: checks.app.check_equals
+    - method: check_equals
+      << : *CHECKS
       expected: []
   - description: One package
     arguments:
@@ -147,10 +153,12 @@ tests:
           package_0:
             version: ==version_0
     checks:
-    - method: checks.app.check_equals
+    - method: check_equals
+      << : *CHECKS
       expected:
       - package_0==version_0
-    - method: checks.app.check_length
+    - method: check_length
+      << : *CHECKS
       expected: 1
   - description: Three packages
     arguments:
@@ -163,12 +171,14 @@ tests:
           package_2:
             version: <=version_2
     checks:
-    - method: checks.app.check_equals
+    - method: check_equals
+      << : *CHECKS
       expected:
       - package_0==version_0
       - package_1>=version_1
       - package_2<=version_2
-    - method: checks.app.check_length
+    - method: check_length
+      << : *CHECKS
       expected: 3
 - function: get_python_requires
   description: Returns the minimum python version associated supported by the packages in the `Pipfile.lock`
@@ -183,9 +193,11 @@ tests:
           package_2:
             markers: python_version >= '3.11'
     checks:
-    - method: checks.app.check_equals
+    - method: check_equals
+      << : *CHECKS
       expected: '>=3.7'
-    - method: checks.app.check_type
+    - method: check_type
+      << : *CHECKS
       expected: str
 - function: merge_pip_lock_and_setup_yaml
   description: Returns a dataclass with installation requirements and python version added the `setup_yml` field.
@@ -207,7 +219,8 @@ tests:
         python_requires: {}
       long_description: long_description
     checks:
-    - method: checks.app.check_equals
+    - method: check_equals
+      << : *CHECKS
       expected:
         setup_requires:
         - package_0==version_0
@@ -222,7 +235,8 @@ tests:
     arguments:
       directory: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/resources/setup
     checks:
-    - method: checks.app.check_equals
+    - method: check_equals
+      << : *CHECKS
       expected:
         author: author
         author_email: author_email

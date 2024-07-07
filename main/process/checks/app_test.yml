@@ -1,7 +1,12 @@
-configurations:
-  resources:
-  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/app.py
-  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/checks/resource.py
+resources:
+- &CHECKS
+  module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/app.py
+- &APP_PATH
+  ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/checks/app.py
+- &RESOURCE_PATH
+  ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/checks/resource.py
+- &RESOURCE
+  module: *RESOURCE_PATH
 
 
 tests:
@@ -10,10 +15,12 @@ tests:
     Performs a number of operations to process an check and verify that the
     output from a function is as expected
   cast_arguments:
-  - method: resource.wrapper_get_module
+  - method: wrapper_get_module
+    << : *RESOURCE
     field: module
   cast_output:
-  - method: resource.list_sns_to_list_dict
+  - method: list_sns_to_list_dict
+    << : *RESOURCE
     field: checks
   tests:
   - description: Undefined arguments
@@ -24,20 +31,13 @@ tests:
       id: null
       id_short: null
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       expected:
         checks: []
-        _cleanup:
-        - module
-        - output
-    - method: checks.app.check_sns
-      field: log
-      expected:
-        level: warning
-        message: Processed 0 checks for None
   - description: Single check that passes
     arguments:
-      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/checks/resource.py
+      module: *RESOURCE_PATH
       output: output
       checks:
       - method: check_equals
@@ -45,11 +45,9 @@ tests:
       id: id
       id_short: id_short
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       expected:
-        _cleanup:
-        - module
-        - output
         checks:
         - expected: output
           id: id
@@ -57,13 +55,8 @@ tests:
           method: check_equals
           output: output
           passed: true
-          log: null
-    - method: checks.app.check_sns
-      field: log
-      expected:
-        message: Processed 1 check for id_short
-        level: info
-    - method: checks.app.check_equals
+    - method: check_equals
+      << : *CHECKS
       field: checks
       expected:
       - expected: output
@@ -72,10 +65,9 @@ tests:
         passed: true
         id: id
         id_short: id_short
-        log: null
   - description: Two checks. One passes and one fails
     arguments:
-      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/checks/resource.py
+      module: *RESOURCE_PATH
       output:
         key: output_value
       checks:
@@ -88,17 +80,8 @@ tests:
       id: id
       id_short: id_short
     checks:
-    - method: checks.app.check_sns
-      expected:
-        _cleanup:
-        - module
-        - output
-    - method: checks.app.check_sns
-      field: log
-      expected:
-        message: Processed 2 checks for id_short
-        level: info
-    - method: checks.app.check_equals
+    - method: check_equals
+      << : *CHECKS
       field: checks
       expected:
       - expected:
@@ -109,17 +92,15 @@ tests:
         passed: true
         id: id
         id_short: id_short
-        log: null
       - expected: 'key: expected_value'
         id: id
         id_short: id_short
-        log: '[]'
         method: check_equals
         output: 'key: output_value'
         passed: false
   - description: Assertion method does not exist
     arguments:
-      module:  ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/checks/resource.py
+      module:  *RESOURCE_PATH
       output: output
       checks:
       - method: pass_through_inner
@@ -127,17 +108,8 @@ tests:
       id: id
       id_short: id_short
     checks:
-    - method: checks.app.check_sns
-      expected:
-        _cleanup:
-        - module
-        - output
-    - method: checks.app.check_sns
-      field: log
-      expected:
-        level: info
-        message: Processed 1 check for id_short
-    - method: checks.app.check_equals
+    - method: check_equals
+      << : *CHECKS
       field: checks
       expected:
       - expected: 'null
@@ -148,9 +120,46 @@ tests:
       
           ...'
         passed: false
-        log: '[]'
         id: id
         id_short: id_short
+- function: process_checks
+  description: Handles processing checks
+  tests:
+  - description: Undefined arguments
+    arguments: {}
+    checks:
+    - method: check_equals
+      << : *CHECKS
+      field: result.checks
+      expected: []
+  - description: Process one check
+    arguments:
+      checks:
+      - method: check_equals
+        << : *CHECKS
+        expected: output
+      output: output
+      module: module
+      id: id
+      id_short: id_short
+    checks:
+    - method: check_length
+      << : *CHECKS
+      field: result.checks
+      expected: 1
+    - method: check_equals
+      << : *CHECKS
+      field: result.checks
+      cast_output:
+      - << : *RESOURCE
+        method: list_sns_to_list_dict
+      expected:
+      - id: id
+        id_short: id_short
+        expected: output
+        output: output
+        passed: true
+        method: check_equals
 - function: pre_processing
   description: >
     Formats check data before processing. Returns a single Assertion
@@ -159,58 +168,58 @@ tests:
   - description: Undefined arguments
     arguments: {}
     checks:
-    - method: checks.app.check_sns
+    - method: check_exception
+      << : *CHECKS
+      expected: AttributeError
+  - description: Empty arguments
+    arguments:
+      locals_: {}
+      item: {}
+    checks:
+    - method: check_sns
+      << : *CHECKS
       expected:
         cast_output: null
         expected: null
         field: null
-        id: null
-        id_short: null
+        id: ''
+        id_short: ''
         method: null
         module: null
         output: null
         passed: false
-  - description: Assertion is empty dict and other arguments are defined
+  - description: Assertions defined and other arguments are undefined
+    cast_arguments:
+    - method: wrapper_get_module
+      << : *RESOURCE
+      field: locals_.module
     arguments:
-      check: {}
-      output: output
-      module: module
-      id: id
-      id_short: id_short
-    checks:
-    - method: checks.app.check_sns
-      expected:
-        cast_output: null
-        expected: null
-        field: null
+      item:
+        cast_output: cast_output
+        expected: expected
+        field: field
+        method: method
+      locals_:
+        output: output
+        module: *RESOURCE_PATH
         id: id
         id_short: id_short
-        method: null
-        module: module
-        output: output
-        passed: false
-  - description: Assertions defined and other arguments are undefined
-    arguments:
-      check:
-        cast_output: cast_output
-        expected: expected
-        field: field
-        method: method
-      output: null
-      module: null
-      id: null
-      id_short: null
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       expected:
         cast_output: cast_output
         expected: expected
         field: field
-        id: null
-        id_short: null
+        id: id
+        id_short: id_short
         method: method
-        output: null
+        output: output
         passed: false
+    - method: check_equals
+      << : *CHECKS
+      field: module.__file__
+      expected: *RESOURCE_PATH
 - function: pass_through
   description: >
     Returns the method to use if an check method does not exist. Returns data needed to
@@ -219,11 +228,13 @@ tests:
   - description: Method is undefined
     arguments: {}
     checks:
-    - method: checks.app.check_function
+    - method: check_function
+      << : *CHECKS
       expected:
-        location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/checks/app.py
+        location: *APP_PATH
         name: pass_through_inner
-    - method: checks.app.check_function_output
+    - method: check_function_output
+      << : *CHECKS
       expected:
         arguments:
         - expected: expected
@@ -234,16 +245,19 @@ tests:
           passed: false
         cast_output:
         - method: sns_to_dict
-        module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/checks/resource.py
+          << : *RESOURCE
+        module: *RESOURCE_PATH
   - description: Method is defined
     arguments:
       method: check_method_does_not_exist
     checks:
-    - method: checks.app.check_function
+    - method: check_function
+      << : *CHECKS
       expected:
         name: pass_through_inner
-        location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/checks/app.py
-    - method: checks.app.check_function_output
+        location: *APP_PATH
+    - method: check_function_output
+      << : *CHECKS
       expected:
         arguments:
         - expected: expected
@@ -254,21 +268,23 @@ tests:
           passed: false
         cast_output:
         - method: sns_to_dict
-        module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/checks/resource.py
+        module: *RESOURCE_PATH
 - function: get_check_method
   description: >
     Returns an check method defined in a resource module, given the route
     to the method
   cast_arguments:
-  - method: resource.wrapper_get_module
+  - method: wrapper_get_module
+    << : *RESOURCE
     field: module
   tests:
   - description: UMethod undefined
     arguments:
-      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/checks/resource.py
+      module: *RESOURCE_PATH
       method: null
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       field: log
       expected:
         level: error
@@ -276,30 +292,34 @@ tests:
   - description: Assertion method exists
     arguments:
       method: check_method_a
-      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/checks/resource.py
+      module: *RESOURCE_PATH
     checks:
-    - method: checks.app.check_type
+    - method: check_type
+      << : *CHECKS
       expected: SimpleNamespace
-    - method: checks.app.check_function
+    - method: check_function
+      << : *CHECKS
       field: method
       expected:
         name: check_method_a
-        location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/checks/resource.py
+        location: *RESOURCE_PATH
   - description: Assertion method does not exist
     arguments:
       method: check_method_b
-      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/checks/resource.py
+      module: *RESOURCE_PATH
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       field: log
       expected:
         level: error
         message: Assertion method check_method_b does not exist in module ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/checks/resource.py
-    - method: checks.app.check_function
+    - method: check_function
+      << : *CHECKS
       field: method
       expected:
         name: pass_through_inner
-        location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/checks/app.py
+        location: *APP_PATH
 - function: reset_output_value
   description: >
     Sets output to one of its fields, keys, or attributes; given the
@@ -308,7 +328,8 @@ tests:
   - description: Undefined arguments
     arguments: {}
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       expected:
         output: null
   - description: Output is a string and field is undefined
@@ -316,7 +337,8 @@ tests:
       output: output
       field: null
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       expected:
         output: output
   - description: Output is a dict and field is a key in the dict
@@ -325,7 +347,8 @@ tests:
         key: value
       field: key
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       expected:
         output: value
   - description: Output is a dict and field is route to nested key
@@ -335,7 +358,8 @@ tests:
           key_b: value
       field: key_a.key_b
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       expected:
         output: value
   - description: Output is a dict and field is route to non-existing key
@@ -344,24 +368,28 @@ tests:
         key: value
       field: key_does_not_exist
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       expected:
         output: null
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       field: log
       expected:
         message: Field key_does_not_exist does not exist in object of type NoneType
         level: warning
   - description: Output is a SimpleNamespace and field is route to an attribute
     cast_arguments:
-    - method: resource.reset_output_value_cast_arguments
+    - method: reset_output_value_cast_arguments
+      << : *RESOURCE
       field: output
     arguments:
       output:
         attribute: value
       field: attribute
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       expected:
         output: value
 - function: get_check_result
@@ -369,21 +397,24 @@ tests:
     Returns the result (passed, expected, output) of calling the check
     method
   cast_arguments:
-  - method: resource.method_resource
+  - method: method_resource
+    << : *RESOURCE
     field: method
   tests:
   - description: Undefined arguments
     arguments: {}
     checks:
-    - method: checks.app.check_exception
-      expected: TypeError
+    - method: check_exception
+      << : *CHECKS
+      expected: AttributeError
   - description: Assertion fails when expected and output are different values
     arguments:
       expected: expected
       output: output
       method: check_equals
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       expected:
         method: check_equals
         expected: expected
@@ -395,7 +426,8 @@ tests:
       output: output
       method: check_equals
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       expected:
         method: check_equals
         expected: output
@@ -411,7 +443,8 @@ tests:
         - output_value
       method: check_equals
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       expected:
         method: check_equals
         passed: False
@@ -427,7 +460,8 @@ tests:
   - description: Undefined arguments
     arguments: {}
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       expected:
         field: null
         object: 'null
@@ -438,7 +472,8 @@ tests:
       object: object
       field: field
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       expected:
         object: 'object
 
@@ -449,7 +484,8 @@ tests:
         key: value
       field: field
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       expected:
         object: 'key: value'
   - description: Object is a list
@@ -457,7 +493,8 @@ tests:
       object: [item_0, item_1, item_2]
       field: field
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       expected:
         object: '- item_0
         
@@ -471,10 +508,12 @@ tests:
           c:
       field: field
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       expected:
         object: "a: b\n  c:\n"
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       field: log
       expected:
         message: ScannerError occurred trying to convert field to YAML
@@ -496,7 +535,8 @@ tests:
       - c
       passed: false
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       expected:
         log: '[]'
         expected: '- a
@@ -517,7 +557,8 @@ tests:
       output:
         key: value
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       expected:
         log: '[]'
         expected: 'key: value'
@@ -528,7 +569,8 @@ tests:
       expected: 'key: value'
       output: 'key: value'
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       expected:
         log: '[]'
         expected: 'key: value'
@@ -536,7 +578,8 @@ tests:
   - description: Undefined arguments
     arguments: {}
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       expected:
         output: 'null
         
@@ -550,7 +593,8 @@ tests:
       output: output
       expected: expected
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       expected: {}
   - description: Passed it false
     arguments:
@@ -560,7 +604,44 @@ tests:
       expected: >
         key: value
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       expected:
         output: "key: value"
         expected: "key: value"
+- function: post_processing
+  description: >
+    Consolidates processed data for a `check` in a simple name space object
+  tests:
+  - description: Undefined arguments
+    arguments: {}
+    checks:
+    - method: check_sns
+      field: check
+      << : *CHECKS
+      expected:
+        id: null
+        id_short: null
+        expected: null
+        passed: null
+        method: null
+        output: null
+  - description: Defined arguments
+    arguments:
+      id: id
+      id_short: id_short
+      expected: expected
+      passed: passed
+      method: method
+      output: output
+    checks:
+    - method: check_sns
+      field: check
+      << : *CHECKS
+      expected:
+        id: id
+        id_short: id_short
+        expected: expected
+        passed: passed
+        method: method
+        output: output

@@ -6,7 +6,7 @@ from types import ModuleType
 from types import SimpleNamespace as sns
 from typing import Callable
 
-from main.utils import get_object, independent, set_object
+from main.utils import independent, objects
 
 
 MODULE = __file__
@@ -19,24 +19,24 @@ CONFIG = '''
 '''
 CONFIG = independent.format_module_defined_config(config=CONFIG)
 
+STORE = {}
+
 
 def main(
-  module: ModuleType,
-  spies: list | None,
+  module: ModuleType | None = None,
+  spies: list | None = None,
 ) -> sns:
   spies = spies or []
-  store = getattr(module, 'SPIES', None) or {}
-  setattr(module, 'SPIES', store)
+  data = sns(module=module)
 
-  for item in spies:
-    data = sns(module=module, route=item)
+  for route in spies:
+    data.route = route
     data = independent.process_operations(
       operations=CONFIG.operations.main,
       data=data,
       functions=LOCALS, )
-    module = data.module
 
-  return sns(module=module, _cleanup=['spies'])
+  return sns(module=data.module, __spies__=STORE)
 
 
 def do_nothing(*args, **kwargs) -> None:
@@ -44,25 +44,35 @@ def do_nothing(*args, **kwargs) -> None:
 
 
 def spy_on_method(
-  module: ModuleType,
-  route: str,
+  module: ModuleType | None = None,
+  route: str | None = None,
 ) -> sns:
-  original = get_object.main(
+  global STORE
+  STORE[route] = sns(called=False, called_with=None)
+
+  original = objects.get(
     parent=module,
     route=route,
     default=do_nothing, )
 
   def spy(*args, **kwargs) -> Callable:
     called_with = args or kwargs
-    module.SPIES[route] = sns(called=True, called_with=called_with)
+    global STORE
+    STORE[route] = sns(called=True, called_with=called_with)
     return original(*args, **kwargs)
 
   spy.__wrapped__ = original
-  spy._method = 'spy'
+  spy.__method__ = 'spy'
 
-  module.SPIES[route] = sns(called=False, called_with=None)
-  set_object.main(parent=module, value=spy, route=route)
+  module = objects.update(
+    parent=module,
+    value=spy,
+    route=route, )
   return sns(module=module)
+
+
+def get_store() -> dict:
+  return STORE
 
 
 def examples() -> None:

@@ -1,14 +1,74 @@
-resources:
+help:
 - https://stackoverflow.com/questions/19009932/import-arbitrary-python-source-file-python-3-3
 
 
-configurations:
-  resources:
-  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/get_module/resource.py
-  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/app.py
+resources:
+- &RESOURCE_PATH
+  ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/get_module/resource.py
+- &RESOURCE
+  module: *RESOURCE_PATH
+- &CHECKS
+  module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/app.py
 
 
 tests:
+- function: main
+  description: Orchestrates execution of functions within the module
+  tests:
+  - description: Get module at location
+    arguments:
+      location: *RESOURCE_PATH
+      name: app
+    checks:
+    - method: check_equals
+      << : *CHECKS
+      field: module.__file__
+      expected: *RESOURCE_PATH
+  - description: Return the module value when the argument is not a string
+    cast_arguments:
+    - method: wrapper_get_module
+      << : *RESOURCE
+      field: module
+    arguments:
+      module: *RESOURCE_PATH
+    checks:
+    - method: check_equals
+      << : *CHECKS
+      field: module.__file__
+      expected: *RESOURCE_PATH
+- function: pre_processing
+  description: Sets values for arguments processed by other functions in the module
+  tests:
+  - description: Undefined arguments
+    arguments: {}
+    checks:
+    - method: check_sns
+      << : *CHECKS
+      expected:
+        location: null
+        flag: False
+  - description: Location is a string
+    arguments:
+      location: location
+    checks:
+    - method: check_sns
+      << : *CHECKS
+      expected:
+        location: location
+        flag: False
+  - description: Module is a module
+    cast_arguments:
+    - method: get_module
+      << : *RESOURCE
+      field: location
+    arguments:
+      location: *RESOURCE_PATH
+    checks:
+    - method: check_sns
+      << : *CHECKS
+      expected:
+        location: *RESOURCE_PATH
+        flag: False
 - function: format_module_name
   description: >
     Returns the name of the module. Creates the name for the module's location
@@ -19,7 +79,8 @@ tests:
       location: /main/utils/get_module/resource.py
       name: null
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       expected:
         name: .main.utils.get_module.resource
   - description: Name is defined
@@ -27,24 +88,26 @@ tests:
       name: name
       location: null
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       expected:
         name: name
-  # # TODO: Need setup/teardown to finish test
-  # - description: Name is the location to a file
-  #   arguments:
-  #     name: location to temp file
-  #     location: null
-  #   checks:
-  #   - method: checks.app.check_sns
-  #     expected:
-  #       name: name
+  - description: Name is the location to a file
+    arguments:
+      name: *RESOURCE_PATH
+      location: null
+    checks:
+    - method: check_substring_in_string
+      << : *CHECKS
+      field: name
+      expected: yaml-testing-framework.main.utils.get_module.resource
   - description: Name and location are undefined
     arguments:
       name: null
       location: null
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       expected:
         name: app
   - description: Name and location are undefined. Pool is true.
@@ -52,7 +115,8 @@ tests:
       name: null
       location: null
     checks:
-    - method: checks.app.check_sns
+    - method: check_sns
+      << : *CHECKS
       expected:
         name: app
 - function: get_module_from_location
@@ -63,96 +127,58 @@ tests:
       location: DOES_NOT_EXIST/app.py
       name: name
     checks:
-    - method: checks.app.check_equals
+    - method: check_equals
+      << : *CHECKS
       field: __dict__
       expected:  {}
   - description: Location exists
     arguments:
       name: name
-      location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/get_module/resource.py
+      location: *RESOURCE_PATH
     checks:
-    - method: checks.app.check_module
+    - method: check_module
+      << : *CHECKS
       field: module
       expected:
-        location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/get_module/resource.py
+        location: *RESOURCE_PATH
   - description: Location is defined
     arguments:
       name: app
       location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/get_module/resource.py
     checks:
-    - method: checks.app.check_module
+    - method: check_module
+      << : *CHECKS
       field: module
       expected:
         location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/get_module/resource.py
-- function: get_module_from_pool
+- function: post_processing
+  description: Returns a module or default value in a simple name space
   tests:
-  - description: Returns a new instance of the module
-    arguments:
-      pool: false
-      location: location
+  - description: Undefined arguments
+    arguments: {}
     checks:
-    - method: checks.app.check_sns
-      expected:
-        module: null
-  - description: Returns a module in the pool
+    - method: check_equals
+      << : *CHECKS
+      field: result.module
+      expected: null
+  - description: Return default
     arguments:
-      location: location
-      pool: True
-    patches:
-    - method: value
-      route: POOL
-      value:
-        location: module_from_pool
+      default: default
     checks:
-    - method: checks.app.check_sns
-      expected:
-        module: module_from_pool
-- function: add_module_to_pool
-  description: Adds the module and module location as to the pool as key/value pair
-  tests:
-  - description: Add defined location and module to pool
+    - method: check_equals
+      << : *CHECKS
+      field: result.module
+      expected: default
+  - description: Return default
+    cast_arguments:
+      << : *RESOURCE
+      field: module
+      method: get_module.main
     arguments:
-      location: location
-      module: module
-      pool: false
+      << : *RESOURCE
+      default: default
     checks:
-    - method: checks.app.check_sns
-      expected: {}
-  - description: Do not add module to pool
-    arguments:
-      location: location
-      module: module
-      pool: true
-    checks:
-    - method: checks.app.check_sns
-      expected: {}
-- function: main
-  description: Orchestrates execution of functions within the module
-  tests:
-  - description: Get module at location
-    arguments:
-      pool: false
-      location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/get_module/resource.py
-      name: app
-    checks:
-    - method: checks.app.check_module
-      expected:
-        location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/get_module/resource.py
-  - description: Get module from pool
-    patches:
-    - route: POOL
-      method: value
-      value:
-        location: module
-    arguments:
-      pool: true
-      location: location
-    checks:
-    - method: checks.app.check_equals
-      expected: module
-  - description: Return the module value when the argument is not a string
-    arguments:
-      module: 1
-    checks:
-    - method: checks.app.check_equals
-      expected: 1
+    - method: check_equals
+      << : *CHECKS
+      field: result.module
+      expected: default

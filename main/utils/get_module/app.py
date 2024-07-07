@@ -7,8 +7,9 @@ import importlib.util
 import os
 from types import ModuleType
 from types import SimpleNamespace as sns
+from typing import Any
 
-from main.utils import get_object, independent
+from main.utils import independent, objects
 
 
 MODULE = __file__
@@ -24,56 +25,80 @@ CONFIG = '''
         type: str
         default: null
         description: Path to the module
+      - name: module
+        type: str
+        default: null
+        description: Path to the module
       - name: name
         default: null
         type: str
         description: Name to import module as
-      - name: key
+      - name: module_route
         default: null
         type: str
-        description: Key to store module under in pool
-      - name: pool
+        description: Name to import module as
+      - name: flag
         default: False
         type: bool
-        description: Flag to store module in pool
+        description: >
+          True if either the `location` or `module` argument passed into the
+          main function is a module, otherwise false
+      - name: default
+        default: null
+        type: Any
+        description: Value to return if module does not exist
+
   operations:
     main:
+    - pre_processing
     - format_module_name
-    - get_module_from_pool
     - get_module_from_location
-    - add_module_to_pool
+    - post_processing
+
   module_extensions:
   - .py
 '''
 CONFIG = independent.format_module_defined_config(
   config=CONFIG)
 
-POOL = {}
-
 
 def main(
   module: ModuleType | str | None = None,
   location: str | None = None,
   name: str | None = None,
-  key: str | None = None,
-  pool: bool | None = None,
-) -> ModuleType | None:
-  location = location or module
-  if not isinstance(location, str):
-    return location
-
+  default: Any | None = None,
+) -> sns:
   data = independent.get_model(schema=CONFIG.schema.Data, data=locals())
   data = independent.process_operations(
     functions=LOCALS,
     operations=CONFIG.operations.main,
     data=data, )
-  return get_object.main(parent=data, route='module')
+  return data.result
+
+
+def pre_processing(
+  location: str | ModuleType | None = None,
+  module: str | ModuleType | None = None,
+) -> sns:
+  location = location or module
+  flag = isinstance(location, ModuleType)
+  if flag:
+    return sns(
+      location=location.__file__,
+      module=location,
+      flag=True, )
+  return sns(location=location, flag=False)
 
 
 def format_module_name(
   name: str | None = None,
   location: str | None = None,
+  flag: bool | None = None,
 ) -> sns | None:
+  if flag:
+    name = objects.get(parent=location, route='__name__')
+    return sns(name=name)
+
   if location:
     name = os.path.normpath(location)
     name = name.replace(ROOT_DIR, '')
@@ -84,27 +109,22 @@ def format_module_name(
 
   name = name or 'app'
   if os.path.isfile(name):
-    name = format_module_name(location=name)
+    name = format_module_name(location=name).name
 
   return sns(name=name)
-
-
-def get_module_from_pool(
-  location: str | None = None,
-  pool: bool | None = None,
-) -> sns:
-  module = None
-  if pool:
-    module = POOL.get(location, None)
-  return sns(module=module)
 
 
 def get_module_from_location(
   location: str | None = None,
   name: str | None = None,
+  flag: bool | None = None,
+  default: Any | None = None,
 ) -> sns:
+  if flag:
+    return sns()
+
   location = str(location)
-  if os.path.exists(location) is False:
+  if not os.path.exists(location):
     return sns()
 
   spec = importlib.util.spec_from_file_location(name=name, location=location)
@@ -115,18 +135,17 @@ def get_module_from_location(
   except Exception as e:
     _ = e
 
+  module = module if isinstance(module, ModuleType) else default
   return sns(module=module)
 
 
-def add_module_to_pool(
-  module: ModuleType,
-  location: str,
-  pool: bool,
+def post_processing(
+  module: ModuleType | None = None,
+  default: Any | None = None,
 ) -> sns:
-  if pool is True:
-    global POOL
-    POOL[location] = module
-  return sns()
+  module = default if not isinstance(module, ModuleType) else module
+  result = sns(module=module)
+  return sns(result=result)
 
 
 def examples() -> None:

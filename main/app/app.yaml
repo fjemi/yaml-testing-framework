@@ -1,11 +1,3 @@
-TODO:
-- add logic to run tests for specified functions only
-
-
-resources:
-- https://stackoverflow.com/questions/5067604/determine-function-name-from-within-that-function-without-using-traceback
-
-
 environment:
   ROOT_DIR: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}
   DEBUG: ${YAML_TESTING_FRAMEWORK_DEBUG}
@@ -71,21 +63,20 @@ test_kinds:
 operations:
   run_test_for_functions:
   - handle_id
-  - handle_module
-  - handle_resources
-  - process_environment
-  - process_patches
-  - process_cast_arguments
-  - process_spies
+  - get_module.main
+  - environment.main
+  - patches.main
+  - casts.process_cast_arguments
+  - spies.main
   - get_function
-  - get_function_output
-  - process_cast_output
-  - process_checks
+  - methods.call.main
+  - casts.process_cast_output
+  - checks.main
   run_tests:
-  - process_nodes
+  - nodes.main
   - run_test_handler
   main:
-  - process_locations
+  - locations.main
   - run_tests
 
 
@@ -133,11 +124,6 @@ schema:
       type: dict
       description: The locations of modules, YAML files, and resources
       default: null
-    - name: resources
-      type: list
-      description: >
-        A list of resource module locations. The modules are used for all tests
-      default: []
     - name: logging_enabled
       type: bool
       description: Flag to enable or disable logging

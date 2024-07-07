@@ -6,14 +6,12 @@ from types import ModuleType
 from types import SimpleNamespace as sns
 from typing import Any, Callable, List
 
-# trunk-ignore(ruff/F401)
-from main.process.casts.handle_casting import main as handle_casting
+from main.process.casts import handle_casting
 from main.utils import (
   get_config,
   get_module,
-  get_object,
+  objects,
   independent,
-  set_object,
 )
 
 
@@ -32,7 +30,7 @@ def process_cast_arguments(
     casts=cast_arguments,
     module=module,
     object=arguments, )
-  return sns(arguments=temp, _cleanup=['cast_arguments'])
+  return sns(arguments=temp)
 
 
 def process_cast_output(
@@ -44,7 +42,7 @@ def process_cast_output(
     casts=cast_output,
     module=module,
     object=output, )
-  return sns(output=temp, _cleanup=['cast_output'])
+  return sns(output=temp)
 
 
 def main(
@@ -52,22 +50,12 @@ def main(
   casts: list | None = None,
   object: Any | None = None,
 ) -> sns:
-  data = locals()
+  data = independent.get_model(schema=CONFIG.schema.Main, data=locals())
   data = independent.process_operations(
     operations=CONFIG.operations.main,
     functions=LOCALS,
     data=data, )
-  return get_object.main(parent=data, route='object')
-
-
-def pre_processing(
-  casts: list | None = None,
-  module: ModuleType | str | None = None,
-) -> sns:
-  casts = casts or []
-  module = module if not isinstance(module, str) else get_module.main(module=module)
-  locals_ = locals()
-  return sns(**locals_)
+  return data.result
 
 
 def process_casts(
@@ -75,19 +63,32 @@ def process_casts(
   module: ModuleType | None = None,
   object: Any | None = None,
 ) -> sns:
-  locals_ = locals()
-
-  for cast in casts:
-    cast.update(locals_)
-    data = independent.get_model(schema=CONFIG.schema.Cast, data=cast)
+  casts = casts or []
+  data = sns(module=module, object=object)
+  
+  for item in casts:
+    data = format_data(
+      object=object,
+      item=item,
+      module=module, )
     data = independent.process_operations(
       operations=CONFIG.operations.process_casts,
       functions=LOCALS,
       data=data, )
-    data = get_object.main(parent=data, route='object')
-    locals_.update(dict(object=data))
 
-  return sns(object=get_object.main(parent=locals_, route='object'))
+  return sns(result=data.object)
+
+
+def format_data(
+  module: ModuleType | str | None = None,
+  object: Any | None = None,
+  item: dict | None = None,
+) -> sns:
+  cast = independent.get_model(schema=CONFIG.schema.Cast, data=item)
+  cast.object = object
+  cast.module = cast.module or module
+  cast.module = get_module.main(module=cast.module, default=cast.module).module
+  return cast
 
 
 def do_nothing(*args, **kwargs) -> None:
@@ -99,7 +100,7 @@ def get_cast_method(
   method: str | None = None,
 ) -> sns:
   name = str(method)
-  method = get_object.main(
+  method = objects.get(
     parent=module,
     route=name,
     default=do_nothing, )
@@ -112,7 +113,7 @@ def get_temp_object(
 ) -> sns:
   temp = object
   if field:
-    temp = get_object.main(
+    temp = objects.get(
       parent=temp,
       route=field,
       default=temp, )
@@ -126,7 +127,7 @@ def reset_object(
 ) -> sns:
   object_ = temp_object
   if field:
-    object_ = set_object.main(
+    object_ = objects.update(
       parent=object,
       value=temp_object,
       route=field, )
@@ -136,7 +137,7 @@ def reset_object(
 def examples() -> None:
   from main.utils import invoke_testing_method
 
-  invoke_testing_method.main(location='.checks')
+  invoke_testing_method.main()
 
 
 if __name__ == '__main__':

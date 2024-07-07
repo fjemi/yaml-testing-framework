@@ -11,7 +11,7 @@ from typing import Any, Callable, List
 
 import yaml as pyyaml
 
-from main.utils import get_object, logger, set_object
+from main.utils import logger, objects
 
 
 CONFIG = '''
@@ -104,7 +104,9 @@ def get_yaml_content(
   return sns(content=content)
 
 
-def get_decorated_function_from_closure(function: Callable) -> Callable:
+def get_decorated_function_from_closure(
+  function: Callable | None = None,
+) -> Callable:
   closure = getattr(function, '__closure__', None) or []
   for item in closure:
     contents = item.cell_contents
@@ -122,14 +124,18 @@ def get_decorated_function_from_closure(function: Callable) -> Callable:
   return function
 
 
-def get_decorated_function_from_wrapped(function: Callable) -> Callable:
+def get_decorated_function_from_wrapped(
+  function: Callable | None = None,
+) -> Callable:
   wrapped = getattr(function, '__wrapped__', None)
   if not wrapped:
     return function
   return get_decorated_function_from_wrapped(function=wrapped)
 
 
-def get_decorated_function(function: Callable) -> Callable:
+def get_decorated_function(
+  function: Callable | None = None,
+) -> Callable:
   wrapped = get_decorated_function_from_wrapped(function=function)
   if wrapped != function:
     return wrapped
@@ -141,17 +147,19 @@ def get_decorated_function(function: Callable) -> Callable:
   return function
 
 
-def get_function_parameters(function: Callable) -> list:
+def get_function_parameters(
+  function: Callable | None = None,
+) -> list:
   global PARAMETERS
-  function_ = get_decorated_function(function=function)
+  method = get_decorated_function(function=function)
 
-  file_ = inspect.getfile(function_)
-  key = f'{file_}|{function_.__name__}'
+  file_ = '' if not isinstance(method, Callable) else inspect.getfile(method)
+  key = f'{file_}|{method.__name__}'
   if key in PARAMETERS:
     return PARAMETERS[key]
 
   item = 'return'
-  parameters = list(function_.__annotations__.keys())
+  parameters = list(method.__annotations__.keys())
   if item in parameters:
     parameters.remove(item)
 
@@ -166,17 +174,18 @@ def get_function_arguments(
   arguments = {}
   parameters = get_function_parameters(function=function)
   for parameter in parameters:
-    arguments[parameter] = get_object.main(parent=data, route=parameter)
+    arguments[parameter] = objects.get(parent=data, route=parameter)
   return arguments
 
 
 def format_output(output: dict | sns | None = None) -> dict | None:
-  if hasattr(output, '__dict__'):
-    return output.__dict__
-  elif isinstance(output, dict):
-    return output
-  elif output is None:
-    return {}
+  output = objects.get(
+    parent=output,
+    route='__dict__',
+    default=output, )
+  if output is None:
+    output = {}
+  return output
 
 
 def format_exception_and_trace(exception: Exception | None = None) -> dict:
@@ -205,34 +214,21 @@ def get_timestamp(kind: str | None = None) -> float | int:
   return timestamp
 
 
-def get_runtime_in_ms(timestamps: sns) -> sns:
+def get_runtime_in_ms(timestamps: sns | None = None,) -> sns:
   timestamps.end = get_timestamp()
   timestamps.runtime_ms = (timestamps.end - timestamps.start)
   timestamps.runtime_ms = timestamps.runtime_ms * 1000
   return timestamps
 
 
-def delete_field(
-  parent: sns | dict,
-  field: str,
-) -> sns | dict | None:
-  if isinstance(parent, sns):
-    setattr(parent, field, None)
-    delattr(parent, field)
-    return parent
-
-  elif isinstance(parent, dict):
-    parent[field] = None
-    del parent[field]
-    return parent
-
-
-def purge_data_and_output_fields(data: sns) -> int:
+def purge_data_and_output_fields(
+  data: sns | None = None,
+) -> int:
   fields = data.output.get('_cleanup', [])
   fields.append('_cleanup')
   for field in fields:
-    delete_field(data.data, field)
-    delete_field(data.output, field)
+    objects.delete(parent=data.data, route=field)
+    objects.delete(parent=data.output, route=field)
   return data
 
 
@@ -248,7 +244,7 @@ def get_function_output(data: sns) -> sns:
 
 def update_data_fields(data: sns) -> sns:
   for field, value in data.output.items():
-    data.data = set_object.main(
+    data.data = objects.update(
       parent=data.data,
       value=value,
       route=field, )
@@ -298,7 +294,7 @@ def format_log(data: sns) -> int:
   store = arguments
 
   for data_field, log_field in CONFIG.field_map.items():
-    value = get_object.main(parent=data, route=data_field)
+    value = objects.get(parent=data, route=data_field)
     setattr(store.log, log_field, value)
 
 
@@ -337,7 +333,7 @@ def process_operations(
   store = sns(**locals())
 
   for name in store.operations:
-    store.function = store.functions[name]
+    store.function = objects.get(parent=store.functions, route=name)
     store.arguments = get_function_arguments(
       function=store.function,
       data=store.data, )
@@ -367,7 +363,7 @@ def format_module_defined_config(
   fields = [*FORMAT_CONFIG_FIELDS, *sns_fields]
 
   for field in fields:
-    value = get_object.main(parent=config, route=field)
+    value = objects.get(parent=config, route=field)
     handler = f'format_config_{field}'
     handler = LOCALS.get(handler, pass_through)
     value = handler(
@@ -393,7 +389,7 @@ def get_model(
   schema: dict | sns | None = None,
   data: dict | sns | None = None,
 ) -> sns:
-  temp = get_object.main(
+  temp = objects.get(
     parent=schema,
     route='__dict__',
     default=schema, )
@@ -401,11 +397,11 @@ def get_model(
   store = {}
 
   for route, default in temp.items():
-    value = get_object.main(
+    value = objects.get(
       default=default,
       route=route,
       parent=data, )
-    store = set_object.main(
+    store = objects.update(
       parent=store,
       route=route,
       value=value, )
@@ -415,11 +411,13 @@ def get_model(
 
 def get_model_from_scheme(scheme: dict | None = None) -> sns:
   store = {}
-  fields = get_object.main(parent=scheme, route='fields')
+  fields = objects.get(parent=scheme, route='fields')
+
   for item in fields:
-    name = get_object.main(parent=item, route='name')
-    default = get_object.main(parent=item, route='default')
+    name = objects.get(parent=item, route='name')
+    default = objects.get(parent=item, route='default')
     store.update({name: default})
+
   return sns(**store)
 
 

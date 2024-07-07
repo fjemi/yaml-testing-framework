@@ -10,7 +10,7 @@ import yaml
 
 # trunk-ignore(ruff/F401)
 from main.process.casts import process_cast_output
-from main.utils import get_config, get_object, independent, schema, set_object
+from main.utils import get_config, independent, objects, schema, get_module
 
 
 MODULE = __file__
@@ -20,58 +20,63 @@ LOCALS = locals()
 
 
 def main(
-  checks: List[dict] | None = None,
+  checks: list | None = None,
   output: Any | None = None,
   module: ModuleType | None = None,
   id: str | None = None,
   id_short: str | None = None,
+  __spies__: dict | None = None,
+) -> sns:
+  data = independent.get_model(schema=CONFIG.schema.Entry, data=locals())
+  data = independent.process_operations(
+    data=data,
+    functions=LOCALS,
+    operations=CONFIG.operations.main, )
+  return data.result
+
+
+def process_checks(
+  checks: list | None = None,
+  output: Any | None = None,
+  module: ModuleType | None = None,
+  id: str | None = None,
+  id_short: str | None = None,
+  __spies__: dict | None = None,
 ) -> sns:
   checks = checks or []
+  locals_ = locals()
 
   for i, item in enumerate(checks):
-    check = pre_processing(
-      check=item,
-      module=module,
-      output=output,
-      id=id,
-      id_short=id_short, )
-    check = independent.process_operations(
-      data=check,
+    data = sns(locals_=locals_, item=item)
+    data = independent.process_operations(
+      data=data,
       functions=LOCALS,
-      operations=CONFIG.operations.main, )
-    checks[i] = check
+      operations=CONFIG.operations.process_checks, )
+    checks[i] = data.check
 
-  n = len(checks)
-  plural = 's' if n != 1 else ''
-  level = 'info' if n != 0 else 'warning'
-  log = sns(
-    level=level,
-    message=f'Processed {n} check{plural} for {id_short}', )
-
-  data = sns(
-    checks=checks,
-    _cleanup=['module', 'output'],
-    log=log, )
-  return data
+  checks = sns(checks=checks)
+  return sns(result=checks)
 
 
 def pre_processing(
-  check: dict | None = None,
-  output: Any | None = None,
-  module: ModuleType | None = None,
-  id: str | None = None,
-  id_short: str | None = None,
+  locals_: dict | None = None,
+  item: dict | None = None,
 ) -> sns:
-  check = check or {}
-  locals_ = locals()
-  fields = list(locals_.keys())
-  fields.remove('check')
-  for field in fields:
-    check = set_object.main(
-      parent=check,
-      route=field,
-      value=locals_[field], )
-  return independent.get_model(schema=CONFIG.schema.Check, data=check)
+  store = {}
+
+  for field in CONFIG.preferred_fields:
+    values = sns()
+    for route, parent in locals().items():
+      value = objects.get(parent=parent, route=field)
+      values = objects.update(
+        route=route,
+        parent=values,
+        value=value, )
+    store[field] = values.item or values.locals_
+
+  item.update(locals_)
+  item.update(store)
+  return independent.get_model(schema=CONFIG.schema.Check, data=item)
 
 
 def pass_through(method: str | None = None) -> Callable:
@@ -96,7 +101,7 @@ def get_check_method(
   module: ModuleType | None = None,
 ) -> sns:
   name = str(method)
-  method = get_object.main(parent=module, route=name)
+  method = objects.get(parent=module, route=name)
   if isinstance(method, Callable):
     return sns(method=method)
 
@@ -116,7 +121,7 @@ def reset_output_value(
   output: Any | None = None,
   field: str | None = None,
 ) -> sns:
-  output = get_object.main(parent=output, route=field)
+  output = objects.get(parent=output, route=field)
   log = None
   if output is None and field:
     type_ = type(output).__name__
@@ -134,13 +139,16 @@ def get_check_result(
   method: Callable | None = None,
   output: Any | None = None,
   expected: Any | None = None,
+  __spies__: dict | None = None,
 ) -> sns:
-  result = method(
-    module=module,
-    output=output,
-    expected=expected, )
-  result.method = method.__name__
-  result._cleanup = ['module']
+  arguments = locals()
+  arguments = independent.get_function_arguments(
+    function=method, data=arguments)
+  result = method(**arguments)
+  result.method = objects.get(
+    parent=method,
+    route='__name__',
+    default=method, )
   return result
 
 
@@ -184,8 +192,23 @@ def handle_failed_check(
     if getattr(value, 'log', None):
       data.log.append(value.log)
 
-  data._cleanup = ['field']
   return data
+
+
+def post_processing(
+  id: str | None = None,
+  id_short: str | None = None,
+  expected: Any | None = None,
+  output: Any | None = None,
+  passed: Any | None = None,
+  method: Callable | str | None = None,
+) -> sns:
+  method = objects.get(
+    parent=method,
+    route='__name__',
+    default=method, )
+  check = sns(**locals())
+  return sns(check=check)
 
 
 def examples() -> None:

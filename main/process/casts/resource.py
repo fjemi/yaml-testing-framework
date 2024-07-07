@@ -154,8 +154,7 @@ def casted_object_resource(object: Any | None = None) -> Callable:
 
 def module_resource(module: str | None = None) -> ModuleType | None:
   if isinstance(module, str):
-    module = get_module(location=module, pool=False)
-    return module
+    return get_module(location=module).module
 
 
 def kinds_resource(kinds: str | dict) -> Any:
