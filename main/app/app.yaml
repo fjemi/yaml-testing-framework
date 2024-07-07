@@ -72,7 +72,6 @@ operations:
   run_test_for_functions:
   - handle_id
   - get_module.main
-  - handle_resources
   - environment.main
   - patches.main
   - casts.process_cast_arguments
@@ -133,11 +132,6 @@ schema:
       type: dict
       description: The locations of modules, YAML files, and resources
       default: null
-    - name: resources
-      type: list
-      description: >
-        A list of resource module locations. The modules are used for all tests
-      default: []
     - name: logging_enabled
       type: bool
       description: Flag to enable or disable logging

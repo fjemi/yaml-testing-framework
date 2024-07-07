@@ -40,7 +40,6 @@ def main(
   include_files: str | List[str] | None = None,
   exclude_functions: str | List[str] | None = None,
   include_functions: str | List[str] | None = None,
-  resources: str | list | None = None,
   yaml_suffix: str | None = None,
   logging_enabled: bool | None = None,
 ) -> list:
@@ -97,49 +96,6 @@ def get_resource_route(
   routes = routes.resource[start:]
   routes[-1] = routes[-1].replace(MODULE_EXTENSION, '')
   return '.'.join(routes)
-
-
-def handle_resources(
-  module: ModuleType | None = None,
-  resources: List[str] | str | None = None,
-) -> sns:
-  resources = resources or []
-  visited = []
-  ignored = []
-
-  for location in resources:
-    if location in visited:
-      continue
-    visited.append(location)
-
-    extension = os.path.splitext(location)[1]
-    if False in [
-      os.path.exists(location),
-      extension in CONFIG.module_extensions,
-    ]:
-      ignored.append(location)
-      continue
-
-    resource = get_module.main(location=location).module
-    if not isinstance(resource, ModuleType):
-      ignored.append(location)
-      continue
-    route = get_resource_route(
-      module=module.__file__,
-      resource=resource.__file__, )
-    module = set_object.main(
-      parent=module,
-      value=resource,
-      route=route, )
-
-  log = None
-  if ignored:
-    log = sns(
-      resources_ignored=ignored,
-      level='warning',
-      standard_output=True, )
-
-  return sns(module=module, _cleanup=['resources'], log=log)
 
 
 def get_function(

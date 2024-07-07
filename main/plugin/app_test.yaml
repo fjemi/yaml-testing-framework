@@ -156,7 +156,6 @@ tests:
         name: Parser
         fields:
           _ininames:
-          - resources
           - project-path
           - include-functions
           - exclude-files
@@ -164,7 +163,7 @@ tests:
           - logging-enabled
     - method: checks.app.check_length
       field: _anonymous.options
-      expected: 6
+      expected: 5
 - function: pass_through
   description: Returns the data passed into the function
   tests:

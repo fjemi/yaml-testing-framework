@@ -118,51 +118,7 @@ tests:
     checks:
     - method: checks.app.check_equals
       expected: sub_directory.resource
-- function: handle_resources
-  description: Loads resource modules into the module to test
-  cast_arguments:
-  - method: resources.app.wrapper_get_module
-    field: module
-  tests:
-  - description: Undefined arguments
-    arguments: {}
-    checks:
-    - method: checks.app.check_sns
-      expected:
-        module: null
-        _cleanup:
-        - resources
-  - description: >
-      Resources is a list containing the locations of existing python and
-      javascript modules, and the location of a non-existing module
-    arguments:
-      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/app/resources/app.py
-      resources:
-      - does_not_exist.py
-      - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/app/resources/resource.js
-      - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/app/resources/resource.py
-    checks:
-    - method: checks.app.check_sns
-      expected:
-        _cleanup:
-        - resources
-    - method: checks.app.check_sns
-      field: log
-      expected:
-        level: warning
-        standard_output: true
-        resources_ignored:
-        - does_not_exist.py
-        - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/app/resources/resource.js
-    - method: checks.app.check_module
-      field: module
-      expected:
-        location: ${PWD}/main/app/resources/app.py
-    # Verify that the resource was added to the module
-    - method: checks.app.check_module
-      field: module.resource
-      expected:
-        location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/app/resources/resource.py
+
 - function: get_function
   description: Returns an existing function to test
   cast_arguments:
