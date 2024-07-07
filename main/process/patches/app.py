@@ -40,9 +40,10 @@ def process_patches(
   patches = patches or []
 
   for item in patches:
-    data = sns(patch=item, module=module)
+    data = independent.get_model(schema=CONFIG.schema.Patch, data=item)
+    data.module = module
     data = independent.process_operations(
-      operations=CONFIG.operations.main,
+      operations=CONFIG.operations.process_patches,
       functions=LOCALS,
       data=data, )
     module = data.module
@@ -52,13 +53,30 @@ def process_patches(
 
 
 def pre_processing(
-  patch: dict | None = None,
   module: ModuleType | None = None,
+  resource: ModuleType | None = None,
+  route: str | None = None,
 ) -> sns:
+  resource = resource or module
+  resource = get_module.main(
+    module=resource,
+    default=module, ).module
+
+  route = str(route)
+  if route.find('.') == 0:
+    route = route[1:]
   original = objects.get(
     parent=module,
     route=route,
     default=None, )
+
+  timestamp = independent.get_timestamp()
+
+  return sns(
+    resource=resource,
+    original=original,
+    timestamp=timestamp,
+    route=route, )
 
 
 def get_patch_method(
@@ -69,25 +87,29 @@ def get_patch_method(
   callable_route: str | None = None,
   original: Any | None = None,
 ) -> sns:
+  route = f'get_{method}_patch_method'
   method = objects.get(
     parent=LOCALS,
     route=route,
     default=do_nothing, )
+  value = method(
     value=value,
     resource=resource,
     callable_route=callable_route,
     original=original,
     timestamp=timestamp, )
-  log = None
-  if value is None:
-    log = sns(
-      message=f'No patch method {method} found',
-      level='error', )
-  return sns(log=log, value=value)
+  return sns(value=value)
 
 
-def do_nothing(*args, **kwargs) -> None:
-  _ = args, kwargs
+def do_nothing(
+  value: Any | None = None,
+  callable_route: str | None = None,
+  timestamp: int | None = None,
+  resource: ModuleType | None = None,
+  original: Any | None = None,
+) -> None:
+  _ = value, callable_route, timestamp, resource
+  return original
 
 
 def get_value_patch_method(
@@ -197,7 +219,7 @@ def patch_module(
 def examples() -> None:
   from main.utils import invoke_testing_method
 
-  invoke_testing_method.main(location=MODULE)
+  invoke_testing_method.main()
 
 
 if __name__ == '__main__':

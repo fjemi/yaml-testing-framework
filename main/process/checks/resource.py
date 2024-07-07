@@ -44,7 +44,7 @@ def check_method_a() -> None:
 
 
 def wrapper_get_module(module: str | None = None) -> ModuleType:
-  return get_module.main(location=module).module
+  return get_module.main(module=module).module
 
 
 def check_resource(
@@ -127,7 +127,7 @@ def sns_to_dict(output: sns) -> dict:
 
 
 def examples() -> None:
-  invoke_testing_method.main(resource_flag=True)
+  invoke_testing_method.main(resource_flag=True, module_filename='app')
 
 
 if __name__ == '__main__':

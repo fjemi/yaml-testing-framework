@@ -104,7 +104,9 @@ def get_yaml_content(
   return sns(content=content)
 
 
-def get_decorated_function_from_closure(function: Callable) -> Callable:
+def get_decorated_function_from_closure(
+  function: Callable | None = None,
+) -> Callable:
   closure = getattr(function, '__closure__', None) or []
   for item in closure:
     contents = item.cell_contents
@@ -122,14 +124,18 @@ def get_decorated_function_from_closure(function: Callable) -> Callable:
   return function
 
 
-def get_decorated_function_from_wrapped(function: Callable) -> Callable:
+def get_decorated_function_from_wrapped(
+  function: Callable | None = None,
+) -> Callable:
   wrapped = getattr(function, '__wrapped__', None)
   if not wrapped:
     return function
   return get_decorated_function_from_wrapped(function=wrapped)
 
 
-def get_decorated_function(function: Callable) -> Callable:
+def get_decorated_function(
+  function: Callable | None = None,
+) -> Callable:
   wrapped = get_decorated_function_from_wrapped(function=function)
   if wrapped != function:
     return wrapped
@@ -141,17 +147,19 @@ def get_decorated_function(function: Callable) -> Callable:
   return function
 
 
-def get_function_parameters(function: Callable) -> list:
+def get_function_parameters(
+  function: Callable | None = None,
+) -> list:
   global PARAMETERS
-  function_ = get_decorated_function(function=function)
+  method = get_decorated_function(function=function)
 
-  file_ = inspect.getfile(function_)
-  key = f'{file_}|{function_.__name__}'
+  file_ = '' if not isinstance(method, Callable) else inspect.getfile(method)
+  key = f'{file_}|{method.__name__}'
   if key in PARAMETERS:
     return PARAMETERS[key]
 
   item = 'return'
-  parameters = list(function_.__annotations__.keys())
+  parameters = list(method.__annotations__.keys())
   if item in parameters:
     parameters.remove(item)
 
@@ -175,6 +183,9 @@ def format_output(output: dict | sns | None = None) -> dict | None:
     parent=output,
     route='__dict__',
     default=output, )
+  if output is None:
+    output = {}
+  return output
 
 
 def format_exception_and_trace(exception: Exception | None = None) -> dict:
@@ -203,15 +214,16 @@ def get_timestamp(kind: str | None = None) -> float | int:
   return timestamp
 
 
-def get_runtime_in_ms(timestamps: sns) -> sns:
+def get_runtime_in_ms(timestamps: sns | None = None,) -> sns:
   timestamps.end = get_timestamp()
   timestamps.runtime_ms = (timestamps.end - timestamps.start)
   timestamps.runtime_ms = timestamps.runtime_ms * 1000
   return timestamps
 
 
-
-def purge_data_and_output_fields(data: sns) -> int:
+def purge_data_and_output_fields(
+  data: sns | None = None,
+) -> int:
   fields = data.output.get('_cleanup', [])
   fields.append('_cleanup')
   for field in fields:
@@ -405,6 +417,7 @@ def get_model_from_scheme(scheme: dict | None = None) -> sns:
     name = objects.get(parent=item, route='name')
     default = objects.get(parent=item, route='default')
     store.update({name: default})
+
   return sns(**store)
 
 

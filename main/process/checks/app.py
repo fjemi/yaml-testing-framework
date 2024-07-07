@@ -141,6 +141,10 @@ def get_check_result(
   expected: Any | None = None,
   __spies__: dict | None = None,
 ) -> sns:
+  arguments = locals()
+  arguments = independent.get_function_arguments(
+    function=method, data=arguments)
+  result = method(**arguments)
   result.method = objects.get(
     parent=method,
     route='__name__',

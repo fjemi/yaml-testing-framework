@@ -9,7 +9,7 @@ from types import ModuleType
 from types import SimpleNamespace as sns
 from typing import Any
 
-from main.utils import independent
+from main.utils import independent, objects
 
 
 MODULE = __file__
@@ -81,17 +81,12 @@ def pre_processing(
   module: str | ModuleType | None = None,
 ) -> sns:
   location = location or module
-
-  if True not in [
-    isinstance(location, str),
-    location is None,
-  ]:
-    flag = True
+  flag = isinstance(location, ModuleType)
+  if flag:
     return sns(
       location=location.__file__,
       module=location,
       flag=True, )
-
   return sns(location=location, flag=False)
 
 
@@ -101,7 +96,8 @@ def format_module_name(
   flag: bool | None = None,
 ) -> sns | None:
   if flag:
-    return sns(name=location.__name__)
+    name = objects.get(parent=location, route='__name__')
+    return sns(name=name)
 
   if location:
     name = os.path.normpath(location)
