@@ -4,13 +4,17 @@ TODO:
 - Add ability to cast expected in checks
 
 
-resources:
+help:
 - https://stackoverflow.com/questions/4081819/why-does-python-inspect-isclass-think-an-instance-is-a-class
 
 
-configurations:
-  resources:
-  - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/resource.py
+resources:
+- &RESOURCE_PATH
+  ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/resource.py
+- &RESOURCE
+  module: *RESOURCE_PATH
+- &CHECKS
+  module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/app.py
 
 
 tests:
@@ -20,52 +24,64 @@ tests:
     and output values passed to an check method coincide with the method's
     type hints for its expected and output parameters.
   cast_arguments:
-  - method: resource.get_method
+  - method: get_method
+    << : *RESOURCE
     field: method
-  - method: resource.get_module_resource
+  - method: wrapper_get_module
+    << : *RESOURCE
     field: module
   tests:
   - description: Undefined arguments
     arguments: {}
     checks:
     - method: check_exception
+      << : *CHECKS
       expected: AttributeError
   - description: >
       Method where expected is a list and output is a dict. Check passes.
     arguments:
-      module: module_resource
+      module: *RESOURCE_PATH
       expected: []
       output: {}
       method: check_method_a
+      __setup__: {}
+      __spies__: {}
     checks:
     - method: check_equals
+      << : *CHECKS
       expected: passed
   - description: >
       Method where expected is a list and output is a dict. Check fails.
     arguments:
-      module: module_resource
+      module: *RESOURCE_PATH
       expected: expected
       output: 1
       method: check_method_a
     checks:
     - method: check_sns
+      << : *CHECKS
       expected:
         expected:
-          kind: str
           method: check_method_a
-          valid_kinds:
-          - list
-        output:
-          kind: int
-          method: check_method_a
-          valid_kinds:
-          - dict
+          parameters:
+            failed:
+            - kind: str
+              name: expected
+              hints:
+              - list
+            - kind: int
+              name: output
+              hints:
+              - dict
+            passed:
+            - module
+        output: null
         passed: false
   - description: >
       Method has expected and output parameters with type hints that are Any
       and a union. Checks pass.
     arguments:
-      module: module_resource
+      << : *RESOURCE
       method: check_method_b
       output: output
       expected: expected
@@ -76,7 +92,7 @@ tests:
       Method has expected and output parameters with type hints that are Any
       and a union. Checks fail.
     arguments:
-      module: module_resource
+      << : *RESOURCE
       method: check_method_b
       output: {}
       expected: expected
@@ -84,16 +100,17 @@ tests:
     - method: check_sns
       expected:
         expected:
-          kind: str
           method: check_method_b
-          valid_kinds:
-          - any
-        output:
-          kind: dict
-          method: check_method_b
-          valid_kinds:
-          - list
-          - str
+          parameters:
+            failed:
+            - hints:
+              - list
+              - str
+              name: output
+              kind: dict
+            passed:
+            - module
+            - expected
         passed: false
 - function: type_checks
   description: >
@@ -104,7 +121,8 @@ tests:
     value: value
     route: type_checks_inner
   cast_arguments:
-  - method: resource.get_method
+  - method: get_method
+    << : *RESOURCE
     field: method
   tests:
   - description: Undefined arguments
@@ -132,7 +150,8 @@ tests:
     Verify the output is a SimpleNamespace object and contains specified
     fields and values
   cast_arguments:
-  - method: resource.check_sns_resource
+  - method: check_sns_resource
+    << : *RESOURCE
     field: output
   tests:
   - description: Output is not a SimpleNamespace or expected is not a dict
@@ -143,17 +162,19 @@ tests:
     - method: check_sns
       expected:
         expected:
-          kind: str
           method: check_sns
-          valid_kinds:
-          - dict
-          - nonetype
+          parameters:
+            failed:
+            - hints:
+              - dict
+              name: expected
+              kind: str
+            - hints:
+              - simplenamespace
+              name: output
+              kind: nonetype
+            passed: []
         output:
-          kind: nonetype
-          method: check_sns
-          valid_kinds:
-          - simplenamespace
-          - nonetype
         passed: false
   - description: SimpleNamespace should contain expected fields and values
     arguments:
@@ -197,24 +218,31 @@ tests:
     Verifies that an exception was raised. Checks for the name of the exception
     (TypeError, RuntimeError, etc)
   cast_arguments:
-  - method: resource.check_exception_resource
+  - method: get_exception
+    << : *RESOURCE
     field: output
   tests:
   - description: Output is not an Exception or expected is not a str
-    arguments: {}
+    arguments:
+      output: output
     checks:
     - method: check_sns
+      << : *CHECKS
       expected:
         expected:
-          kind: nonetype
           method: check_exception
-          valid_kinds:
-          - str
-        output:
-          kind: nonetype
-          method: check_exception
-          valid_kinds:
-          - exception
+          parameters:
+            failed:
+            - name: expected
+              kind: nonetype
+              hints:
+              - str
+            - name: output
+              kind: str
+              hints:
+              - exception
+            passed: []
+        output: null
         passed: false
   - description: Output is a type error
     arguments:
@@ -222,6 +250,7 @@ tests:
       expected: TypeError
     checks:
     - method: check_sns
+      << : *CHECKS
       expected:
         output: TypeError
         passed: true
@@ -232,6 +261,7 @@ tests:
       expected: RuntimeError
     checks:
     - method: check_sns
+      << : *CHECKS
       expected:
         output: RuntimeError
         passed: true
@@ -239,7 +269,8 @@ tests:
 - function: check_module
   description: Verify that the output is a module
   cast_arguments:
-  - method: resource.get_output_resource
+  - method: get_output_resource
+    << : *RESOURCE
     field: output
   tests:
   - description: Undefined arguments
@@ -248,33 +279,19 @@ tests:
     - method: check_sns
       expected:
         expected:
-          kind: nonetype
           method: check_module
-          valid_kinds:
-          - dict
-        output:
-          kind: dict
-          method: check_module
-          valid_kinds:
-          - module
-        passed: false
-  - description: Expected is not a dict
-    arguments:
-      output: module
-      expected: expected
-    checks:
-    - method: check_sns
-      expected:
-        expected:
-          kind: str
-          method: check_module
-          valid_kinds:
-          - dict
-        output:
-          kind: nonetype
-          method: check_module
-          valid_kinds:
-          - module
+          parameters:
+            failed:
+            - hints:
+              - module
+              name: output
+              kind: dict
+            - hints:
+              - dict
+              name: expected
+              kind: nonetype
+            passed: []
+        output: null
         passed: false
   - description: Output is a module
     arguments:
@@ -308,6 +325,7 @@ tests:
   - arguments: {}
     checks:
     - method: check_sns
+      << : *CHECKS
       expected:
         output: null
         expected: null
@@ -336,7 +354,8 @@ tests:
     parent module
   cast_arguments:
   - field: output
-    method: resource.get_output_resource
+    << : *RESOURCE
+    method: get_output_resource
   tests:
   - description: Output is not a function
     arguments:
@@ -344,37 +363,43 @@ tests:
       expected: null
     checks:
     - method: check_sns
+      << : *CHECKS
       expected:
         expected:
-          kind: nonetype
           method: check_function
-          valid_kinds:
-          - dict
-        output:
-          kind: nonetype
-          method: check_function
-          valid_kinds:
-          - callable
-          - function
-        passed: False
+          parameters:
+            failed:
+            - name: output
+              kind: nonetype
+              hints:
+              - callable
+              - function
+            - name: expected
+              kind: nonetype
+              hints:
+              - dict
+            passed: []
+        output: null
+        passed: false
   - description: Expected is not a dict
     arguments:
       output: callable_method
       expected: expected
     checks:
     - method: check_sns
+      << : *CHECKS
       expected:
         expected:
-          kind: str
           method: check_function
-          valid_kinds:
-          - dict
-        output:
-          kind: function
-          method: check_function
-          valid_kinds:
-          - callable
-          - function
+          parameters:
+            failed:
+            - name: expected
+              kind: str
+              hints:
+              - dict
+            passed:
+            - output
+        output: null
         passed: False
   - description: Function
     arguments:
@@ -384,6 +409,7 @@ tests:
         location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/resource.py
     checks:
     - method: check_sns
+      << : *CHECKS
       expected:
         passed: true
         output:
@@ -400,6 +426,7 @@ tests:
         location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/resource.py
     checks:
     - method: check_sns
+      << : *CHECKS
       expected:
         passed: true
         output:
@@ -416,6 +443,7 @@ tests:
         location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/resource.py
     checks:
     - method: check_sns
+      << : *CHECKS
       expected:
         passed: true
         output:
@@ -432,6 +460,7 @@ tests:
         location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/resource.py
     checks:
     - method: check_sns
+      << : *CHECKS
       expected:
         passed: true
         output:
@@ -440,123 +469,35 @@ tests:
         expected:
           name: wrapped_awaitable_method
           location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/resource.py
-- function: check_dataclass
-  description: >
-    Verify that the output is a dataclass; check name and specified fields and
-    values
-  cast_arguments:
-  - field: output
-    method: resource.check_dataclass_resource
-  tests:
-  - description: Output is not a dataclass
-    arguments:
-      output: null
-      expected: null
-    checks:
-    - method: check_sns
-      expected:
-        passed: False
-        output:
-          kind: nonetype
-          method: check_dataclass
-          valid_kinds:
-          - dataclass
-        expected:
-          kind: nonetype
-          method: check_dataclass
-          valid_kinds:
-          - dict
-  - description: Expected is not a dict
-    arguments:
-      output: dataclass
-      expected: null
-    checks:
-    - method: check_sns
-      expected:
-        passed: False
-        output:
-          kind: dataclass
-          method: check_dataclass
-          valid_kinds:
-          - dataclass
-        expected:
-          kind: nonetype
-          method: check_dataclass
-          valid_kinds:
-          - dict
-  - description: Output is a dataclass
-    arguments:
-      output: dataclass
-      expected:
-        name: DataClass
-        fields:
-          a: a
-          b: b
-    checks:
-    - method: check_sns
-      expected:
-        passed: true
-        output:
-          name: DataClass
-          fields:
-            a: a
-            b: b
-        expected:
-          name: DataClass
-          fields:
-            a: a
-            b: b
-  - description: Output is a dataclass but doesn't have specified fields
-    arguments:
-      output: dataclass
-      expected:
-        name: DataClass
-        fields:
-          a: a
-          b: b
-          c: c
-    checks:
-    - method: check_sns
-      expected:
-        passed: false
-        output:
-          name: DataClass
-          fields:
-            a: a
-            b: b
-        expected:
-          name: DataClass
-          fields:
-            a: a
-            b: b
-            c: c
 - function: check_class
   description: >
     Verify that the output is a class. Check the name of the class and specified
     fields and values
   cast_arguments:
-  - method: resource.check_class_resource
+  - method: get_class
+    << : *RESOURCE
     field: output
   tests:
-  - description: Output or expected are not correct types
+  - description: Undefined arguments
     arguments:
       output: null
       expected: null
     checks:
     - method: check_sns
+      << : *CHECKS
       expected:
         passed: False
         expected:
-          kind: nonetype
           method: check_class
-          valid_kinds:
-          - dict
-        output:
-          kind: nonetype
-          method: check_class
-          valid_kinds:
-          - type
-          - object
+          parameters:
+            failed:
+            - hints:
+              - dict
+              name: expected
+              kind: nonetype
+            passed:
+            - output
+        output: null
   - description: Output is an instantiated class
     arguments:
       output: class_
@@ -588,12 +529,12 @@ tests:
     checks:
     - method: check_sns
       expected:
-        passed: true
+        passed: false
         expected:
           name: type
           fields: {}
         output:
-          name: type
+          name: Class
           fields: {}
 - function: check_length
   description: Verify that the length of an object is as specified
@@ -605,18 +546,18 @@ tests:
     checks:
     - method: check_sns
       expected:
+        output: null
+        passed: false
         expected:
-          kind: int
           method: check_length
-          valid_kinds:
-          - int
-          - float
-        passed: False
-        output:
-          kind: nonetype
-          method: check_length
-          valid_kinds:
-          - iterable
+          parameters:
+            failed:
+            - name: output
+              hints:
+              - iterable
+              kind: nonetype
+            passed:
+            - expected
   - description: Output is an empty string
     arguments:
       expected: 0
@@ -671,18 +612,92 @@ tests:
     checks:
     - method: check_sns
       expected:
-        output:
-          kind: nonetype
-          method: check_type
-          valid_kinds:
-          - any
+        output: null
+        passed: False
         expected:
-          kind: nonetype
           method: check_type
-          valid_kinds:
-          - str
-          - list
+          parameters:
+            passed:
+            - output
+            failed:
+            - hints:
+              - str
+              - list
+              name: expected
+              kind: nonetype
+  - description: Output is a string and a str object is expected
+    arguments:
+      expected: str
+      output: string
+    checks:
+    - method: check_sns
+      expected:
+        expected: str
+        output: str
+        passed: true
+  - description: Output is an int and an int or float object is expected
+    arguments:
+      expected:
+      - int
+      - float
+      output: 1
+    checks:
+    - method: check_sns
+      expected:
+        expected: int
+        output: int
+        passed: true
+  - description: Output is a float and an int or float object is expected
+    arguments:
+      expected:
+      - int
+      - float
+      output: 1.1
+    checks:
+    - method: check_sns
+      expected:
+        expected: float
+        output: float
+        passed: true
+  - description: Output is a dict, which is not an expected type
+    arguments:
+      expected:
+      - int
+      - float
+      - list
+      output: {}
+    checks:
+    - method: check_sns
+      expected:
+        expected:
+        - int
+        - float
+        - list
+        output:
+        - dict
+        - <class 'dict'>
         passed: false
+- function: check_type
+  description: Verify that the output is of a certain type
+  tests:
+  - description: Expected is not a string or list of strings
+    arguments: {}
+    checks:
+    - method: check_sns
+      expected:
+        output: null
+        passed: False
+        expected:
+          method: check_type
+          parameters:
+            passed:
+            - output
+            failed:
+            - hints:
+              - str
+              - list
+              name: expected
+              kind: nonetype
   - description: Output is a string and a str object is expected
     arguments:
       expected: str
@@ -744,17 +759,21 @@ tests:
     - method: check_sns
       expected:
         expected:
-          kind: nonetype
           method: check_substring_in_string
-          valid_kinds:
-          - list
-          - str
-        output:
-          kind: nonetype
-          method: check_substring_in_string
-          valid_kinds:
-          - str
+          parameters:
+            passed: []
+            failed:
+            - hints:
+              - str
+              name: output
+              kind: nonetype
+            - hints:
+              - list
+              - str
+              name: expected
+              kind: nonetype
         passed: false
+        output: null
   - description: Excepted is not a substring of output
     arguments:
       output: output
@@ -812,18 +831,18 @@ tests:
     - method: check_sns
       expected:
         passed: False
-        output:
-          kind: dict
-          method: check_item_in_list
-          valid_kinds:
-          - list
-          - tuple
+        output: null
         expected:
-          kind: nonetype
           method: check_item_in_list
-          valid_kinds:
-          - any
-          - list
+          parameters:
+            failed:
+            - name: output
+              kind: dict
+              hints:
+              - list
+              - tuple
+            passed:
+            - expected
   - description: Expected item not in output list
     arguments:
       output:
@@ -872,28 +891,24 @@ tests:
 - function: check_list_contains_item
   description: Verify that a function's output is within a list of items
   tests:
-  - description: Expected is not a list or tuple
+  - description: Undefined arguments
     arguments: {}
     checks:
     - method: check_sns
+      << : *CHECKS
       expected:
-        output:
-        - null
         expected:
-        - null
-        passed: true
-  - description: Output not in list of expected values
-    arguments:
-      output: output
-      expected:
-      - expected
-    checks:
-    - method: check_sns
-      expected:
-        passed: False
-        output:
-        - output
-        expected: []
+          method: check_list_contains_item
+          parameters:
+            passed:
+            - output
+            failed:
+            - name: expected
+              hints:
+              - list
+              kind: nonetype
+        output: null
+        passed: false
   - description: Output value in list of expected values
     arguments:
       output: expected
@@ -901,6 +916,7 @@ tests:
       - expected
     checks:
     - method: check_sns
+      << : *CHECKS
       expected:
         passed: true
         output:
@@ -918,6 +934,7 @@ tests:
       - output_3
     checks:
     - method: check_sns
+      << : *CHECKS
       expected:
         passed: true
         output:
@@ -931,20 +948,25 @@ tests:
   tests:
   - description: Output is not a dictionary
     arguments: {}
+    << : *CHECKS
     checks:
     - method: check_sns
       expected:
         expected:
-          kind: nonetype
           method: check_key_in_dict
-          valid_kinds:
-          - list
-          - str
-        output:
-          kind: nonetype
-          method: check_key_in_dict
-          valid_kinds:
-          - dict
+          parameters:
+            failed:
+            - hints:
+              - dict
+              kind: nonetype
+              name: output
+            - hints:
+              - list
+              - str
+              kind: nonetype
+              name: expected
+            passed: []
+        output: null
         passed: false
   - description: Output dict contains expected key
     arguments:
@@ -954,6 +976,7 @@ tests:
       expected: a
     checks:
     - method: check_sns
+      << : *CHECKS
       expected:
         expected:
         - a
@@ -970,6 +993,7 @@ tests:
       - c
     checks:
     - method: check_sns
+      << : *CHECKS
       expected:
         expected:
         - a
@@ -988,6 +1012,7 @@ tests:
       - b
     checks:
     - method: check_sns
+      << : *CHECKS
       expected:
         expected:
         - a
@@ -999,25 +1024,31 @@ tests:
 - function: check_range
   description: Verify that the output is a range object
   cast_arguments:
-  - method: resource.check_range_resource
+  - method: check_range_resource
+    << : *RESOURCE
     field: output
   tests:
-  - description: Output is not a range object or expected not a dict
+  - description: Undefined arguments
     arguments: {}
     checks:
     - method: check_sns
+      << : *CHECKS
       expected:
+        output: null
         passed: false
         expected:
-          kind: nonetype
           method: check_range
-          valid_kinds:
-          - dict
-        output:
-          kind: nonetype
-          method: check_range
-          valid_kinds:
-          - range
+          parameters:
+            failed:
+            - hints:
+              - range
+              kind: nonetype
+              name: output
+            - hints:
+              - dict
+              kind: nonetype
+              name: expected
+            passed: []
   - description: Output is a range that starts at 0 and stops at 3
     arguments:
       output:
@@ -1028,6 +1059,7 @@ tests:
         stop: 3
     checks:
     - method: check_sns
+      << : *CHECKS
       expected:
         expected:
           start: 0
@@ -1047,6 +1079,7 @@ tests:
         stop: 1
     checks:
     - method: check_sns
+      << : *CHECKS
       expected:
         expected:
           start: 0
@@ -1058,22 +1091,27 @@ tests:
 - function: check_key_value_in_dict
   description: Verify that a dictionary contains key/value pairs
   tests:
-  - description: Output or expected is not of type dict
+  - description: UNdefined arguments
     arguments: {}
     checks:
     - method: check_sns
+      << : *CHECKS
       expected:
         passed: False
+        output: null
         expected:
-          kind: nonetype
           method: check_key_value_in_dict
-          valid_kinds:
-          - dict
-        output:
-          kind: nonetype
-          method: check_key_value_in_dict
-          valid_kinds:
-          - dict
+          parameters:
+            failed:
+            - name: output
+              kind: nonetype
+              hints:
+              - dict
+            - name: expected
+              kind: nonetype
+              hints:
+              - dict
+            passed: []
   - description: Output contains expected key/value pair
     arguments:
       output:
@@ -1083,6 +1121,7 @@ tests:
         a: a
     checks:
     - method: check_sns
+      << : *CHECKS
       expected:
         expected:
           a: a
@@ -1098,6 +1137,7 @@ tests:
         c: c
     checks:
     - method: check_sns
+      << : *CHECKS
       expected:
         expected:
           c: c
@@ -1115,6 +1155,7 @@ tests:
         b: b
     checks:
     - method: check_sns
+      << : *CHECKS
       expected:
         expected:
           a: a
@@ -1126,27 +1167,32 @@ tests:
 - function: check_thread
   description: Verify that the output is of type threading.Thread
   cast_arguments:
-  - method: resource.check_thread_resource
+  - method: check_thread_resource
+    << : *RESOURCE
     field: output
   tests:
-  - description: Output is not of type thread or expected is not a dict
+  - description: Undefined arguments
     arguments: {}
     checks:
     - method: check_sns
       expected:
         passed: False
+        output: null
         expected:
-          kind: nonetype
           method: check_thread
-          valid_kinds:
-          - list
-          - dict
-        output:
-          kind: dict
-          method: check_thread
-          valid_kinds:
-          - list
-          - thread
+          parameters:
+            failed:
+            - hints:
+              - list
+              - thread
+              kind: dict
+              name: output
+            - kind: nonetype
+              name: expected
+              hints:
+              - list
+              - dict
+            passed: []
   - description: Output is a thread
     arguments:
       output: thread
@@ -1163,27 +1209,29 @@ tests:
 - function: check_function_output
   description: Verify the output from calling a function
   cast_arguments:
-  - method: resource.check_function_output_resource
+  - method: check_function_output_resource
+    << : *RESOURCE
     field: output
   tests:
-  - description: Arguments are undefined
+  - description:  Undefined arguments
     arguments: {}
     checks:
     - method: check_sns
+      << : *CHECKS
       expected:
         passed: false
+        output: null
         expected:
-          kind: nonetype
           method: check_function_output
-          valid_kinds:
-          - any
-          - nonetype
-        output:
-          kind: dict
-          method: check_function_output
-          valid_kinds:
-          - callable
-          - function
+          parameters:
+            failed:
+            - kind: dict
+              name: output
+              hints:
+              - callable
+              - function
+            passed:
+            - expected
   - description: Function with single argument and output
     arguments:
       output: hello_world
@@ -1251,6 +1299,7 @@ tests:
         module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/resource.py
         cast_output:
         - method: __builtins__.str
+          << : *RESOURCE
     checks:
     - method: check_sns
       expected:
@@ -1273,10 +1322,8 @@ tests:
   tests:
   - description: No spies defined
     arguments:
-      module:
-        SPIES: {}
+      __spies__: {}
       expected: {}
-      output: null
     checks:
     - method: check_sns
       expected:
@@ -1285,11 +1332,10 @@ tests:
         passed: true
   - description: Spies defined
     arguments:
-      module:
-        SPIES:
-          add:
-            called: False
-            called_with: None
+      __spies__:
+        add:
+          called: False
+          called_with: None
       expected:
         add:
           called: false

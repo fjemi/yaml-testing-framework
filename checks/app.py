@@ -39,7 +39,7 @@ class DataClass(Protocol):
 
 
 def get_type_hints(
-  method: Callable | None,
+  method: Callable | None = None,
   filter_out: list | None = None,
 ):
   store = {}
@@ -64,46 +64,62 @@ def type_checks_inner(
   module: ModuleType | None = None,
   method: Callable | None = None,
   __spies__: dict | None = None,
+  __setup__: dict | None = None,
 ) -> sns:
-  values = sns(output=output, expected=expected)
-  type_hints = get_type_hints(method=method, filter_out=['return'])
+  arguments = locals()
+  arguments = independent.get_function_arguments(function=method, data=arguments)
+
+  hints = sns()
+  values = sns()
+  hints.method = get_type_hints(method=method, filter_out=['return'])
   passed = []
+  failed = []
+
+  for parameter, argument in arguments.items():
+    kind = type(argument).__name__.lower()
 
     hints.parameter = objects.get(
       parent=hints.method,
       route=parameter, )
+    if type(hints.parameter).__name__ in CONFIG.union_types:
+      hints.parameter = list(hints.parameter.__args__)
+    else:
+      hints.parameter = [hints.parameter]
 
-    for i, item in enumerate(hints):
-      hints[i] = item.__name__.lower()
-
+    for i, item in enumerate(hints.parameter):
       if item == Any:
-        passed.append(key)
-        continue
+        passed.append(parameter)
+        break
+
+      item_kind = item.__name__.lower()
       if True in [
-        isinstance(value, item),
-        kind in [hints[i]],
+        kind == item_kind,
+        isinstance(argument, item),
       ]:
-        passed.append(key)
+        passed.append(parameter)
+        break
 
-    store = dict(
-      kind=kind,
-      valid_kinds=hints,
-      method=method.__name__, )
-    setattr(values, key, store)
+      hints.parameter[i] = item_kind
 
-  if False in [
-    'expected' in passed,
-    'output' in passed,
+    if parameter not in passed:
+      failed.append(dict(
+        name=parameter,
+        hints=hints.parameter,
+        kind=kind, ))
+
+  if not failed:
+    return method(**arguments)
+
   method = objects.get(
     parent=method,
     route='__name__',
     default=method, )
-      expected=values.expected, )
-
-  return method(
-    module=module,
-    output=output,
-    expected=expected, )
+  parameters = dict(failed=failed, passed=passed)
+  temp = dict(method=method, parameters=parameters)
+  return sns(
+    expected=temp,
+    output=None,
+    passed=False, )
 
 
 def type_checks(method: Callable) -> Callable:
@@ -114,24 +130,22 @@ def type_checks(method: Callable) -> Callable:
     expected: Any | None = None,
     module: ModuleType | None = None,
     __spies__: dict | None = None,
+    __setup__: dict | None = None,
   ) -> sns:
-    return type_checks_inner(
-      expected=expected,
-      module=module,
-      method=method,
-      output=output, )
+    arguments = locals()
+    arguments = independent.get_function_arguments(
+      function=method, data=arguments)
+    arguments.update(dict(method=method))
+    return type_checks_inner(**arguments)
 
   return inner
 
 
 @type_checks
 def check_sns(
-  module: ModuleType | None = None,
-  expected: dict | None = None,
-  output: sns | None = None,
+  expected: dict,
+  output: sns,
 ) -> sns:
-  _ = module
-
   store = {}
   for key, value in expected.items():
     if key in expected:
@@ -146,37 +160,11 @@ def check_sns(
     output=store, )
 
 
-# make this a decorator
-def failed_type_check(
-  output: Any | None = None,
-  output_wanted: str | None = None,
-  expected: Any | None = None,
-  expected_wanted: str | None = None,
-) -> sns:
-  wanted = output_wanted
-  actual = type(output).__name__
-  field = 'Output'
-
-  if expected_wanted is not None:
-    wanted = expected_wanted
-    actual = type(expected).__name__
-    field = 'Expected'
-
-  output = f'{field} is of type {actual} not {wanted}'
-  return sns(
-    output=output,
-    passed=False,
-    expected=expected, )
-
-
 @type_checks
 def check_exception(
   expected: str,
   output: Exception,
-  module: ModuleType | None = None,
 ) -> sns:
-  _ = module
-
   output = type(output).__name__
   passed = expected == output
   return sns(
@@ -189,10 +177,7 @@ def check_exception(
 def check_module(
   output: ModuleType,
   expected: dict,
-  module: ModuleType | None = None,
 ) -> sns:
-  _ = module
-
   output = sns(
     location=getattr(output, '__file__', None), )
   output = output.__dict__
@@ -205,12 +190,9 @@ def check_module(
 
 @type_checks
 def check_equals(
-  module: ModuleType | None = None,
-  output: Any | None = None,
-  expected: Any | None = None,
+  output: Any,
+  expected: Any,
 ) -> sns:
-  _ = module
-
   passed = output == expected
   return sns(
     expected=expected,
@@ -222,10 +204,7 @@ def check_equals(
 def check_function(
   output: Callable | FunctionType,
   expected: dict,
-  module: ModuleType | None = None,
 ) -> sns:
-  _ = module
-
   temp = independent.get_decorated_function(function=output)
   if isinstance(temp, Callable):
     output = temp
@@ -241,41 +220,15 @@ def check_function(
 
 
 @type_checks
-def check_dataclass(
-  output: DataClass,
-  expected: dict,
-  module: ModuleType | None = None,
-) -> sns:
-  _ = module
-
-  name = type(output).__name__
-  output = dc.asdict(output)
-  fields = {}
-  for key in expected.get('fields', {}):
-    if key in output:
-      fields[key] = output.get(key, None)
-
-  output = sns(fields=fields, name=name).__dict__
-  passed = output == expected
-  return sns(
-    passed=passed,
-    expected=expected,
-    output=output, )
-
-
-@type_checks
 def check_class(
   output: Type | object,
   expected: dict,
-  module: ModuleType | None = None,
 ) -> sns:
-  _ = module
-
   fields = {}
   expected_fields = expected.get('fields', {})
   for name in expected_fields:
     if hasattr(output, name):
-      fields[name] = get_object.main(
+      fields[name] = objects.get(
         parent=output,
         route=name, )
 
@@ -288,10 +241,7 @@ def check_class(
 def check_length(
   output: Iterable,
   expected: int | float,
-  module: ModuleType | None = None,
 ) -> sns:
-  _ = module
-
   passed = len(output) == expected
   return sns(
     passed=passed,
@@ -303,10 +253,7 @@ def check_length(
 def check_type(
   output: Any,
   expected: str | list,
-  module: ModuleType | None = None,
 ) -> sns:
-  _ = module
-
   passed = False
 
   if isinstance(expected, list) is False:
@@ -338,10 +285,7 @@ def check_type(
 def check_substring_in_string(
   output: str,
   expected: list | str,
-  module: ModuleType | None = None,
 ) -> sns:
-  _ = module
-
   if not isinstance(expected, list):
     expected = [expected]
 
@@ -359,10 +303,7 @@ def check_substring_in_string(
 def check_item_in_list(
   output: list | tuple,
   expected: Any | list,
-  module: ModuleType | None = None,
 ) -> sns:
-  _ = module
-
   if not isinstance(expected, list):
     expected = [expected]
 
@@ -377,12 +318,9 @@ def check_item_in_list(
 
 @type_checks
 def check_list_contains_item(
-  module: ModuleType | None = None,
-  output: Any | None = None,
-  expected: list | None = None,
+  output: Any,
+  expected: list,
 ) -> sns:
-  _ = module
-
   if not isinstance(output, list):
     output = [output]
   if not isinstance(expected, list):
@@ -400,10 +338,7 @@ def check_list_contains_item(
 def check_key_in_dict(
   output: dict,
   expected: list | str,
-  module: ModuleType | None = None,
 ) -> sns:
-  _ = module
-
   if not isinstance(expected, list):
     expected = [expected]
 
@@ -419,10 +354,7 @@ def check_key_in_dict(
 def check_range(
   output: range,
   expected: dict,
-  module: ModuleType | None = None,
 ) -> sns:
-  _ = module
-
   store = {}
   for key in expected:
     store[key] = getattr(output, key, 'key/value does not exist')
@@ -435,10 +367,7 @@ def check_range(
 def check_key_value_in_dict(
   output: dict,
   expected: dict,
-  module: ModuleType | None = None,
 ) -> sns:
-  _ = module
-
   fields = {}
   for key in expected:
     fields[key] = output.get(key, None)
@@ -451,10 +380,7 @@ def check_key_value_in_dict(
 def check_thread(
   output: list| threading.Thread,
   expected: list | dict,
-  module: ModuleType | None = None,
 ) -> sns:
-  _ = module
-
   data = sns(**locals())
 
   if not isinstance(output, list):
@@ -495,10 +421,7 @@ def call_function(
 def check_function_output(
   output: Callable | FunctionType,
   expected: Any | None,
-  module: ModuleType | None = None,
 ) -> sns:
-  _ = module
-
   expected = sns(**expected)
   output = [call_function(
     function=output,
@@ -517,12 +440,9 @@ def check_function_output(
 
 @type_checks
 def check_file_exists(
-  module: ModuleType | None = None,
-  output: str | None = None,
-  expected: str | None = None,
+  output: str,
+  expected: str,
 ) -> sns:
-  _ = module
-
   data = sns(**locals())
   data.passed = False
   if os.path.isfile(data.expected) and data.expected == data.output:
@@ -532,23 +452,19 @@ def check_file_exists(
 
 @type_checks
 def check_spies(
-  output: Any,
   expected: dict,
-  module: ModuleType | None = None,
+  __spies__: dict,
 ) -> sns:
-  _ = output
-
   store = {}
-  passed = True
 
-  for key, values in expected.items():
+  for method, spy in expected.items():
     spy_store = {}
 
-    for field, value in values.items():
-      route = f'SPIES.{key}.{field}'
+    for field, value in spy.items():
+      route = f'{method}.{field}'
       spy_store[field] = objects.get(parent=__spies__, route=route)
 
-    store[key] = spy_store
+    store[method] = spy_store
 
   passed = store == expected
   return sns(
@@ -560,7 +476,7 @@ def check_spies(
 def examples() -> None:
   from main.utils import invoke_testing_method
 
-  invoke_testing_method.main(location=MODULE)
+  invoke_testing_method.main()
 
 
 if __name__ == '__main__':
