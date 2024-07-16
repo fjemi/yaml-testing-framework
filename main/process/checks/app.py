@@ -8,7 +8,6 @@ from typing import Any, Callable, List
 
 import yaml
 
-# trunk-ignore(ruff/F401)
 from main.process.casts import process_cast_output
 from main.utils import get_config, independent, objects, schema, get_module
 

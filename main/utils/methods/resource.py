@@ -4,7 +4,6 @@
 
 from typing import Any, Awaitable, Callable
 
-# trunk-ignore(ruff/F401)
 from main.utils.methods.call import pack_any, unpack_list, unpack_mapping
 
 

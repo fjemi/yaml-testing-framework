@@ -5,7 +5,6 @@
 from types import SimpleNamespace as sns
 
 from main.utils import objects, independent
-# trunk-ignore(ruff/F401)
 from main.utils.independent import format_config_schema, get_yaml_content
 
 

@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 
-# trunk-ignore(ruff/F401)
 import builtins
 import dataclasses as dc
 import threading
@@ -10,7 +9,6 @@ from types import ModuleType
 from types import SimpleNamespace as sns
 from typing import Any, Awaitable, Callable
 
-# trunk-ignore(ruff/F401)
 from checks import module_resource
 from main.utils import get_module
 
