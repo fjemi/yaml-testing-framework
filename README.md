@@ -228,7 +228,7 @@ fields can be defined globally or at different test levels.
 | tests | dict or list | Nested configurations that get expanded into individual tests | append |
 
 
-## Assertions
+## Checks
 
 ### Methods
 
@@ -253,7 +253,7 @@ def check_type(
 
 ### Schema
 
-Assertions are defined in YAML test files under the key `checks`, and a
+Checks are defined in YAML test files under the key `checks`, and a
 single check has the following fields:
 
 | Field | Type | Description | Default |

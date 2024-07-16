@@ -98,7 +98,7 @@ tests:
         method: check_equals
         output: 'key: output_value'
         passed: false
-  - description: Assertion method does not exist
+  - description: Check method does not exist
     arguments:
       module:  *RESOURCE_PATH
       output: output
@@ -116,7 +116,7 @@ tests:
 
           ...'
         method: pass_through_inner
-        output: 'Assertion method pass_through_inner does not exist
+        output: 'Check method pass_through_inner does not exist
       
           ...'
         passed: false
@@ -162,7 +162,7 @@ tests:
         method: check_equals
 - function: pre_processing
   description: >
-    Formats check data before processing. Returns a single Assertion
+    Formats check data before processing. Returns a single Check
     model.
   tests:
   - description: Undefined arguments
@@ -188,7 +188,7 @@ tests:
         module: null
         output: null
         passed: false
-  - description: Assertions defined and other arguments are undefined
+  - description: Checks defined and other arguments are undefined
     cast_arguments:
     - method: wrapper_get_module
       << : *RESOURCE
@@ -240,7 +240,7 @@ tests:
         - expected: expected
           output: output
         output:
-        - output: Assertion method None does not exist
+        - output: Check method None does not exist
           expected: ''
           passed: false
         cast_output:
@@ -263,7 +263,7 @@ tests:
         - expected: expected
           output: output
         output:
-        - output: Assertion method check_method_does_not_exist does not exist
+        - output: Check method check_method_does_not_exist does not exist
           expected: ''
           passed: false
         cast_output:
@@ -288,8 +288,8 @@ tests:
       field: log
       expected:
         level: error
-        message: Assertion method None does not exist in module ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/checks/resource.py
-  - description: Assertion method exists
+        message: Check method None does not exist in module ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/checks/resource.py
+  - description: Check method exists
     arguments:
       method: check_method_a
       module: *RESOURCE_PATH
@@ -303,7 +303,7 @@ tests:
       expected:
         name: check_method_a
         location: *RESOURCE_PATH
-  - description: Assertion method does not exist
+  - description: Check method does not exist
     arguments:
       method: check_method_b
       module: *RESOURCE_PATH
@@ -313,7 +313,7 @@ tests:
       field: log
       expected:
         level: error
-        message: Assertion method check_method_b does not exist in module ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/checks/resource.py
+        message: Check method check_method_b does not exist in module ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/checks/resource.py
     - method: check_function
       << : *CHECKS
       field: method
@@ -407,7 +407,7 @@ tests:
     - method: check_exception
       << : *CHECKS
       expected: AttributeError
-  - description: Assertion fails when expected and output are different values
+  - description: Check fails when expected and output are different values
     arguments:
       expected: expected
       output: output
@@ -420,7 +420,7 @@ tests:
         expected: expected
         output: output
         passed: false
-  - description: Assertion passes when expected and output are the same value
+  - description: Check passes when expected and output are the same value
     arguments:
       expected: output
       output: output
@@ -433,7 +433,7 @@ tests:
         expected: output
         output: output
         passed: true
-  - description: Assertion fails and expected and output are converted to YAML
+  - description: Check fails and expected and output are converted to YAML
     arguments:
       expected:
         expected_key:

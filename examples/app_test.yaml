@@ -71,8 +71,8 @@ tests:
         n: null
         result: Method does not exist
         method: method_does_not_exist
-  # # Assertion fails when uncommented
-  # - description: Assertion fails
+  # # Check fails when uncommented
+  # - description: Check fails
   #   arguments:
   #     a: 1
   #     b: 1
