@@ -181,7 +181,7 @@ tests:
           - include-functions
           - exclude-files
           - yaml-suffix
-          - logging-enabled
+          - logging-flag
     - method: check_length
       << : *CHECKS
       field: _anonymous.options

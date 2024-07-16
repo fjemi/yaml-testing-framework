@@ -14,12 +14,12 @@ arguments:
     location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/invoke_testing_method/resources/module_with_tests.py
     exclude_files: []
     yaml_suffix: _test
-    logging_enabled: True
+    logging_flag: True
   module_without_tests: &MODULE_WITHOUT_TESTS_ARGUMENTS
     location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/invoke_testing_method/resources/module_without_tests.py
     exclude_files: []
     yaml_suffix: _test
-    logging_enabled: True
+    logging_flag: True
 
 
 tests:
@@ -41,7 +41,7 @@ tests:
       location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/invoke_testing_method/resources
       method: plugin
       yaml_suffix: _test
-      logging_enabled: True
+      logging_flag: True
     cast_output:
     - field: result
       method: list_sns_to_list_dict
@@ -85,7 +85,7 @@ tests:
         resource_suffix: _resource
         root_flag: false
         yaml_suffix: _test
-        logging_enabled: true
+        logging_flag: true
   - description: Defined arguments
     arguments:
       location: location
@@ -97,7 +97,7 @@ tests:
       resource_flag: resource_flag
       resource_suffix: resource_suffix
       root_flag: root_flag
-      logging_enabled: logging_enabled
+      logging_flag: logging_flag
     checks:
     - method: check_sns
       << : *CHECKS
@@ -111,7 +111,7 @@ tests:
         resource_suffix: resource_suffix
         root_flag: root_flag
         yaml_suffix: yaml_suffix
-        logging_enabled: logging_enabled
+        logging_flag: logging_flag
 - function: get_parent_module_location
   description: Returns the parent module associated with a resource module
   tests:

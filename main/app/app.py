@@ -41,10 +41,10 @@ def main(
   exclude_functions: str | List[str] | None = None,
   include_functions: str | List[str] | None = None,
   yaml_suffix: str | None = None,
-  logging_enabled: bool | None = None,
+  logging_flag: bool | None = None,
 ) -> list:
   logger.create_logger(
-    logging_enabled=logging_enabled,
+    logging_flag=logging_flag,
     project_path=project_path, )
   data = independent.get_model(schema=CONFIG.schema.App, data=locals())
   data = independent.process_operations(
