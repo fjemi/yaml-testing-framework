@@ -17,7 +17,6 @@ def main(
   yaml: str | None = None,
   module: str | None = None,
   module_route: str | None = None,
-  resources: str | None = None,
 ) -> sns:
   data = sns(**locals())
   data = independent.process_operations(
@@ -40,7 +39,6 @@ def format_locations(
   yaml: str | None = None,
   module: str | None = None,
   module_route: str | None = None,
-  resources: str | None = None,
 ) -> sns:
   locations = sns(**locals())
   data = sns(locations=locations)

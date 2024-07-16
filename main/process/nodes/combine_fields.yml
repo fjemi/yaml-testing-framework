@@ -33,8 +33,6 @@ combine_fields_as:
   cast_arguments: list
   checks: list
   patches: list
-  resources: list
-  exclude_resources: list
   exclude_functions: list
   environment: dict
   arguments: dict

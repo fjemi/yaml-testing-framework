@@ -85,10 +85,7 @@ def pytest_configure_resource(
     pluginmanager = mock.Mock()
     config = instance.Config(pluginmanager=pluginmanager)
 
-    ini_cache = sns(
-      yaml_suffix='_test',
-      project_path=PARENT_MODULE,
-      resources='resources', ).__dict__
+    ini_cache = sns(yaml_suffix='_test', project_path=PARENT_MODULE).__dict__
     opt_2_dest = {}
     for key, value in ini_cache.items():
       opt_key = f'--{key}'.replace('_', '-')

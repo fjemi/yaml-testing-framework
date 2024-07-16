@@ -24,7 +24,6 @@ def main(
   exclude_files: str | List[str] | None = None,
   exclude_functions: str | List[str] | None = None,
   yaml_suffix: str | None = None,
-  resources: list | str | None = None,
   logging_enabled: bool | None = None,
   timestamp: int | float | None = None,
 ) -> sns:
@@ -85,14 +84,6 @@ def format_exclude_files(exclude_files: str | list | None = None) -> sns:
     exclude_files = CONFIG.exclude_files
 
   return sns(exclude_files=exclude_files)
-
-
-def format_resources(resources: list | str | None = None) -> sns:
-  if resources is None:
-    resources = []
-  elif not isinstance(resources, list):
-    resources = [str(resources)]
-  return sns(resources=resources)
 
 
 def flag_for_exclusion(

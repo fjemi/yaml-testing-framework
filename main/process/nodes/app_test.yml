@@ -28,8 +28,6 @@ tests:
       yaml: *RESOURCE_TEST_YAML
       module: *RESOURCE_PATH
       module_route: *RESOURCE_PATH
-      resources:
-      - *RESOURCE_RESOURCE
     cast_output:
     - method: check_equals
       << : *CHECKS
@@ -44,7 +42,6 @@ tests:
           - description_a
           environment: {}
           exclude_functions: []
-          exclude_resources: []
           function: null
           function_name: null
           id: null
@@ -55,9 +52,6 @@ tests:
           module_route: *RESOURCE_PATH
           output: null
           patches: []
-          resources:
-          - *RESOURCE_RESOURCE
-          - resource_configuration
           spies: []
           tests: null
           yaml: *RESOURCE_TEST_YAML
@@ -71,7 +65,6 @@ tests:
           - description_b0
           environment: {}
           exclude_functions: []
-          exclude_resources: []
           function: null
           function_name: null
           id: null
@@ -83,9 +76,6 @@ tests:
           output: null
           patches: []
           spies: []
-          resources:
-          - *RESOURCE_RESOURCE
-          - resource_configuration
           tests: null
           yaml: *RESOURCE_TEST_YAML
         - __spies__: null
@@ -98,7 +88,6 @@ tests:
           - description_b1
           environment: {}
           exclude_functions: []
-          exclude_resources: []
           function: null
           function_name: null
           id: null
@@ -110,9 +99,6 @@ tests:
           output: null
           patches: []
           spies: []
-          resources:
-          - *RESOURCE_RESOURCE
-          - resource_configuration
           tests: null
           yaml: *RESOURCE_TEST_YAML
 - function: get_configurations_and_tests
@@ -163,7 +149,6 @@ tests:
         module: null
         module_route: null
         yaml: null
-        resources: null
     - method: check_sns
       << : *CHECKS
       field: locations
@@ -171,13 +156,11 @@ tests:
         module: null
         module_route: null
         yaml: null
-        resources: null
   - description: Defined arguments
     arguments:
       module: module
       module_route: module_route
       yaml: yaml
-      resources: resources
     checks:
     - method: check_sns
       << : *CHECKS
@@ -185,7 +168,6 @@ tests:
         module: null
         module_route: null
         yaml: null
-        resources: null
     - method: check_sns
       << : *CHECKS
       field: locations
@@ -193,10 +175,9 @@ tests:
         module: module
         module_route: module_route
         yaml: yaml
-        resources: resources
 - function: add_locations_to_configurations
   description: >
-    Adds module, yaml, resources, and other location data to global config data
+    Adds module, yaml, and other location data to global config data
   cast_arguments:
   - field: locations
     method: sns
@@ -214,13 +195,11 @@ tests:
         configurations: {}
   - description: Defined arguments
     arguments:
-      configurations:
-        resources: configurations
+      configurations: {}
       locations:
         module: module
         module_route: module_route
         yaml: yaml
-        resources: resources
     checks:
     - method: check_sns
       << : *CHECKS
@@ -230,9 +209,6 @@ tests:
           module: module
           module_route: module_route
           yaml: yaml
-          resources:
-          - resources
-          - configurations
 - function: get_expanded_nodes
   description: >
     Adds configurations to root nodes and expands data in roots to nested nodes
@@ -269,7 +245,6 @@ tests:
           - description_a
           environment: {}
           exclude_functions: []
-          exclude_resources: []
           function: null
           function_name: null
           id: null
@@ -280,7 +255,6 @@ tests:
           module_route: null
           output: null
           patches: []
-          resources: []
           spies: []
           tests: null
           yaml: null
@@ -307,7 +281,6 @@ tests:
           - nested_0
           environment: {}
           exclude_functions: []
-          exclude_resources: []
           function: null
           function_name: null
           id: null
@@ -318,7 +291,6 @@ tests:
           module_route: null
           output: null
           patches: []
-          resources: []
           spies: []
           tests: null
           yaml: null
@@ -332,7 +304,6 @@ tests:
           - nested_1
           environment: {}
           exclude_functions: []
-          exclude_resources: []
           function: null
           function_name: null
           id: null
@@ -343,7 +314,6 @@ tests:
           module_route: null
           output: null
           patches: []
-          resources: []
           spies: []
           tests: null
           yaml: null

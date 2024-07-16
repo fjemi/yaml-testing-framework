@@ -40,7 +40,6 @@ exclude_files:
 locations:
 - module
 - yaml
-- resources
 
 
 empty_values:

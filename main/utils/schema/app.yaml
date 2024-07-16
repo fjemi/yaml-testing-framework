@@ -1,14 +1,6 @@
 Test: &TEST
   description: Contains all of the fields needed to collate and run a test
   fields:
-  - name: resources
-    type: str | list
-    description: Path to a directory containing resources to use for tests
-    default: ''
-  - name: exclude_resources
-    type: str | list | None
-    description: Resources to exclude from testing and coverage
-    default: null
   - name: exclude_functions
     type: str | list | None
     description: Functions to exclude from testing and coverage
