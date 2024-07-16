@@ -40,7 +40,6 @@ exclude_files:
 locations:
 - module
 - yaml
-- resources
 
 
 empty_values:
@@ -104,11 +103,11 @@ schema:
       type: str | list
       description: Patterns to match to files for including files from testing
       default: null
-    - name: exclude_functions
+    - name: exclude_methods
       type: str | list
       description: Functions to exclude from testing
       default: null
-    - name: include_functions
+    - name: include_methods
       type: str | list
       description: Functions to filter or include for testing
       default: null
@@ -124,7 +123,7 @@ schema:
       type: dict
       description: The locations of modules, YAML files, and resources
       default: null
-    - name: logging_enabled
+    - name: logging_flag
       type: bool
       description: Flag to enable or disable logging
       default: False

@@ -177,11 +177,11 @@ def get_logger(location: str) -> logging.Logger:
 
 
 def create_logger(
-  logging_enabled: bool,
+  logging_flag: bool,
   project_path: str,
 ) -> sns:
   data = sns(status=1)
-  if logging_enabled:
+  if logging_flag:
     global LOGGER
     location = get_log_file_location(
       project_path=project_path,

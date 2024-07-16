@@ -68,7 +68,7 @@ tests:
         method: get_string
         phase: module
       _phase: module
-    assertions:
+    checks:
     - method: check_type
       << : *CHECKS
       expected: SimpleNamespace
@@ -258,7 +258,7 @@ tests:
   tests:
   - description: Key in dictionary
     arguments: {}
-    assertions:
+    checks:
     - method: check_equals
       << : *CHECKS
       expected: null
@@ -266,7 +266,7 @@ tests:
     arguments:
       a: a
       b: b
-    assertions:
+    checks:
     - method: check_equals
       << : *CHECKS
       expected: null

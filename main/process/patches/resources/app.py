@@ -2,13 +2,9 @@
 # -*- coding: utf-8 -*-
 
 
-# trunk-ignore(ruff/I001)
 import dataclasses as dc
-# trunk-ignore(ruff/F401)
 import os
-# trunk-ignore(ruff/F401)
 import os as patch_os
-# trunk-ignore(ruff/F401)
 import sys
 from types import ModuleType
 from typing import Any, Callable, List

@@ -4,16 +4,6 @@ TODO:
 - Is there a way to link these patterns with coverage
 
 
-# configurations:
-#   exclude_functions_patterns:
-#   - test_
-#   exclude_resources_patterns:
-#   - blank
-#   filter_functions_patterns:
-#   - blank
-#   filter_resources_patterns:
-
-
 resources:
 - &RESOURCE
   module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/resources/test_entrypoint/app.py

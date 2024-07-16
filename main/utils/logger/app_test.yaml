@@ -267,7 +267,7 @@ tests:
   tests:
   - description: Undefined arguments
     arguments:
-      logging_enabled: null
+      logging_flag: null
       project_path: null
     checks:
     - method: check_sns
@@ -276,7 +276,7 @@ tests:
         status: 0
   - description: Logging is not enabled
     arguments:
-      logging_enabled: False
+      logging_flag: False
       project_path: null
     checks:
     - method: check_sns
@@ -285,7 +285,7 @@ tests:
         status: 0
   - description: Logging is enabled
     arguments:
-      logging_enabled: true
+      logging_flag: true
       project_path: project_path
     checks:
     - method: check_sns

@@ -8,7 +8,6 @@ from typing import Any, Callable, List
 
 import yaml
 
-# trunk-ignore(ruff/F401)
 from main.process.casts import process_cast_output
 from main.utils import get_config, independent, objects, schema, get_module
 
@@ -91,7 +90,7 @@ def pass_through(method: str | None = None) -> Callable:
     return sns(
       passed=False,
       expected='',
-      output=f"Assertion method {method} does not exist", )
+      output=f"Check method {method} does not exist", )
 
   return pass_through_inner
 
@@ -107,7 +106,7 @@ def get_check_method(
 
   method = pass_through(method=name)
   module = module.__file__
-  message = f'Assertion method {name} does not exist in module {module}'
+  message = f'Check method {name} does not exist in module {module}'
   log = sns(level='error', message=message)
   output = log
 

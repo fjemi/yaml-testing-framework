@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 
-# trunk-ignore(ruff/F401)
 import builtins
 from types import ModuleType
 from types import SimpleNamespace as sns

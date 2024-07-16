@@ -46,8 +46,8 @@ tests:
           cast_output: []
           description: []
           environment: {}
-          exclude_functions: []
-          exclude_resources: []
+          exclude_methods: []
+          include_methods: []
           function: null
           function_name: null
           id: null
@@ -58,7 +58,6 @@ tests:
           module_route: null
           output: null
           patches: []
-          resources: []
           spies: []
           tests: null
           yaml: null
@@ -72,7 +71,6 @@ tests:
         yaml: yaml
         module: module
         module_route: module_route
-        resources: resources
     checks:
     - method: check_sns
       << : *CHECKS
@@ -85,8 +83,8 @@ tests:
           cast_output: []
           description: []
           environment: {}
-          exclude_functions: []
-          exclude_resources: []
+          exclude_methods: []
+          include_methods: []
           function: null
           function_name: null
           id: null
@@ -97,8 +95,6 @@ tests:
           module_route: module_route
           output: null
           patches: []
-          resources:
-          - resources
           spies: []
           tests: null
           yaml: yaml
@@ -109,8 +105,8 @@ tests:
           cast_output: []
           description: []
           environment: {}
-          exclude_functions: []
-          exclude_resources: []
+          exclude_methods: []
+          include_methods: []
           function: null
           function_name: null
           id: null
@@ -121,8 +117,6 @@ tests:
           module_route: module_route
           output: null
           patches: []
-          resources:
-          - resources
           spies: []
           tests: null
           yaml: yaml
@@ -138,7 +132,6 @@ tests:
         yaml: configurations
         module: configurations
         module_route: configurations
-        resources: configurations
     checks:
     - method: check_sns
       << : *CHECKS
@@ -152,8 +145,8 @@ tests:
           description:
           - nested_node_a
           environment: {}
-          exclude_functions: []
-          exclude_resources: []
+          exclude_methods: []
+          include_methods: []
           function: null
           function_name: null
           id: null
@@ -164,8 +157,6 @@ tests:
           module_route: configurations
           output: null
           patches: []
-          resources:
-          - configurations
           spies: []
           tests: null
           yaml: configurations
@@ -177,8 +168,8 @@ tests:
           description:
           - nested_node_b
           environment: {}
-          exclude_functions: []
-          exclude_resources: []
+          exclude_methods: []
+          include_methods: []
           function: null
           function_name: null
           id: null
@@ -189,8 +180,6 @@ tests:
           module_route: configurations
           output: null
           patches: []
-          resources:
-          - configurations
           spies: []
           tests: null
           yaml: configurations
@@ -202,8 +191,8 @@ tests:
           description:
           - nested_node_c
           environment: {}
-          exclude_functions: []
-          exclude_resources: []
+          exclude_methods: []
+          include_methods: []
           function: null
           function_name: null
           id: null
@@ -214,8 +203,6 @@ tests:
           module_route: configurations
           output: null
           patches: []
-          resources:
-          - configurations
           spies: []
           tests: null
           yaml: configurations
@@ -237,8 +224,8 @@ tests:
         cast_output: []
         description: []
         environment: {}
-        exclude_functions: []
-        exclude_resources: []
+        exclude_methods: []
+          include_methods: []
         function: null
         function_name: null
         id: null
@@ -249,7 +236,6 @@ tests:
         module_route: null
         output: null
         patches: []
-        resources: []
         spies: []
         tests: null
         yaml: null
@@ -258,12 +244,10 @@ tests:
       root_node:
         module: root_node
         module_route: root_node
-        resources: root_node
         yaml: root_node
       configurations:
         module: configurations
         module_route: configurations
-        resources: configurations
         yaml: configurations
     checks:
     - method: check_sns
@@ -276,8 +260,8 @@ tests:
         cast_output: []
         description: []
         environment: {}
-        exclude_functions: []
-        exclude_resources: []
+        exclude_methods: []
+          include_methods: []
         function: null
         function_name: null
         id: null
@@ -288,9 +272,6 @@ tests:
         module_route: configurations
         output: null
         patches: []
-        resources:
-        - configurations
-        - root_node
         spies: []
         tests: null
         yaml: configurations
@@ -320,7 +301,6 @@ tests:
         description: root_node
         module: root_node
         module_route: root_node
-        resources: root_node
         yaml: root_node
       nested_nodes:
       - description: nest_node_a
@@ -339,8 +319,8 @@ tests:
           - root_node
           - nest_node_a
           environment: {}
-          exclude_functions: []
-          exclude_resources: []
+          exclude_methods: []
+          include_methods: []
           function: null
           function_name: null
           id: null
@@ -351,8 +331,6 @@ tests:
           module_route: root_node
           output: null
           patches: []
-          resources:
-          - root_node
           spies: []
           tests: null
           yaml: root_node
@@ -366,8 +344,8 @@ tests:
           - root_node
           - nest_node_b
           environment: {}
-          exclude_functions: []
-          exclude_resources: []
+          exclude_methods: []
+          include_methods: []
           function: null
           function_name: null
           id: null
@@ -378,8 +356,6 @@ tests:
           module_route: root_node
           output: null
           patches: []
-          resources:
-          - root_node
           spies: []
           tests: null
           yaml: root_node
@@ -444,8 +420,8 @@ tests:
             - root_node
             - nested_0
             environment: {}
-            exclude_functions: []
-            exclude_resources: []
+            exclude_methods: []
+          include_methods: []
             function: null
             function_name: null
             id: null
@@ -456,7 +432,6 @@ tests:
             module_route: null
             output: null
             patches: []
-            resources: []
             spies: []
             tests: null
             yaml: null
@@ -470,8 +445,8 @@ tests:
             - root_node
             - nested_1
             environment: {}
-            exclude_functions: []
-            exclude_resources: []
+            exclude_methods: []
+          include_methods: []
             function: null
             function_name: null
             id: null
@@ -482,7 +457,6 @@ tests:
             module_route: null
             output: null
             patches: []
-            resources: []
             spies: []
             tests: null
             yaml: null
@@ -496,8 +470,8 @@ tests:
             - root_node
             - nested_2
             environment: {}
-            exclude_functions: []
-            exclude_resources: []
+            exclude_methods: []
+          include_methods: []
             function: null
             function_name: null
             id: null
@@ -508,7 +482,6 @@ tests:
             module_route: null
             output: null
             patches: []
-            resources: []
             spies: []
             tests: null
             yaml: null

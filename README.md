@@ -52,9 +52,10 @@ from typing import Any
 
 - `add_test.yaml` - contains tests for the function
 ```yaml
-configurations:
-  resources:
-  - checks.py
+resources:
+- &CHECKS
+  ./checks.py
+
 
 tests:
 - function: main
@@ -108,11 +109,6 @@ project-path = .
 exclude_files =
   matching
   patterns
-  to
-  exclude
-resources =
-  resource_location_a
-  resource_location_b
 yaml_suffix = _test
 ```
 
@@ -120,10 +116,9 @@ yaml_suffix = _test
 
 ```console
 pytest \
---project-path=.app.py \
---exclude_files matching patterns to exclude \
---resources resource_location_a resource_location_b \
---resource-folder-name _resources \
+--project-path=. \
+--exclude_files exclusion patterns \
+--include_files inclusion patterns \
 --yaml-suffix _test
 ```
 
@@ -225,7 +220,6 @@ fields can be defined globally or at different test levels.
 | function | str | Name of function to test | replace |
 | environment | dict | Environment variables used by functions in a module | update |
 | description | str or list | Additional details about the module, function, or test | append |
-| resources | str or list | Resources or modules to use during test | append |
 | patches | dict or list | Objects in a module to patch for tests | append |
 | cast_arguments | dict or list | Convert function arguments to other data types | append |
 | cast_output | dict or list | Convert function output to other data types | append |
@@ -234,30 +228,7 @@ fields can be defined globally or at different test levels.
 | tests | dict or list | Nested configurations that get expanded into individual tests | append |
 
 
-## Resources
-
-Resources represent the location of modules to import and use during tests. Resources can be defined globally when configuring the app, or at the module or test levels  under the key `resources` in a YAML file.
-
-```yaml
-configurations:
-  resources:  # module level definition
-  - resource_a.py
-
-tests:
-- resources:  # test level definition
-  - resource_b.py
-```
-
-Resources are defined at various levels are aggregated into a single list for each test. Each resource listed is imported into the module to test, and is accessible from the module using dot notation based on the locations of the resource and module: `[module_name].[resource_name]`.
-
-**Note**: Since resource modules are imported into the module to test, there is
-a risk that attributes of the modules to test can be overwritten. To avoid this
-it is important to pick unique names for resource folders or structure your
-project in a way to avoid naming conflicts.
-
-
-
-## Assertions
+## Checks
 
 ### Methods
 
@@ -282,7 +253,7 @@ def check_type(
 
 ### Schema
 
-Assertions are defined in YAML test files under the key `checks`, and a
+Checks are defined in YAML test files under the key `checks`, and a
 single check has the following fields:
 
 | Field | Type | Description | Default |
@@ -291,19 +262,17 @@ single check has the following fields:
 | expected | Any | The expected output of the function | null |
 | field | str | Sets the output to a dot-delimited route to an attribute or key within the output. | null |
 | cast_output | dict or list | Converts output or an attribute or key in the output before processing an check method | null |
+| resource | str | Location of a module containing a resource to use during testing | '' |
 
 
 And single test can have multiple checks
 
 ```yaml
 checks:
-- method: method_1
-  expected: expected_1
-  field: null
-  cast_output: []
-- method: method_2
-  expected: expected_2
-  field: null
+- method: method
+  expected: expected
+  field: field
+  resource: resource
   cast_output: []
 ```
 
@@ -320,29 +289,27 @@ The following fields make up a cast object:
 | method | Dot-delimited route to a function or object to cast a value to| null |
 | field | Dot-delimited route to a field, attribute, or key of an object. When set the specified field of the object is cast | null |
 | unpack | Boolean indicating whether to unpack an object when casting| False |
+| resource | Location of a module containing a resource to use during testing | '' |
 
 ```yaml
 cast_arguments:
-- method: method_0
-  field: field_0
+- method: method
+  field: field
   unpack: false
-- method: method_1
-  field: field_1
-  unpack: false
+  resource: resource
 
 cast_output:
-- method: method_0
-  field: field_0
+- method: method
+  field: field
   unpack: false
-- method: method_1
-  field: field_1
-  unpack: false
+  resource: resource
 
 checks:
 - cast_output:
-  - method: method_2
-    field: field_2
+  - method: method
+    field: field
     unpack: false
+    resource: resource
 ...
 ```
 
@@ -374,6 +341,7 @@ Patches are defined at a list of objects in YAML test files under the key
 | method | str | One of the four patch methods defined above | null |
 | value | Any | The value the patched object should return when called or used | null
 | name | str | The dot-delimited route to the object we wish to patch, in the module to test | null |
+| resource | str | Location of a module containing a resource to use during testing | '' |
 
 
 ```yaml
@@ -381,12 +349,13 @@ patches:
 - method: value
   value: value
   route: route
+  resource: resource
 ```
 
 
 ## Environment
 
-For modules containing a global variable `CONFIG`, we can perform tests using different environment variables by the variables as adding key/value pairs under the key `set_environment` in YAML files. The environment variables are accessible from `CONFIG.environment.[route]`, where `[route]` is the dot-delimited route to the variable within the module.
+For modules containing a global variable `CONFIG`, we can perform tests using different environment variables by the variables as adding key/value pairs under the key `environment` in YAML files. The environment variables are accessible from `CONFIG.environment.[route]`, where `[route]` is the dot-delimited route to the variable within the module.
 
 ### Example
 

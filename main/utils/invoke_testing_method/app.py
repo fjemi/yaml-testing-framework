@@ -33,7 +33,7 @@ CONFIG = '''
     # module_filename: app
     method: plugin
     # location: .
-    logging_enabled: true
+    logging_flag: true
   operations:
     main:
     - set_default_values_for_arguments
@@ -56,7 +56,7 @@ def main(
   resource_suffix: str | None = None,
   yaml_suffix: str | None = None,
   method: str | None = None,
-  logging_enabled: bool | None = None,
+  logging_flag: bool | None = None,
 ) -> int:
   module = module or inspect.stack()[1].filename
   data = sns(**locals())
@@ -79,7 +79,7 @@ def set_default_values_for_arguments(
   method: str | None = None,
   resource_flag: bool | None= None,
   root_flag: bool | None= None,
-  logging_enabled: bool | None = None,
+  logging_flag: bool | None = None,
 ) -> sns:
   data = sns(**locals())
   for key, default in CONFIG.default_arguments.items():
@@ -145,7 +145,7 @@ def run_tests_using_invocation_method(
   location: str | None = None,
   exclude_files: str | List[str] | None = None,
   yaml_suffix: str | None = None,
-  logging_enabled: bool | None = None,
+  logging_flag: bool | None = None,
 ) -> sns:
   data = sns(**locals())
   delattr(data, 'method')
@@ -158,13 +158,13 @@ def invoke_plugin(
   location: str | None = None,
   exclude_files: str | List[str] | None = None,
   yaml_suffix: str | None = None,
-  logging_enabled: bool | None = None,
+  logging_flag: bool | None = None,
 ) -> sns:
   result = app.main(
     exclude_files=exclude_files,
     project_path=location,
     yaml_suffix=yaml_suffix,
-    logging_enabled=logging_enabled, )
+    logging_flag=logging_flag, )
   return sns(result=result)
 
 
@@ -172,7 +172,7 @@ def invoke_pytest(
   location: str | None = None,
   exclude_files: str | None = None,
   yaml_suffix: str | None = None,
-  logging_enabled: bool | None = None,
+  logging_flag: bool | None = None,
 ) -> sns:
   _ = exclude_files
 
@@ -188,7 +188,7 @@ def invoke_pytest(
     - --tb=short
     - --project-path={location}
     - --yaml-suffix={yaml_suffix}
-    - --logging-enabled={logging_enabled}
+    - --logging-flag={logging_flag}
     - -p no:yaml_testing_framework
   '''
   args = pyyaml.safe_load(args)
