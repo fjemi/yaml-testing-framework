@@ -1,10 +1,14 @@
 Test: &TEST
   description: Contains all of the fields needed to collate and run a test
   fields:
-  - name: exclude_functions
-    type: str | list | None
-    description: Functions to exclude from testing and coverage
-    default: null
+  - name: exclude_methods
+    type: str | list
+    description:  List of patterns to match to methods to exclude
+    default: []
+  - name: include_methods
+    type: str | list
+    description: List of patterns to match to methods to include
+    default: []
   - name: module
     type: Any
     description: A module or the location to a module in the file system
@@ -19,18 +23,18 @@ Test: &TEST
     default: ''
   - name: cast_arguments
     description: Cast whole or parts of a function's arguments
-    type: List[dict | Cast] | None
+    type: List[dict | Cast]
     default: null
   - name: cast_output
     description: Cast whole or parts of a function's result
-    type: List[dict | Cast] | None
+    type: List[dict | Cast]
     default: null
   - name: description
     type: str
     description: Description for a module, test, or case
     default: ''
   - name: patches
-    type: List[dict] | None
+    type: List[dict]
     description: List containing info on objects to patch
     default: null
   - name: environment

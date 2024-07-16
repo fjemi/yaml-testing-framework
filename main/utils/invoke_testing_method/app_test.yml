@@ -1,5 +1,5 @@
 configurations:
-  exclude_functions:
+  exclude_methods:
   - run_pytest
 
 resources:

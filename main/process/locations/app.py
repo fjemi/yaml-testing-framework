@@ -20,9 +20,7 @@ LOCALS = locals()
 def main(
   project_path: Any | None = None,
   include_files: str | List[str] | None = None,
-  include_functions: str | List[str] | None = None,
   exclude_files: str | List[str] | None = None,
-  exclude_functions: str | List[str] | None = None,
   yaml_suffix: str | None = None,
   logging_flag: bool | None = None,
   timestamp: int | float | None = None,

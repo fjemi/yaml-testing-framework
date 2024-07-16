@@ -41,7 +41,8 @@ tests:
           description:
           - description_a
           environment: {}
-          exclude_functions: []
+          exclude_methods: []
+          include_methods: []
           function: null
           function_name: null
           id: null
@@ -64,7 +65,8 @@ tests:
           - description_b
           - description_b0
           environment: {}
-          exclude_functions: []
+          exclude_methods: []
+          include_methods: []
           function: null
           function_name: null
           id: null
@@ -87,7 +89,8 @@ tests:
           - description_b
           - description_b1
           environment: {}
-          exclude_functions: []
+          exclude_methods: []
+          include_methods: []
           function: null
           function_name: null
           id: null
@@ -244,7 +247,8 @@ tests:
           description:
           - description_a
           environment: {}
-          exclude_functions: []
+          exclude_methods: []
+          include_methods: []
           function: null
           function_name: null
           id: null
@@ -280,7 +284,8 @@ tests:
           - root
           - nested_0
           environment: {}
-          exclude_functions: []
+          exclude_methods: []
+          include_methods: []
           function: null
           function_name: null
           id: null
@@ -303,7 +308,8 @@ tests:
           - root
           - nested_1
           environment: {}
-          exclude_functions: []
+          exclude_methods: []
+          include_methods: []
           function: null
           function_name: null
           id: null

@@ -103,11 +103,11 @@ schema:
       type: str | list
       description: Patterns to match to files for including files from testing
       default: null
-    - name: exclude_functions
+    - name: exclude_methods
       type: str | list
       description: Functions to exclude from testing
       default: null
-    - name: include_functions
+    - name: include_methods
       type: str | list
       description: Functions to filter or include for testing
       default: null

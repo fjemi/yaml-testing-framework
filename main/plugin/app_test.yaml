@@ -13,7 +13,7 @@ TODO:
 
 
 configurations:
-  exclude_functions:
+  exclude_methods:
   - pytest_runtest_logreport
   - pytest_addoption
   # - pytest_configure
@@ -178,14 +178,16 @@ tests:
         fields:
           _ininames:
           - project-path
-          - include-functions
+          - exclude-methods
+          - include-methods
           - exclude-files
+          - include-files
           - yaml-suffix
           - logging-flag
     - method: check_length
       << : *CHECKS
       field: _anonymous.options
-      expected: 5
+      expected: 7
 - function: pass_through
   description: Returns the data passed into the function
   tests:

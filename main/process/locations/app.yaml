@@ -16,7 +16,7 @@ exclude_files:
 yaml_suffix: _test
 
 
-exclude_functions: []
+exclude_methods: []
 
 
 yaml_extensions:

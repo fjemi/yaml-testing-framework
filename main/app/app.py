@@ -36,10 +36,10 @@ TEST_IDS = {}
 
 def main(
   project_path: str | None = None,
-  exclude_files: str | List[str] | None = None,
-  include_files: str | List[str] | None = None,
-  exclude_functions: str | List[str] | None = None,
-  include_functions: str | List[str] | None = None,
+  exclude_files: str | list | None = None,
+  include_files: str | list | None = None,
+  exclude_methods: str | list | None = None,
+  include_methods: str | list | None = None,
   yaml_suffix: str | None = None,
   logging_flag: bool | None = None,
 ) -> list:
