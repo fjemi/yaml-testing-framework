@@ -8,7 +8,6 @@ from typing import Callable
 from main.utils import get_module
 
 
-MODULE = __file__
 LOCALS = locals()
 
 

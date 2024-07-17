@@ -16,7 +16,7 @@ from main import app
 from main.utils import independent
 
 
-MODULE = __file__
+LOCATION = __file__
 LOCALS = locals()
 
 CONFIG = '''
@@ -200,7 +200,7 @@ def invoke_pytest(
 
 
 def examples() -> None:
-  main(location=MODULE)
+  main(location=location)
 
 
 if __name__ == '__main__':

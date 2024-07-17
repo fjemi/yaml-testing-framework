@@ -4,7 +4,6 @@
 
 import builtins
 import dataclasses as dc
-import threading
 from types import ModuleType
 from types import SimpleNamespace as sns
 from typing import Any, Awaitable, Callable
@@ -14,7 +13,6 @@ from main.utils import get_module
 
 
 LOCALS = locals()
-MODULE = __file__
 
 
 def check_sns_resource(output: dict | None = None) -> sns:
@@ -92,16 +90,6 @@ def check_range_resource(output: dict | None = None) -> range | None:
   if not fields:
     return None
   return range(*fields)
-
-
-def check_thread_resource(output: dict | None = None) -> threading.Thread:
-
-  def target(data: None = None) -> str:
-    _ = data
-    return 'target_output'
-
-  thread = threading.Thread(target=target, args=(None, ))
-  return locals().get(output, None)
 
 
 def check_function_output_resource(

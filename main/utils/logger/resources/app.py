@@ -9,9 +9,6 @@ from main.utils import invoke_testing_method
 from main.utils import logger as logger_resource
 
 
-MODULE = __file__
-
-
 def do_nothing(*args, **kwargs) -> None:
   _ = args, kwargs
 

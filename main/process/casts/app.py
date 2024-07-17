@@ -15,10 +15,9 @@ from main.utils import (
 )
 
 
-MODULE = __file__
 LOCALS = locals()
 
-CONFIG = get_config.main(module=MODULE)
+CONFIG = get_config.main()
 
 
 def process_cast_arguments(

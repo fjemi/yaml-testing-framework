@@ -10,8 +10,6 @@ from typing import Any, Callable
 from main.utils.get_module import main as get_module
 
 
-MODULE = __file__
-
 LOCALS = locals()
 
 

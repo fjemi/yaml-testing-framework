@@ -50,7 +50,6 @@ CONFIG = '''
 
 FORMAT_CONFIG_FIELDS = ['environment', 'schema', 'operations']
 
-MODULE = __file__
 LOCALS = locals()
 
 LOADER = None

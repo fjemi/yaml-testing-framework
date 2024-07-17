@@ -5,9 +5,6 @@
 from types import SimpleNamespace as sns
 
 
-MODULE = __file__
-
-
 def paths_cast_arguments(paths: dict | None = None) -> sns:
   paths = paths or {}
   return sns(**paths)

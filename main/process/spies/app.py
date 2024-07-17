@@ -9,7 +9,6 @@ from typing import Callable
 from main.utils import independent, objects
 
 
-MODULE = __file__
 LOCALS = locals()
 
 CONFIG = '''
@@ -78,7 +77,7 @@ def get_store() -> dict:
 def examples() -> None:
   from main.utils import invoke_testing_method
 
-  invoke_testing_method.main(location=MODULE)
+  invoke_testing_method.main()
 
 
 if __name__ == '__main__':

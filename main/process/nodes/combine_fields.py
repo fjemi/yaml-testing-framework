@@ -8,8 +8,7 @@ from typing import Any
 from main.utils import get_config
 
 
-MODULE = __file__
-CONFIG = get_config.main(module=MODULE)
+CONFIG = get_config.main()
 
 LOCALS = locals()
 

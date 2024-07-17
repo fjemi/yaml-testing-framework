@@ -12,8 +12,7 @@ from main.process.casts import process_cast_output
 from main.utils import get_config, independent, objects, schema, get_module
 
 
-MODULE = __file__
-CONFIG = get_config.main(module=MODULE)
+CONFIG = get_config.main()
 
 LOCALS = locals()
 

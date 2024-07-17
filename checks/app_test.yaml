@@ -1164,48 +1164,6 @@ tests:
           a: a
           b: b
         passed: true
-- function: check_thread
-  description: Verify that the output is of type threading.Thread
-  cast_arguments:
-  - method: check_thread_resource
-    << : *RESOURCE
-    field: output
-  tests:
-  - description: Undefined arguments
-    arguments: {}
-    checks:
-    - method: check_sns
-      expected:
-        passed: False
-        output: null
-        expected:
-          method: check_thread
-          parameters:
-            failed:
-            - hints:
-              - list
-              - thread
-              kind: dict
-              name: output
-            - kind: nonetype
-              name: expected
-              hints:
-              - list
-              - dict
-            passed: []
-  - description: Output is a thread
-    arguments:
-      output: thread
-      expected:
-        target_name: target
-    checks:
-    - method: check_sns
-      expected:
-        passed: true
-        expected:
-        - target_name: target
-        output:
-        - target_name: target
 - function: check_function_output
   description: Verify the output from calling a function
   cast_arguments:

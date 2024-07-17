@@ -12,7 +12,6 @@ from typing import Any
 from main.utils import independent, objects
 
 
-MODULE = __file__
 ROOT_DIR = os.path.normpath(os.path.abspath(os.path.curdir))
 LOCALS = locals()
 

@@ -2,9 +2,6 @@
 # -*- coding: utf-8 -*-
 
 
-MODULE = __file__
-
-
 def main(*args, **kwargs) -> str:
   _ = args, kwargs
 

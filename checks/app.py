@@ -6,7 +6,6 @@ import dataclasses as dc
 import functools
 import inspect
 import os
-import threading
 from types import FunctionType, ModuleType
 from types import SimpleNamespace as sns
 from typing import (
@@ -21,8 +20,6 @@ from typing import (
 from main.process import casts
 from main.utils import independent, objects, methods
 
-
-MODULE = __file__
 
 CONFIG = '''
   union_types:
@@ -374,32 +371,6 @@ def check_key_value_in_dict(
 
   passed = expected == fields
   return sns(passed=passed, output=fields, expected=expected)
-
-
-@type_checks
-def check_thread(
-  output: list| threading.Thread,
-  expected: list | dict,
-) -> sns:
-  data = sns(**locals())
-
-  if not isinstance(output, list):
-    output = [output]
-  if not isinstance(expected, list):
-    expected = [expected]
-
-  results = []
-  for item in output:
-    start = item.name.find('(') + 1
-    target_name = item.name[start:-1]
-    result = dict(target_name=target_name)
-    results.append(result)
-
-  passed = results == expected
-  return sns(
-    output=results,
-    expected=expected,
-    passed=passed, )
 
 
 def call_function(
