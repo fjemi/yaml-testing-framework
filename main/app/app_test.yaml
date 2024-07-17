@@ -14,12 +14,10 @@ help:
 
 
 resources:
-- &CHECKS_PATH
-  ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/app.py
 - &CHECKS
-  module: *CHECKS_PATH
+  resource: &CHECKS_PATH ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/app.py
 - &RESOURCE
-  module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/app/resources/app.py
+  resource: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/app/resources/app.py
 - &ADD_PATH
   ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/app/resources/add.py
 - &ADD_TEST_PATH
@@ -42,11 +40,17 @@ tests:
     - method: check_equals
       << : *CHECKS
       expected:
-      - expected: TypeError
+      - expected: 0
+        id: ' .main.app.resources.add.add - 0.2 - Return the result of adding two integers '
+        id_short: .main.app.resources.add.add
+        method: check_equals
+        output: 0
+        passed: true
+      - expected: 0
         id: ' .main.app.resources.add.add - 0.1 - Return the result of adding two integers '
         id_short: .main.app.resources.add.add
-        method: check_exception
-        output: TypeError
+        method: check_equals
+        output: 0
         passed: true
       - expected: 3
         id: ' .main.app.resources.add.add - 0.0 - Return the result of adding two integers '
@@ -137,7 +141,7 @@ tests:
       test:
         project_path: *ADD_PATH
         module: *ADD_PATH
-        yaml: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/app/resources/add.yaml
+        yaml: *ADD_TEST_PATH
         function: add
         function_name: add
         module_route: .main.resources.add.app
@@ -152,9 +156,6 @@ tests:
     checks:
     - method: check_equals
       << : *CHECKS
-      cast_output:
-      - method: list_sns_to_list_dict
-        << : *RESOURCE
       expected:
       - expected: 11
         id: ' .main.resources.add.app.add - 0.0 '
@@ -245,11 +246,17 @@ tests:
         << : *RESOURCE
       expected:
         tests:
-        - expected: TypeError
+        - expected: 0
+          id: ' add.app.app.add - 0.2 - Return the result of adding two integers '
+          id_short: add.app.app.add
+          method: check_equals
+          output: 0
+          passed: true
+        - expected: 0
           id: ' add.app.app.add - 0.1 - Return the result of adding two integers '
           id_short: add.app.app.add
-          method: check_exception
-          output: TypeError
+          method: check_equals
+          output: 0
           passed: true
         - expected: 3
           id: ' add.app.app.add - 0.0 - Return the result of adding two integers '

@@ -28,7 +28,7 @@ def process_cast_arguments(
   temp = main(
     casts=cast_arguments,
     module=module,
-    object=arguments, )
+    object=arguments, ).object
   return sns(arguments=temp)
 
 
@@ -40,103 +40,81 @@ def process_cast_output(
   temp = main(
     casts=cast_output,
     module=module,
-    object=output, )
+    object=output, ).object
   return sns(output=temp)
 
 
 def main(
-  module: ModuleType | None = None,
-  casts: list | None = None,
-  object: Any | None = None,
-) -> sns:
-  data = independent.get_model(schema=CONFIG.schema.Main, data=locals())
-  data = independent.process_operations(
-    operations=CONFIG.operations.main,
-    functions=LOCALS,
-    data=data, )
-  return data.result
-
-
-def process_casts(
   casts: list | None = None,
   module: ModuleType | None = None,
   object: Any | None = None,
 ) -> sns:
   casts = casts or []
-  data = sns(module=module, object=object)
+  locals_ = sns(module=module, object=object)
   
   for item in casts:
-    data = format_data(
-      object=object,
-      item=item,
-      module=module, )
+    item.update(locals_.__dict__)
+    data = independent.get_model(schema=CONFIG.schema.Main, data=item)
     data = independent.process_operations(
-      operations=CONFIG.operations.process_casts,
+      operations=CONFIG.operations.main,
       functions=LOCALS,
       data=data, )
+    locals_.object = data.object
 
-  return sns(result=data.object)
-
-
-def format_data(
-  module: ModuleType | str | None = None,
-  object: Any | None = None,
-  item: dict | None = None,
-) -> sns:
-  cast = independent.get_model(schema=CONFIG.schema.Cast, data=item)
-  cast.object = object
-  cast.module = cast.module or module
-  cast.module = get_module.main(module=cast.module, default=cast.module).module
-  return cast
+  return sns(object=locals_.object)
 
 
 def do_nothing(*args, **kwargs) -> None:
   _ = args, kwargs
 
 
-def get_cast_method(
-  module: str | None = None,
-  method: str | None = None,
+def get_method(
+  module: ModuleType | None = None,
+  resource: str = '',
+  method: str = '',
 ) -> sns:
-  name = str(method)
+  module = resource or module
+  module = get_module.main(module=module, default=module).module
+  route = str(method)
   method = objects.get(
     parent=module,
-    route=name,
+    route=route,
     default=do_nothing, )
   return sns(method=method)
 
 
-def get_temp_object(
+def get_object(
   object: Any | None = None,
-  field: str | None = None
+  field: str = '',
+  method: Callable | None = None,
+  unpack: bool = False,
 ) -> sns:
-  temp = object
-  if field:
-    temp = objects.get(
-      parent=temp,
-      route=field,
-      default=temp, )
-  return sns(temp_object=temp)
+  temp = object if not field else objects.get(
+    parent=object,
+    route=field, )
+  temp = handle_casting.main(
+    object=temp,
+    method=method,
+    unpack=unpack, ).object
+  return sns(temp=temp)
 
 
 def reset_object(
-  temp_object: Any | None = None,
+  temp: Any | None = None,
   object: Any | None = None,
   field: str | None = None,
 ) -> sns:
-  object_ = temp_object
-  if field:
-    object_ = objects.update(
-      parent=object,
-      value=temp_object,
-      route=field, )
+  object_ = temp if not field else objects.update(
+    parent=object,
+    value=temp,
+    route=field, )
   return sns(object=object_)
 
 
 def examples() -> None:
   from main.utils import invoke_testing_method
 
-  invoke_testing_method.main()
+  invoke_testing_method.main('.')
 
 
 if __name__ == '__main__':

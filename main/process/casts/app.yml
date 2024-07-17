@@ -52,11 +52,8 @@ empty_values:
 
 operations:
   main:
-  - process_casts
-  process_casts:
-  - get_cast_method
-  - get_temp_object
-  - handle_casting.main
+  - get_method
+  - get_object
   - reset_object
 
 
@@ -64,25 +61,18 @@ schema:
   Main:
     description: Store data needed to cast an object
     fields:
-    - &MODULE
-      name: module
+    - name: module
       type: ModuleType
-      description: Module containing the cast object
+      description: Module of method being tested
       default: null
-    - name: casts
-      type: list
-      description: A list of `cast` object to process
-      default: null
-    - &OBJECT
-      name: object
+    - name: resource
+      type: str
+      description: Resource or module containing the cast method
+      default: ''
+    - name: object
       type: Any
       description: Any object
       default: null
-  Cast:
-    description: Store data needed to cast an object
-    fields:
-    - *MODULE
-    - *OBJECT
     - name: method
       type: str
       description: Dot-delimited path to the casting method
@@ -91,7 +81,7 @@ schema:
       type: bool
       description: Cast an packed or unpacked object
       default: false
-    - name: temp_object
+    - name: temp
       type: str
       description: The result from casting an object
       default: null
@@ -99,7 +89,3 @@ schema:
       type: str
       description: The name of a field or attribute of an object
       default: ''
-    - name: result
-      type: Any
-      description: The result from casting an object
-      default: null

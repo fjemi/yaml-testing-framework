@@ -8,7 +8,7 @@ from typing import Any, Callable, List
 
 import yaml
 
-from main.process.casts import process_cast_output
+from main.process import casts
 from main.utils import get_config, independent, objects, schema, get_module
 
 
@@ -25,56 +25,21 @@ def main(
   id_short: str | None = None,
   __spies__: dict | None = None,
 ) -> sns:
-  data = independent.get_model(schema=CONFIG.schema.Entry, data=locals())
-  data = independent.process_operations(
-    data=data,
-    functions=LOCALS,
-    operations=CONFIG.operations.main, )
-  return data.result
-
-
-def process_checks(
-  checks: list | None = None,
-  output: Any | None = None,
-  module: ModuleType | None = None,
-  id: str | None = None,
-  id_short: str | None = None,
-  __spies__: dict | None = None,
-) -> sns:
   checks = checks or []
-  locals_ = locals()
+  locals_ = sns(**locals())
+  del locals_.checks
+  store = []
 
-  for i, item in enumerate(checks):
-    data = sns(locals_=locals_, item=item)
+  for item in checks:
+    item.update(locals_.__dict__)
+    data = independent.get_model(schema=CONFIG.schema.Main, data=item)
     data = independent.process_operations(
       data=data,
       functions=LOCALS,
-      operations=CONFIG.operations.process_checks, )
-    checks[i] = data.check
+      operations=CONFIG.operations.main, )
+    store.append(data.check)
 
-  checks = sns(checks=checks)
-  return sns(result=checks)
-
-
-def pre_processing(
-  locals_: dict | None = None,
-  item: dict | None = None,
-) -> sns:
-  store = {}
-
-  for field in CONFIG.preferred_fields:
-    values = sns()
-    for route, parent in locals().items():
-      value = objects.get(parent=parent, route=field)
-      values = objects.update(
-        route=route,
-        parent=values,
-        value=value, )
-    store[field] = values.item or values.locals_
-
-  item.update(locals_)
-  item.update(store)
-  return independent.get_model(schema=CONFIG.schema.Check, data=item)
+  return sns(checks=store)
 
 
 def pass_through(method: str | None = None) -> Callable:
@@ -95,41 +60,32 @@ def pass_through(method: str | None = None) -> Callable:
 
 
 def get_check_method(
-  method: str | None = None,
+  method: str = '',
   module: ModuleType | None = None,
+  resource: str | None = '',
 ) -> sns:
-  name = str(method)
-  method = objects.get(parent=module, route=name)
-  if isinstance(method, Callable):
-    return sns(method=method)
-
-  method = pass_through(method=name)
-  module = module.__file__
-  message = f'Check method {name} does not exist in module {module}'
-  log = sns(level='error', message=message)
-  output = log
-
-  return sns(
-    method=method,
-    log=log,
-    output=output, )
+  module = resource or module
+  module = get_module.main(module=module, default=module).module
+  route = str(method)
+  method = objects.get(
+    parent=module,
+    route=route,
+    default=pass_through(method=route), )
+  return sns(method=method)
 
 
 def reset_output_value(
   output: Any | None = None,
   field: str | None = None,
+  cast_output: list = [],
+  module: ModuleType | str = '',
 ) -> sns:
-  output = objects.get(parent=output, route=field)
-  log = None
-  if output is None and field:
-    type_ = type(output).__name__
-    log = sns(
-      level='warning',
-      message=f'Field {field} does not exist in object of type {type_}', )
-  return sns(
-    output=output,
-    _cleanup=['field'],
-    log=log, )
+  output = objects.get(parent=output, route=field) if field else output
+  output = casts.main(
+    module=module,
+    object=output,
+    casts=cast_output, ).object
+  return sns(output=output)
 
 
 def get_check_result(

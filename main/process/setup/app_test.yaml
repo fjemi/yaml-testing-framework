@@ -23,12 +23,10 @@ configurations:
 
 
 resources:
-- &RESOURCE_PATH
-  ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/setup/resource.py
 - &RESOURCE
-  module: *RESOURCE_PATH
+  resource: &RESOURCE_PATH ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/setup/resource.py
 - &CHECKS
-  module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/app.py
+  resource: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/app.py
 
 
 tests:

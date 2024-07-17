@@ -3,12 +3,10 @@ help:
 
 
 resources:
-- &RESOURCE_PATH
-  ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/get_module/resource.py
 - &RESOURCE
-  module: *RESOURCE_PATH
+  resource: &RESOURCE_PATH ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/get_module/resource.py
 - &CHECKS
-  module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/app.py
+  resource: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/app.py
 
 
 tests:
@@ -58,7 +56,7 @@ tests:
         flag: False
   - description: Module is a module
     cast_arguments:
-    - method: get_module
+    - method: wrapper_get_module
       << : *RESOURCE
       field: location
     arguments:
@@ -68,7 +66,7 @@ tests:
       << : *CHECKS
       expected:
         location: *RESOURCE_PATH
-        flag: False
+        flag: true
 - function: format_module_name
   description: >
     Returns the name of the module. Creates the name for the module's location
@@ -172,13 +170,13 @@ tests:
   - description: Return default
     cast_arguments:
       << : *RESOURCE
-      field: module
-      method: get_module.main
+      field: default
+      method: wrapper_get_module
     arguments:
-      << : *RESOURCE
-      default: default
+      module: module
+      default : *RESOURCE_PATH
     checks:
     - method: check_equals
       << : *CHECKS
-      field: result.module
-      expected: default
+      field: result.module.__file__
+      expected: *RESOURCE_PATH

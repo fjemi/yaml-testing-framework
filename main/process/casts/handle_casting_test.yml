@@ -1,8 +1,8 @@
 resources:
 - &CHECKS
-  module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/app.py
+  resource: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/app.py
 - &RESOURCE
-  module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/casts/resource.py
+  resource: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/casts/resource.py
 
 
 tests:
@@ -22,32 +22,32 @@ tests:
   - description: Cast as string
     arguments:
       method: cast_as_str
-      temp_object: null
+      object: null
     checks:
     - method: check_sns
       << : *CHECKS
       expected:
-        temp_object: None
+        object: None
         method: null
   - description: Cast as integer
     arguments:
       method: cast_as_int
-      temp_object: '1'
+      object: '1'
     checks:
     - method: check_sns
       << : *CHECKS
       expected:
-        temp_object: 1
+        object: 1
         method: null
   - description: Cast as list
     arguments:
       method: cast_as_split
-      temp_object: a.b.c
+      object: a.b.c
     checks:
     - method: check_sns
       << : *CHECKS
       expected:
-        temp_object:
+        object:
         - a
         - b
         - c
@@ -63,11 +63,11 @@ tests:
       expected: null
   - description: Data is a string
     arguments:
-      temp_object: temp_object
+      object: object
     checks:
     - method: check_equals
       << : *CHECKS
-      expected: temp_object
+      expected: object
 - function: cast_dict_unpacked
   description: Unpacks a dictionary into a method
   cast_arguments:
@@ -83,7 +83,7 @@ tests:
       expected: TypeError
   - description: Unpack dict into casting method
     arguments:
-      temp_object:
+      object:
         a: a
         b: b
         c: c
@@ -94,7 +94,7 @@ tests:
       expected: abc
   - description: Unpack dict into casting method
     arguments:
-      temp_object:
+      object:
         a: 1
         b: 2
       method: add
@@ -117,7 +117,7 @@ tests:
       expected: TypeError
   - description: Call casting method with packed dict
     arguments:
-      temp_object:
+      object:
         a: 1
         b: 1
       method: add_dict
@@ -127,7 +127,7 @@ tests:
       expected: 2
   - description: Convert dict to sns
     arguments:
-      temp_object:
+      object:
         a: 2
         b: 2
       method: cast_dict_as_sns
@@ -154,7 +154,7 @@ tests:
   - description: Undefined arguments
     arguments:
       method: pack_nonetype
-      temp_object: null
+      object: null
     checks:
     - method: check_equals
       << : *CHECKS
@@ -176,7 +176,7 @@ tests:
   - description: Undefined arguments
     arguments:
       method: unpack_nonetype
-      temp_object: null
+      object: null
     checks:
     - method: check_equals
       << : *CHECKS
@@ -196,7 +196,7 @@ tests:
       expected: TypeError
   - description: Unpack list into add method
     arguments:
-      temp_object: [2, 3]
+      object: [2, 3]
       method: add
     checks:
     - method: check_equals
@@ -204,7 +204,7 @@ tests:
       expected: 5
   - description: Unpack list into add method
     arguments:
-      temp_object: [2, 3]
+      object: [2, 3]
       method: add
     checks:
     - method: check_equals
@@ -212,7 +212,7 @@ tests:
       expected: 5
   - description: Unpack list into method
     arguments:
-      temp_object: [a, b, c]
+      object: [a, b, c]
       method: cast_list_to_string
     checks:
     - method: check_equals
@@ -233,7 +233,7 @@ tests:
       expected: TypeError
   - description: Sum list of numbers
     arguments:
-      temp_object: [0, 0]
+      object: [0, 0]
       method: add_list
     checks:
     - method: check_equals
@@ -254,7 +254,7 @@ tests:
       expected: TypeError
   - description: Inverse of number
     arguments:
-      temp_object: 1
+      object: 1
       method: inverse
     checks:
     - method: check_equals
@@ -262,7 +262,7 @@ tests:
       expected: 1
   - description: Negate number
     arguments:
-      temp_object: 2
+      object: 2
       method: negate
     checks:
     - method: check_equals
@@ -283,7 +283,7 @@ tests:
       expected: null
   - description: Temp object is a dict with correct keyword arguments
     arguments:
-      temp_object:
+      object:
         a: 1
       method: inverse
     checks:
@@ -292,7 +292,7 @@ tests:
       expected: 1
   - description: Temp object is a dict with incorrect keyword arguments
     arguments:
-      temp_object:
+      object:
         a: 1
         b: 1
       method: inverse
@@ -304,9 +304,9 @@ tests:
     cast_arguments:
     - method: sns
       unpack: true
-      field: temp_object
+      field: object
     arguments:
-      temp_object:
+      object:
         a: 1
       method: inverse
     checks:
@@ -315,7 +315,7 @@ tests:
       expected: null
   - description: Temp object is a list with nested dict
     arguments:
-      temp_object:
+      object:
       - {}
       method: negate
     checks:
@@ -324,7 +324,7 @@ tests:
       expected: null
   - description: Temp object is a list
     arguments:
-      temp_object:
+      object:
       - 1
       method: negate
     checks:

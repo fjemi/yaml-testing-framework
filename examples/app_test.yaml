@@ -5,11 +5,9 @@ TODO:
 
 resources:
 - &CHECKS
-  module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/app.py
-- &RESOURCE_PATH
-  ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/examples/resource.py
+  resource: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/app.py
 - &RESOURCE
-  module: *RESOURCE_PATH
+  resource: &RESOURCE_PATH ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/examples/resource.py
 
 
 tests:
@@ -90,6 +88,7 @@ tests:
     - method: value
       value: 10
       route: CONSTANT
+      << : *RESOURCE
     arguments:
       method: constant
     cast_output:
@@ -364,7 +363,7 @@ tests:
     - route: factorial
       callable_route: sum_patch
       method: callable
-      resource: *RESOURCE_PATH
+      << : *RESOURCE
     arguments:
       data:
         a: 5

@@ -12,9 +12,9 @@ help:
 
 resources:
 - &CHECKS
-  module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/app.py
+  resource: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/app.py
 - &RESOURCE
-  module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/methods/resource.py
+  resource: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/methods/resource.py
 
 
 tests:
