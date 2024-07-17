@@ -1,10 +1,8 @@
 resources:
 - &CHECKS
-  module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/app.py
-- &RESOURCE_PATH
-  ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/get_config/resources/app.py
+  resource: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/app.py
 - &RESOURCE
-  module: *RESOURCE_PATH
+  resource: &RESOURCE_PATH ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/get_config/resources/app.py
 - &RESOURCE_YAML
   ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/get_config/resources/app.yaml
 

@@ -4,9 +4,9 @@ configurations:
 
 resources:
 - &RESOURCE
-  module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/invoke_testing_method/resources/app.py
+  resource: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/invoke_testing_method/resources/app.py
 - &CHECKS
-  module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/app.py
+  resource: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/app.py
 
 
 arguments:

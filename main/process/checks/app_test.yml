@@ -1,12 +1,12 @@
 resources:
 - &CHECKS
-  module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/app.py
+  resource: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/app.py
 - &APP_PATH
   ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/checks/app.py
-- &RESOURCE_PATH
-  ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/checks/resource.py
 - &RESOURCE
-  module: *RESOURCE_PATH
+  resource: &RESOURCE_PATH ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/checks/resource.py
+- &MODULE
+  module: &MODULE_PATH ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/checks/app.py
 
 
 tests:
@@ -122,104 +122,6 @@ tests:
         passed: false
         id: id
         id_short: id_short
-- function: process_checks
-  description: Handles processing checks
-  tests:
-  - description: Undefined arguments
-    arguments: {}
-    checks:
-    - method: check_equals
-      << : *CHECKS
-      field: result.checks
-      expected: []
-  - description: Process one check
-    arguments:
-      checks:
-      - method: check_equals
-        << : *CHECKS
-        expected: output
-      output: output
-      module: module
-      id: id
-      id_short: id_short
-    checks:
-    - method: check_length
-      << : *CHECKS
-      field: result.checks
-      expected: 1
-    - method: check_equals
-      << : *CHECKS
-      field: result.checks
-      cast_output:
-      - << : *RESOURCE
-        method: list_sns_to_list_dict
-      expected:
-      - id: id
-        id_short: id_short
-        expected: output
-        output: output
-        passed: true
-        method: check_equals
-- function: pre_processing
-  description: >
-    Formats check data before processing. Returns a single Check
-    model.
-  tests:
-  - description: Undefined arguments
-    arguments: {}
-    checks:
-    - method: check_exception
-      << : *CHECKS
-      expected: AttributeError
-  - description: Empty arguments
-    arguments:
-      locals_: {}
-      item: {}
-    checks:
-    - method: check_sns
-      << : *CHECKS
-      expected:
-        cast_output: null
-        expected: null
-        field: null
-        id: ''
-        id_short: ''
-        method: null
-        module: null
-        output: null
-        passed: false
-  - description: Checks defined and other arguments are undefined
-    cast_arguments:
-    - method: wrapper_get_module
-      << : *RESOURCE
-      field: locals_.module
-    arguments:
-      item:
-        cast_output: cast_output
-        expected: expected
-        field: field
-        method: method
-      locals_:
-        output: output
-        module: *RESOURCE_PATH
-        id: id
-        id_short: id_short
-    checks:
-    - method: check_sns
-      << : *CHECKS
-      expected:
-        cast_output: cast_output
-        expected: expected
-        field: field
-        id: id
-        id_short: id_short
-        method: method
-        output: output
-        passed: false
-    - method: check_equals
-      << : *CHECKS
-      field: module.__file__
-      expected: *RESOURCE_PATH
 - function: pass_through
   description: >
     Returns the method to use if an check method does not exist. Returns data needed to
@@ -273,26 +175,12 @@ tests:
   description: >
     Returns an check method defined in a resource module, given the route
     to the method
-  cast_arguments:
-  - method: wrapper_get_module
-    << : *RESOURCE
-    field: module
   tests:
-  - description: UMethod undefined
+  - description: Method is undefined
     arguments:
-      module: *RESOURCE_PATH
       method: null
-    checks:
-    - method: check_sns
-      << : *CHECKS
-      field: log
-      expected:
-        level: error
-        message: Check method None does not exist in module ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/checks/resource.py
-  - description: Check method exists
-    arguments:
-      method: check_method_a
-      module: *RESOURCE_PATH
+      module: module
+      resource: *RESOURCE_PATH
     checks:
     - method: check_type
       << : *CHECKS
@@ -301,19 +189,27 @@ tests:
       << : *CHECKS
       field: method
       expected:
+        name: pass_through_inner
+        location: *MODULE_PATH
+  - description: Method is defined
+    arguments:
+      method: check_method_a
+      module: *RESOURCE_PATH
+    checks:
+    - method: check_function
+      << : *CHECKS
+      field: method
+      expected:
         name: check_method_a
         location: *RESOURCE_PATH
+    - method: check_type
+      << : *CHECKS
+      expected: SimpleNamespace
   - description: Check method does not exist
     arguments:
       method: check_method_b
       module: *RESOURCE_PATH
     checks:
-    - method: check_sns
-      << : *CHECKS
-      field: log
-      expected:
-        level: error
-        message: Check method check_method_b does not exist in module ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/checks/resource.py
     - method: check_function
       << : *CHECKS
       field: method
@@ -357,6 +253,8 @@ tests:
         key_a:
           key_b: value
       field: key_a.key_b
+      cast_output: []
+      module: *RESOURCE_PATH
     checks:
     - method: check_sns
       << : *CHECKS
@@ -372,12 +270,6 @@ tests:
       << : *CHECKS
       expected:
         output: null
-    - method: check_sns
-      << : *CHECKS
-      field: log
-      expected:
-        message: Field key_does_not_exist does not exist in object of type NoneType
-        level: warning
   - description: Output is a SimpleNamespace and field is route to an attribute
     cast_arguments:
     - method: reset_output_value_cast_arguments

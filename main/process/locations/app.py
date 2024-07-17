@@ -12,7 +12,6 @@ from main.utils import get_config, independent
 ROOT_DIR = os.path.abspath(os.curdir)
 ROOT_DIR = os.path.normpath(ROOT_DIR)
 
-MODULE = __file__
 CONFIG = get_config.main()
 LOCALS = locals()
 

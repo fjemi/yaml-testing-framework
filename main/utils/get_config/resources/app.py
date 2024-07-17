@@ -5,8 +5,6 @@
 from types import SimpleNamespace as sns
 
 
-MODULE = __file__
-
 LOCALS = locals()
 
 

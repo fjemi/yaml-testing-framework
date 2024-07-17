@@ -7,9 +7,6 @@ from types import SimpleNamespace as sns
 from main.utils import invoke_testing_method
 
 
-MODULE = __file__
-
-
 def get_ids_resource(val: dict | None = None) -> sns:
   val = val or {}
   return sns(**val)

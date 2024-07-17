@@ -8,9 +8,6 @@ from types import SimpleNamespace as sns
 from main.utils import objects
 
 
-MODULE = __file__
-
-
 def main(
   module: ModuleType | None = None,
   environment: dict | None = None,

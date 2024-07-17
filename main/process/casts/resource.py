@@ -7,10 +7,8 @@ from types import ModuleType
 from types import SimpleNamespace as sns
 from typing import Any, Callable
 
-from main.utils.get_module import main as get_module
+from main.utils import get_module, objects
 
-
-MODULE = __file__
 
 LOCALS = locals()
 
@@ -21,31 +19,31 @@ def pass_through(*args, **kwargs) -> str:
 
 
 def cast_as_str(
-  temp_object: Any | None = None,
+  object: Any | None = None,
   unpack: bool | None = None,
 ) -> str:
   _ = unpack
-  return str(temp_object)
+  return str(object)
 
 
 def cast_as_int(
-  temp_object: Any | None = None,
+  object: Any | None = None,
   unpack: bool | None = None,
 ) -> int:
   _ = unpack
-  return int(temp_object)
+  return int(object)
 
 
 def cast_as_split(
-  temp_object: Any | None = None,
+  object: Any | None = None,
   unpack: bool | None = None,
 ) -> int:
   _ = unpack
-  return temp_object.split('.')
+  return object.split('.')
 
 
-def cast_dict_as_sns(temp_object: Any | None = None) -> sns:
-  return sns(**temp_object)
+def cast_dict_as_sns(object: Any | None = None) -> sns:
+  return sns(**object)
 
 
 def cast_list_to_string(a: str, b: str, c: str) -> str:
@@ -56,8 +54,8 @@ def get_method(method: str | None = None) -> Callable | None:
   return LOCALS.get(str(method), None)
 
 
-def pack_nonetype(temp_object: None = None) -> str:
-  _ = temp_object
+def pack_nonetype(object: None = None) -> str:
+  _ = object
   return 'output'
 
 
@@ -99,8 +97,8 @@ def add_sns(data: Any) -> Any:
   return data.a + data.b
 
 
-def add_dict(temp_object: dict | None = None) -> int:
-  return sum(list(temp_object.values()))
+def add_dict(object: dict | None = None) -> int:
+  return sum(list(object.values()))
 
 
 OBJECT_MAP = {
@@ -154,7 +152,7 @@ def casted_object_resource(object: Any | None = None) -> Callable:
 
 def module_resource(module: str | None = None) -> ModuleType | None:
   if isinstance(module, str):
-    return get_module(location=module).module
+    return get_module.main(location=module).module
 
 
 def kinds_resource(kinds: str | dict) -> Any:
@@ -169,10 +167,16 @@ def kinds_resource(kinds: str | dict) -> Any:
     return get_resource(resource=kinds)
 
 
-def get_resource(resource: Any | None = None) -> Callable:
-  if resource in LOCALS:
-    return LOCALS[resource]
-  return OBJECT_MAP[resource]
+def get_resource(
+  resource: Any | None = None,
+  method: str = '',
+) -> Callable:
+  route = method or resource
+  return objects.get(parent=LOCALS, route=route)
+
+
+def wrapper_get_module(module: str = '') -> sns:
+  return get_module.main(module=module).module
 
 
 def examples() -> None:

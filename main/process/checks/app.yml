@@ -26,50 +26,36 @@ add_check_fields:
 
 
 schema:
-  Entry:
-    description: Store data passed to `main` function of module
+  Main:
+    description: Store data needed to process an check form a test
     fields:
-    - &OUTPUT
-      name: output
+    - name: output
       type: Any
       description: Output from the function to verify
       default: null
-    - &ID
-      name: id
+    - name: id
       description: >
         A unique ID for each test consisting of the route to the function, the
         tests unique key or number, and a description of the test
       type: str
       default: ''
-    - &ID_SHORT
-      name: id_short
+    - name: id_short
       description: The route to the function
       type: str
       default: ''
-    - &MODULE
-      name: module
+    - name: module
       type: ModuleType | str
       description: >
         The module containing the function to test or the module's location
       default: null
-    - &CHECKS
-      name: checks
-      type: list
-      default: null
-      description: A list of checks to process to verify output from tests
-    - &__SPIES__
-      name: __spies__
+    - name: resource
+      type: str
+      description: Resource or module objects to use during tests
+      default: ''
+    - name: __spies__
       type: dict
       default: null
       description: Stores spy objects placed on methods
-  Check:
-    description: Store data needed to process an check form a test
-    fields:
-    - *ID
-    - *ID_SHORT
-    - *MODULE
-    - *OUTPUT
-    - *__SPIES__
     - name: method
       type: str
       description: The check method
@@ -94,18 +80,8 @@ schema:
 
 operations:
   main:
-  - process_checks
-  process_checks:
-  - pre_processing
-  - get_module.main
   - get_check_method
   - reset_output_value
-  - process_cast_output
   - get_check_result
   - handle_failed_check
   - post_processing
-
-
-preferred_fields:
-- module
-- __spies__

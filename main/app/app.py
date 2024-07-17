@@ -25,11 +25,10 @@ from main.utils import (
   methods,
 )
 
-MODULE = __file__
-CONFIG = get_config.main()
+
 LOCALS = locals()
 
-MODULE_EXTENSION = '.py'
+CONFIG = get_config.main()
 LOGGING_ENABLED = True
 TEST_IDS = {}
 
@@ -75,27 +74,6 @@ def handle_id(
     id=id_,
     id_short=id_short,
     log=log, )
-
-
-def get_resource_route(
-  resource: str,
-  module: str,
-) -> str:
-  routes = sns(resource=resource, module=module)
-  for key, value in routes.__dict__.items():
-    value_ = os.path.normpath(str(value))
-    value_ = value_.split(os.sep)
-    setattr(routes, key, value_)
-
-  start = 0
-  for i, item in enumerate(routes.resource):
-    if item != routes.module[i]:
-      start = i
-      break
-
-  routes = routes.resource[start:]
-  routes[-1] = routes[-1].replace(MODULE_EXTENSION, '')
-  return '.'.join(routes)
 
 
 def get_function(
@@ -160,7 +138,7 @@ def run_tests(locations: List[sns] | None = None) -> sns:
 def examples() -> None:
   from main.utils import invoke_testing_method
 
-  invoke_testing_method.main(location=MODULE)
+  invoke_testing_method.main()
 
 
 if __name__ == '__main__':

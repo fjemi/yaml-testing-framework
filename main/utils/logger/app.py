@@ -15,7 +15,6 @@ from typing import Any, Callable
 import yaml as pyyaml
 
 
-MODULE = __file__
 LOCALS = locals()
 
 ROOT_DIR = os.path.abspath(os.curdir)

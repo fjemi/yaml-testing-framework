@@ -2,9 +2,9 @@ resources:
 - &MODULE
   ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/casts/app.py
 - &CHECKS
-  module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/app.py
+  resource: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/app.py
 - &RESOURCE
-  module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/casts/resource.py
+  resource: &RESOURCE_PATH ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/casts/resource.py
 
 
 tests:
@@ -28,7 +28,7 @@ tests:
   - description: Cast arguments is empty
     arguments:
       cast_arguments: []
-      << : *RESOURCE
+      module: *RESOURCE_PATH
       arguments: arguments
     checks:
     - method: check_sns
@@ -40,6 +40,7 @@ tests:
       cast_arguments:
       - method: __builtins__.int
         << : *RESOURCE
+      module: *RESOURCE_PATH
       arguments: '0000'
     checks:
     - method: check_sns
@@ -80,7 +81,7 @@ tests:
   - description: Cast output is an empty list
     arguments:
       cast_output: []
-      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/app/resources/app.py
+      module: *RESOURCE_PATH
       output: output
     checks:
     - method: check_sns
@@ -108,7 +109,7 @@ tests:
       - method: __builtins__.int
         << : *RESOURCE
         field: key
-      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/app/resources/app.py
+      module: *RESOURCE_PATH
       output:
         key: '0000'
     checks:
@@ -123,134 +124,53 @@ tests:
   - description: Undefined arguments
     arguments: {}
     checks:
-    - method: check_equals
+    - method: check_sns
       << : *CHECKS
-      expected: null
+      expected:
+        object: null
   - cast_arguments:
-    - method: resource.get_module
+    - method: wrapper_get_module
       << : *RESOURCE
       field: module
     tests:
     - description: Cast string as integer
       arguments:
-        << : *RESOURCE
+        module: *RESOURCE_PATH
         casts:
         - method: __builtins__.int
           << : *RESOURCE
         object: '1111'
       checks:
-      - method: check_equals
+      - method: check_sns
         << : *CHECKS
-        expected: 1111
+        expected:
+          object: 1111
     - description: Cast dict as simple name space
       arguments:
-        << : *RESOURCE
+        module: *RESOURCE_PATH
         casts:
         - method: cast_dict_as_sns
           << : *RESOURCE
         object:
           key: value
       checks:
-      - method: check_sns
+      - method: check_equals
         << : *CHECKS
-        expected:
-          key: value
+        field: object.key
+        expected: value
     - description: Cast list into string with unpacking
       arguments:
-        << : *RESOURCE
+        module: *RESOURCE_PATH
         casts:
         - method: cast_list_to_string
           << : *RESOURCE
           unpack: true
         object: [a, b, c]
       checks:
-      - method: check_equals
+      - method: check_sns
         << : *CHECKS
-        expected: abc
-- function: process_casts
-  description: Handles processing cast objects
-  tests:
-  - description: Undefined arguments
-    arguments: {}
-    checks:
-    - method: check_sns
-      << : *CHECKS
-      expected:
-        result: null
-  - description: Cast integer to string
-    arguments:
-      casts:
-      - method: __builtins__.str
-      object: 1
-      << : *RESOURCE
-    checks:
-    - method: check_sns
-      << : *CHECKS
-      expected:
-        result: '1'
-  - description: Cast field within the object
-    arguments:
-      casts:
-      - method: __builtins__.str
-        field: key
-      object:
-        key: 0
-      << : *RESOURCE
-    checks:
-    - method: check_sns
-      << : *CHECKS
-      expected:
-        result:
-          key: '0'
-- function: format_data
-  tests:
-  - description: Undefined arguments
-    arguments: {}
-    checks:
-    - method: check_sns
-      << : *CHECKS
-      expected:
-        field: null
-        method: null
-        module: null
-        object: null
-        result: null
-        temp_object: null
-        unpack: null
-  - description: Defined arguments. Prefer level data.
-    arguments:
-      module: arguments.module
-      object: arguments.object
-      item: {}
-    checks:
-    - method: check_sns
-      << : *CHECKS
-      expected:
-        field: ''
-        method: null
-        module: arguments.module
-        object: arguments.object
-        result: null
-        temp_object: null
-        unpack: false
-  - description: Defined arguments. Prefer item level data.
-    arguments:
-      module: arguments.module
-      object: arguments.object
-      item:
-        module: item.module
-        object: item.object
-    checks:
-    - method: check_sns
-      << : *CHECKS
-      expected:
-        field: ''
-        method: null
-        module: item.module
-        object: arguments.object
-        result: null
-        temp_object: null
-        unpack: false
+        expected:
+          object: abc
 - function: do_nothing
   description: Returns a null object
   arguments:
@@ -259,7 +179,7 @@ tests:
   - << : *CHECKS
     method: check_equals
     expected: null
-- function: get_cast_method
+- function: get_method
   description: >
     Returns a casting method and name if the method exists in a module.
     Otherwise, returns the name and a log
@@ -319,35 +239,42 @@ tests:
       expected:
         name: do_nothing
         location: *MODULE
-- function: get_temp_object
-  description: Set a temporary object as the object to cast or field within it
+- function: get_object
+  description: Handles casting an object
+  cast_arguments:
+  - method: get_resource
+    << : *RESOURCE
+    field: method
   tests:
   - description: Undefined arguments
     arguments: {}
     checks:
-    - method: check_sns
+    - method: check_exception
       << : *CHECKS
-      expected:
-        temp_object: null
-  - description: Field is undefined and object is defined
+      expected: TypeError
+  - description: Object is defined
     arguments:
-      object: object
-      field: null
+      object: '1111'
+      field: ''
+      unpack: False
+      method: cast_as_int
     checks:
     - method: check_sns
       << : *CHECKS
       expected:
-        temp_object: object
-  - description: Object is a dict and field is an existing key
+        temp: 1111
+  - description: Object and field are defined
     arguments:
       object:
-        key: value
+        key: '12345'
       field: key
+      unpack: False
+      method: cast_as_int
     checks:
     - method: check_sns
       << : *CHECKS
       expected:
-        temp_object: value
+        temp: 12345
 - function: reset_object
   description: Sets temp object as the object or a field within the object
   tests:
@@ -360,18 +287,18 @@ tests:
         None: null
   - description: Set object as temp object
     arguments:
-      temp_object: temp_object
+      temp: temp
       object: object
       field: null
     checks:
     - method: check_sns
       << : *CHECKS
       expected:
-        object: temp_object
-        temp_object: null
+        object: temp
+        temp: null
   - description: Set object a non-existing field as temp object
     arguments:
-      temp_object: temp_object
+      temp: temp
       object: {}
       field: key
     checks:
@@ -379,11 +306,11 @@ tests:
       << : *CHECKS
       expected:
         object:
-          key: temp_object
-        temp_object: null
+          key: temp
+        temp: null
   - description: Set object an existing field as temp object
     arguments:
-      temp_object: temp_object
+      temp: temp
       object:
         key: value
       field: key
@@ -392,5 +319,5 @@ tests:
       << : *CHECKS
       expected:
         object:
-          key: temp_object
-        temp_object: null
+          key: temp
+        temp: null

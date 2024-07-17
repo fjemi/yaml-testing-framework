@@ -5,8 +5,6 @@
 import dataclasses as dc
 
 
-MODULE = __file__
-
 LOCALS = locals()
 
 

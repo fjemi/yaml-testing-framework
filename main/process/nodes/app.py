@@ -8,8 +8,7 @@ from main.process.nodes import combine_fields, expand_node
 from main.utils import get_config, independent
 
 
-MODULE = __file__
-CONFIG = get_config.main(module=MODULE)
+CONFIG = get_config.main()
 LOCALS = locals()
 
 

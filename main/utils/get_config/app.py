@@ -10,8 +10,6 @@ from main.utils import independent, objects
 from main.utils import schema as _schema
 
 
-MODULE = __file__
-
 CONFIG = '''
   extensions:
     yaml:

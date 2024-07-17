@@ -14,8 +14,7 @@ from main.utils import (
 )
 
 
-MODULE = __file__
-CONFIG = get_config.main(module=MODULE)
+CONFIG = get_config.main()
 LOCALS = locals()
 
 SIDE_EFFECTS = {}

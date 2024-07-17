@@ -7,7 +7,6 @@ from typing import Any, Iterable
 
 
 LOCALS = locals()
-MODULE = __file__
 
 TWO = 2
 
@@ -108,7 +107,7 @@ def get_child(
 def examples() -> None:
   from main.utils import invoke_testing_method
 
-  invoke_testing_method.main(location=MODULE)
+  invoke_testing_method.main()
 
 
 if __name__ == '__main__':

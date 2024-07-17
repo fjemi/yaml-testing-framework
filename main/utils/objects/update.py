@@ -8,9 +8,6 @@ from typing import Any, Iterable
 from main.utils.objects.get import main as objects_get_main
 
 
-MODULE = __file__
-
-
 def main(
   parent: Any | None = None,
   value: Any | None = None,

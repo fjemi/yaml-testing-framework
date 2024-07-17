@@ -6,7 +6,6 @@ import dataclasses as dc
 import functools
 import inspect
 import os
-import threading
 from types import FunctionType, ModuleType
 from types import SimpleNamespace as sns
 from typing import (
@@ -19,12 +18,39 @@ from typing import (
 )
 
 from main.process import casts
-from main.utils import independent, objects, methods
+from main.utils import independent, objects, methods, get_module
 
-
-MODULE = __file__
 
 CONFIG = '''
+  schema:
+    CallMethod:
+      description:
+      fields:
+      - name: method
+        description: The method to call
+        default: null
+        type: Callable
+      - name: output
+        default: []
+        description: Expected output from calling method with arguments
+        type: list
+      - name: arguments
+        default: []
+        description: Arguments to pass to the method
+        type: list
+      - name: cast_output
+        default: null
+        description: List of casts to perform on output
+        type: list
+      - name: cast_arguments
+        default: null
+        description: List of casts to perform on arguments
+        type: list
+      - name: module
+        default: ''
+        description: Location of a module
+        type: str
+
   union_types:
   - _UnionGenericAlias
   - UnionType
@@ -376,66 +402,46 @@ def check_key_value_in_dict(
   return sns(passed=passed, output=fields, expected=expected)
 
 
-@type_checks
-def check_thread(
-  output: list| threading.Thread,
-  expected: list | dict,
-) -> sns:
-  data = sns(**locals())
-
-  if not isinstance(output, list):
-    output = [output]
-  if not isinstance(expected, list):
-    expected = [expected]
-
-  results = []
-  for item in output:
-    start = item.name.find('(') + 1
-    target_name = item.name[start:-1]
-    result = dict(target_name=target_name)
-    results.append(result)
-
-  passed = results == expected
-  return sns(
-    output=results,
-    expected=expected,
-    passed=passed, )
-
-
 def call_function(
-  arguments: Any | None = None,
-  function: Callable | None = None,
+  arguments: list = [],
+  output: list = [],
   method: Callable | None = None,
-  cast_output: list | None = None,
-  module: ModuleType | str | None = None,
+  cast_arguments: list = [],
+  cast_output: list = [],
+  module: ModuleType | str = '',
 ) -> Any:
-  method = method or function
-  result = methods.call.main(arguments=arguments, method=method)
-  return casts.main(
-    module=module,
-    casts=cast_output,
-    object=result.output, )
+  store = []
+  module = get_module.main(module=module, default=module).module
+  passed = True
+
+  for i, item in enumerate(arguments):
+    data = casts.main(
+      module=module,
+      casts=cast_arguments,
+      object=item, ).object
+    data = methods.call.main(arguments=data, method=method).output
+    data = casts.main(
+      module=module,
+      casts=cast_output,
+      object=data, ).object
+    store.append(data)
+    if data != output[i]:
+      passed = False
+
+  return sns(
+    expected=output,
+    output=store,
+    passed=passed, )
 
 
 @type_checks
 def check_function_output(
-  output: Callable | FunctionType,
+  output: Callable,
   expected: Any | None,
 ) -> sns:
-  expected = sns(**expected)
-  output = [call_function(
-    function=output,
-    arguments=arguments,
-    cast_output=getattr(expected, 'cast_output', []),
-    module=getattr(expected, 'module', []),
-    ) for arguments in expected.arguments
-  ]
-
-  passed = output == expected.output
-  return sns(
-    output=output,
-    expected=expected.output,
-    passed=passed, )
+  data = independent.get_model(schema=CONFIG.schema.CallMethod, data=expected)
+  data.method = output
+  return call_function(**data.__dict__)
 
 
 @type_checks

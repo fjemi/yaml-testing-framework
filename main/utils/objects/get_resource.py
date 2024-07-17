@@ -9,7 +9,7 @@ from types import SimpleNamespace as sns
 from main.utils import get_module
 
 
-MODULE = __file__
+RESOURCE_PATH = __file__
 
 
 def parent_to_sns(parent: dict | None = None) -> sns:

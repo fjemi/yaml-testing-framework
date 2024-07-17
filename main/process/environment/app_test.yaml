@@ -1,8 +1,8 @@
 resources:
 - &CHECKS
-  module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/app.py
+  resource: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/app.py
 - &RESOURCE
-  module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/environment/resources/app.py
+  resource: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/environment/resources/app.py
 
 
 tests:

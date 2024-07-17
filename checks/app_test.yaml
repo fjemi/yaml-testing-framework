@@ -9,12 +9,10 @@ help:
 
 
 resources:
-- &RESOURCE_PATH
-  ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/resource.py
 - &RESOURCE
-  module: *RESOURCE_PATH
+  resource: &RESOURCE_PATH ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/resource.py
 - &CHECKS
-  module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/app.py
+  resource: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/app.py
 
 
 tests:
@@ -34,8 +32,9 @@ tests:
   - description: Undefined arguments
     arguments: {}
     checks:
-    - method: check_exception
+    - method: check_equals
       << : *CHECKS
+      field: __class__.__name__
       expected: AttributeError
   - description: >
       Method where expected is a list and output is a dict. Check passes.
@@ -81,7 +80,7 @@ tests:
       Method has expected and output parameters with type hints that are Any
       and a union. Checks pass.
     arguments:
-      << : *RESOURCE
+      module : *RESOURCE_PATH
       method: check_method_b
       output: output
       expected: expected
@@ -92,7 +91,7 @@ tests:
       Method has expected and output parameters with type hints that are Any
       and a union. Checks fail.
     arguments:
-      << : *RESOURCE
+      module : *RESOURCE_PATH
       method: check_method_b
       output: {}
       expected: expected
@@ -285,7 +284,7 @@ tests:
             - hints:
               - module
               name: output
-              kind: dict
+              kind: nonetype
             - hints:
               - dict
               name: expected
@@ -1164,48 +1163,6 @@ tests:
           a: a
           b: b
         passed: true
-- function: check_thread
-  description: Verify that the output is of type threading.Thread
-  cast_arguments:
-  - method: check_thread_resource
-    << : *RESOURCE
-    field: output
-  tests:
-  - description: Undefined arguments
-    arguments: {}
-    checks:
-    - method: check_sns
-      expected:
-        passed: False
-        output: null
-        expected:
-          method: check_thread
-          parameters:
-            failed:
-            - hints:
-              - list
-              - thread
-              kind: dict
-              name: output
-            - kind: nonetype
-              name: expected
-              hints:
-              - list
-              - dict
-            passed: []
-  - description: Output is a thread
-    arguments:
-      output: thread
-      expected:
-        target_name: target
-    checks:
-    - method: check_sns
-      expected:
-        passed: true
-        expected:
-        - target_name: target
-        output:
-        - target_name: target
 - function: check_function_output
   description: Verify the output from calling a function
   cast_arguments:
@@ -1225,11 +1182,10 @@ tests:
           method: check_function_output
           parameters:
             failed:
-            - kind: dict
+            - kind: nonetype
               name: output
               hints:
               - callable
-              - function
             passed:
             - expected
   - description: Function with single argument and output

@@ -5,9 +5,6 @@
 from types import SimpleNamespace as sns
 
 
-MODULE = __file__
-
-
 def sns_to_dict(data: sns | list | None = None) -> dict | list | None:
   if isinstance(data, sns):
     return data.__dict__

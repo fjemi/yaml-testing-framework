@@ -8,10 +8,9 @@ from main.process.nodes import combine_fields
 from main.utils import get_config, independent
 
 
-MODULE = __file__
 LOCALS = locals()
 
-CONFIG = get_config.main(module=MODULE)
+CONFIG = get_config.main()
 
 TEST_FIELDS = list(CONFIG.schema.Test.__dict__.keys())
 

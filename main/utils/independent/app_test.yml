@@ -11,13 +11,11 @@ help:
 
 resources:
 - &CHECKS
-  module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/app.py
-- &RESOURCE_PATH
-  ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/independent/resource.py
+  resource: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/app.py
 - &RESOURCE_YAML
   ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/independent/resource.yaml
 - &RESOURCE
-  module: *RESOURCE_PATH
+  resource: &RESOURCE_PATH ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/independent/resource.py
 
 
 tests:
