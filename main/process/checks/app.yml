@@ -52,7 +52,7 @@ schema:
       type: str
       description: Resource or module objects to use during tests
       default: ''
-    - name: __spies__
+    - name: spies_
       type: dict
       default: null
       description: Stores spy objects placed on methods

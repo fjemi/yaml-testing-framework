@@ -37,8 +37,7 @@ tests:
       << : *CHECKS
       expected:
         nodes:
-        - __spies__: null
-          arguments: {}
+        - arguments: {}
           checks: []
           cast_arguments: []
           cast_output: []
@@ -74,8 +73,7 @@ tests:
       << : *CHECKS
       expected:
         nodes:
-        - __spies__: null
-          arguments: {}
+        - arguments: {}
           checks: []
           cast_arguments: []
           cast_output: []
@@ -96,8 +94,7 @@ tests:
           spies: []
           tests: null
           yaml: yaml
-        - __spies__: null
-          arguments: {}
+        - arguments: {}
           checks: []
           cast_arguments: []
           cast_output: []
@@ -135,8 +132,7 @@ tests:
       << : *CHECKS
       expected:
         nodes:
-        - __spies__: null
-          arguments: {}
+        - arguments: {}
           checks: []
           cast_arguments: []
           cast_output: []
@@ -158,8 +154,7 @@ tests:
           spies: []
           tests: null
           yaml: configurations
-        - __spies__: null
-          arguments: {}
+        - arguments: {}
           checks: []
           cast_arguments: []
           cast_output: []
@@ -181,8 +176,7 @@ tests:
           spies: []
           tests: null
           yaml: configurations
-        - __spies__: null
-          arguments: {}
+        - arguments: {}
           checks: []
           cast_arguments: []
           cast_output: []
@@ -308,7 +302,6 @@ tests:
       << : *CHECKS
       expected:
         key.0:
-          __spies__: null
           arguments: {}
           checks: []
           cast_arguments: []
@@ -333,7 +326,6 @@ tests:
           tests: null
           yaml: root_node
         key.1:
-          __spies__: null
           arguments: {}
           checks: []
           cast_arguments: []
@@ -409,7 +401,6 @@ tests:
           '0':
             description: root_node
           '0.0':
-            __spies__: null
             arguments: {}
             checks: []
             cast_arguments: []
@@ -434,7 +425,6 @@ tests:
             tests: null
             yaml: null
           '0.1':
-            __spies__: null
             arguments: {}
             checks: []
             cast_arguments: []
@@ -459,7 +449,6 @@ tests:
             tests: null
             yaml: null
           '0.2':
-            __spies__: null
             arguments: {}
             checks: []
             cast_arguments: []

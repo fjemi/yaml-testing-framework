@@ -33,10 +33,6 @@ tests:
       field: module
       expected:
         location: *RESOURCE_PATH
-    - method: check_equals
-      << : *CHECKS
-      field: __spies__
-      expected: {}
   - description: Spies defined
     arguments:
       spies:
@@ -44,19 +40,9 @@ tests:
       - subtract
       module: *RESOURCE_PATH
     checks:
-    - method: check_equals
+    - method: check_type
       << : *CHECKS
-      field: __spies__
-      cast_output:
-      - method: dict_sns_to_dict_dict
-        << : *RESOURCE
-      expected:
-        add:
-          called: False
-          called_with: null
-        subtract:
-          called: False
-          called_with: null
+      expected: SimpleNamespace
     - method: check_function
       << : *CHECKS
       field: module.add
@@ -145,3 +131,14 @@ tests:
     #         called_with:
     #           a: 1
     #           b: 1
+- function: get_store
+  description: >
+    Returns a simple name space containing a dictionary that spies are stored in
+  tests:
+  - description: Undefined arguments
+    arguments: {}
+    checks:
+    - method: check_sns
+      << : *CHECKS
+      expected:
+        spies_: {}

@@ -88,10 +88,6 @@ Test: &TEST
       A list of methods to spy, where each item in the list is the dot
       delimited route to a method
     default: null
-  - name: __spies__
-    type: dict
-    description: Store spy objects
-    default: null
 
 
 Logger:

@@ -386,20 +386,26 @@ In this example, the methods to spy on are listed under the `spies` key at the i
 
 ```yaml
 # ,/app_test.py
+resources:
+- &CHECKS
+  ./checks.py
 
-tests:
+configurations:
 - spies:
   - route.method_a
   - route.method_b
-  checks:
-  - method: check_spies
-    expected:
-      route.method_a:
-        called: True
-        called_with: []
-      route.method_b:
-        called: False
-        called_with: None
+
+
+checks:
+- method: check_spies
+  << : *CHECKS
+  expected:
+    route.method_a:
+      called: True
+      called_with: []
+    route.method_b:
+      called: False
+      called_with: None
 ```
 
 ```python
@@ -410,14 +416,13 @@ from types import SimpleNamespace as sns
 
 
 def check_spies(
-  module: ModuleType,
-  output: Any,
+  spies_: dict,
   expected: dict
 ) -> sns:
   '''Example check method for verifying that a function was called'''
   spies = {}
   for key, value for expected.items():
-    spy = module.SPIES.get(key, {})
+    spy = spies_.get(key, {})
       if spy != value
         continue
     spies[key] = spy

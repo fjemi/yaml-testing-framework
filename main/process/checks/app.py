@@ -8,7 +8,7 @@ from typing import Any, Callable, List
 
 import yaml
 
-from main.process import casts
+from main.process import casts, spies
 from main.utils import get_config, independent, objects, schema, get_module
 
 
@@ -23,7 +23,6 @@ def main(
   module: ModuleType | None = None,
   id: str | None = None,
   id_short: str | None = None,
-  __spies__: dict | None = None,
 ) -> sns:
   checks = checks or []
   locals_ = sns(**locals())
@@ -33,6 +32,7 @@ def main(
   for item in checks:
     item.update(locals_.__dict__)
     data = independent.get_model(schema=CONFIG.schema.Main, data=item)
+    data.spies_ = spies.get_store().spies_
     data = independent.process_operations(
       data=data,
       functions=LOCALS,
@@ -93,7 +93,7 @@ def get_check_result(
   method: Callable | None = None,
   output: Any | None = None,
   expected: Any | None = None,
-  __spies__: dict | None = None,
+  spies_: dict | None = None,
 ) -> sns:
   arguments = locals()
   arguments = independent.get_function_arguments(
