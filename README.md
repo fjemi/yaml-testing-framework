@@ -96,7 +96,6 @@ The app can be configured within the pytest settings of a configuration file,
 | - | - | - | - |
 | project-path | str | Location of a directory containing files or an an individual module or YAML file to test. | . |
 | exclude-files | str or list| A list of patterns. Exclude files from testing that match a specified pattern . | [] |
-| resources | str or list | The locations of modules to use as resources during tests | [] |
 | yaml-suffix | str | Suffix in the names of YAML files containing tests | _test |
 
 

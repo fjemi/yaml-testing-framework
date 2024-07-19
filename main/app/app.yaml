@@ -17,15 +17,6 @@ module_extensions:
 - .py
 
 
-order_of_operations:
-  set_configs: null
-  get_file_paths:
-  - get python file paths
-  - get associated yaml paths
-  - get paths of test resources
-  format_yaml_content: null
-
-
 exclude_lines: []
 
 

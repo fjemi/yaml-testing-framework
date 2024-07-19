@@ -105,14 +105,6 @@ tests:
     - method: check_equals
       << : *CHECKS
       expected: /path_to_directory
-  - description: Option is path to directory in test resources
-    arguments:
-      option: path_to_directory
-      config: config
-    checks:
-    - method: check_equals
-      << : *CHECKS
-      expected: path_to_directory
   - description: Option is path to directory in root directory
     arguments:
       option: root_directory/sub_directory

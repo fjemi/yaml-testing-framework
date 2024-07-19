@@ -8,7 +8,6 @@ TODO:
 - centralized module where the module to test, resource, and other test objects
   are imported to
 - Think about adding patch, cast, and other operations to to setup/teardown
-- Make sure resources are named in relation to location to module being tests. Same directory would be .resource.path different directory would start from root -> app.resource.path
 - If app exits (error, crtl+c, etc.) setup objects should be torn down
 - Add module to casts similar to how it is done here with formatting data and preferred fields
 - independent.process_operations add do_nothing if operation not in LOCALS

@@ -220,17 +220,6 @@ def get_runtime_in_ms(timestamps: sns | None = None,) -> sns:
   return timestamps
 
 
-def purge_data_and_output_fields(
-  data: sns | None = None,
-) -> int:
-  fields = data.output.get('_cleanup', [])
-  fields.append('_cleanup')
-  for field in fields:
-    objects.delete(parent=data.data, route=field)
-    objects.delete(parent=data.output, route=field)
-  return data
-
-
 def get_function_output(data: sns) -> sns:
   data.timestamps = sns(start=get_timestamp())
   try:
@@ -338,7 +327,6 @@ def process_operations(
       data=store.data, )
     store = get_function_output(data=store)
     store.output = format_output(output=store.output)
-    store = purge_data_and_output_fields(data=store)
     store = update_data_fields(data=store)
     format_log(data=store)
 
