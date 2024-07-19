@@ -64,19 +64,22 @@ tests:
       a: 1
       b: 1
     checks:
-    - method: checks.equals
+    - method: equals
+      << : *CHECKS
       expected: 2
   - arguments:
       a: 1
       b: 2
     checks:
-    - method: checks.equals
+    - method: equals
+      << : *CHECKS
       expected: 3
   - arguments:
       a: 1
       b: '1'
     checks:
-    - method: checks.equals
+    - method: equals
+      << : *CHECKS
       field: 2
 ```
 

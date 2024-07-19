@@ -26,26 +26,26 @@ tests:
   - description: No defined patches
     arguments:
       patches: null
-      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/patches/resources/app.py
+      module: *RESOURCE_PATH
     checks:
     - method: check_module
       << : *CHECKS
       field: module
       expected:
-        location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/patches/resources/app.py
+        location: *RESOURCE_PATH
   - description: Patch a non-existing object using value method
     arguments:
       patches:
       - method: value
         value: patched_value
         route: .does_not_exist
-      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/patches/resources/app.py
+      module: *RESOURCE_PATH
     checks:
     - method: check_module
       << : *CHECKS
       field: module
       expected:
-        location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/patches/resources/app.py
+        location: *RESOURCE_PATH
     - method: check_equals
       << : *CHECKS
       field: module.does_not_exist
@@ -56,19 +56,19 @@ tests:
       - method: callable
         value: callable_output
         route: add
-      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/patches/resources/app.py
+      module: *RESOURCE_PATH
     checks:
     - method: check_module
       << : *CHECKS
       field: module
       expected:
-        location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/patches/resources/app.py
+        location: *RESOURCE_PATH
     - method: check_function
       << : *CHECKS
       field: module.add
       expected:
         name: add
-        location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/patches/resources/app.py
+        location: *RESOURCE_PATH
 - function: pre_processing
   description: Returns patch model containing module and timestamp
   tests:
@@ -437,7 +437,7 @@ tests:
         module: null
   - description: Do nothing flag is true
     arguments:
-      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/patches/resources/app.py
+      module: *RESOURCE_PATH
     checks:
     - method: check_sns
       << : *CHECKS
@@ -446,12 +446,12 @@ tests:
       << : *CHECKS
       field: module
       expected:
-        location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/patches/resources/app.py
+        location: *RESOURCE_PATH
   - description: Patch object in module
     arguments:
       value: value
       route: route
-      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/patches/resources/app.py
+      module: *RESOURCE_PATH
     checks:
     - method: check_equals
       << : *CHECKS
