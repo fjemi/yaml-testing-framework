@@ -90,7 +90,7 @@ def type_checks_inner(
   module: ModuleType | None = None,
   method: Callable | None = None,
   spies_: dict | None = None,
-  __setup__: dict | None = None,
+  setup_: dict | None = None,
 ) -> sns:
   arguments = locals()
   arguments = independent.get_function_arguments(function=method, data=arguments)
@@ -156,7 +156,7 @@ def type_checks(method: Callable) -> Callable:
     expected: Any | None = None,
     module: ModuleType | None = None,
     spies_: dict | None = None,
-    __setup__: dict | None = None,
+    setup_: dict | None = None,
   ) -> sns:
     arguments = locals()
     arguments = independent.get_function_arguments(

@@ -176,10 +176,11 @@ tests:
           - include-files
           - yaml-suffix
           - logging-flag
+          - setup
     - method: check_length
       << : *CHECKS
       field: _anonymous.options
-      expected: 7
+      expected: 8
 - function: pass_through
   description: Returns the data passed into the function
   tests:

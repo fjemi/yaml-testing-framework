@@ -253,6 +253,7 @@ tests:
           module_route: null
           output: null
           patches: []
+          phase_: function
           spies: []
           tests: null
           yaml: null
@@ -289,6 +290,7 @@ tests:
           module_route: null
           output: null
           patches: []
+          phase_: function
           spies: []
           tests: null
           yaml: null
@@ -312,6 +314,7 @@ tests:
           module_route: null
           output: null
           patches: []
+          phase_: function
           spies: []
           tests: null
           yaml: null

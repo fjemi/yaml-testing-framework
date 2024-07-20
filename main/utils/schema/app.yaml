@@ -88,6 +88,10 @@ Test: &TEST
       A list of methods to spy, where each item in the list is the dot
       delimited route to a method
     default: null
+  - name: phase_
+    type: list | str
+    description: Current phase of the testing prices
+    default: function
 
 
 Logger:

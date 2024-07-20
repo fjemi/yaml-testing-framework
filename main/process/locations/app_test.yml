@@ -10,7 +10,7 @@ resources:
 - &CHECKS
   resource: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/app.py
 - &RESOURCE
-  resource: *&RESOURCE_PATH ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/locations/resources/app.py
+  resource: &RESOURCE_PATH ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/locations/resources/app.py
 - &RESOURCES_DIR
   ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/locations/resources
 
@@ -54,6 +54,7 @@ tests:
         - module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/locations/resources/app.py
           module_route: .main.process.locations.resources.app
           yaml: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/locations/resources/app_test.yml
+          phase_: module
 - function: format_paths
   description: >
     Returns a project's directory based on the location defined in a dictionary
@@ -293,6 +294,7 @@ tests:
         locations:
         - module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/locations/resources/exclusion_pattern.py
           module_route: .main.process.locations.resources.exclusion_pattern
+          phase_: module
           yaml: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/locations/resources/exclusion_pattern_test.yml
   - description: Path is the location of a YAML file
     arguments:
@@ -309,6 +311,7 @@ tests:
         locations:
         - module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/locations/resources/exclusion_pattern.py
           module_route: .main.process.locations.resources.exclusion_pattern
+          phase_: module
           yaml: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/locations/resources/exclusion_pattern_test.yml
 - function: get_module_and_yaml_location_when_path_kind_is_directory
   description: >
@@ -353,7 +356,9 @@ tests:
         locations:
         - module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/locations/resources/exclusion_pattern.py
           module_route: .main.process.locations.resources.exclusion_pattern
+          phase_: module
           yaml: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/locations/resources/exclusion_pattern_test.yml
         - module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/locations/resources/app.py
           module_route: .main.process.locations.resources.app
+          phase_: module
           yaml: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/locations/resources/app_test.yml

@@ -16,12 +16,14 @@ TODO:
 
 
 configurations:
-  exclude_function:
+  exclude_methods:
   - process_setup  # wrapper method
   - process_teardown  # wrapper method
 
 
 resources:
+- &MODULE_PATH
+  ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/setup/app.py
 - &RESOURCE
   resource: &RESOURCE_PATH ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/setup/resource.py
 - &CHECKS
@@ -37,10 +39,10 @@ tests:
   - description: Undefined arguments
     arguments: {}
     checks:
-    - method: check_sns
+    - method: check_equals
       << : *CHECKS
-      expected:
-        __setup__: {}
+      field: __dict__
+      expected: {}
   - description: No defined setup objects
     arguments:
       module: *RESOURCE_PATH
@@ -49,13 +51,12 @@ tests:
       - name: integer
         phase: check
         method: get_integer
-      _phase: check
+      phase_: check
     checks:
-    - method: check_sns
+    - method: check_equals
       << : *CHECKS
-      expected:
-        __setup__:
-          integer: 1
+      field: __dict__
+      expected: {}
   - description: Setup object at any phase besides test
     arguments:
       module: *RESOURCE_PATH
@@ -64,158 +65,61 @@ tests:
       - name: string
         method: get_string
         phase: module
-      _phase: module
+      phase_: module
     checks:
     - method: check_type
       << : *CHECKS
       expected: SimpleNamespace
-    - method: check_equals
-      << : *CHECKS
-      field: setup.temp_dir.__dict__
-      expected:
-        phase: module
-        name: temp_dir
-        setup_arguments: {}
-        setup_method: get_setup_object
-        teardown_arguments: {}
-        teardown_method: null
-        value: setup_object
-# - function: pre_processing
-#   description: Format or update data before processing setup/teardown actions
-#   tests:
-#   - description: Undefined arguments
-#     arguments: {}
-#     checks:
-#     - method: check_sns
-#       << : *CHECKS
-#       expected:
-#         _phase: none
-#   - description: Configurations phase
-#     arguments:
-#       _phase: CONFIGURATIONS
-#     checks:
-#     - method: check_sns
-#       << : *CHECKS
-#       expected:
-#         _phase: configurations
-#   - description: Tests phase
-#     arguments:
-#       _phase: tests
-#     checks:
-#     - method: check_sns
-#       << : *CHECKS
-#       expected:
-#         _phase: tests
-- function: format_data
-  description: >
-    Returns a data model for a setup object from a combination of arguments
-    passed to the `process_actions` method (locals_) and defined fields form a setup
-    object (item). Prefer
+- function: get_flags
+  description: Format or update data before processing setup/teardown actions
   tests:
   - description: Undefined arguments
-    arguments:
-      locals_: null
-      item: null
-    checks:
-    - method: check_exception
-      << : *CHECKS
-      expected: AttributeError
-  - description: Empty arguments
-    arguments:
-      locals_: {}
-      item: {}
+    arguments: {}
     checks:
     - method: check_sns
       << : *CHECKS
       expected:
-        _phase: null
-        action: null
-        arguments: {}
-        keep_alive: false
-        method: null
-        module: null
-        name: null
-        phase: null
-        result: null
-        timeout: null
-        unpack: false
-        value: null
-  - description: Preferred fields defined in `locals_` and `item`
+        flags: false
+  - description: Phases do not match. Action is valid.
     arguments:
-      locals_:
-        module: locals_.module
-        timeout: locals_.timeout
-      item:
-        module: item.module
-        timeout: item.timeout
-    checks:
-    - method: check_sns
-      << : *CHECKS
-      expected:
-        _phase: null
-        action: null
-        arguments: {}
-        keep_alive: false
-        method: null
-        module: item.module
-        name: null
-        phase: null
-        result: null
-        timeout: item.timeout
-        unpack: false
-        value: null
-  - description: Preferred fields only defined in `locals_`
-    arguments:
-      locals_:
-        module: locals_.module
-        timeout: locals_.timeout
-      item: {}
-    checks:
-    - method: check_sns
-      << : *CHECKS
-      expected:
-        _phase: null
-        action: null
-        arguments: {}
-        keep_alive: false
-        method: null
-        module: locals_.module
-        name: null
-        phase: null
-        result: null
-        timeout: locals_.timeout
-        unpack: false
-        value: null 
-- function: process_actions
-  description: >
-    Iterates through a list of setup objects and performs the desired action,
-    setup or teardown, on each object where the object's phase is the same
-    as the current phase of the testing process
-  tests:
-  - description: Undefined or empty arguments
-    arguments:
-      setup: []
-    checks:
-    - method: check_equals
-      << : *CHECKS
-      field: output.__setup__
-      expected: {}
-  - description: Undefined or empty arguments
-    arguments:
-      _phase: check
-      setup:
-      - method: get_string
-        name: value
-        module: *RESOURCE_PATH
-        arguments: {}
-        phase: check
+      phase: function
+      phase_: module
       action: setup
     checks:
-    - method: check_equals
+    - method: check_sns
       << : *CHECKS
-      field: output.__setup__
       expected:
-        value: value
+        flags: false
+  - description: Phases are invalid and match. Action is valid.
+    arguments:
+      phase: phase
+      phase_: phase
+      action: setup
+    checks:
+    - method: check_sns
+      << : *CHECKS
+      expected:
+        flags: false
+  - description: Phases match. Action is invalid.
+    arguments:
+      phase_: function
+      phase: function
+      action: action
+    checks:
+    - method: check_sns
+      << : *CHECKS
+      expected:
+        flags: false
+  - description: Phases match and action is valid
+    arguments:
+      phase_: module
+      phase: module
+      action: setup
+    checks:
+    - method: check_sns
+      << : *CHECKS
+      expected:
+        flags: True
 - function: perform_action
   description: >
     Handles performing a setup or teardown by calling the methods associated
@@ -228,14 +132,17 @@ tests:
   - description: Undefined arguments
     arguments: {}
     checks:
-    - method: check_equals
+    - method: check_exception
       << : *CHECKS
-      expected: null
+      expected: AttributeError
   - description: Setup action
     arguments:
       method: get_string
       action: setup
       arguments: {}
+      name: setup
+      timeout: 1
+      flags: true
     checks:
     - method: check_sns
       << : *CHECKS
@@ -245,6 +152,8 @@ tests:
     arguments:
       action: teardown
       name: teardown
+      flags: True
+      arguments: {}
     checks:
     - method: check_sns
       << : *CHECKS
@@ -293,7 +202,7 @@ tests:
       field: method
       expected:
         name: do_nothing
-        location: *RESOURCE_PATH
+        location: *MODULE_PATH
 - function: get_future
   description: >
     Creates a task from a method and arguments and executes the task in a
@@ -485,3 +394,18 @@ tests:
         a: null
         b: null
         c: null
+- function: get_store
+  description: >
+    Returns a simple name space object containing a dictionary that store
+    setup or torn down objects
+  tests:
+  - description: Undefined arguments
+    arguments: {}
+    checks:
+    - method: check_type
+      << : *CHECKS
+      expected: SimpleNamespace
+    - method: check_type
+      << : *CHECKS
+      field: setup_
+      expected: dict

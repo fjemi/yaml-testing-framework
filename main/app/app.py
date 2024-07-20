@@ -15,6 +15,7 @@ from main.process import (
   environment,
   locations,
   nodes,
+  setup,
 )
 from main.utils import (
   get_config,
@@ -41,6 +42,7 @@ def main(
   include_methods: str | list | None = None,
   yaml_suffix: str | None = None,
   logging_flag: bool | None = None,
+  setup: list = [],
 ) -> list:
   logger.create_logger(
     logging_flag=logging_flag,

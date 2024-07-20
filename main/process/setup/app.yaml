@@ -1,0 +1,114 @@
+schema:
+  Main:
+    description: >
+      Data for objects to be created for use in a test. The results of created objects are
+      saved to the attribute `SETUP` in modules and accessible via a provided or automatically
+      generated name. Setup objects can be defined at the configuration, module, and test
+      levels; and objects setup at a level stay alive for the duration of the tests run under
+      that level. Objects are setup and torn down by calling methods at defined routes. If no
+      tear down method is defined the object is set to null.
+
+      Levels
+      - configurations: all tests
+      - module: all tests for a module
+      - test: all individual tests
+    fields:
+    - name: module
+      type: ModuleType
+      description: The module containing functions to test
+      default: null
+    - name: phase_
+      type: str
+      description: The current phase of the testing process
+      default: null
+    - name: action
+      type: str
+      description: The action to perform, setup or teardown, for an object
+      default: null
+    - name: resource
+      type: str
+      description: >
+        Resource module containing the method to use for setup/teardown actions
+      default: ''
+    - name: phase
+      type: str
+      description: The current phase of the testing process
+      default: null
+    - name: name
+      type: str
+      default: null
+      description: >
+        Name of the setup object. Automatically created if it has not been set.
+        Used to reference the setup object.
+    - name: phase
+      type: str
+      description: Phase the object should be setup or torn down at
+      default: null
+    - name: value
+      type: Any
+      description: Store the response from calling a setup or teardown method
+      default: null
+    - name: result
+      type: SimpleNamespace
+      description: Store data related to a defined setup object
+      default: null
+    - name: arguments
+      type: dict
+      description: Arguments to pass to the current setup or teardown method
+      default: {}
+    - name: method
+      type: dict
+      description: The current setup or teardown method call
+      default: null
+    - name: unpack
+      type: bool
+      description: >
+        Flag indicating whether arguments should be passed to function packed
+        or unpacked
+      default: False
+    - name: keep_alive
+      type: bool
+      description: >
+        Flag to determine if setup object is a process that should be kept alive
+      default: False
+    - name: timeout
+      type: int
+      description: >
+        Number of seconds to wait before terminating a future or thread that
+        shouldn't be kept alive
+      default: 15
+    - name: continue_
+      type: bool
+      description: >
+        True if the current phase of the testing process matches that of the
+        setup/teardown objects defined phase
+      default: False
+
+
+environment:
+  DEBUG: ${YAML_TESTING_FRAMEWORK_DEBUG}
+
+
+operations:
+  main:
+  - get_flags
+  - get_method
+  - perform_action
+  - update_store
+
+
+phases:
+  global: global  # Need to add to ini or cli options
+  module: module
+  function: function
+  check: check
+
+
+actions:
+- setup
+- teardown
+
+
+prefer_item_over_locals:
+- module
+- timeout

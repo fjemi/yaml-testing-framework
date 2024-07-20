@@ -43,7 +43,7 @@ tests:
       expected: []
       output: {}
       method: check_method_a
-      __setup__: {}
+      setup_: {}
       spies_: {}
     checks:
     - method: check_equals
