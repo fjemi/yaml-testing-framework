@@ -31,8 +31,7 @@ tests:
       << : *CHECKS
       expected:
         tests:
-        - __spies__: null
-          arguments: {}
+        - arguments: {}
           checks: []
           cast_arguments: []
           cast_output: []
@@ -54,8 +53,7 @@ tests:
           spies: []
           tests: null
           yaml: *RESOURCE_TEST_YAML
-        - __spies__: null
-          arguments: {}
+        - arguments: {}
           checks: []
           cast_arguments: []
           cast_output: []
@@ -78,8 +76,7 @@ tests:
           spies: []
           tests: null
           yaml: *RESOURCE_TEST_YAML
-        - __spies__: null
-          arguments: {}
+        - arguments: {}
           checks: []
           cast_arguments: []
           cast_output: []
@@ -237,8 +234,7 @@ tests:
       << : *CHECKS
       expected:
         tests:
-        - __spies__: null
-          arguments: {}
+        - arguments: {}
           checks: []
           cast_arguments: []
           cast_output: []
@@ -257,6 +253,7 @@ tests:
           module_route: null
           output: null
           patches: []
+          phase_: function
           spies: []
           tests: null
           yaml: null
@@ -273,8 +270,7 @@ tests:
       << : *CHECKS
       expected:
         tests:
-        - __spies__: null
-          arguments: {}
+        - arguments: {}
           checks: []
           cast_arguments: []
           cast_output: []
@@ -294,11 +290,11 @@ tests:
           module_route: null
           output: null
           patches: []
+          phase_: function
           spies: []
           tests: null
           yaml: null
-        - __spies__: null
-          arguments: {}
+        - arguments: {}
           checks: []
           cast_arguments: []
           cast_output: []
@@ -318,6 +314,7 @@ tests:
           module_route: null
           output: null
           patches: []
+          phase_: function
           spies: []
           tests: null
           yaml: null

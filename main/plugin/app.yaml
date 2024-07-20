@@ -10,7 +10,6 @@ options:
     required: false
     dest: project_path
     default: .
-
 - args: exclude-methods
   options:
     action: store
@@ -66,14 +65,23 @@ options:
 - args: logging-flag
   options:
     action: store
-    help: >
-      Disables all
+    help: &HELP_LF >
+      A boolean. The suffix at the end of YAML filename that's used to identify
+      test files
     default: true
     dest: logging_flag
     required: false
-  help: >
-    A boolean. The suffix at the end of YAML filename that's used to identify
-    test files
+  help: *HELP_LF
+- args: setup
+  options:
+    action: store
+    help: &HELP_S >
+      List of object definitions for objects to setup or teardown during testing phases
+    default: true
+    dest: setup
+    required: false
+  help: *HELP_S
+
 
 
 root_paths:

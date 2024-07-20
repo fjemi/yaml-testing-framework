@@ -43,8 +43,8 @@ tests:
       expected: []
       output: {}
       method: check_method_a
-      __setup__: {}
-      __spies__: {}
+      setup_: {}
+      spies_: {}
     checks:
     - method: check_equals
       << : *CHECKS
@@ -1278,7 +1278,7 @@ tests:
   tests:
   - description: No spies defined
     arguments:
-      __spies__: {}
+      spies_: {}
       expected: {}
     checks:
     - method: check_sns
@@ -1288,7 +1288,7 @@ tests:
         passed: true
   - description: Spies defined
     arguments:
-      __spies__:
+      spies_:
         add:
           called: False
           called_with: None

@@ -35,7 +35,7 @@ def main(
       data=data,
       functions=LOCALS, )
 
-  return sns(module=data.module, __spies__=STORE)
+  return sns(module=data.module)
 
 
 def do_nothing(*args, **kwargs) -> None:
@@ -70,8 +70,8 @@ def spy_on_method(
   return sns(module=module)
 
 
-def get_store() -> dict:
-  return STORE
+def get_store() -> sns:
+  return sns(spies_=STORE)
 
 
 def examples() -> None:

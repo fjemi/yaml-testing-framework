@@ -38,6 +38,7 @@ combine_fields_as:
   environment: dict
   arguments: dict
   spies: list
+  setup: list
   # Choose low level if not null else high level
   function: low_or_high
   function_name: low_or_high

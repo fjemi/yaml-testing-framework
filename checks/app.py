@@ -89,8 +89,8 @@ def type_checks_inner(
   expected: Any | None = None,
   module: ModuleType | None = None,
   method: Callable | None = None,
-  __spies__: dict | None = None,
-  __setup__: dict | None = None,
+  spies_: dict | None = None,
+  setup_: dict | None = None,
 ) -> sns:
   arguments = locals()
   arguments = independent.get_function_arguments(function=method, data=arguments)
@@ -155,8 +155,8 @@ def type_checks(method: Callable) -> Callable:
     output: Any | None = None,
     expected: Any | None = None,
     module: ModuleType | None = None,
-    __spies__: dict | None = None,
-    __setup__: dict | None = None,
+    spies_: dict | None = None,
+    setup_: dict | None = None,
   ) -> sns:
     arguments = locals()
     arguments = independent.get_function_arguments(
@@ -459,7 +459,7 @@ def check_file_exists(
 @type_checks
 def check_spies(
   expected: dict,
-  __spies__: dict,
+  spies_: dict | sns,
 ) -> sns:
   store = {}
 
@@ -468,7 +468,7 @@ def check_spies(
 
     for field, value in spy.items():
       route = f'{method}.{field}'
-      spy_store[field] = objects.get(parent=__spies__, route=route)
+      spy_store[field] = objects.get(parent=spies_, route=route)
 
     store[method] = spy_store
 
@@ -482,7 +482,7 @@ def check_spies(
 def examples() -> None:
   from main.utils import invoke_testing_method
 
-  invoke_testing_method.main()
+  invoke_testing_method.main('.examples')
 
 
 if __name__ == '__main__':

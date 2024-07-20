@@ -1,8 +1,3 @@
-TODO:
-- add resource_suffix for files. use this instead of directory. If filename_resource.module_extension exists add it to the module
-- if resource is a directory, then add list of modules in directory to resources
-
-
 resources:
 - &CHECKS
   resource: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/app.py

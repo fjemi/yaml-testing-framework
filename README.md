@@ -64,19 +64,22 @@ tests:
       a: 1
       b: 1
     checks:
-    - method: checks.equals
+    - method: equals
+      << : *CHECKS
       expected: 2
   - arguments:
       a: 1
       b: 2
     checks:
-    - method: checks.equals
+    - method: equals
+      << : *CHECKS
       expected: 3
   - arguments:
       a: 1
       b: '1'
     checks:
-    - method: checks.equals
+    - method: equals
+      << : *CHECKS
       field: 2
 ```
 
@@ -96,7 +99,6 @@ The app can be configured within the pytest settings of a configuration file,
 | - | - | - | - |
 | project-path | str | Location of a directory containing files or an an individual module or YAML file to test. | . |
 | exclude-files | str or list| A list of patterns. Exclude files from testing that match a specified pattern . | [] |
-| resources | str or list | The locations of modules to use as resources during tests | [] |
 | yaml-suffix | str | Suffix in the names of YAML files containing tests | _test |
 
 
@@ -384,20 +386,26 @@ In this example, the methods to spy on are listed under the `spies` key at the i
 
 ```yaml
 # ,/app_test.py
+resources:
+- &CHECKS
+  ./checks.py
 
-tests:
+configurations:
 - spies:
   - route.method_a
   - route.method_b
-  checks:
-  - method: check_spies
-    expected:
-      route.method_a:
-        called: True
-        called_with: []
-      route.method_b:
-        called: False
-        called_with: None
+
+
+checks:
+- method: check_spies
+  << : *CHECKS
+  expected:
+    route.method_a:
+      called: True
+      called_with: []
+    route.method_b:
+      called: False
+      called_with: None
 ```
 
 ```python
@@ -408,14 +416,13 @@ from types import SimpleNamespace as sns
 
 
 def check_spies(
-  module: ModuleType,
-  output: Any,
+  spies_: dict,
   expected: dict
 ) -> sns:
   '''Example check method for verifying that a function was called'''
   spies = {}
   for key, value for expected.items():
-    spy = module.SPIES.get(key, {})
+    spy = spies_.get(key, {})
       if spy != value
         continue
     spies[key] = spy

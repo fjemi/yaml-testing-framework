@@ -17,15 +17,6 @@ module_extensions:
 - .py
 
 
-order_of_operations:
-  set_configs: null
-  get_file_paths:
-  - get python file paths
-  - get associated yaml paths
-  - get paths of test resources
-  format_yaml_content: null
-
-
 exclude_lines: []
 
 
@@ -61,6 +52,7 @@ test_kinds:
 # required to run functions
 operations:
   run_test_for_functions:
+  - setup.process_setup
   - handle_id
   - get_module.main
   - environment.main
@@ -71,12 +63,18 @@ operations:
   - methods.call.main
   - casts.process_cast_output
   - checks.main
+  - setup.process_teardown
   run_tests:
+  - setup.process_setup
   - nodes.main
   - run_test_handler
+  - setup.process_teardown
   main:
+  - setup.process_setup
   - locations.main
   - run_tests
+  - setup.process_teardown
+  - setup.teardown_all
 
 
 unpack_kinds:
@@ -127,3 +125,13 @@ schema:
       type: bool
       description: Flag to enable or disable logging
       default: False
+    - name: setup
+      type: list
+      default: null
+      description: >
+        Definitions for setting up of tearing down objects during testing
+        phases
+    - name: phase_
+      description: Current phase of the testing process
+      default: global
+      type: str

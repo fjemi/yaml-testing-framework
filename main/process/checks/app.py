@@ -8,7 +8,7 @@ from typing import Any, Callable, List
 
 import yaml
 
-from main.process import casts
+from main.process import casts, spies, setup as SETUP
 from main.utils import get_config, independent, objects, schema, get_module
 
 
@@ -23,7 +23,7 @@ def main(
   module: ModuleType | None = None,
   id: str | None = None,
   id_short: str | None = None,
-  __spies__: dict | None = None,
+  setup: list = []
 ) -> sns:
   checks = checks or []
   locals_ = sns(**locals())
@@ -93,8 +93,9 @@ def get_check_result(
   method: Callable | None = None,
   output: Any | None = None,
   expected: Any | None = None,
-  __spies__: dict | None = None,
 ) -> sns:
+  spies_ = spies.get_store().spies_
+  setup_ = SETUP.get_store().setup_
   arguments = locals()
   arguments = independent.get_function_arguments(
     function=method, data=arguments)

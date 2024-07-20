@@ -52,10 +52,24 @@ schema:
       type: str
       description: Resource or module objects to use during tests
       default: ''
-    - name: __spies__
+    - name: spies_
       type: dict
       default: null
       description: Stores spy objects placed on methods
+    - name: setup_
+      type: dict
+      default: null
+      description: Stores setup or teardown objects
+    - name: setup
+      type: list
+      default: null
+      description: >
+        Definitions for setting up of tearing down objects during testing
+        phases
+    - name: phase_
+      description: Current phase of the testing process
+      default: check
+      type: str
     - name: method
       type: str
       description: The check method
@@ -80,8 +94,10 @@ schema:
 
 operations:
   main:
+  - SETUP.process_setup
   - get_check_method
   - reset_output_value
   - get_check_result
   - handle_failed_check
   - post_processing
+  - SETUP.process_teardown

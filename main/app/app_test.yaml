@@ -5,7 +5,6 @@ TODO:
 - Add logic for safe loading or regular loading data from yaml files -> configuration safe_load=true
 - Add wrapper logic back in for external libraries
 - Consolidate duplicate code for sync and async functions -> https://stackoverflow.com/questions/27290656/should-i-use-two-asyncio-event-loops-in-one-program/27298880#27298880
-- Add shared resources files/folders
 - add logic to run tests for specified functions only
 
 
@@ -17,7 +16,7 @@ resources:
 - &CHECKS
   resource: &CHECKS_PATH ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/app.py
 - &RESOURCE
-  resource: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/app/resources/app.py
+  resource: &RESOURCE_PATH ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/app/resources/app.py
 - &ADD_PATH
   ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/app/resources/add.py
 - &ADD_TEST_PATH
@@ -98,7 +97,7 @@ tests:
   - description: Function does not exist in module
     arguments:
       function: does_not_exist
-      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/app/resources/app.py
+      module: *RESOURCE_PATH
     checks:
     - method: check_exception
       << : *CHECKS
@@ -111,14 +110,14 @@ tests:
   - description: Function exists in module
     arguments:
       function: multiply
-      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/app/resources/app.py
+      module: *RESOURCE_PATH
     checks:
     - method: check_function
       << : *CHECKS
       field: function
       expected:
         name: multiply
-        location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/app/resources/app.py
+        location: *RESOURCE_PATH
 - function: run_test_for_function
   description: >
     Returns checks from performing operations needed to process a test for a function
