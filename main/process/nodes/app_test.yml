@@ -50,6 +50,7 @@ tests:
           module_route: *RESOURCE_PATH
           output: null
           patches: []
+          phase_: function
           spies: []
           tests: null
           yaml: *RESOURCE_TEST_YAML
@@ -73,6 +74,7 @@ tests:
           module_route: *RESOURCE_PATH
           output: null
           patches: []
+          phase_: function
           spies: []
           tests: null
           yaml: *RESOURCE_TEST_YAML
@@ -96,6 +98,7 @@ tests:
           module_route: *RESOURCE_PATH
           output: null
           patches: []
+          phase_: function
           spies: []
           tests: null
           yaml: *RESOURCE_TEST_YAML

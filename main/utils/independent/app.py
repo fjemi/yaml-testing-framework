@@ -19,33 +19,6 @@ CONFIG = '''
     DEBUG: ${YAML_TESTING_FRAMEWORK_DEBUG}
     DISABLE_LOGGING: ${DISABLE_LOGGING}
     YAML_LOADER: ${YAML_TESTING_FRAMEWORK_YAML_LOADER}
-  update_log_fields:
-  - timestamps
-  - operation
-  default_logger_arguments:
-    format: yaml
-    standard_output: false
-    debug: false
-    level: info
-  log_fields:
-  - level
-  - format
-  - standard_output
-  - debug
-  data_and_field_names_and_defaults:
-  - data: operation.__name__
-    log: operation
-  - data: operation.__module__
-    log: location
-  - data: timestamps.__dict__
-    log: timestamps
-  - data: output.exception
-    log: error
-  field_map:
-    function.__name__: operation
-    function.__module__: location
-    timestamps.__dict__: timestamps
-    output.exception: error
 '''
 
 FORMAT_CONFIG_FIELDS = ['environment', 'schema', 'operations']
@@ -214,85 +187,13 @@ def get_function_output(data: sns) -> sns:
   return data
 
 
-def update_data_fields(data: sns) -> sns:
+def update_data(data: sns) -> sns:
   for field, value in data.output.items():
     data.data = objects.update(
       parent=data.data,
       value=value,
       route=field, )
   return data
-
-
-def get_log(output: dict) -> sns | None:
-  log = output.get('log', None)
-  if isinstance(log, sns):
-    return log
-  if isinstance(log, dict):
-    return sns(**log)
-  if log and not isinstance(log, sns | dict):
-    return sns(log=log)
-  if log is None:
-    return sns()
-
-
-def get_default_logger_arguments(arguments: sns) -> sns:
-  for field, default in CONFIG.default_logger_arguments.items():
-    value = getattr(arguments.log, field, None)
-    value = value or default
-    setattr(arguments, field, value)
-    setattr(arguments.log, field, None)
-    delattr(arguments.log, field)
-  return arguments
-
-
-def get_log_fields_from_data(
-  log: sns,
-  data: sns,
-) -> sns:
-  for names in CONFIG.data_and_field_names_and_defaults:
-    # trunk-ignore(ruff/PLW2901)
-    names = sns(**names)
-    value = getattr(data, names.data, None)
-    if value:
-      setattr(log, names.log, value)
-  return log
-
-
-def format_log(data: sns) -> int:
-  arguments = sns()
-  arguments.log = get_log(output=data.output)
-  arguments = get_default_logger_arguments(arguments=arguments)
-  arguments.debug = arguments.debug or data.debug
-  store = arguments
-
-  for data_field, log_field in CONFIG.field_map.items():
-    value = objects.get(parent=data, route=data_field)
-    setattr(store.log, log_field, value)
-
-
-
-  exception = getattr(store.log, 'error', None) or getattr(data, 'error', None)
-
-  if store.debug or exception:
-    store.log.arguments = data.arguments.get('arguments', None)
-    store.log.output = data.output
-    store.standard_output = True
-    store.level = getattr(store.log, 'level', None) or 'info'
-    store.level = store.level if store.level != 'info' else 'debug'
-
-  if exception is not None:
-    store.level = 'error'
-    store.log.error = format_exception_and_trace(exception=exception)
-
-    store.log.output = None
-    store.log.message = None
-    del store.log.output
-    del store.log.message
-  else:
-    del store.log.error
-
-  logger.main(**store.__dict__)
-  return 1
 
 
 def process_operations(

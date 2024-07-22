@@ -26,38 +26,11 @@ CONFIG = '''
     LOG_DIR: ${YAML_TESTING_FRAMEWORK_LOG_DIR}
     DEBUG: ${YAML_TESTING_FRAMEWORK_DEBUG}
     LOGGING_DISABLED: ${YAML_TESTING_FRAMEWORK_LOGGING_DISABLED}
-  operations:
-    main:
-    - convert_data
-    - log_data
-    - write_output_to_terminal
-  default_arguments:
-    format: yaml
-    standard_output: false
-    debug: false
-    level: info
-  defaults:
-    format: yaml
-    standard_output: false
-    debug: false
-    level: info
-  log_fields:
-  - message
-  - operation
-  - timestamps
-  - output
-  - exception
-  levels:
-  - debug
-  - info
-  - error
-  - warning
 '''
 CONFIG = os.path.expandvars(CONFIG)
 CONFIG = pyyaml.safe_load(CONFIG)
 CONFIG = sns(**CONFIG)
 CONFIG.environment = sns(**CONFIG.environment)
-CONFIG.operations = sns(**CONFIG.operations)
 
 LOGGER = None
 
