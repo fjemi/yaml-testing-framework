@@ -1,7 +1,6 @@
 TODO:
 - Add test for decorated function and awaitable to ./main/app_test.yaml
 - Finalize logging and tests
-- Think of moving format_exception_and_trace to logger
 - Finish test for the main function. May require a spy.
 - Add flag for silent logging in cases where an exception is the expected output
 

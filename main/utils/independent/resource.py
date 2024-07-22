@@ -81,12 +81,6 @@ def multiply(b: int, c: int) -> dict:
   return dict(a=result)
 
 
-def get_exception(exception: str | None = None) -> Exception | None:
-  exceptions = sns(
-    exception=Exception(),
-    runtime_error=RuntimeError('runtime_error'),
-    type_error=add(1, '1'), )
-  return getattr(exceptions, str(exception), None)
 
 
 def get_locals(function: str | None = None) -> dict:

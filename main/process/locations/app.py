@@ -6,7 +6,7 @@ import os
 from types import SimpleNamespace as sns
 from typing import Any, List
 
-from main.utils import get_config, independent
+from main.utils import get_config, independent, logger
 
 
 ROOT_DIR = os.path.abspath(os.curdir)
@@ -24,23 +24,17 @@ def main(
   logging_flag: bool | None = None,
   timestamp: int | float | None = None,
 ) -> sns:
-  # logger.main()
   path = project_path
   data = sns(**locals())
   data = independent.process_operations(
     functions=LOCALS,
     operations=CONFIG.operations.main,
     data=data, )
-
   data.locations = data.locations or []
-
-  n = len(data.locations)
-  log = None
-  if not data.locations:
-    log = sns(message=f'No modules at location {path}')
-    log.level = 'error'
-
-  return sns(locations=data.locations, log=log)
+  logger.do_nothing() if data.locations else logger.main(
+    log=dict(message=f'No modules at location {path}'),
+    level='warning', )
+  return sns(locations=data.locations)
 
 
 def format_paths(path: str | None = None) -> sns:

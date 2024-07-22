@@ -15,11 +15,10 @@ THIS_MODULE_LOCATION = __file__
 
 def print_hello_world(*args, **kwargs) -> None:
   _ = args, kwargs
-  log = sns(
-    message='Hello World',
+  logger.main(
+    log=dict(message='Hello World'),
     standard_output=True,
     enabled=True, )
-  logger(log=log)
 
 
 def get__pool(_pool=None) -> dict:

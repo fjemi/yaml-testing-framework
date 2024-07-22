@@ -3,10 +3,7 @@ TODO:
 - each run should be a separate log file -> timestamp.count.exception or timestamp as the folder
 - Create the directories for the logs
 - Add log level -> system.normal, system.warning, system.exception. For testing user defined function or user.
-- Unique name for modules when patching or running tests in multiple threads, this will prevent patches from being overridden/shared between tests
-- Assign test key, timestamp or unique id for each test
 - expose set_default and other functions for dumping/loading json
-- Check for duplication between logger and independent
 - Only log logs with content
 
 
@@ -19,7 +16,7 @@ log_dir: &LOG_DIR ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/logger/resources
 
 resources:
 - &RESOURCE
-  resource: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/logger/resources/app.py
+  resource: &RESOURCE_PATH ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/logger/resources/app.py
 - &CHECKS
   resource: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/app.py
 
@@ -46,115 +43,88 @@ tests:
     - method: check_equals
       << : *CHECKS
       expected: 0
-  # - description: Log info
-  #   arguments:
-  #     level: info
-  #     log: log
-  #     debug: True
-  #     enabled: True
-  #     standard_output: true
-  #   checks:
-  #   - method: check_equals
-  #     << : *CHECKS
-  #     expected: 1
-  # - description: Only logging enabled
-  #   arguments:
-  #     data_:
-  #       a: a
-  #       b: b
-  #     format_: yaml
-  #     level: info
-  #     location: null
-  #     timestamp: timestamp
-  #     standard_output: False
-  #     enabled: True
-  #     log_dir: *LOG_DIR
-  # - description: Logging and standard output are disabled
-  #   arguments:
-  #     data_:
-  #       a: a
-  #       b: b
-  #     format_: yaml
-  #     level: info
-  #     location: null
-  #     timestamp: timestamp
-  #     standard_output: False
-  #     enabled: False
-  #     log_dir: *LOG_DIR
-  # - description: Only standard output is enabled
-  #   arguments:
-  #     data_:
-  #       a: a
-  #       b: b
-  #     format_: yaml
-  #     level: info
-  #     location: null
-  #     timestamp: timestamp
-  #     standard_output: True
-  #     enabled: False
-  #     log_dir: *LOG_DIR
-# - function: set_default_arguments
-#   description: Formats and returns objects that are not JSON serializable
-#   cast_arguments:
-#   - method: set_default_resource
-#     << : *RESOURCE
-#     field: object
-#   tests:
-#   - description: >
-#       Return the object cast as a string when kind not defined or object is not
-#       an Exception
-#     arguments:
-#       object: string
-#     checks:
-#     - method: check_equals
-#       << : *CHECKS
-#       expected: string
-#   - description: Undefined object produces an error
-#     arguments:
-#       object: null
-#     checks:
-#     - method: check_equals
-#       << : *CHECKS
-#       expected: None
-#   - description: When the object is a module, return its location
-#     arguments:
-#       object: module
-#     checks:
-#     - method: check_equals
-#       << : *CHECKS
-#       expected: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/_resources/logger/module.py
-#   - description: Object is a function
-#     arguments:
-#       object: function_
-#     checks:
-#     - method: check_equals
-#       << : *CHECKS
-#       expected: function_
-#   - description: Object is of type sh`Test`
-#     arguments:
-#       object: Test
-#     checks:
-#     - method: check_substring_in_string
-#       << : *CHECKS
-#       expected: .main.logger._resources.app.Test
-#   - description: Object is of type sh`Exception`
-#     arguments:
-#       object: Exception
-#     checks:
-#     - method: check_equals
-#       << : *CHECKS
-#       expected:
-#         exception: TypeError
-#         description: 'unsupported operand type(s) for +: ''int'' and ''str'''
-# - function: set_default
-#   description: 
-#   tests:
-#   - description:
-#     arguments:
-#     checks:
-#     - method: check_equals
-#       << : *CHECKS
-#       expected: 
+  - description: Log info
+    arguments:
+      level: info
+      log: log
+      debug: True
+      enabled: True
+      standard_output: true
+    checks:
+    - method: check_equals
+      << : *CHECKS
+      expected: 0
+  - description: Only logging enabled
+    arguments:
+      data_:
+        a: a
+        b: b
+      format_: yaml
+      level: info
+      location: null
+      timestamp: timestamp
+      standard_output: False
+      enabled: True
+      log_dir: *LOG_DIR
+  - description: Logging and standard output are disabled
+    arguments:
+      data_:
+        a: a
+        b: b
+      format_: yaml
+      level: info
+      location: null
+      timestamp: timestamp
+      standard_output: False
+      enabled: False
+      log_dir: *LOG_DIR
+  - description: Only standard output is enabled
+    arguments:
+      data_:
+        a: a
+        b: b
+      format_: yaml
+      level: info
+      location: null
+      timestamp: timestamp
+      standard_output: True
+      enabled: False
+      log_dir: *LOG_DIR
+- function: format_log_as_sns
+  description: Returns the log as a dict if possible
+  tests:
+  - description: Undefined arguments
+    arguments: {}
+    checks:
+    - << : *CHECKS
+      method: check_type
+      expected: SimpleNamespace
+    - << : *CHECKS
+      method: check_equals
+      field: __dict__
+      expected: {}
+  - description: Log is a dictionary
+    arguments:
+      log:
+        message: message
+    checks:
+    - << : *CHECKS
+      method: check_sns
+      expected:
+        message: message
+  - description: Log has attribute `__dict__
+    cast_arguments:
+    - method: sns
+      unpack: True
+      field: log
+    arguments:
+      log:
+        message: message
+    checks:
+    - method: check_sns
+      << : *CHECKS
+      expected:
+        message: message
 - function: format_as_json
   description: Converts data to JSON
   tests:
@@ -204,6 +174,140 @@ tests:
           b: b
 
           '
+- function: format_written_log
+  description: Handles formatting log as json or yaml
+  cast_arguments:
+  - method: sns
+    << : *RESOURCE
+    unpack: true
+  tests:
+  - description: Undefined arguments
+    arguments:
+      format: null
+      log: null
+      level: null
+    checks:
+    - << : *CHECKS
+      method: check_sns
+      expected:
+        format: null
+        level: null
+        log: 'null: null
+
+          '
+  - description: Format as YAML
+    arguments:
+      format: yaml
+      level: level
+      log:
+        message: message
+    checks:
+    - << : *CHECKS
+      method: check_sns
+      expected:
+        format: yaml
+        level: level
+        log: "level:\n  message: message\n"
+  - description: Format as JSON
+    arguments:
+      level: level
+      format: json
+      log:
+        message: message
+    checks:
+    - << : *CHECKS
+      method: check_sns
+      expected:
+        level: level
+        format: json
+        log: '{"level": {"message": "message"}}'
+  - description: Format as YAML
+    arguments:
+      level: info
+      format: yaml
+      log:
+        message: message
+    checks:
+    - << : *CHECKS
+      method: check_sns
+      expected:
+        level: info
+        format: yaml
+        log: "info:\n  message: message\n"
+    - << : *CHECKS
+      method: check_type
+      expected: SimpleNamespace
+- function: check_log_for_error
+  description: Formats an error in a log
+  tests:
+  - description: Data is empty
+    arguments: {}
+    checks:
+    - method: check_exception
+      << : *CHECKS
+      expected: TypeError
+  - description: >
+      Log does not have the key `error` and level is not error or exception
+    arguments:
+      data:
+        level: level
+        log: {}
+    checks:
+    - method: check_sns
+      << : *CHECKS
+      expected:
+        level: level
+        log: {}
+  - description: >
+      Log is empty dictionary and level is error
+    arguments:
+      data:
+        level: error
+        log: {}
+    checks:
+    - method: check_sns
+      << : *CHECKS
+      expected:
+        level: error
+        log: {}
+        standard_output: True
+  - description: >
+      Log contains error key and level is not exception or error
+    arguments:
+      data:
+        level: level
+        log:
+          error: error
+    checks:
+    - method: check_sns
+      << : *CHECKS
+      expected:
+        level: level
+        log:
+          error: error
+  - description: >
+      Log contains error key and level is not exception or error
+    cast_arguments:
+    - field: data.log.error
+      method: get_exception
+      << : *RESOURCE
+    arguments:
+      data:
+        level: level
+        log:
+          error: exception
+    checks:
+    - method: check_sns
+      << : *CHECKS
+      expected:
+        level: error
+    - method: check_equals
+      << : *CHECKS
+      field: log.error
+      expected:
+        trace: []
+        description: ''
+        name: Exception
 - function: get_timestamp
   description: Returns a timestamp that is seconds since epoch
   tests:
@@ -292,3 +396,90 @@ tests:
       << : *CHECKS
       expected:
         status: 1
+- function: format_exception_and_trace
+  description: Formats an exception and its trace
+  cast_arguments:
+  - method: get_exception
+    << : *RESOURCE
+    field: exception
+  tests:
+  - description: Undefined arguments
+    arguments:
+      exception: null
+    checks:
+    - method: check_exception
+      << : *CHECKS
+      expected: AttributeError
+  - description: Runtime error
+    arguments:
+      exception: runtime_error
+    checks:
+    - method: check_equals
+      << : *CHECKS
+      expected:
+        description: runtime_error
+        trace: []
+        name: RuntimeError
+  - description: Type error
+    arguments:
+      exception: type_error
+    checks:
+    - method: check_equals
+      << : *CHECKS
+      expected:
+        description: ''
+        trace: []
+        name: TypeError
+- function: write_to_log
+  description: Writes a log to a file
+  cast_arguments:
+  - method: sns
+    << : *RESOURCE
+    field: data
+    unpack: true
+  tests:
+  - description: Data is empty
+    arguments:
+      data: {}
+    checks:
+    - method: check_exception
+      << : *CHECKS
+      expected: AttributeError
+  - description: Data is non-empty
+    arguments:
+      data:
+        level: level
+        log: log
+    checks:
+    - method: check_equals
+      << : *CHECKS
+      expected: 1
+- function: write_to_cli
+  description: Prints a log to the CLI
+  cast_arguments:
+  - method: sns
+    << : *RESOURCE
+    unpack: true
+  tests:
+  - description: Standard output is undefined
+    arguments:
+      standard_output: null
+    checks:
+    - method: check_equals
+      << : *CHECKS
+      expected: 0
+  - description: Standard output is false
+    arguments:
+      standard_output: false
+    checks:
+    - method: check_equals
+      << : *CHECKS
+      expected: 0
+  - description: Standard output is true
+    arguments:
+      standard_output: true
+      log: log
+    checks:
+    - method: check_equals
+      << : *CHECKS
+      expected: 1

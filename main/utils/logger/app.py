@@ -68,27 +68,38 @@ def main(
   debug: bool | None = None,
   enabled: bool | None = None,
   standard_output: bool = False,
-  log: Any | None = None,
+  log: dict | sns = None,
 ) -> int:
-  conditions = [
-    LOGGER is None,
-    enabled is False,
-  ]
-  if True in conditions:
+  if LOGGER is None or enabled is False:
     return 0
 
-  log.location = getattr(log, 'location', None, ) or inspect.stack()[1].filename
-  log.operation = getattr(log, 'operation', None, ) or inspect.stack()[1][3]
-  format_ = format or CONFIG.defaults.get('format')
-  format_method = LOCALS.get(f'format_as_{format_}', format_as_yaml)
-  log = format_method(log={level: log.__dict__})
+  log = format_log_as_sns(log=log)
+  log.location = inspect.stack()[1].filename
+  log.function = inspect.stack()[1][3]
 
-  logging_method = getattr(LOGGER, level.lower(), LOGGER.debug)
-  logging_method(log)
-  if debug or standard_output:
-    print(log)
+  method = getattr(log, 'method', None)
+  flag = isinstance(method, Callable)
+  method = method if not flag else getattr(
+    method,
+    '__name__',
+    None, )
+  do_nothing() if not flag else setattr(log, 'method', method)
+
+  data = locals()
+  data = check_log_for_error(data=data)
+  data = format_written_log(data=data)
+  write_to_log(data=data)
+  write_to_cli(data=data)
 
   return 1
+
+
+def format_log_as_sns(log: dict | sns | None = None) -> sns:
+  if isinstance(log, sns):
+    return log
+  if isinstance(log, dict):
+    return sns(**log)
+  return sns()
 
 
 # trunk-ignore(ruff/PLR0911)
@@ -128,19 +139,62 @@ def set_default(object: Any) -> Any:
 
 
 def format_as_json(log: dict) -> str:
-  try:
-    return json.dumps(log, default=set_default)
-  except Exception as e:
-    _ = e
-    return f'{log}\n'
+  return json.dumps(log, default=set_default)
 
 
 def format_as_yaml(log: dict) -> str:
+  return pyyaml.dump(log, default_flow_style=False)
+
+
+def format_written_log(data: sns) -> str:
+  formatter = f'format_as_{data.format}'
+  formatter = LOCALS.get(formatter, format_as_yaml)
+
+  field = '__dict__'
+  temp = data.log if not hasattr(data.log, field) else getattr(
+    data.log,
+    field,
+    None, )
+  temp = {data.level: temp}
+
   try:
-    return pyyaml.dump(log, default_flow_style=False)
+    data.log = formatter(log=temp)
   except Exception as e:
     _ = e
-    return str(log)
+    data.log = str(temp)
+
+  return data
+
+
+def check_log_for_error(data: dict | None = None) -> sns:
+  data = sns(**data)
+  error = None
+
+  if isinstance(data.log, dict):
+    error = data.log.get('error', None) or data.log.get('exception', None)
+  else:
+    error = getattr(data.log, 'error', None) or getattr(data.log, 'exception', None)
+
+  flags = sns(
+    exception=isinstance(error, Exception),
+    level=data.level in ['error', 'exception'], )
+
+  if not flags.exception and not flags.level:
+    return data
+
+  if not flags.exception and flags.level:
+    data.standard_output = True
+    data.level = 'error'
+    return data
+
+  if flags.exception:
+    error = format_exception_and_trace(exception=error)
+    setattr(data.log, 'error', error)
+    data.standard_output = True
+    data.level = 'error'
+    return data
+
+  return data
 
 
 def get_timestamp() -> float:
@@ -190,6 +244,44 @@ def create_logger(
 
   data.status = 0
   return data
+
+
+def do_nothing(*args, **kwargs) -> None:
+  _ = args, kwargs
+
+
+def format_exception_and_trace(exception: Exception | None = None) -> dict:
+  trace = []
+  tb = exception.__traceback__
+
+  while tb is not None:
+    store = dict(
+      file=tb.tb_frame.f_code.co_filename,
+      name=tb.tb_frame.f_code.co_name,
+      line=tb.tb_lineno, )
+    trace.append(store)
+    tb = tb.tb_next
+
+  return dict(
+    name=type(exception).__name__,
+    description=str(exception),
+    trace=trace, )
+
+
+def write_to_log(data: sns) -> int:
+  method = getattr(
+    LOGGER,
+    str(data.level).lower(),
+    LOGGER.debug if LOGGER else do_nothing, )
+  method(data.log)
+  return 1
+
+
+def write_to_cli(data: sns) -> int:
+  if not data.standard_output:
+    return 0
+  print(data.log)
+  return 1
 
 
 def examples() -> None:

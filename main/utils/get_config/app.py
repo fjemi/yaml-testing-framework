@@ -6,8 +6,7 @@ import inspect
 import os
 from types import SimpleNamespace as sns
 
-from main.utils import independent, objects
-from main.utils import schema as _schema
+from main.utils import independent, objects, schema as _schema, logger
 
 
 CONFIG = '''
@@ -68,12 +67,12 @@ def format_config_location(
       module=module,
       extensions=CONFIG.extensions, ) or ''
 
-  log = None
-  if os.path.isfile(config) is False:
-    message = ['No config YAML file', dict(module=module, config=config)]
-    log = sns(level='error', message=message)
+  flag = os.path.isfile(config)
+  logger.do_nothing() if flag else logger.main(
+    log=dict(message=['No config YAML file', dict(module=module, config=config)]),
+    level='warning', )
 
-  return sns(config=config, log=log)
+  return sns(config=config)
 
 
 def get_content_from_files(

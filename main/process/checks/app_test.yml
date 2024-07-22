@@ -352,11 +352,9 @@ tests:
   - description: Undefined arguments
     arguments: {}
     checks:
-    - method: check_sns
+    - method: check_equals
       << : *CHECKS
-      expected:
-        field: null
-        object: 'null
+      expected: 'null
 
           ...'
   - description: Object is a string
@@ -364,10 +362,9 @@ tests:
       object: object
       field: field
     checks:
-    - method: check_sns
+    - method: check_equals
       << : *CHECKS
-      expected:
-        object: 'object
+      expected: 'object
 
           ...'
   - description: Object is a dict
@@ -376,40 +373,33 @@ tests:
         key: value
       field: field
     checks:
-    - method: check_sns
+    - method: check_equals
       << : *CHECKS
-      expected:
-        object: 'key: value'
+      expected: 'key: value'
   - description: Object is a list
     arguments:
       object: [item_0, item_1, item_2]
       field: field
     checks:
-    - method: check_sns
+    - method: check_equals
       << : *CHECKS
-      expected:
-        object: '- item_0
+      expected: '- item_0
         
           - item_1
         
           - item_2'
   - description: Conversion fails
     arguments:
-      object: >
+      field: field
+      object: |
         a: b
           c:
-      field: field
     checks:
-    - method: check_sns
+    - method: check_equals
       << : *CHECKS
-      expected:
-        object: "a: b\n  c:\n"
-    - method: check_sns
-      << : *CHECKS
-      field: log
-      expected:
-        message: ScannerError occurred trying to convert field to YAML
-        level: error
+      expected: |
+        a: b
+          c:
 - function: handle_failed_check
   description: >
     Converts expected and output values to YAML if the check
@@ -430,7 +420,6 @@ tests:
     - method: check_sns
       << : *CHECKS
       expected:
-        log: '[]'
         expected: '- a
 
           - b
@@ -452,7 +441,6 @@ tests:
     - method: check_sns
       << : *CHECKS
       expected:
-        log: '[]'
         expected: 'key: value'
         output: 'key: value'
   - description: Passed is failed and expected/output are strings
@@ -464,7 +452,6 @@ tests:
     - method: check_sns
       << : *CHECKS
       expected:
-        log: '[]'
         expected: 'key: value'
         output: 'key: value'
   - description: Undefined arguments

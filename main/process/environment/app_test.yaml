@@ -69,7 +69,3 @@ tests:
         VAR_A: A
         VAR_B: B
         VAR_C: C
-    - method: check_sns
-      << : *CHECKS
-      expected:
-        log: null

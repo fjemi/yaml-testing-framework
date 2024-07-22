@@ -85,9 +85,12 @@ def get_yaml_content(
 
   content = {}
   location = str(location)
+
   if not os.path.isfile(location):
-    log = sns(message=f'No YAML file at {location}', level='warning')
-    return sns(log=log, content=content)
+    logger.main(
+      log=dict(message=f'No YAML file at {location}'),
+      level='warning', )
+    return sns(content=content)
 
   with open(
       file=location,
@@ -185,25 +188,6 @@ def format_output(output: dict | sns | None = None) -> dict | None:
   if output is None:
     output = {}
   return output
-
-
-def format_exception_and_trace(exception: Exception | None = None) -> dict:
-  trace = []
-  tb = exception.__traceback__
-
-  while tb is not None:
-    trace.append(
-      dict(
-        file=tb.tb_frame.f_code.co_filename,
-        name=tb.tb_frame.f_code.co_name,
-        line=tb.tb_lineno, ),
-    )
-    tb = tb.tb_next
-
-  return dict(
-    name=type(exception).__name__,
-    description=str(exception),
-    trace=trace, )
 
 
 def get_timestamp(kind: str | None = None) -> float | int:
@@ -327,8 +311,8 @@ def process_operations(
       data=store.data, )
     store = get_function_output(data=store)
     store.output = format_output(output=store.output)
-    store = update_data_fields(data=store)
-    format_log(data=store)
+    store = update_data(data=store)
+    logger.main(log=dict(method=store.function), level='info')
 
   return store.data
 
@@ -420,17 +404,11 @@ def format_config_schema(
     model = get_model_from_scheme(scheme=scheme)
     models[name] = model
 
-  log = None
-  if not models:
-    log = sns(
-      message=f'No schema defined in YAML at location {location}',
-      level='warning', )
-
   models = sns(**models)
   if module_defined:
     return models
 
-  return sns(log=log, models=models)
+  return sns(models=models)
 
 
 def pass_through(

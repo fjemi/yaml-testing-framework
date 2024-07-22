@@ -33,12 +33,6 @@ tests:
     checks:
     - method: check_sns
       << : *CHECKS
-      field: log
-      expected:
-        level: error
-        message: No modules at location does/not/exist
-    - method: check_sns
-      << : *CHECKS
       expected:
         locations: []
   - description: Project path is a directory
