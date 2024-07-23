@@ -11,14 +11,13 @@ help:
 - https://stackoverflow.com/questions/11232230/logging-to-two-files-with-different-settings
 
 
-log_dir: &LOG_DIR ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/logger/resources/data
-
-
 resources:
 - &RESOURCE
   resource: &RESOURCE_PATH ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/logger/resources/app.py
 - &CHECKS
   resource: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/app.py
+- &LOG_DIR
+  ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/logger/resources/data
 
 
 tests:

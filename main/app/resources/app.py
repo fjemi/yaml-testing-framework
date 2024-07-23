@@ -6,14 +6,8 @@ from types import ModuleType
 from types import SimpleNamespace as sns
 from typing import Any
 
-from main.utils import get_module
-
 
 LOCALS = locals()
-
-
-def wrapper_get_module(module: str) -> ModuleType:
-  return get_module.main(location=module).module
 
 
 def get_resource(resource: str | None = None) -> Any:

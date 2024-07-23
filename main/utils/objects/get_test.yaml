@@ -7,6 +7,8 @@ resources:
   resource: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/app.py
 - &RESOURCE
   resource: &RESOURCE_PATH {YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/objects/get_resource.py
+- &GLOBAL_RESOURCE
+  resource: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/resources/app.py
 
 
 tests:
@@ -32,7 +34,7 @@ tests:
   - description: Parent is a module and child is route to builtins function str
     cast_arguments:
     - method: wrapper_get_module
-      << : *RESOURCE
+      << : *GLOBAL_RESOURCE
       field: parent
     arguments:
       parent: *RESOURCE_PATH
@@ -57,7 +59,7 @@ tests:
   - description: Undefined arguments
     arguments: {}
     checks:
-    - method: check_exception
+    - method: check_error
       << : *CHECKS
       expected: TypeError
   - description: Parent is an string. Return char at index 1
@@ -117,7 +119,7 @@ tests:
   - description: Parent is a module
     cast_arguments:
     - method: wrapper_get_module
-      << : *RESOURCE
+      << : *GLOBAL_RESOURCE
       field: parent
     arguments:
       parent: *RESOURCE_PATH
@@ -187,7 +189,7 @@ tests:
   - description: Attribute exists in a module
     cast_arguments:
     - method: wrapper_get_module
-      << : *RESOURCE
+      << : *GLOBAL_RESOURCE
       field: parent
     arguments:
       parent: *RESOURCE_PATH

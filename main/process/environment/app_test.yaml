@@ -3,6 +3,8 @@ resources:
   resource: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/app.py
 - &RESOURCE
   resource: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/environment/resources/app.py
+- &GLOBAL_RESOURCE
+  resource: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/resources/app.py
 
 
 tests:
@@ -12,7 +14,7 @@ tests:
   cast_arguments:
   - field: module
     method: wrapper_get_module
-    << : *RESOURCE
+    << : *GLOBAL_RESOURCE
   tests:
   - description: Undefined arguments
     arguments:

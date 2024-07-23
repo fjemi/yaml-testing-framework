@@ -28,6 +28,8 @@ resources:
   resource: &RESOURCE_PATH ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/setup/resource.py
 - &CHECKS
   resource: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/app.py
+- &GLOBAL_RESOURCE
+  resource: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/resources/app.py
 
 
 tests:
@@ -181,7 +183,7 @@ tests:
   cast_arguments:
   - field: module
     method: wrapper_get_module
-    << : *RESOURCE
+    << : *GLOBAL_RESOURCE
   tests:
   - description: Undefined arguments or method does not exist
     arguments: {}
@@ -202,7 +204,7 @@ tests:
       field: method
       expected:
         name: do_nothing
-        location: *MODULE_PATH
+        location: *RESOURCE_PATH
 - function: get_future
   description: >
     Creates a task from a method and arguments and executes the task in a

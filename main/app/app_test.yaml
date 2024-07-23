@@ -21,6 +21,8 @@ resources:
   ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/app/resources/add.py
 - &ADD_TEST_PATH
   ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/app/resources/add_test.yaml
+- &GLOBAL_RESOURCE
+  resource: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/resources/app.py
 
 
 tests:
@@ -89,7 +91,7 @@ tests:
   description: Returns an existing function to test
   cast_arguments:
   - method: wrapper_get_module
-    << : *RESOURCE
+    << : *GLOBAL_RESOURCE
     field: module
   tests:
   - description: Function does not exist in module

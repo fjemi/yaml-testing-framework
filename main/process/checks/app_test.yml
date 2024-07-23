@@ -7,6 +7,8 @@ resources:
   resource: &RESOURCE_PATH ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/checks/resource.py
 - &MODULE
   module: &MODULE_PATH ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/checks/app.py
+- &GLOBAL_RESOURCE
+  resource: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/resources/app.py
 
 
 tests:
@@ -16,7 +18,7 @@ tests:
     output from a function is as expected
   cast_arguments:
   - method: wrapper_get_module
-    << : *RESOURCE
+    << : *GLOBAL_RESOURCE
     field: module
   cast_output:
   - method: list_sns_to_list_dict

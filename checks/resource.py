@@ -9,7 +9,6 @@ from types import SimpleNamespace as sns
 from typing import Any, Awaitable, Callable
 
 from checks import module_resource
-from main.utils import get_module
 
 
 LOCALS = locals()
@@ -159,12 +158,6 @@ def wrapped_callable_method(*args, **kwargs) -> str:
 async def wrapped_awaitable_method(*args, **kwargs) -> str:
   _ = args, kwargs
   return 'wrapped_awaitable_output'
-
-
-def wrapper_get_module(
-  module: str | None = None,
-) -> ModuleType | None:
-  return get_module.main(module=module).module
 
 
 def examples() -> None:

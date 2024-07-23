@@ -7,6 +7,8 @@ resources:
   resource: &RESOURCE_PATH ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/get_module/resource.py
 - &CHECKS
   resource: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/app.py
+- &GLOBAL_RESOURCE
+  resource: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/resources/app.py
 
 
 tests:
@@ -25,7 +27,7 @@ tests:
   - description: Return the module value when the argument is not a string
     cast_arguments:
     - method: wrapper_get_module
-      << : *RESOURCE
+      << : *GLOBAL_RESOURCE
       field: module
     arguments:
       module: *RESOURCE_PATH
@@ -57,7 +59,7 @@ tests:
   - description: Module is a module
     cast_arguments:
     - method: wrapper_get_module
-      << : *RESOURCE
+      << : *GLOBAL_RESOURCE
       field: location
     arguments:
       location: *RESOURCE_PATH
@@ -169,7 +171,7 @@ tests:
       expected: default
   - description: Return default
     cast_arguments:
-      << : *RESOURCE
+      << : *GLOBAL_RESOURCE
       field: default
       method: wrapper_get_module
     arguments:

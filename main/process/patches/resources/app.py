@@ -9,7 +9,7 @@ import sys
 from types import ModuleType
 from typing import Any, Callable, List
 
-from main.utils import get_config, invoke_testing_method, get_module
+from main.utils import get_config, invoke_testing_method
 
 import yaml
 
@@ -41,16 +41,6 @@ class Store:
 
 
 GET_PARENT_RESOURCES = DataClass()
-
-
-def wrapper_get_module(
-  module: str | None = None,
-  resource: str | None = None,
-) -> ModuleType:
-  module = module or resource
-  return get_module.main(
-    location=module,
-    default=module, ).module
 
 
 def get_input(data: str | None = None) -> str:

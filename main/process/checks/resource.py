@@ -43,10 +43,6 @@ def check_method_a() -> None:
   return
 
 
-def wrapper_get_module(module: str | None = None) -> ModuleType:
-  return get_module.main(module=module).module
-
-
 def check_resource(
   check: dict | None = None,
 ) -> sns:

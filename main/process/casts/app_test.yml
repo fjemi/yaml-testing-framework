@@ -5,6 +5,8 @@ resources:
   resource: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/app.py
 - &RESOURCE
   resource: &RESOURCE_PATH ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/casts/resource.py
+- &GLOBAL_RESOURCE
+  resource: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/resources/app.py
 
 
 tests:
@@ -130,7 +132,7 @@ tests:
         object: null
   - cast_arguments:
     - method: wrapper_get_module
-      << : *RESOURCE
+      << : *GLOBAL_RESOURCE
       field: module
     tests:
     - description: Cast string as integer
@@ -185,8 +187,8 @@ tests:
     Otherwise, returns the name and a log
   cast_arguments:
   - field: module
-    << : *RESOURCE
-    method: module_resource
+    << : *GLOBAL_RESOURCE
+    method: wrapper_get_module
   tests:
   - description: Undefined data
     arguments: {}
