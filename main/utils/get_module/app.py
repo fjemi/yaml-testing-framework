@@ -132,7 +132,12 @@ def get_module_from_location(
   try:
     spec.loader.exec_module(module)
   except Exception as error:
-    logger.main(error=error)
+    arguments = dict(
+      name=name,
+      flag=flag,
+      default=default,
+      location=location, )
+    logger.main(error=error, arguments=arguments)
 
   module = module if isinstance(module, ModuleType) else default
   return sns(module=module)

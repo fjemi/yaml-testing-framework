@@ -82,7 +82,7 @@ def get_function(
   module: ModuleType | None = None,
 ) -> sns:
   function_ = objects.get(parent=module, route=function)
-  flag = not isinstance(function_, Callable)
+  flag = isinstance(function_, Callable)
   logger.do_nothing() if flag else logger.main(
     message='Method `{}` does not exist in {}'.format(
       function, module.__file__),
@@ -127,7 +127,7 @@ def run_tests(locations: List[sns] | None = None) -> sns:
     tests.extend(result.tests)
 
   flag = len(tests or []) > 0
-  logger.do_nothing() if not flag else logger.main(
+  logger.do_nothing() if flag else logger.main(
     message='No tests collected',
     level='warning',
     standard_output=True, )

@@ -54,7 +54,8 @@ def caller_wrapper(method: Callable) -> Callable:
     try:
       output = method(*args, **kwargs)
     except Exception as error:
-      logger.main(error=error, arguments=locals())
+      arguments = kwargs or list(args)
+      logger.main(error=error, arguments=arguments)
       output = error
 
     output = get_task_from_event_loop(task=output)

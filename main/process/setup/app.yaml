@@ -66,17 +66,12 @@ schema:
         Flag indicating whether arguments should be passed to function packed
         or unpacked
       default: False
-    - name: keep_alive
-      type: bool
-      description: >
-        Flag to determine if setup object is a process that should be kept alive
-      default: False
     - name: timeout
       type: int
       description: >
         Number of seconds to wait before terminating a future or thread that
         shouldn't be kept alive
-      default: 15
+      default: 0
     - name: continue_
       type: bool
       description: >

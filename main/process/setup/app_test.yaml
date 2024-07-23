@@ -253,21 +253,28 @@ tests:
     - method: check_error
       << : *CHECKS
       expected: TypeError
-  - description: Return a future for running process that should be kept alive
+  - description: >
+      Return a future for running process that should be kept alive until
+      it returns a result
     arguments:
       method: living
       arguments: {}
-      keep_alive: true
+      timeout: -1
     checks:
     - method: check_type
       << : *CHECKS
       expected: ProcessFuture
+    - method: check_equals
+      << : *CHECKS
+      cast_output:
+      - method: get_future_result
+        << : *RESOURCE
+      expected: timed_out
   - description: Timeout
     arguments:
       timeout: 2
       method: keep_running
       arguments: {}
-      keep_alive: False
     checks:
     - method: check_equals
       << : *CHECKS
@@ -294,7 +301,6 @@ tests:
     arguments:
       method: get_string
       arguments: {}
-      keep_alive: False
       timeout: 3
     checks:
     - method: check_sns
@@ -305,7 +311,6 @@ tests:
     arguments:
       method: living
       arguments: {}
-      keep_alive: False
       timeout: 2
     checks:
     - method: check_sns
