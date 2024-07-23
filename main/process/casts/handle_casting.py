@@ -66,12 +66,14 @@ def cast_nonetype_packed(
   try:
     return method()
   except Exception as error:
-    logger.main(error=error, arguments=locals())
+    arguments = dict(object=object, method=method)
+    logger.main(error=error, arguments=arguments)
 
   try:
     return method(**{})
   except Exception as error:
-    logger.main(error=error, arguments=locals())
+    arguments = dict(object=object, method=method)
+    logger.main(error=error, arguments=arguments)
 
 
 def cast_list_packed(

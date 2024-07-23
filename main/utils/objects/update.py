@@ -107,7 +107,8 @@ def set_child_in_parent(
     try:
       setattr(parent.value, child.name, child.value)
     except Exception as error:
-      logger.main(error=error)
+      arguments = dict(parent=parent, child=child)
+      logger.main(error=error, arguments=arguments)
       parent.value = sns()
       setattr(parent.value, child.name, child.value)
 

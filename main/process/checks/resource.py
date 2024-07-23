@@ -27,7 +27,7 @@ def set_exception(check: Any) -> Any:
   try:
     sum([1, '1'])
   except Exception as error:
-    logger.main(error=error)
+    logger.main(error=error, arguments=dict(check=check))
     check.exception = error
   return check
 

@@ -134,7 +134,8 @@ def get_future(
   try:
     task = method(**arguments)
   except Exception as error:
-    logger.main(error=error)
+    arguments = dict(arguments=arguments, method=method)
+    logger.main(arguments=arguments, error=error)
     task = error
 
   return methods.call.get_task_from_event_loop(task=task)

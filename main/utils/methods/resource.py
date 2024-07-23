@@ -19,8 +19,8 @@ def sum_(values: list) -> int:
 
 
 def get_method(
-  method: str | None = None,
-  function: str | None = None,
+  method: str = '',
+  function: str = '',
 ) -> Callable:
   method = method or function
   if isinstance(method, str):
