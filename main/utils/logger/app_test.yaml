@@ -349,7 +349,7 @@ tests:
   #   arguments:
   #     location: null
   #   checks:
-  #   - method: check_exception
+  #   - method: check_error
   #     << : *CHECKS
   #     expected: TypeError
   - description: Location is defined

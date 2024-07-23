@@ -187,7 +187,7 @@ def check_sns(
 
 
 @type_checks
-def check_exception(
+def check_error(
   expected: str,
   output: Exception,
 ) -> sns:

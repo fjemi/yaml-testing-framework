@@ -30,7 +30,7 @@ def list_sns_to_list_dict(output: Any) -> Any:
   return [item.__dict__ for item in output]
 
 
-def get_exception(exception: str | None = None) -> Exception | None:
+def get_error(exception: str | None = None) -> Exception | None:
   exceptions = sns(
     exception=Exception(),
     runtime_error=RuntimeError('runtime_error'),

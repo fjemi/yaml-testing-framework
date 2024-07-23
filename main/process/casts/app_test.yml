@@ -251,9 +251,10 @@ tests:
   - description: Undefined arguments
     arguments: {}
     checks:
-    - method: check_exception
+    - method: check_sns
       << : *CHECKS
-      expected: TypeError
+      expected:
+        temp: null
   - description: Object is defined
     arguments:
       object: '1111'

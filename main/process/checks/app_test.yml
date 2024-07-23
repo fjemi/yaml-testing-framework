@@ -298,7 +298,7 @@ tests:
   - description: Undefined arguments
     arguments: {}
     checks:
-    - method: check_exception
+    - method: check_error
       << : *CHECKS
       expected: AttributeError
   - description: Check fails when expected and output are different values

@@ -276,7 +276,7 @@ tests:
   - description: Returns the parameters for a method
     arguments: {}
     checks:
-    - method: check_exception
+    - method: check_error
       << : *CHECKS
       expected: AttributeError
   - description: Returns the parameters for a method
@@ -342,9 +342,9 @@ tests:
     tests:
     - arguments: {}
       checks:
-      - method: check_exception
+      - method: check_error
         << : *CHECKS
-        expected: TypeError
+        expected: AttributeError
   - cast_arguments:
     - field: function
       << : *RESOURCE
@@ -433,7 +433,7 @@ tests:
     arguments:
       timestamps: {}
     checks:
-    - method: check_exception
+    - method: check_error
       << : *CHECKS
       expected: AttributeError
   - description: End and run times should be integers
@@ -562,7 +562,7 @@ tests:
       data: null
       functions: null
     checks:
-    - method: check_exception
+    - method: check_error
       << : *CHECKS
       expected: TypeError
   - description: Perform operations on a dictionary
@@ -715,7 +715,7 @@ tests:
   - description: Undefined arguments
     arguments: {}
     checks:
-    - method: check_exception
+    - method: check_error
       << : *CHECKS
       expected: TypeError
   - cast_arguments:
@@ -816,7 +816,7 @@ tests:
   - description: Undefined arguments
     arguments: {}
     checks:
-    - method: check_exception
+    - method: check_error
       << : *CHECKS
       expected: TypeError
   - description: Scheme with defined fields

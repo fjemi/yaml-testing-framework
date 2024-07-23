@@ -134,7 +134,7 @@ tests:
   - description: Undefined arguments
     arguments: {}
     checks:
-    - method: check_exception
+    - method: check_error
       << : *CHECKS
       expected: AttributeError
   - description: Setup action
@@ -220,7 +220,7 @@ tests:
     - method: check_type
       << : *CHECKS
       expected: ProcessFuture
-    - method: check_exception
+    - method: check_error
       << : *CHECKS
       cast_output:
       - method: get_future_result
@@ -250,7 +250,7 @@ tests:
   - description: Undefined arguments
     arguments: {}
     checks:
-    - method: check_exception
+    - method: check_error
       << : *CHECKS
       expected: TypeError
   - description: Return a future for running process that should be kept alive
@@ -286,7 +286,7 @@ tests:
   - description: Undefined arguments
     arguments: {}
     checks:
-    - method: check_exception
+    - method: check_error
       << : *CHECKS
       field: value
       expected: TypeError

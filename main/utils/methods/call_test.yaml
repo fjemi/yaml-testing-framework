@@ -24,11 +24,11 @@ tests:
   - description: Undefined arguments
     arguments: {}
     checks:
-    - method: check_exception
+    - method: check_error
       << : *CHECKS
       field: exception
       expected: TypeError
-    - method: check_exception
+    - method: check_error
       << : *CHECKS
       field: output
       expected: TypeError
@@ -179,11 +179,11 @@ tests:
       arguments: [0, 0]
       method: add
     checks:
-    - method: check_exception
+    - method: check_error
       << : *CHECKS
       field: output
       expected: TypeError
-    - method: check_exception
+    - method: check_error
       << : *CHECKS
       field: exception
       expected: TypeError
@@ -226,11 +226,11 @@ tests:
         c: 0
       method: add
     checks:
-    - method: check_exception
+    - method: check_error
       << : *CHECKS
       field: output
       expected: TypeError
-    - method: check_exception
+    - method: check_error
       << : *CHECKS
       field: exception
       expected: TypeError
@@ -248,11 +248,11 @@ tests:
         b: 0
       method: sum_
     checks:
-    - method: check_exception
+    - method: check_error
       << : *CHECKS
       field: output
       expected: TypeError
-    - method: check_exception
+    - method: check_error
       << : *CHECKS
       field: exception
       expected: TypeError
@@ -353,7 +353,7 @@ tests:
       method: add
       handlers: []
     checks:
-    - method: check_exception
+    - method: check_error
       << : *CHECKS
       expected: IndexError
   - description: Single handler
@@ -393,7 +393,7 @@ tests:
       - unpack_list
       - pack_any
     checks:
-    - method: check_exception
+    - method: check_error
       << : *CHECKS
       field: output
       expected: TypeError

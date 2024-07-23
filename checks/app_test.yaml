@@ -219,7 +219,7 @@ tests:
     Verifies that an exception was raised. Checks for the name of the exception
     (TypeError, RuntimeError, etc)
   cast_arguments:
-  - method: get_exception
+  - method: get_error
     << : *RESOURCE
     field: output
   tests:

@@ -19,7 +19,7 @@ def check_sns_resource(output: dict | None = None) -> sns:
     return sns(**output)
 
 
-def get_exception(output: str | None = None) -> Exception | None:
+def get_error(output: str | None = None) -> Exception | None:
   output = str(output)
   exceptions = sns(
     RuntimeError=RuntimeError(),
