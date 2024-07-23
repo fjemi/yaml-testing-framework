@@ -93,7 +93,6 @@ def perform_action(
   action: str | None = None,
   method: Callable | None = None,
   arguments: Any | None = None,
-  keep_alive: bool | None = None,
   name: str | None = None,
   timeout: int | None = None,
   flags: bool | None = None,
@@ -143,16 +142,15 @@ def get_future(
 
 def run_process_in_separate_thread(
   method: Callable | None = None,
-  arguments: dict | None = None,
-  keep_alive: bool | None = None,
-  timeout: int | None = None,
+  arguments: Any | None = None,
+  timeout: int = 0,
 ) -> 'Any | Future | ProcessFuture':
   future = get_future(method=method, arguments=arguments)
 
-  if keep_alive:
+  if timeout == -1:
     return future
 
-  if future.done() is True:
+  if future.done() is True or timeout == 0:
     return future.result()
 
   if isinstance(timeout, int):
@@ -168,13 +166,11 @@ def run_process_in_separate_thread(
 
 def setup_object(
   method: Callable | None = None,
-  arguments: Any |None = None,
-  keep_alive: bool | None = None,
-  timeout: int | None = None,
+  arguments: Any | None = None,
+  timeout: int = 0,
 ) -> sns:
   value = run_process_in_separate_thread(
     timeout=timeout,
-    keep_alive=keep_alive,
     method=method,
     arguments=arguments, )
   return sns(value=value)
