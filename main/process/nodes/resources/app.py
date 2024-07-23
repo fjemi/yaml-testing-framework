@@ -6,7 +6,7 @@ from types import SimpleNamespace as sns
 
 
 def sns_to_dict(data: sns | list | None = None) -> dict | list | None:
-  if isinstance(data, sns):
+  if hasattr(data, '__dict__'):
     return data.__dict__
 
   if isinstance(data, list):

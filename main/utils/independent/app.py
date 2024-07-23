@@ -7,11 +7,11 @@ import os
 import time
 from types import ModuleType
 from types import SimpleNamespace as sns
-from typing import Any, Callable, List
+from typing import Any, Callable
 
 import yaml as pyyaml
 
-from main.utils import logger, objects
+from main.utils import logger, objects, methods
 
 
 CONFIG = '''
@@ -61,7 +61,7 @@ def get_yaml_content(
 
   if not os.path.isfile(location):
     logger.main(
-      log=dict(message=f'No YAML file at {location}'),
+      message=f'No YAML file at {location}',
       level='warning', )
     return sns(content=content)
 
@@ -143,8 +143,8 @@ def get_function_parameters(
 
 
 def get_function_arguments(
-  function: Callable,
-  data: sns | dict,
+  function: Callable | None = None,
+  data: sns | dict = {},
 ) -> dict:
   arguments = {}
   parameters = get_function_parameters(function=function)
@@ -153,14 +153,22 @@ def get_function_arguments(
   return arguments
 
 
-def format_output(output: dict | sns | None = None) -> dict | None:
-  output = objects.get(
-    parent=output,
-    route='__dict__',
-    default=output, )
+def format_output_as_dict(output: dict | sns | None = None) -> dict | None:
+  if isinstance(output, dict):
+    return output
+
+  if hasattr(output, '__dict__'):
+    return output.__dict__
+
+  if isinstance(output, Exception):
+    return dict(error=output)
+
   if output is None:
-    output = {}
-  return output
+    return {}
+
+  type_ = type(output).__name__
+  message = f'Cannot convert object of type {type_} to a dictionary'
+  logger.main(level='error', message=message)
 
 
 def get_timestamp(kind: str | None = None) -> float | int:
@@ -177,45 +185,47 @@ def get_runtime_in_ms(timestamps: sns | None = None,) -> sns:
   return timestamps
 
 
-def get_function_output(data: sns) -> sns:
-  data.timestamps = sns(start=get_timestamp())
-  try:
-    data.output = data.function(**data.arguments)
-  except Exception as e:
-    data.output = dict(exception=e)
-  data.timestamps = get_runtime_in_ms(timestamps=data.timestamps)
-  return data
-
-
-def update_data(data: sns) -> sns:
-  for field, value in data.output.items():
-    data.data = objects.update(
-      parent=data.data,
+def update_data(
+  data: sns,
+  output: dict,
+) -> sns:
+  for field, value in output.items():
+    data = objects.update(
+      parent=data,
       value=value,
       route=field, )
   return data
 
 
 def process_operations(
-  operations: List[str] | None = None,
+  operations: list | str | None = None,
   data: dict | sns | None = None,
   functions: dict | None = None,
   debug: bool | None = None,
 ) -> sns | dict:
   operations = convert_string_to_list(string=operations)
-  store = sns(**locals())
+  timestamps = sns(start=get_timestamp())
+  errors = []
 
-  for name in store.operations:
-    store.function = objects.get(parent=store.functions, route=name)
-    store.arguments = get_function_arguments(
-      function=store.function,
-      data=store.data, )
-    store = get_function_output(data=store)
-    store.output = format_output(output=store.output)
-    store = update_data(data=store)
-    logger.main(log=dict(method=store.function), level='info')
+  for name in operations:
+    method = objects.get(parent=functions, route=name)
+    arguments = get_function_arguments(
+      function=method,
+      data=data, )
+    result = methods.call.main(arguments=arguments, method=method)
+    errors.append(result.exception)
+    output = format_output_as_dict(output=result.output)
+    data = update_data(data=data, output=output)
 
-  return store.data
+  timestamps = get_runtime_in_ms(timestamps=timestamps).__dict__
+
+  flags = True in [
+    errors.count(None) != len(errors),
+    CONFIG.environment.DEBUG, ]
+  logger.do_nothing() if not flags  else logger.main(
+    message=dict(operations=operations),
+    timestamps=timestamps, )
+  return data
 
 
 def exit_loop() -> None:

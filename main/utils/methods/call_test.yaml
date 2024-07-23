@@ -293,7 +293,7 @@ tests:
     checks:
     - method: check_length
       << : *CHECKS
-      expected: 1
+      expected: 2
     - method: check_type
       << : *CHECKS
       expected: list
@@ -303,6 +303,7 @@ tests:
       - method: list_methods_to_list_strings
         << : *RESOURCE
       expected:
+      - unpack_list
       - pack_any
   - description: Arguments is a mapping
     arguments:

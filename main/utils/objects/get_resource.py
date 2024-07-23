@@ -7,7 +7,7 @@ from types import ModuleType
 from types import SimpleNamespace as sns
 
 
-RESOURCE_PATH = __file__
+PARENT = 'PARENT'
 
 
 def parent_to_sns(parent: dict | None = None) -> sns:
@@ -18,7 +18,7 @@ def examples() -> None:
   from main.utils import invoke_testing_method
 
   invoke_testing_method.main(
-    module_filename='app',
+    module_filename='get',
     resource_flag=True, )
 
 

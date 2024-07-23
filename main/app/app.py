@@ -72,7 +72,7 @@ def handle_id(
     id_ = id_ + description
 
   logger.main(
-    log=dict(message=f'Generated test id for {id_short}'),
+    message=f'Generated test id for {id_short}',
     level='info', )
   return sns(id=id_, id_short=id_short)
 
@@ -82,11 +82,10 @@ def get_function(
   module: ModuleType | None = None,
 ) -> sns:
   function_ = objects.get(parent=module, route=function)
-
-  flag =not isinstance(function_, Callable) or CONFIG.environment.DEBUG
+  flag = not isinstance(function_, Callable)
   logger.do_nothing() if flag else logger.main(
-    log=dict(message='Method `{}` does not exist in {}'.format(
-      function, module.__file__)),
+    message='Method `{}` does not exist in {}'.format(
+      function, module.__file__),
     enabled=flag,
     level='warning', )
   return sns(function=function_, function_name=function)
@@ -127,8 +126,9 @@ def run_tests(locations: List[sns] | None = None) -> sns:
       data=item, )
     tests.extend(result.tests)
 
-  logger.do_nothing() if tests else logger.main(
-    log=dict(message='No tests collected'),
+  flag = len(tests or []) > 0
+  logger.do_nothing() if not flag else logger.main(
+    message='No tests collected',
     level='warning',
     standard_output=True, )
   return sns(tests=tests)

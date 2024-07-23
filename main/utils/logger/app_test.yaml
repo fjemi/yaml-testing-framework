@@ -89,41 +89,101 @@ tests:
       standard_output: True
       enabled: False
       log_dir: *LOG_DIR
-- function: format_log_as_sns
-  description: Returns the log as a dict if possible
+- function: get_location_route
+  description: >
+    Returns the dot delimited route to the method from the root directory of
+    a project
+  tests:
+  - description: Undefined arguments
+    arguments: {}
+    checks:
+    - method: check_equals
+      << : *CHECKS
+      expected: ..
+  - description: Name of method and location of module method is in
+    arguments:
+      location: location
+      method: method
+    checks:
+    - method: check_equals
+      << : *CHECKS
+      expected: location.method
+- function: format_error
+  description: >
+    Returns a dictionary containing the name, description and traceback for
+    an exception
   tests:
   - description: Undefined arguments
     arguments: {}
     checks:
     - << : *CHECKS
-      method: check_type
-      expected: SimpleNamespace
+      method: check_equals
+      expected: null
+  - description: Error is not an exception
+    arguments:
+      error: error
+    checks:
     - << : *CHECKS
       method: check_equals
-      field: __dict__
-      expected: {}
-  - description: Log is a dictionary
+      expected: error
+  - description: Error is an exception
+    cast_arguments:
+    - method: get_error
+      << : *RESOURCE
+      field: error
     arguments:
-      log:
-        message: message
+      error: runtime_error
     checks:
     - << : *CHECKS
-      method: check_sns
+      method: check_equals
       expected:
-        message: message
-  - description: Log has attribute `__dict__
-    cast_arguments:
-    - method: sns
-      unpack: True
-      field: log
-    arguments:
-      log:
-        message: message
+        description: runtime_error
+        name: RuntimeError
+        trace: []
+- function: get_log
+  description: >
+    Returns a dictionary containing defined, specified fields from the
+    `locals_` arguments
+  tests:
+  - description: Undefined arguments
+    arguments: {}
     checks:
-    - method: check_sns
+    - method: check_equals
       << : *CHECKS
       expected:
+        info: {}
+  - description: Defined arguments
+    arguments:
+      locals_:
         message: message
+        arguments: arguments
+        error: error
+        output: output
+        timestamps: timestamps
+        location: location
+    checks:
+    - method: check_equals
+      << : *CHECKS
+      expected:
+        info:
+          message: message
+          arguments: arguments
+          error: error
+          output: output
+          timestamps: timestamps
+          location: location
+  - description: Defined arguments
+    arguments:
+      locals_:
+        level: level
+        a: a
+        message: message
+    checks:
+    - method: check_equals
+      << : *CHECKS
+      expected:
+        level:
+          message: message
 - function: format_as_json
   description: Converts data to JSON
   tests:
@@ -173,140 +233,132 @@ tests:
           b: b
 
           '
-- function: format_written_log
+- function: format_log
   description: Handles formatting log as json or yaml
-  cast_arguments:
-  - method: sns
-    << : *RESOURCE
-    unpack: true
   tests:
   - description: Undefined arguments
     arguments:
       format: null
       log: null
-      level: null
     checks:
     - << : *CHECKS
-      method: check_sns
-      expected:
-        format: null
-        level: null
-        log: 'null: null
-
-          '
+      method: check_equals
+      expected: "null\n..."
   - description: Format as YAML
     arguments:
       format: yaml
-      level: level
       log:
         message: message
     checks:
     - << : *CHECKS
-      method: check_sns
-      expected:
-        format: yaml
-        level: level
-        log: "level:\n  message: message\n"
+      method: check_equals
+      expected: "message: message\n"
   - description: Format as JSON
     arguments:
-      level: level
       format: json
       log:
         message: message
     checks:
     - << : *CHECKS
-      method: check_sns
-      expected:
-        level: level
-        format: json
-        log: '{"level": {"message": "message"}}'
+      method: check_equals
+      expected: '{"message": "message"}'
   - description: Format as YAML
     arguments:
-      level: info
       format: yaml
       log:
         message: message
     checks:
     - << : *CHECKS
-      method: check_sns
-      expected:
-        level: info
-        format: yaml
-        log: "info:\n  message: message\n"
-    - << : *CHECKS
-      method: check_type
-      expected: SimpleNamespace
-- function: check_log_for_error
-  description: Formats an error in a log
+      method: check_equals
+      expected: "message: message\n"
+- function: write_to_log
+  description: >
+    Calls the method to write to log file if the method exists, otherwise
+    does nothing
   tests:
-  - description: Data is empty
-    arguments: {}
-    checks:
-    - method: check_exception
-      << : *CHECKS
-      expected: TypeError
-  - description: >
-      Log does not have the key `error` and level is not error or exception
+  - description: Undefined arguments
     arguments:
-      data:
-        level: level
-        log: {}
+      level: null
+      log: null
     checks:
-    - method: check_sns
-      << : *CHECKS
-      expected:
-        level: level
-        log: {}
-  - description: >
-      Log is empty dictionary and level is error
-    arguments:
-      data:
-        level: error
-        log: {}
-    checks:
-    - method: check_sns
-      << : *CHECKS
-      expected:
-        level: error
-        log: {}
-        standard_output: True
-  - description: >
-      Log contains error key and level is not exception or error
-    arguments:
-      data:
-        level: level
-        log:
-          error: error
-    checks:
-    - method: check_sns
-      << : *CHECKS
-      expected:
-        level: level
-        log:
-          error: error
-  - description: >
-      Log contains error key and level is not exception or error
-    cast_arguments:
-    - field: data.log.error
-      method: get_exception
-      << : *RESOURCE
-    arguments:
-      data:
-        level: level
-        log:
-          error: exception
-    checks:
-    - method: check_sns
-      << : *CHECKS
-      expected:
-        level: error
     - method: check_equals
       << : *CHECKS
-      field: log.error
-      expected:
-        trace: []
-        description: ''
-        name: Exception
+      expected: 1
+  - description: Data is non-empty
+    arguments:
+      level: level
+      log: log
+    checks:
+    - method: check_equals
+      << : *CHECKS
+      expected: 1
+- function: write_to_cli
+  description: Prints log in terminal and returns 1, otherwise returns 0
+  tests:
+  - description: Undefined arguments
+    arguments: {}
+    checks:
+    - << : *CHECKS
+      method: check_equals
+      expected: 0
+  - description: Standard output is true
+    arguments:
+      standard_output: true
+    checks:
+    - << : *CHECKS
+      method: check_equals
+      expected: 1
+  - description: Level is an error
+    arguments:
+      level: error
+    checks:
+    - << : *CHECKS
+      method: check_equals
+      expected: 1
+  - description: Error is not None
+    arguments:
+      error: error
+    checks:
+    - << : *CHECKS
+      method: check_equals
+      expected: 1
+  - description: Debug is true
+    arguments:
+      debug: true
+    checks:
+    - << : *CHECKS
+      method: check_equals
+      expected: 1
+- function: handle_log
+  description: Handles writing a log to a file or the terminal
+  tests:
+  - description: >
+      Undefined arguments. Will always write log to file or return `1`
+    arguments: {}
+    checks:
+    - method: check_equals
+      << : *CHECKS
+      expected: 1
+  - description: Write log to file. Returns 1
+    arguments:
+      standard_output: false
+      debug: false
+      level: level
+      log: log
+    checks:
+    - method: check_equals
+      << : *CHECKS
+      expected: 1
+  - description: Write log to file and the terminal. Returns 2
+    arguments:
+      standard_output: True
+      debug: debug
+      level: level
+      log: log
+    checks:
+    - method: check_equals
+      << : *CHECKS
+      expected: 2
 - function: get_timestamp
   description: Returns a timestamp that is seconds since epoch
   tests:
@@ -395,90 +447,3 @@ tests:
       << : *CHECKS
       expected:
         status: 1
-- function: format_exception_and_trace
-  description: Formats an exception and its trace
-  cast_arguments:
-  - method: get_exception
-    << : *RESOURCE
-    field: exception
-  tests:
-  - description: Undefined arguments
-    arguments:
-      exception: null
-    checks:
-    - method: check_exception
-      << : *CHECKS
-      expected: AttributeError
-  - description: Runtime error
-    arguments:
-      exception: runtime_error
-    checks:
-    - method: check_equals
-      << : *CHECKS
-      expected:
-        description: runtime_error
-        trace: []
-        name: RuntimeError
-  - description: Type error
-    arguments:
-      exception: type_error
-    checks:
-    - method: check_equals
-      << : *CHECKS
-      expected:
-        description: ''
-        trace: []
-        name: TypeError
-- function: write_to_log
-  description: Writes a log to a file
-  cast_arguments:
-  - method: sns
-    << : *RESOURCE
-    field: data
-    unpack: true
-  tests:
-  - description: Data is empty
-    arguments:
-      data: {}
-    checks:
-    - method: check_exception
-      << : *CHECKS
-      expected: AttributeError
-  - description: Data is non-empty
-    arguments:
-      data:
-        level: level
-        log: log
-    checks:
-    - method: check_equals
-      << : *CHECKS
-      expected: 1
-- function: write_to_cli
-  description: Prints a log to the CLI
-  cast_arguments:
-  - method: sns
-    << : *RESOURCE
-    unpack: true
-  tests:
-  - description: Standard output is undefined
-    arguments:
-      standard_output: null
-    checks:
-    - method: check_equals
-      << : *CHECKS
-      expected: 0
-  - description: Standard output is false
-    arguments:
-      standard_output: false
-    checks:
-    - method: check_equals
-      << : *CHECKS
-      expected: 0
-  - description: Standard output is true
-    arguments:
-      standard_output: true
-      log: log
-    checks:
-    - method: check_equals
-      << : *CHECKS
-      expected: 1

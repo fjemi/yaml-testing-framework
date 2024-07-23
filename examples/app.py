@@ -23,8 +23,8 @@ def main(
 
   try:
     data = method(data=data)
-  except Exception as e:
-    data.result = e
+  except Exception as error:
+    data.result = error
 
   return data
 

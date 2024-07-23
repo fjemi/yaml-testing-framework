@@ -123,12 +123,7 @@ def convert_to_yaml(
       temp = yaml.safe_load(temp)
     return yaml.dump(temp).strip()
   except Exception as error:
-    log = dict(
-      error=error,
-      arguments=dict(field=field, object=object), )
-    logger.main(
-      log=log,
-      level='error', )
+    logger.main(error=error, arguments=locals())
     return str(object)
 
   return temp

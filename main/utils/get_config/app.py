@@ -69,7 +69,7 @@ def format_config_location(
 
   flag = os.path.isfile(config)
   logger.do_nothing() if flag else logger.main(
-    log=dict(message=['No config YAML file', dict(module=module, config=config)]),
+    message=['No config YAML file', dict(module=module, config=config)],
     level='warning', )
 
   return sns(config=config)

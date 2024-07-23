@@ -32,7 +32,7 @@ def main(
     data=data, )
   data.locations = data.locations or []
   logger.do_nothing() if data.locations else logger.main(
-    log=dict(message=f'No modules at location {path}'),
+    message=f'No modules at location {path}',
     level='warning', )
   return sns(locations=data.locations)
 

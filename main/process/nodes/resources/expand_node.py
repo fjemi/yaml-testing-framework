@@ -14,14 +14,9 @@ def list_sns_to_list_dict(nodes: list | None = None) -> list | None:
 
 
 def dict_sns_to_dict_dict(nodes: dict | None = None) -> dict | None:
-  if not isinstance(nodes, dict):
-    return
-
+  nodes = nodes or {}
   for key, value in nodes.items():
-    if not isinstance(value, sns):
-      continue
     nodes[key] = value.__dict__
-
   return nodes
 
 
@@ -29,11 +24,8 @@ def nodes_as_dict(
   node: dict | None = None,
   nodes: dict | list | None = None,
 ) -> dict | list | None:
-  if isinstance(node, sns):
+  if hasattr(node, '__dict__'):
     return node.__dict__
-
-  if isinstance(nodes, sns):
-    nodes = nodes.__dict__
 
   if isinstance(nodes, dict):
     for key, value in nodes.items():

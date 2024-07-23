@@ -9,7 +9,7 @@ from types import ModuleType
 from types import SimpleNamespace as sns
 from typing import Any
 
-from main.utils import independent, objects
+from main.utils import independent, objects, logger
 
 
 ROOT_DIR = os.path.normpath(os.path.abspath(os.path.curdir))
@@ -131,8 +131,8 @@ def get_module_from_location(
 
   try:
     spec.loader.exec_module(module)
-  except Exception as e:
-    _ = e
+  except Exception as error:
+    logger.main(error=error)
 
   module = module if isinstance(module, ModuleType) else default
   return sns(module=module)

@@ -371,7 +371,7 @@ tests:
           << : *CHECKS
           expected:
             parameter_a: null
-- function: format_output
+- function: format_output_as_dict
   description: Formats output from performing an operation as a dictionary
   tests:
   - description: Output is undefined
@@ -465,85 +465,46 @@ tests:
         start: 0
         end: 2
         runtime_ms: 2000
-- function: get_function_output
-  description: >
-    Returns the output from calling a function with an unpacked dictionary
-  cast_arguments:
-  - field: data
-    method: sns
-    << : *RESOURCE
-    unpack: true
-  - field: data.function
-    method: get_function
-    << : *RESOURCE
-  tests:
-  - description: Return expected output from adding two integers
-    arguments:
-      data:
-        function: add
-        arguments:
-          a: 1
-          b: 2
-    checks:
-    - method: check_sns
-      << : *CHECKS
-      field: output
-      expected:
-        c: 3
-    - method: check_type
-      << : *CHECKS
-      field: timestamps
-      expected: SimpleNamespace
 - function: update_data
   description: >
     Updates fields in a data object with values from a dictionary type
   cast_arguments:
-  - method: sns
-    unpack: True
+  - field: data
     << : *RESOURCE
-    field: data
+    method: sns
+    unpack: true
   tests:
   - description: Output and data are empty dictionaries
     arguments:
-      data:
-        output: {}
-        data: {}
-    checks:
-    - method: check_sns
-      << : *CHECKS
-      expected:
-        output: {}
-        data: {}
-  - description: Output is a non-empty dictionary
-    arguments:
-      data:
-        output:
-          a: A
-          b: B
-        data: {}
-    checks:
-    - method: check_sns
-      << : *CHECKS
-      expected:
-        data:
-          a: A
-          b: B
-  - description: Output is a non-empty dictionary and data is a simplenamespace
-    cast_arguments:
-    - field: data.data
-      << : *RESOURCE
-      method: sns
-      unpack: true
-    arguments:
-      data:
-        output:
-          c: C
-          d: D
-        data: {}
+      output: {}
+      data: {}
     checks:
     - method: check_equals
       << : *CHECKS
-      field: data.__dict__
+      field: __dict__
+      expected: {}
+  - description: Output is a non-empty dictionary
+    arguments:
+      output:
+        a: A
+        b: B
+      data: {}
+    checks:
+    - method: check_sns
+      << : *CHECKS
+      expected:
+        a: A
+        b: B
+  - description: Output is a non-empty dictionary and data is a simplenamespace
+    arguments:
+      output:
+        c: C
+        d: D
+      data: {}
+    checks:
+    - method: check_equals
+      << : *CHECKS
+      field: __dict__
       expected:
         c: C
         d: D
@@ -623,12 +584,11 @@ tests:
       cast_output:
       - method: get_exception_name
         << : *RESOURCE
-        field: exception
+        field: c
       expected:
-        a: '2'
+        a: '0'
         b: 1
-        c: '2'
-        exception: TypeError
+        c: TypeError
   - description: Operations do not exist in dictionary of functions
     arguments:
       operations:

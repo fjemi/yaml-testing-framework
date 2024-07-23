@@ -7,6 +7,8 @@ import inspect
 from types import SimpleNamespace as sns
 from typing import Any, Callable, Mapping
 
+from main.utils import logger
+
 
 def main(
   arguments: Any | None = None,
@@ -51,8 +53,9 @@ def caller_wrapper(method: Callable) -> Callable:
 
     try:
       output = method(*args, **kwargs)
-    except Exception as e:
-      output = e
+    except Exception as error:
+      logger.main(error=error, arguments=locals())
+      output = error
 
     output = get_task_from_event_loop(task=output)
     if isinstance(output, Exception):
@@ -96,16 +99,16 @@ def get_handlers(arguments: Any) -> list:
   calls = []
   if isinstance(arguments, Mapping):
     calls.append(unpack_mapping)
-  elif isinstance(arguments, list | tuple):
+  elif isinstance(arguments, list | tuple) or arguments is None:
     calls.append(unpack_list)
   calls.append(pack_any)
   return calls
 
 
 def call_handlers(
-  arguments: Any,
-  handlers: list,
-  method: Callable,
+  arguments: dict = {},
+  handlers: list = [],
+  method: Callable | None = None,
 ) -> sns:
   results = []
 

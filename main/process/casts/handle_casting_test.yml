@@ -284,8 +284,7 @@ tests:
       expected: TypeError
   - description: Temp object is a dict with correct keyword arguments
     arguments:
-      object:
-        a: 1
+      object: 1
       method: inverse
     checks:
     - method: check_equals
@@ -321,7 +320,7 @@ tests:
     checks:
     - method: check_equals
       << : *CHECKS
-      expected: null
+      expected: []
   - description: Temp object is a list
     arguments:
       object:
@@ -330,4 +329,4 @@ tests:
     checks:
     - method: check_equals
       << : *CHECKS
-      expected: -1
+      expected: []

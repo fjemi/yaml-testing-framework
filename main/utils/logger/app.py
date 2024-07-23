@@ -18,6 +18,7 @@ import yaml as pyyaml
 LOCALS = locals()
 
 ROOT_DIR = os.path.abspath(os.curdir)
+ROOT_DIR = os.path.normpath(ROOT_DIR)
 
 
 CONFIG = '''
@@ -26,6 +27,31 @@ CONFIG = '''
     LOG_DIR: ${YAML_TESTING_FRAMEWORK_LOG_DIR}
     DEBUG: ${YAML_TESTING_FRAMEWORK_DEBUG}
     LOGGING_DISABLED: ${YAML_TESTING_FRAMEWORK_LOGGING_DISABLED}
+  
+  log_fields:
+  - message
+  - arguments
+  - error
+  - output
+  - timestamps
+  - location
+
+  levels:
+  - warning
+  - error
+  - info
+  - debug
+
+  formats:
+  - yaml
+  - json
+
+  defaults:
+    format: yaml
+    level: debug
+    debug: False
+    standard_output: False
+    enabled: True
 '''
 CONFIG = os.path.expandvars(CONFIG)
 CONFIG = pyyaml.safe_load(CONFIG)
@@ -41,38 +67,170 @@ def main(
   debug: bool | None = None,
   enabled: bool | None = None,
   standard_output: bool = False,
-  log: dict | sns = None,
+  message: str | None = None,
+  arguments: Any | None = None,
+  output: Any | None = None,
+  timestamps: dict | None = None,
+  error: Exception | None = None,
 ) -> int:
   if LOGGER is None or enabled is False:
     return 0
 
-  log = format_log_as_sns(log=log)
-  log.location = inspect.stack()[1].filename
-  log.function = inspect.stack()[1][3]
+  method = inspect.stack()[1][3]
+  location = inspect.stack()[1].filename
+  location = get_location_route(location=location, method=method)
 
-  method = getattr(log, 'method', None)
-  flag = isinstance(method, Callable)
-  method = method if not flag else getattr(
-    method,
-    '__name__',
-    None, )
-  do_nothing() if not flag else setattr(log, 'method', method)
+  error = format_error(error=error)
+  level = 'error' if error else level
+  level = level if level in CONFIG.levels else 'debug'
+  standard_output = False if not standard_output else standard_output
 
-  data = locals()
-  data = check_log_for_error(data=data)
-  data = format_written_log(data=data)
-  write_to_log(data=data)
-  write_to_cli(data=data)
-
+  log = get_log(locals_=locals())
+  log = format_log(log=log, format=format)
+  handle_log(
+    log=log,
+    level=level,
+    error=error,
+    debug=debug,
+    standard_output=standard_output, )
   return 1
 
 
-def format_log_as_sns(log: dict | sns | None = None) -> sns:
-  if isinstance(log, sns):
-    return log
-  if isinstance(log, dict):
-    return sns(**log)
-  return sns()
+def get_location_route(
+  location: str = '',
+  method: str = '',
+) -> str:
+  location = os.path.normpath(location)
+  location = location.replace(ROOT_DIR, '')
+  location = os.path.splitext(location)[0]
+  location = location.split(os.path.sep)
+  location.append(method)
+  return '.'.join(location)
+
+
+def format_error(error: Exception | None = None) -> dict | None:
+  if not isinstance(error, Exception):
+    return error
+
+  name = type(error).__name__
+  description = str(error)
+  trace = []
+
+  tb = error.__traceback__
+
+  while tb is not None:
+    store = dict(
+      file=tb.tb_frame.f_code.co_filename,
+      name=tb.tb_frame.f_code.co_name,
+      line=tb.tb_lineno, )
+    trace.append(store)
+    tb = tb.tb_next
+
+  return dict(
+    name=name,
+    description=description,
+    trace=trace, )
+
+
+def get_log(locals_: dict = {}) -> sns:
+  store = {}
+
+  for field in CONFIG.log_fields:
+    value = locals_.get(field, None)
+    if value is None:
+      continue
+    store.update({field: value})
+
+  level = locals_.get('level', 'info')
+  return {level: store}
+
+
+def format_as_json(log: dict) -> str:
+  return json.dumps(log, default=set_default)
+
+
+def format_as_yaml(log: dict) -> str:
+  return pyyaml.dump(log, default_flow_style=False)
+
+
+def format_log(
+  format: str = '',
+  log: Any | None = None,
+) -> str:
+  format_ = str(format).lower()
+  format_ = format_ if format_ in CONFIG.formats else 'yaml'
+  formatter = f'format_as_{format_}'
+  formatter = LOCALS[formatter]
+
+  try:
+    log = formatter(log=log)
+  except Exception as error:
+    _ = error
+    log = str(log)
+
+  return log
+
+
+def do_nothing(*args, **kwargs) -> None:
+  _ = args, kwargs
+
+
+def handle_log(
+    log: dict = {},
+    level: str = '',
+    error: Exception | None = None,
+    debug: bool = False,
+    standard_output: bool = False,
+) -> int:
+  flags = True in [
+    isinstance(error,Exception),
+    level == 'error', ]
+
+  debug = debug or CONFIG.environment.DEBUG
+
+  flags = True in [flags, debug, standard_output, ]
+  standard_output = True if flags else standard_output
+
+  a = write_to_log(level=level, log=log)
+  b = write_to_cli(
+    debug=debug,
+    standard_output=standard_output,
+    log=log, )
+  return a + b
+
+
+def write_to_log(
+  level: str = '',
+  log: Any | None = None,
+) -> int:
+  method = getattr(
+    LOGGER,
+    str(level).lower(),
+    LOGGER.debug if LOGGER else do_nothing, )
+  method(f'{log}\n')
+  return 1
+
+
+def write_to_cli(
+  standard_output: bool = False,
+  debug: bool = False,
+  error: dict | None = None,
+  level: str = '',
+  log: Any | None = None,
+) -> int:
+  flags = sum([
+    standard_output is True,
+    debug is True,
+    error is not None,
+    level in ['error', 'exception'],
+  ]) > 0
+  status = 0
+  if flags:
+    status = 1
+    print(log)
+  return status
+
+
 
 
 # trunk-ignore(ruff/PLR0911)
@@ -97,77 +255,18 @@ def set_default(object: Any) -> Any:
 
     try:
       return dc.asdict(object)
-    except Exception as e:
-      _ = e
+    except Exception as error:
+      print(error)
       return object.__dict__
 
     if dc.is_dataclass(object):
       return dc.asdict(object)
 
-    if isinstance(object, sns):
+    if hasattr(object, '__dict__'):
       return object.__dict__
 
   print(f'Cannot serialize object of type {type(object).__name__}')
   return str(object)
-
-
-def format_as_json(log: dict) -> str:
-  return json.dumps(log, default=set_default)
-
-
-def format_as_yaml(log: dict) -> str:
-  return pyyaml.dump(log, default_flow_style=False)
-
-
-def format_written_log(data: sns) -> str:
-  formatter = f'format_as_{data.format}'
-  formatter = LOCALS.get(formatter, format_as_yaml)
-
-  field = '__dict__'
-  temp = data.log if not hasattr(data.log, field) else getattr(
-    data.log,
-    field,
-    None, )
-  temp = {data.level: temp}
-
-  try:
-    data.log = formatter(log=temp)
-  except Exception as e:
-    _ = e
-    data.log = str(temp)
-
-  return data
-
-
-def check_log_for_error(data: dict | None = None) -> sns:
-  data = sns(**data)
-  error = None
-
-  if isinstance(data.log, dict):
-    error = data.log.get('error', None) or data.log.get('exception', None)
-  else:
-    error = getattr(data.log, 'error', None) or getattr(data.log, 'exception', None)
-
-  flags = sns(
-    exception=isinstance(error, Exception),
-    level=data.level in ['error', 'exception'], )
-
-  if not flags.exception and not flags.level:
-    return data
-
-  if not flags.exception and flags.level:
-    data.standard_output = True
-    data.level = 'error'
-    return data
-
-  if flags.exception:
-    error = format_exception_and_trace(exception=error)
-    setattr(data.log, 'error', error)
-    data.standard_output = True
-    data.level = 'error'
-    return data
-
-  return data
 
 
 def get_timestamp() -> float:
@@ -219,48 +318,10 @@ def create_logger(
   return data
 
 
-def do_nothing(*args, **kwargs) -> None:
-  _ = args, kwargs
-
-
-def format_exception_and_trace(exception: Exception | None = None) -> dict:
-  trace = []
-  tb = exception.__traceback__
-
-  while tb is not None:
-    store = dict(
-      file=tb.tb_frame.f_code.co_filename,
-      name=tb.tb_frame.f_code.co_name,
-      line=tb.tb_lineno, )
-    trace.append(store)
-    tb = tb.tb_next
-
-  return dict(
-    name=type(exception).__name__,
-    description=str(exception),
-    trace=trace, )
-
-
-def write_to_log(data: sns) -> int:
-  method = getattr(
-    LOGGER,
-    str(data.level).lower(),
-    LOGGER.debug if LOGGER else do_nothing, )
-  method(data.log)
-  return 1
-
-
-def write_to_cli(data: sns) -> int:
-  if not data.standard_output:
-    return 0
-  print(data.log)
-  return 1
-
-
 def examples() -> None:
   from main.utils import invoke_testing_method
 
-  invoke_testing_method.main()
+  invoke_testing_method.main('.')
 
 
 if __name__ == '__main__':

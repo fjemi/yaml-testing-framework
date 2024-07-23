@@ -5,7 +5,7 @@
 from types import SimpleNamespace as sns
 from typing import Any, Callable
 
-from main.utils import get_config
+from main.utils import get_config, logger
 
 
 CONFIG = get_config.main()
@@ -64,10 +64,14 @@ def cast_nonetype_packed(
   _ = object
 
   try:
-    return method(None)
-  except Exception as e:
-    _ = e
+    return method()
+  except Exception as error:
+    logger.main(error=error, arguments=locals())
+
+  try:
     return method(**{})
+  except Exception as error:
+    logger.main(error=error, arguments=locals())
 
 
 def cast_list_packed(
@@ -95,15 +99,7 @@ def cast_any_unpacked(
   object: Any | None = None,
   method: Callable | None = None,
 ) -> sns | None:
-  try:
-    return method(**object)
-  except Exception as e:
-    _ = e
-
-  try:
-    return method(*object)
-  except Exception as e:
-    _ = e
+  return method(object)
 
 
 def examples() -> None:

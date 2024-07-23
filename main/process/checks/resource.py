@@ -6,7 +6,12 @@ from types import ModuleType
 from types import SimpleNamespace as sns
 from typing import Any, Callable
 
-from main.utils import get_config, get_module, invoke_testing_method, schema
+from main.utils import (
+  logger,
+  get_config,
+  get_module,
+  invoke_testing_method,
+  schema, )
 
 
 MODULE = __file__
@@ -21,8 +26,9 @@ LOCALS = locals()
 def set_exception(check: Any) -> Any:
   try:
     sum([1, '1'])
-  except Exception as exception:
-    check.exception = exception
+  except Exception as error:
+    logger.main(error=error)
+    check.exception = error
   return check
 
 

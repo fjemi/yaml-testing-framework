@@ -52,7 +52,6 @@ def reset_route_values_cast_arguments(
   return [sns(**item) for item in data]
 
 
-
 def examples() -> None:
   from main.utils import invoke_testing_method
 

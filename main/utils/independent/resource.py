@@ -66,9 +66,10 @@ def get_function(function: str | None = None) -> Awaitable | Callable:
 def add(a: int, b: int | str) -> sns | Exception:
   try:
     c = sum([a, b])
-    return sns(c=c)
-  except Exception as e:
-    return e
+  except Exception as error:
+    c = error
+
+  return sns(c=c)
 
 
 def subtract(a: int, c: int) -> dict:
