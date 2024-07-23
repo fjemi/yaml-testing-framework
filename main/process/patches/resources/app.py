@@ -288,14 +288,14 @@ def get_parent_cast_output(output: list | None) -> list:
   if not isinstance(output, list):
     return output
 
-  def inner(value: Any) -> str:
+  def caster(value: Any) -> str:
     if isinstance(value, ModuleType):
       value = value.__file__
     if hasattr(value, '__dict__'):
       value = value.__dict__
     return value
 
-  return [inner(value=value) for value in output]
+  return [caster(value=value) for value in output]
 
 
 def patch_resource(patch: str | None = None) -> None | str:

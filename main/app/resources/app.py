@@ -33,12 +33,12 @@ def list_sns_to_list_dict(output: list) -> list:
   if not isinstance(output, list):
     return output
 
-  def inner(item: sns) -> dict:
+  def caster(item: sns) -> dict:
     if isinstance(item.output, Exception):
       item.output = type(item.output).__name__
     return item.__dict__
 
-  return [inner(item=item) for item in output]
+  return [caster(item=item) for item in output]
 
 
 async def subtract(data: dict) -> int:

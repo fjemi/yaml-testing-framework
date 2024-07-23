@@ -95,20 +95,20 @@ def get_exception_name(exception: Exception | None = None) -> str | None:
 
 def wrapped(func):
 
-  def inner(*args, **kwargs):
+  def wrapped_inner(*args, **kwargs):
     return func(*args, **kwargs)
 
-  inner.__wrapped__ = func
+  wrapped_inner.__wrapped__ = func
 
-  return inner
+  return wrapped_inner
 
 
 def closure(func):
 
-  def inner(*args, **kwargs):
+  def closure_inner(*args, **kwargs):
     return func(*args, **kwargs)
 
-  return inner
+  return closure_inner
 
 
 def callable() -> str:

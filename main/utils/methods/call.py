@@ -43,9 +43,9 @@ def get_task_from_event_loop(task: Any | None = None) -> Any:
   return task
 
 
-def wrapper(method: Callable) -> Callable:
+def caller_wrapper(method: Callable) -> Callable:
 
-  def inner(*args, **kwargs) -> sns:
+  def caller_wrapper_inner(*args, **kwargs) -> sns:
     output = None
     exception = None
 
@@ -60,11 +60,11 @@ def wrapper(method: Callable) -> Callable:
 
     return sns(output=output, exception=exception)
 
-  inner.__wrapped__ = method
-  return inner
+  caller_wrapper_inner.__wrapped__ = method
+  return caller_wrapper_inner
 
 
-@wrapper
+@caller_wrapper
 def unpack_mapping(
   arguments: Any,
   method: Callable,
@@ -72,7 +72,7 @@ def unpack_mapping(
   return method(**arguments)
 
 
-@wrapper
+@caller_wrapper
 def unpack_list(
   arguments: Any,
   method: Callable,
@@ -80,7 +80,7 @@ def unpack_list(
   return method(*arguments)
 
 
-@wrapper
+@caller_wrapper
 def pack_any(
   arguments: Any,
   method: Callable,

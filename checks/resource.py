@@ -141,11 +141,11 @@ async def awaitable_method(*args, **kwargs) -> str:
 
 def wrapper(func) -> Callable:
 
-  def inner(*args, **kwargs) -> Any:
+  def wrapper_inner(*args, **kwargs) -> Any:
     return func(*args, **kwargs)
 
-  inner.__wrapped__ = func
-  return inner
+  wrapper_inner.__wrapped__ = func
+  return wrapper_inner
 
 
 @wrapper

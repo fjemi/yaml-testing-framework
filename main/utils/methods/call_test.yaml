@@ -133,7 +133,7 @@ tests:
     - method: check_equals
       << : *CHECKS
       expected: awaitable_output
-- function: wrapper
+- function: caller_wrapper
   description: Decorator that handles exceptions and formats output from "call" handlers
   cast_arguments:
   - field: method

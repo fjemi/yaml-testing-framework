@@ -36,7 +36,7 @@ def get_child_from_iterable(
   default: Any | None = None,
 ) -> Iterable | None:
 
-  def inner(
+  def get_index(
     item: Any | None = None,
     i: int | None = None,
   ) -> int | None:
@@ -46,7 +46,7 @@ def get_child_from_iterable(
       return 1
 
   parameters = str(route).split('|')
-  parameters = [inner(item=item, i=i) for i, item in enumerate(parameters)]
+  parameters = [get_index(item=item, i=i) for i, item in enumerate(parameters)]
   return parent[slice(*parameters)] or default
 
 
