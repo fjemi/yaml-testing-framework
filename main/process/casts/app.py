@@ -12,6 +12,7 @@ from main.utils import (
   get_module,
   objects,
   independent,
+  logger,
 )
 
 
@@ -64,8 +65,13 @@ def main(
   return sns(object=locals_.object)
 
 
-def do_nothing(*args, **kwargs) -> None:
-  _ = args, kwargs
+def method_does_not_exist(method: str) -> None:
+  logger.main(level='warning', message='Method {method} does not exist')
+
+  def method_does_not_exist_inner(*args, **kwargs) -> None:
+    _ = args, kwargs
+
+  return method_does_not_exist_inner
 
 
 def get_method(
@@ -76,10 +82,8 @@ def get_method(
   module = resource or module
   module = get_module.main(module=module, default=module).module
   route = str(method)
-  method = objects.get(
-    parent=module,
-    route=route,
-    default=do_nothing, )
+  method = objects.get(parent=module, route=route)
+  method = method if isinstance(method, Callable) else method_does_not_exist(method=route)
   return sns(method=method)
 
 
