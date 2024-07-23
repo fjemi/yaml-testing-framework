@@ -16,7 +16,7 @@ def get_setup_object(*args, **kwargs) -> str:
   return 'setup_object'
 
 
-def get_method(method: str | None = None) -> Callable | None:
+def get_method(method: str = '') -> Callable | None:
   return LOCALS.get(str(method), None)
 
 

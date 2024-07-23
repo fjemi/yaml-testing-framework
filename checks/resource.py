@@ -42,7 +42,7 @@ def get_output_resource(output: str | None = None) -> ModuleType:
   return LOCALS.get(output, None)
 
 
-def get_method(method: str | None) -> Callable | None:
+def get_method(method: str = '') -> Callable | None:
   method = str(method)
   return LOCALS.get(method, None)
 
