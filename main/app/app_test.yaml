@@ -21,6 +21,8 @@ resources:
   ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/app/resources/add.py
 - &ADD_TEST_PATH
   ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/app/resources/add_test.yaml
+- &GLOBAL_RESOURCE
+  resource: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/resources/app.py
 
 
 tests:
@@ -68,7 +70,6 @@ tests:
       expected:
         id: ' None.None - None '
         id_short: None.None
-        log: Generated test id for None.None
     - method: check_type
       << : *CHECKS
       expected: SimpleNamespace
@@ -86,12 +87,11 @@ tests:
       expected:
         id: ' module_route.function - key - description_b '
         id_short: module_route.function
-        log: Generated test id for module_route.function
 - function: get_function
   description: Returns an existing function to test
   cast_arguments:
   - method: wrapper_get_module
-    << : *RESOURCE
+    << : *GLOBAL_RESOURCE
     field: module
   tests:
   - description: Function does not exist in module
@@ -99,14 +99,11 @@ tests:
       function: does_not_exist
       module: *RESOURCE_PATH
     checks:
-    - method: check_exception
+    - method: check_sns
       << : *CHECKS
-      field: log.exception
-      expected: RuntimeError
-    - method: check_equals
-      << : *CHECKS
-      field: log.level
-      expected: error
+      expected:
+        function: null
+        function_name: does_not_exist
   - description: Function exists in module
     arguments:
       function: multiply
@@ -222,13 +219,11 @@ tests:
     arguments:
       locations: []
     checks:
-    - method: check_sns
+    - method: check_equals
       << : *CHECKS
-      field: log
+      field: __dict__
       expected:
-        message: No tests collected
-        level: warning
-        standard_output: true
+        tests: []
   - description: Location of files associated with an "add" module
     arguments:
       locations:

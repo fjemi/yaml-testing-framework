@@ -6,14 +6,8 @@ from types import ModuleType
 from types import SimpleNamespace as sns
 from typing import Any
 
-from main.utils import get_module
-
 
 LOCALS = locals()
-
-
-def wrapper_get_module(module: str) -> ModuleType:
-  return get_module.main(location=module).module
 
 
 def get_resource(resource: str | None = None) -> Any:
@@ -39,12 +33,12 @@ def list_sns_to_list_dict(output: list) -> list:
   if not isinstance(output, list):
     return output
 
-  def inner(item: sns) -> dict:
+  def caster(item: sns) -> dict:
     if isinstance(item.output, Exception):
       item.output = type(item.output).__name__
     return item.__dict__
 
-  return [inner(item=item) for item in output]
+  return [caster(item=item) for item in output]
 
 
 async def subtract(data: dict) -> int:

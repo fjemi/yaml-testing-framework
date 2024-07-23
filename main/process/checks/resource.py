@@ -6,7 +6,12 @@ from types import ModuleType
 from types import SimpleNamespace as sns
 from typing import Any, Callable
 
-from main.utils import get_config, get_module, invoke_testing_method, schema
+from main.utils import (
+  logger,
+  get_config,
+  get_module,
+  invoke_testing_method,
+  schema, )
 
 
 MODULE = __file__
@@ -21,8 +26,9 @@ LOCALS = locals()
 def set_exception(check: Any) -> Any:
   try:
     sum([1, '1'])
-  except Exception as exception:
-    check.exception = exception
+  except Exception as error:
+    logger.main(error=error)
+    check.exception = error
   return check
 
 
@@ -41,10 +47,6 @@ def check_equals(
 
 def check_method_a() -> None:
   return
-
-
-def wrapper_get_module(module: str | None = None) -> ModuleType:
-  return get_module.main(module=module).module
 
 
 def check_resource(
@@ -82,26 +84,23 @@ def main_cast_arguments(output: dict | None = None) -> sns:
   return output.__dict__
 
 
-def list_sns_to_list_dict(checks: list) -> list:
-  if not isinstance(checks, list):
-    return checks
-
-  def inner(item: sns) -> dict:
-    return item.__dict__
-
-  return [inner(item=item) for item in checks]
+def list_sns_to_list_dict(checks: list | None = None) -> list:
+  checks = checks or []
+  for i, item in enumerate(checks):
+    checks[i] = item.__dict__
+  return checks
 
 
 def main_cast_output(checks: list | None = None) -> list | None:
   if not isinstance(checks, list):
     return checks
 
-  def inner(check: sns) -> dict:
+  def caster(check: sns) -> dict:
     if isinstance(check.method, Callable):
       check.method = check.method.__name__
     return check.__dict__
 
-  return [inner(check=item) for item in checks]
+  return [caster(check=item) for item in checks]
 
 
 def convert_expected_and_output_to_yaml_cast_arguments(

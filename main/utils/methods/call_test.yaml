@@ -1,7 +1,6 @@
 TODO:
 - Add test for decorated function and awaitable to ./main/app_test.yaml
 - Finalize logging and tests
-- Think of moving format_exception_and_trace to logger
 - Finish test for the main function. May require a spy.
 - Add flag for silent logging in cases where an exception is the expected output
 
@@ -25,11 +24,11 @@ tests:
   - description: Undefined arguments
     arguments: {}
     checks:
-    - method: check_exception
+    - method: check_error
       << : *CHECKS
       field: exception
       expected: TypeError
-    - method: check_exception
+    - method: check_error
       << : *CHECKS
       field: output
       expected: TypeError
@@ -134,7 +133,7 @@ tests:
     - method: check_equals
       << : *CHECKS
       expected: awaitable_output
-- function: wrapper
+- function: caller_wrapper
   description: Decorator that handles exceptions and formats output from "call" handlers
   cast_arguments:
   - field: method
@@ -180,11 +179,11 @@ tests:
       arguments: [0, 0]
       method: add
     checks:
-    - method: check_exception
+    - method: check_error
       << : *CHECKS
       field: output
       expected: TypeError
-    - method: check_exception
+    - method: check_error
       << : *CHECKS
       field: exception
       expected: TypeError
@@ -227,11 +226,11 @@ tests:
         c: 0
       method: add
     checks:
-    - method: check_exception
+    - method: check_error
       << : *CHECKS
       field: output
       expected: TypeError
-    - method: check_exception
+    - method: check_error
       << : *CHECKS
       field: exception
       expected: TypeError
@@ -249,11 +248,11 @@ tests:
         b: 0
       method: sum_
     checks:
-    - method: check_exception
+    - method: check_error
       << : *CHECKS
       field: output
       expected: TypeError
-    - method: check_exception
+    - method: check_error
       << : *CHECKS
       field: exception
       expected: TypeError
@@ -294,7 +293,7 @@ tests:
     checks:
     - method: check_length
       << : *CHECKS
-      expected: 1
+      expected: 2
     - method: check_type
       << : *CHECKS
       expected: list
@@ -304,6 +303,7 @@ tests:
       - method: list_methods_to_list_strings
         << : *RESOURCE
       expected:
+      - unpack_list
       - pack_any
   - description: Arguments is a mapping
     arguments:
@@ -354,7 +354,7 @@ tests:
       method: add
       handlers: []
     checks:
-    - method: check_exception
+    - method: check_error
       << : *CHECKS
       expected: IndexError
   - description: Single handler
@@ -394,7 +394,7 @@ tests:
       - unpack_list
       - pack_any
     checks:
-    - method: check_exception
+    - method: check_error
       << : *CHECKS
       field: output
       expected: TypeError

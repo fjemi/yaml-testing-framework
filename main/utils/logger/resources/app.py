@@ -4,6 +4,7 @@
 
 import logging
 from typing import Any, Callable
+from types import SimpleNamespace as sns
 
 from main.utils import invoke_testing_method
 from main.utils import logger as logger_resource
@@ -27,6 +28,14 @@ def list_sns_to_list_dict(output: Any) -> Any:
     return output
 
   return [item.__dict__ for item in output]
+
+
+def get_error(exception: str | None = None) -> Exception | None:
+  exceptions = sns(
+    exception=Exception(),
+    runtime_error=RuntimeError('runtime_error'),
+    type_error=TypeError(), )
+  return getattr(exceptions, str(exception), None)
 
 
 def examples() -> None:

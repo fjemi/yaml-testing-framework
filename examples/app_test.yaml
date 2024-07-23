@@ -17,7 +17,7 @@ tests:
       b: '1'
       method: subtract
     checks:
-    - method: check_exception
+    - method: check_error
       << : *CHECKS
       field: result
       expected: TypeError

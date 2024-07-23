@@ -3,10 +3,7 @@ TODO:
 - each run should be a separate log file -> timestamp.count.exception or timestamp as the folder
 - Create the directories for the logs
 - Add log level -> system.normal, system.warning, system.exception. For testing user defined function or user.
-- Unique name for modules when patching or running tests in multiple threads, this will prevent patches from being overridden/shared between tests
-- Assign test key, timestamp or unique id for each test
 - expose set_default and other functions for dumping/loading json
-- Check for duplication between logger and independent
 - Only log logs with content
 
 
@@ -14,14 +11,13 @@ help:
 - https://stackoverflow.com/questions/11232230/logging-to-two-files-with-different-settings
 
 
-log_dir: &LOG_DIR ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/logger/resources/data
-
-
 resources:
 - &RESOURCE
-  resource: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/logger/resources/app.py
+  resource: &RESOURCE_PATH ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/logger/resources/app.py
 - &CHECKS
   resource: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/app.py
+- &LOG_DIR
+  ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/logger/resources/data
 
 
 tests:
@@ -46,115 +42,148 @@ tests:
     - method: check_equals
       << : *CHECKS
       expected: 0
-  # - description: Log info
-  #   arguments:
-  #     level: info
-  #     log: log
-  #     debug: True
-  #     enabled: True
-  #     standard_output: true
-  #   checks:
-  #   - method: check_equals
-  #     << : *CHECKS
-  #     expected: 1
-  # - description: Only logging enabled
-  #   arguments:
-  #     data_:
-  #       a: a
-  #       b: b
-  #     format_: yaml
-  #     level: info
-  #     location: null
-  #     timestamp: timestamp
-  #     standard_output: False
-  #     enabled: True
-  #     log_dir: *LOG_DIR
-  # - description: Logging and standard output are disabled
-  #   arguments:
-  #     data_:
-  #       a: a
-  #       b: b
-  #     format_: yaml
-  #     level: info
-  #     location: null
-  #     timestamp: timestamp
-  #     standard_output: False
-  #     enabled: False
-  #     log_dir: *LOG_DIR
-  # - description: Only standard output is enabled
-  #   arguments:
-  #     data_:
-  #       a: a
-  #       b: b
-  #     format_: yaml
-  #     level: info
-  #     location: null
-  #     timestamp: timestamp
-  #     standard_output: True
-  #     enabled: False
-  #     log_dir: *LOG_DIR
-# - function: set_default_arguments
-#   description: Formats and returns objects that are not JSON serializable
-#   cast_arguments:
-#   - method: set_default_resource
-#     << : *RESOURCE
-#     field: object
-#   tests:
-#   - description: >
-#       Return the object cast as a string when kind not defined or object is not
-#       an Exception
-#     arguments:
-#       object: string
-#     checks:
-#     - method: check_equals
-#       << : *CHECKS
-#       expected: string
-#   - description: Undefined object produces an error
-#     arguments:
-#       object: null
-#     checks:
-#     - method: check_equals
-#       << : *CHECKS
-#       expected: None
-#   - description: When the object is a module, return its location
-#     arguments:
-#       object: module
-#     checks:
-#     - method: check_equals
-#       << : *CHECKS
-#       expected: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/_resources/logger/module.py
-#   - description: Object is a function
-#     arguments:
-#       object: function_
-#     checks:
-#     - method: check_equals
-#       << : *CHECKS
-#       expected: function_
-#   - description: Object is of type sh`Test`
-#     arguments:
-#       object: Test
-#     checks:
-#     - method: check_substring_in_string
-#       << : *CHECKS
-#       expected: .main.logger._resources.app.Test
-#   - description: Object is of type sh`Exception`
-#     arguments:
-#       object: Exception
-#     checks:
-#     - method: check_equals
-#       << : *CHECKS
-#       expected:
-#         exception: TypeError
-#         description: 'unsupported operand type(s) for +: ''int'' and ''str'''
-# - function: set_default
-#   description: 
-#   tests:
-#   - description:
-#     arguments:
-#     checks:
-#     - method: check_equals
-#       << : *CHECKS
-#       expected: 
+  - description: Log info
+    arguments:
+      level: info
+      log: log
+      debug: True
+      enabled: True
+      standard_output: true
+    checks:
+    - method: check_equals
+      << : *CHECKS
+      expected: 0
+  - description: Only logging enabled
+    arguments:
+      data_:
+        a: a
+        b: b
+      format_: yaml
+      level: info
+      location: null
+      timestamp: timestamp
+      standard_output: False
+      enabled: True
+      log_dir: *LOG_DIR
+  - description: Logging and standard output are disabled
+    arguments:
+      data_:
+        a: a
+        b: b
+      format_: yaml
+      level: info
+      location: null
+      timestamp: timestamp
+      standard_output: False
+      enabled: False
+      log_dir: *LOG_DIR
+  - description: Only standard output is enabled
+    arguments:
+      data_:
+        a: a
+        b: b
+      format_: yaml
+      level: info
+      location: null
+      timestamp: timestamp
+      standard_output: True
+      enabled: False
+      log_dir: *LOG_DIR
+- function: get_location_route
+  description: >
+    Returns the dot delimited route to the method from the root directory of
+    a project
+  tests:
+  - description: Undefined arguments
+    arguments: {}
+    checks:
+    - method: check_equals
+      << : *CHECKS
+      expected: ..
+  - description: Name of method and location of module method is in
+    arguments:
+      location: location
+      method: method
+    checks:
+    - method: check_equals
+      << : *CHECKS
+      expected: location.method
+- function: format_error
+  description: >
+    Returns a dictionary containing the name, description and traceback for
+    an exception
+  tests:
+  - description: Undefined arguments
+    arguments: {}
+    checks:
+    - << : *CHECKS
+      method: check_equals
+      expected: null
+  - description: Error is not an exception
+    arguments:
+      error: error
+    checks:
+    - << : *CHECKS
+      method: check_equals
+      expected: error
+  - description: Error is an exception
+    cast_arguments:
+    - method: get_error
+      << : *RESOURCE
+      field: error
+    arguments:
+      error: runtime_error
+    checks:
+    - << : *CHECKS
+      method: check_equals
+      expected:
+        description: runtime_error
+        name: RuntimeError
+        trace: []
+- function: get_log
+  description: >
+    Returns a dictionary containing defined, specified fields from the
+    `locals_` arguments
+  tests:
+  - description: Undefined arguments
+    arguments: {}
+    checks:
+    - method: check_equals
+      << : *CHECKS
+      expected:
+        info: {}
+  - description: Defined arguments
+    arguments:
+      locals_:
+        message: message
+        arguments: arguments
+        error: error
+        output: output
+        timestamps: timestamps
+        location: location
+    checks:
+    - method: check_equals
+      << : *CHECKS
+      expected:
+        info:
+          message: message
+          arguments: arguments
+          error: error
+          output: output
+          timestamps: timestamps
+          location: location
+  - description: Defined arguments
+    arguments:
+      locals_:
+        level: level
+        a: a
+        message: message
+    checks:
+    - method: check_equals
+      << : *CHECKS
+      expected:
+        level:
+          message: message
 - function: format_as_json
   description: Converts data to JSON
   tests:
@@ -204,6 +233,132 @@ tests:
           b: b
 
           '
+- function: format_log
+  description: Handles formatting log as json or yaml
+  tests:
+  - description: Undefined arguments
+    arguments:
+      format: null
+      log: null
+    checks:
+    - << : *CHECKS
+      method: check_equals
+      expected: "null\n..."
+  - description: Format as YAML
+    arguments:
+      format: yaml
+      log:
+        message: message
+    checks:
+    - << : *CHECKS
+      method: check_equals
+      expected: "message: message\n"
+  - description: Format as JSON
+    arguments:
+      format: json
+      log:
+        message: message
+    checks:
+    - << : *CHECKS
+      method: check_equals
+      expected: '{"message": "message"}'
+  - description: Format as YAML
+    arguments:
+      format: yaml
+      log:
+        message: message
+    checks:
+    - << : *CHECKS
+      method: check_equals
+      expected: "message: message\n"
+- function: write_to_log
+  description: >
+    Calls the method to write to log file if the method exists, otherwise
+    does nothing
+  tests:
+  - description: Undefined arguments
+    arguments:
+      level: null
+      log: null
+    checks:
+    - method: check_equals
+      << : *CHECKS
+      expected: 1
+  - description: Data is non-empty
+    arguments:
+      level: level
+      log: log
+    checks:
+    - method: check_equals
+      << : *CHECKS
+      expected: 1
+- function: write_to_cli
+  description: Prints log in terminal and returns 1, otherwise returns 0
+  tests:
+  - description: Undefined arguments
+    arguments: {}
+    checks:
+    - << : *CHECKS
+      method: check_equals
+      expected: 0
+  - description: Standard output is true
+    arguments:
+      standard_output: true
+    checks:
+    - << : *CHECKS
+      method: check_equals
+      expected: 1
+  - description: Level is an error
+    arguments:
+      level: error
+    checks:
+    - << : *CHECKS
+      method: check_equals
+      expected: 1
+  - description: Error is not None
+    arguments:
+      error: error
+    checks:
+    - << : *CHECKS
+      method: check_equals
+      expected: 1
+  - description: Debug is true
+    arguments:
+      debug: true
+    checks:
+    - << : *CHECKS
+      method: check_equals
+      expected: 1
+- function: handle_log
+  description: Handles writing a log to a file or the terminal
+  tests:
+  - description: >
+      Undefined arguments. Will always write log to file or return `1`
+    arguments: {}
+    checks:
+    - method: check_equals
+      << : *CHECKS
+      expected: 1
+  - description: Write log to file. Returns 1
+    arguments:
+      standard_output: false
+      debug: false
+      level: level
+      log: log
+    checks:
+    - method: check_equals
+      << : *CHECKS
+      expected: 1
+  - description: Write log to file and the terminal. Returns 2
+    arguments:
+      standard_output: True
+      debug: debug
+      level: level
+      log: log
+    checks:
+    - method: check_equals
+      << : *CHECKS
+      expected: 2
 - function: get_timestamp
   description: Returns a timestamp that is seconds since epoch
   tests:
@@ -246,7 +401,7 @@ tests:
   #   arguments:
   #     location: null
   #   checks:
-  #   - method: check_exception
+  #   - method: check_error
   #     << : *CHECKS
   #     expected: TypeError
   - description: Location is defined

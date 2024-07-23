@@ -20,11 +20,11 @@ schema:
     - name: phase_
       type: str
       description: The current phase of the testing process
-      default: null
+      default: ''
     - name: action
       type: str
       description: The action to perform, setup or teardown, for an object
-      default: null
+      default: ''
     - name: resource
       type: str
       description: >

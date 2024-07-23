@@ -10,7 +10,13 @@ from typing import Any, Callable, Iterable
 
 from pebble import concurrent
 
-from main.utils import get_config, objects, independent, methods, get_module
+from main.utils import (
+  logger,
+  get_config,
+  objects,
+  independent,
+  methods,
+  get_module, )
 
 
 MODULE = __file__
@@ -127,8 +133,9 @@ def get_future(
 
   try:
     task = method(**arguments)
-  except Exception as e:
-    task = e
+  except Exception as error:
+    logger.main(error=error)
+    task = error
 
   return methods.call.get_task_from_event_loop(task=task)
 

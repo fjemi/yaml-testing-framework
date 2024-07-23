@@ -121,7 +121,7 @@ tests:
       resource_module: null
       resource_suffix: null
     checks:
-    - method: check_exception
+    - method: check_error
       << : *CHECKS
       expected: TypeError
   - description: Undefined arguments

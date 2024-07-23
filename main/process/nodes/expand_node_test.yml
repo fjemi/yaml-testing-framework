@@ -55,6 +55,7 @@ tests:
           module_route: null
           output: null
           patches: []
+          phase_: function
           spies: []
           tests: null
           yaml: null
@@ -91,6 +92,7 @@ tests:
           module_route: module_route
           output: null
           patches: []
+          phase_: function
           spies: []
           tests: null
           yaml: yaml
@@ -112,6 +114,7 @@ tests:
           module_route: module_route
           output: null
           patches: []
+          phase_: function
           spies: []
           tests: null
           yaml: yaml
@@ -151,6 +154,7 @@ tests:
           module_route: configurations
           output: null
           patches: []
+          phase_: function
           spies: []
           tests: null
           yaml: configurations
@@ -173,6 +177,7 @@ tests:
           module_route: configurations
           output: null
           patches: []
+          phase_: function
           spies: []
           tests: null
           yaml: configurations
@@ -195,6 +200,7 @@ tests:
           module_route: configurations
           output: null
           patches: []
+          phase_: function
           spies: []
           tests: null
           yaml: configurations
@@ -217,7 +223,7 @@ tests:
         description: []
         environment: {}
         exclude_methods: []
-          include_methods: []
+        include_methods: []
         function: null
         function_name: null
         id: null
@@ -253,7 +259,7 @@ tests:
         description: []
         environment: {}
         exclude_methods: []
-          include_methods: []
+        include_methods: []
         function: null
         function_name: null
         id: null
@@ -322,6 +328,7 @@ tests:
           module_route: root_node
           output: null
           patches: []
+          phase_: function
           spies: []
           tests: null
           yaml: root_node
@@ -346,6 +353,7 @@ tests:
           module_route: root_node
           output: null
           patches: []
+          phase_: function
           spies: []
           tests: null
           yaml: root_node
@@ -410,7 +418,7 @@ tests:
             - nested_0
             environment: {}
             exclude_methods: []
-          include_methods: []
+            include_methods: []
             function: null
             function_name: null
             id: null
@@ -421,6 +429,7 @@ tests:
             module_route: null
             output: null
             patches: []
+            phase_: function
             spies: []
             tests: null
             yaml: null
@@ -434,7 +443,7 @@ tests:
             - nested_1
             environment: {}
             exclude_methods: []
-          include_methods: []
+            include_methods: []
             function: null
             function_name: null
             id: null
@@ -445,6 +454,7 @@ tests:
             module_route: null
             output: null
             patches: []
+            phase_: function
             spies: []
             tests: null
             yaml: null
@@ -458,7 +468,7 @@ tests:
             - nested_2
             environment: {}
             exclude_methods: []
-          include_methods: []
+            include_methods: []
             function: null
             function_name: null
             id: null
@@ -469,6 +479,7 @@ tests:
             module_route: null
             output: null
             patches: []
+            phase_: function
             spies: []
             tests: null
             yaml: null

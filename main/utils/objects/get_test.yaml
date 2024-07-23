@@ -6,7 +6,9 @@ resources:
 - &CHECKS
   resource: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/app.py
 - &RESOURCE
-  resource: &RESOURCE_PATH {YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/objects/get_resource.py
+  resource: &RESOURCE_PATH ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/objects/get_resource.py
+- &GLOBAL_RESOURCE
+  resource: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/resources/app.py
 
 
 tests:
@@ -32,7 +34,7 @@ tests:
   - description: Parent is a module and child is route to builtins function str
     cast_arguments:
     - method: wrapper_get_module
-      << : *RESOURCE
+      << : *GLOBAL_RESOURCE
       field: parent
     arguments:
       parent: *RESOURCE_PATH
@@ -57,7 +59,7 @@ tests:
   - description: Undefined arguments
     arguments: {}
     checks:
-    - method: check_exception
+    - method: check_error
       << : *CHECKS
       expected: TypeError
   - description: Parent is an string. Return char at index 1
@@ -117,7 +119,7 @@ tests:
   - description: Parent is a module
     cast_arguments:
     - method: wrapper_get_module
-      << : *RESOURCE
+      << : *GLOBAL_RESOURCE
       field: parent
     arguments:
       parent: *RESOURCE_PATH
@@ -160,46 +162,55 @@ tests:
   description: >
     Returns the value of an attribute if it exists in object or a default value
     if it does not exist
-  cast_arguments:
-  - method: sns
-    field: parent
-    unpack: true
   tests:
-  - description: Attribute does not exist in simple name space object
+  - description: Object is a simple name space
+    cast_arguments:
+    - method: sns
+      field: parent
+      unpack: true
+    tests:
+    - description: Attribute does not exist in object
+      arguments:
+        parent: {}
+        route: route
+        default: default
+      checks:
+      - method: check_equals
+        << : *CHECKS
+        expected: default
+    - description: Attribute does exists in object
+      arguments:
+        parent:
+          route: value
+        route: route
+        default: default
+      checks:
+      - method: check_equals
+        << : *CHECKS
+        expected: value
+  - description: Attribute exists in a module
+    cast_arguments:
+    - method: wrapper_get_module
+      << : *GLOBAL_RESOURCE
+      field: parent
     arguments:
-      parent: {}
+      parent: *RESOURCE_PATH
+      route: PARENT
+      default: default
+    checks:
+    - method: check_equals
+      << : *CHECKS
+      expected: PARENT
+  - description: Key exists does not exist in dictionary
+    arguments:
+      parent:
+        key: value
       route: route
       default: default
     checks:
     - method: check_equals
       << : *CHECKS
       expected: default
-  - description: Attribute exists in simple name space object
-    arguments:
-      parent:
-        route: value
-      route: route
-      default: default
-    checks:
-    - method: check_equals
-      << : *CHECKS
-      expected: value
-  - description: Attribute exists in a module
-    cast_arguments:
-    - method: wrapper_get_module
-      << : *RESOURCE
-      field: parent
-    arguments:
-      parent: *RESOURCE_PATH
-      route: *RESOURCE_PATH
-      default: default
-    checks:
-    - method: check_equals
-      << : *CHECKS
-      expected: *RESOURCE_PATH
-
-
-
 - function: get_child
   description: >
     Handles getting the value of a child object at a route in a parent object

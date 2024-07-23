@@ -16,9 +16,10 @@ tests:
   - description: Undefined arguments
     arguments: {}
     checks:
-    - method: check_exception
+    - method: check_sns
       << : *CHECKS
-      expected: TypeError
+      expected:
+        objects: null
   - description: Cast as string
     arguments:
       method: cast_as_str
@@ -78,7 +79,7 @@ tests:
   - description: Undefined arguments
     arguments: {}
     checks:
-    - method: check_exception
+    - method: check_error
       << : *CHECKS
       expected: TypeError
   - description: Unpack dict into casting method
@@ -112,7 +113,7 @@ tests:
   - description: Undefined arguments
     arguments: {}
     checks:
-    - method: check_exception
+    - method: check_error
       << : *CHECKS
       expected: TypeError
   - description: Call casting method with packed dict
@@ -148,9 +149,9 @@ tests:
   - description: Undefined arguments
     arguments: {}
     checks:
-    - method: check_exception
+    - method: check_equals
       << : *CHECKS
-      expected: TypeError
+      expected: null
   - description: Undefined arguments
     arguments:
       method: pack_nonetype
@@ -170,7 +171,7 @@ tests:
   - description: Undefined arguments
     arguments: {}
     checks:
-    - method: check_exception
+    - method: check_error
       << : *CHECKS
       expected: TypeError
   - description: Undefined arguments
@@ -191,7 +192,7 @@ tests:
   - description: Undefined arguments
     arguments: {}
     checks:
-    - method: check_exception
+    - method: check_error
       << : *CHECKS
       expected: TypeError
   - description: Unpack list into add method
@@ -228,7 +229,7 @@ tests:
   - description: Undefined arguments
     arguments: {}
     checks:
-    - method: check_exception
+    - method: check_error
       << : *CHECKS
       expected: TypeError
   - description: Sum list of numbers
@@ -249,7 +250,7 @@ tests:
   - description: Undefined arguments
     arguments: {}
     checks:
-    - method: check_exception
+    - method: check_error
       << : *CHECKS
       expected: TypeError
   - description: Inverse of number
@@ -278,13 +279,12 @@ tests:
   - description: Undefined arguments
     arguments: {}
     checks:
-    - method: check_equals
+    - method: check_error
       << : *CHECKS
-      expected: null
+      expected: TypeError
   - description: Temp object is a dict with correct keyword arguments
     arguments:
-      object:
-        a: 1
+      object: 1
       method: inverse
     checks:
     - method: check_equals
@@ -294,12 +294,11 @@ tests:
     arguments:
       object:
         a: 1
-        b: 1
       method: inverse
     checks:
-    - method: check_equals
+    - method: check_error
       << : *CHECKS
-      expected: null
+      expected: TypeError
   - description: Temp object is an simple name space object
     cast_arguments:
     - method: sns
@@ -310,9 +309,9 @@ tests:
         a: 1
       method: inverse
     checks:
-    - method: check_equals
+    - method: check_error
       << : *CHECKS
-      expected: null
+      expected: TypeError
   - description: Temp object is a list with nested dict
     arguments:
       object:
@@ -321,7 +320,7 @@ tests:
     checks:
     - method: check_equals
       << : *CHECKS
-      expected: null
+      expected: []
   - description: Temp object is a list
     arguments:
       object:
@@ -330,4 +329,4 @@ tests:
     checks:
     - method: check_equals
       << : *CHECKS
-      expected: -1
+      expected: []

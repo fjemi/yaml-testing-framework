@@ -71,11 +71,10 @@ def handle_id(
     description = f'- {description} '
     id_ = id_ + description
 
-  log = f'Generated test id for {id_short}'
-  return sns(
-    id=id_,
-    id_short=id_short,
-    log=log, )
+  logger.main(
+    message=f'Generated test id for {id_short}',
+    level='info', )
+  return sns(id=id_, id_short=id_short)
 
 
 def get_function(
@@ -83,13 +82,13 @@ def get_function(
   module: ModuleType | None = None,
 ) -> sns:
   function_ = objects.get(parent=module, route=function)
-  if isinstance(function_, Callable):
-    return sns(function=function_, function_name=function)
-
-  message = 'Could not retrieve {} from {}'.format(function, module.__file__)
-  log = sns(exception=RuntimeError(message), level='error', )
-
-  return sns(log=log)
+  flag = not isinstance(function_, Callable)
+  logger.do_nothing() if flag else logger.main(
+    message='Method `{}` does not exist in {}'.format(
+      function, module.__file__),
+    enabled=flag,
+    level='warning', )
+  return sns(function=function_, function_name=function)
 
 
 def run_test_for_function(test: sns | None = None) -> sns:
@@ -127,14 +126,12 @@ def run_tests(locations: List[sns] | None = None) -> sns:
       data=item, )
     tests.extend(result.tests)
 
-  log = None
-  if not tests:
-    log = sns(
-      message='No tests collected',
-      level='warning',
-      standard_output=True, )
-
-  return sns(tests=tests, log=log)
+  flag = len(tests or []) > 0
+  logger.do_nothing() if not flag else logger.main(
+    message='No tests collected',
+    level='warning',
+    standard_output=True, )
+  return sns(tests=tests)
 
 
 def examples() -> None:

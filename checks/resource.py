@@ -9,7 +9,6 @@ from types import SimpleNamespace as sns
 from typing import Any, Awaitable, Callable
 
 from checks import module_resource
-from main.utils import get_module
 
 
 LOCALS = locals()
@@ -20,7 +19,7 @@ def check_sns_resource(output: dict | None = None) -> sns:
     return sns(**output)
 
 
-def get_exception(output: str | None = None) -> Exception | None:
+def get_error(output: str | None = None) -> Exception | None:
   output = str(output)
   exceptions = sns(
     RuntimeError=RuntimeError(),
@@ -142,11 +141,11 @@ async def awaitable_method(*args, **kwargs) -> str:
 
 def wrapper(func) -> Callable:
 
-  def inner(*args, **kwargs) -> Any:
+  def wrapper_inner(*args, **kwargs) -> Any:
     return func(*args, **kwargs)
 
-  inner.__wrapped__ = func
-  return inner
+  wrapper_inner.__wrapped__ = func
+  return wrapper_inner
 
 
 @wrapper
@@ -159,12 +158,6 @@ def wrapped_callable_method(*args, **kwargs) -> str:
 async def wrapped_awaitable_method(*args, **kwargs) -> str:
   _ = args, kwargs
   return 'wrapped_awaitable_output'
-
-
-def wrapper_get_module(
-  module: str | None = None,
-) -> ModuleType | None:
-  return get_module.main(module=module).module
 
 
 def examples() -> None:

@@ -7,7 +7,7 @@ from types import ModuleType
 from types import SimpleNamespace as sns
 from typing import Any, Callable
 
-from main.utils import get_module, objects
+from main.utils import objects
 
 
 LOCALS = locals()
@@ -150,11 +150,6 @@ def casted_object_resource(object: Any | None = None) -> Callable:
   return get_resource(resource=object)
 
 
-def module_resource(module: str | None = None) -> ModuleType | None:
-  if isinstance(module, str):
-    return get_module.main(location=module).module
-
-
 def kinds_resource(kinds: str | dict) -> Any:
   if isinstance(kinds, dict):
     data = DataClass()
@@ -173,10 +168,6 @@ def get_resource(
 ) -> Callable:
   route = method or resource
   return objects.get(parent=LOCALS, route=route)
-
-
-def wrapper_get_module(module: str = '') -> sns:
-  return get_module.main(module=module).module
 
 
 def examples() -> None:

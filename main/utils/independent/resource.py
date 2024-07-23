@@ -66,9 +66,10 @@ def get_function(function: str | None = None) -> Awaitable | Callable:
 def add(a: int, b: int | str) -> sns | Exception:
   try:
     c = sum([a, b])
-    return sns(c=c)
-  except Exception as e:
-    return e
+  except Exception as error:
+    c = error
+
+  return sns(c=c)
 
 
 def subtract(a: int, c: int) -> dict:
@@ -81,12 +82,6 @@ def multiply(b: int, c: int) -> dict:
   return dict(a=result)
 
 
-def get_exception(exception: str | None = None) -> Exception | None:
-  exceptions = sns(
-    exception=Exception(),
-    runtime_error=RuntimeError('runtime_error'),
-    type_error=add(1, '1'), )
-  return getattr(exceptions, str(exception), None)
 
 
 def get_locals(function: str | None = None) -> dict:
@@ -101,20 +96,20 @@ def get_exception_name(exception: Exception | None = None) -> str | None:
 
 def wrapped(func):
 
-  def inner(*args, **kwargs):
+  def wrapped_inner(*args, **kwargs):
     return func(*args, **kwargs)
 
-  inner.__wrapped__ = func
+  wrapped_inner.__wrapped__ = func
 
-  return inner
+  return wrapped_inner
 
 
 def closure(func):
 
-  def inner(*args, **kwargs):
+  def closure_inner(*args, **kwargs):
     return func(*args, **kwargs)
 
-  return inner
+  return closure_inner
 
 
 def callable() -> str:

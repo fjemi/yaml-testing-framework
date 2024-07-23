@@ -13,6 +13,8 @@ resources:
   resource: &RESOURCE_PATH ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/resource.py
 - &CHECKS
   resource: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/app.py
+- &GLOBAL_RESOURCE
+  resource: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/resources/app.py
 
 
 tests:
@@ -26,7 +28,7 @@ tests:
     << : *RESOURCE
     field: method
   - method: wrapper_get_module
-    << : *RESOURCE
+    << : *GLOBAL_RESOURCE
     field: module
   tests:
   - description: Undefined arguments
@@ -212,12 +214,12 @@ tests:
         expected:
           a: a
           d: d
-- function: check_exception
+- function: check_error
   description: >
     Verifies that an exception was raised. Checks for the name of the exception
     (TypeError, RuntimeError, etc)
   cast_arguments:
-  - method: get_exception
+  - method: get_error
     << : *RESOURCE
     field: output
   tests:
@@ -229,7 +231,7 @@ tests:
       << : *CHECKS
       expected:
         expected:
-          method: check_exception
+          method: check_error
           parameters:
             failed:
             - name: expected

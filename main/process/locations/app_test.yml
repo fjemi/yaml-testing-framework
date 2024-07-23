@@ -33,12 +33,6 @@ tests:
     checks:
     - method: check_sns
       << : *CHECKS
-      field: log
-      expected:
-        level: error
-        message: No modules at location does/not/exist
-    - method: check_sns
-      << : *CHECKS
       expected:
         locations: []
   - description: Project path is a directory
@@ -223,7 +217,7 @@ tests:
       root: null
       module: null
     checks:
-    - method: check_exception
+    - method: check_error
       << : *CHECKS
       expected: AttributeError
   - description: Root is an empty string
@@ -329,7 +323,7 @@ tests:
   - description: Undefined arguments
     arguments: {}
     checks:
-    - method: check_exception
+    - method: check_error
       << : *CHECKS
       expected: AttributeError
   - description: Path is a file

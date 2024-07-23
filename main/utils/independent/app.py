@@ -7,11 +7,11 @@ import os
 import time
 from types import ModuleType
 from types import SimpleNamespace as sns
-from typing import Any, Callable, List
+from typing import Any, Callable
 
 import yaml as pyyaml
 
-from main.utils import logger, objects
+from main.utils import logger, objects, methods
 
 
 CONFIG = '''
@@ -19,33 +19,6 @@ CONFIG = '''
     DEBUG: ${YAML_TESTING_FRAMEWORK_DEBUG}
     DISABLE_LOGGING: ${DISABLE_LOGGING}
     YAML_LOADER: ${YAML_TESTING_FRAMEWORK_YAML_LOADER}
-  update_log_fields:
-  - timestamps
-  - operation
-  default_logger_arguments:
-    format: yaml
-    standard_output: false
-    debug: false
-    level: info
-  log_fields:
-  - level
-  - format
-  - standard_output
-  - debug
-  data_and_field_names_and_defaults:
-  - data: operation.__name__
-    log: operation
-  - data: operation.__module__
-    log: location
-  - data: timestamps.__dict__
-    log: timestamps
-  - data: output.exception
-    log: error
-  field_map:
-    function.__name__: operation
-    function.__module__: location
-    timestamps.__dict__: timestamps
-    output.exception: error
 '''
 
 FORMAT_CONFIG_FIELDS = ['environment', 'schema', 'operations']
@@ -85,9 +58,12 @@ def get_yaml_content(
 
   content = {}
   location = str(location)
+
   if not os.path.isfile(location):
-    log = sns(message=f'No YAML file at {location}', level='warning')
-    return sns(log=log, content=content)
+    logger.main(
+      message=f'No YAML file at {location}',
+      level='warning', )
+    return sns(content=content)
 
   with open(
       file=location,
@@ -167,8 +143,8 @@ def get_function_parameters(
 
 
 def get_function_arguments(
-  function: Callable,
-  data: sns | dict,
+  function: Callable | None = None,
+  data: sns | dict = {},
 ) -> dict:
   arguments = {}
   parameters = get_function_parameters(function=function)
@@ -177,33 +153,22 @@ def get_function_arguments(
   return arguments
 
 
-def format_output(output: dict | sns | None = None) -> dict | None:
-  output = objects.get(
-    parent=output,
-    route='__dict__',
-    default=output, )
+def format_output_as_dict(output: dict | sns | None = None) -> dict | None:
+  if isinstance(output, dict):
+    return output
+
+  if hasattr(output, '__dict__'):
+    return output.__dict__
+
+  if isinstance(output, Exception):
+    return dict(error=output)
+
   if output is None:
-    output = {}
-  return output
+    return {}
 
-
-def format_exception_and_trace(exception: Exception | None = None) -> dict:
-  trace = []
-  tb = exception.__traceback__
-
-  while tb is not None:
-    trace.append(
-      dict(
-        file=tb.tb_frame.f_code.co_filename,
-        name=tb.tb_frame.f_code.co_name,
-        line=tb.tb_lineno, ),
-    )
-    tb = tb.tb_next
-
-  return dict(
-    name=type(exception).__name__,
-    description=str(exception),
-    trace=trace, )
+  type_ = type(output).__name__
+  message = f'Cannot convert object of type {type_} to a dictionary'
+  logger.main(level='error', message=message)
 
 
 def get_timestamp(kind: str | None = None) -> float | int:
@@ -220,117 +185,47 @@ def get_runtime_in_ms(timestamps: sns | None = None,) -> sns:
   return timestamps
 
 
-def get_function_output(data: sns) -> sns:
-  data.timestamps = sns(start=get_timestamp())
-  try:
-    data.output = data.function(**data.arguments)
-  except Exception as e:
-    data.output = dict(exception=e)
-  data.timestamps = get_runtime_in_ms(timestamps=data.timestamps)
-  return data
-
-
-def update_data_fields(data: sns) -> sns:
-  for field, value in data.output.items():
-    data.data = objects.update(
-      parent=data.data,
+def update_data(
+  data: sns,
+  output: dict,
+) -> sns:
+  for field, value in output.items():
+    data = objects.update(
+      parent=data,
       value=value,
       route=field, )
   return data
 
 
-def get_log(output: dict) -> sns | None:
-  log = output.get('log', None)
-  if isinstance(log, sns):
-    return log
-  if isinstance(log, dict):
-    return sns(**log)
-  if log and not isinstance(log, sns | dict):
-    return sns(log=log)
-  if log is None:
-    return sns()
-
-
-def get_default_logger_arguments(arguments: sns) -> sns:
-  for field, default in CONFIG.default_logger_arguments.items():
-    value = getattr(arguments.log, field, None)
-    value = value or default
-    setattr(arguments, field, value)
-    setattr(arguments.log, field, None)
-    delattr(arguments.log, field)
-  return arguments
-
-
-def get_log_fields_from_data(
-  log: sns,
-  data: sns,
-) -> sns:
-  for names in CONFIG.data_and_field_names_and_defaults:
-    # trunk-ignore(ruff/PLW2901)
-    names = sns(**names)
-    value = getattr(data, names.data, None)
-    if value:
-      setattr(log, names.log, value)
-  return log
-
-
-def format_log(data: sns) -> int:
-  arguments = sns()
-  arguments.log = get_log(output=data.output)
-  arguments = get_default_logger_arguments(arguments=arguments)
-  arguments.debug = arguments.debug or data.debug
-  store = arguments
-
-  for data_field, log_field in CONFIG.field_map.items():
-    value = objects.get(parent=data, route=data_field)
-    setattr(store.log, log_field, value)
-
-
-
-  exception = getattr(store.log, 'error', None) or getattr(data, 'error', None)
-
-  if store.debug or exception:
-    store.log.arguments = data.arguments.get('arguments', None)
-    store.log.output = data.output
-    store.standard_output = True
-    store.level = getattr(store.log, 'level', None) or 'info'
-    store.level = store.level if store.level != 'info' else 'debug'
-
-  if exception is not None:
-    store.level = 'error'
-    store.log.error = format_exception_and_trace(exception=exception)
-
-    store.log.output = None
-    store.log.message = None
-    del store.log.output
-    del store.log.message
-  else:
-    del store.log.error
-
-  logger.main(**store.__dict__)
-  return 1
-
-
 def process_operations(
-  operations: List[str] | None = None,
+  operations: list | str | None = None,
   data: dict | sns | None = None,
   functions: dict | None = None,
   debug: bool | None = None,
 ) -> sns | dict:
   operations = convert_string_to_list(string=operations)
-  store = sns(**locals())
+  timestamps = sns(start=get_timestamp())
+  errors = []
 
-  for name in store.operations:
-    store.function = objects.get(parent=store.functions, route=name)
-    store.arguments = get_function_arguments(
-      function=store.function,
-      data=store.data, )
-    store = get_function_output(data=store)
-    store.output = format_output(output=store.output)
-    store = update_data_fields(data=store)
-    format_log(data=store)
+  for name in operations:
+    method = objects.get(parent=functions, route=name)
+    arguments = get_function_arguments(
+      function=method,
+      data=data, )
+    result = methods.call.main(arguments=arguments, method=method)
+    errors.append(result.exception)
+    output = format_output_as_dict(output=result.output)
+    data = update_data(data=data, output=output)
 
-  return store.data
+  timestamps = get_runtime_in_ms(timestamps=timestamps).__dict__
+
+  flags = True in [
+    errors.count(None) != len(errors),
+    CONFIG.environment.DEBUG, ]
+  logger.do_nothing() if not flags  else logger.main(
+    message=dict(operations=operations),
+    timestamps=timestamps, )
+  return data
 
 
 def exit_loop() -> None:
@@ -420,17 +315,11 @@ def format_config_schema(
     model = get_model_from_scheme(scheme=scheme)
     models[name] = model
 
-  log = None
-  if not models:
-    log = sns(
-      message=f'No schema defined in YAML at location {location}',
-      level='warning', )
-
   models = sns(**models)
   if module_defined:
     return models
 
-  return sns(log=log, models=models)
+  return sns(models=models)
 
 
 def pass_through(

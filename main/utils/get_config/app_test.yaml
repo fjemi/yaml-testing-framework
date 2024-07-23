@@ -86,15 +86,6 @@ tests:
       << : *CHECKS
       expected:
         config: None
-    - method: check_sns
-      << : *CHECKS
-      field: log
-      expected:
-        level: error
-        message:
-        - No config YAML file
-        - module: None
-          config: None
   - description: Config location is set
     arguments:
       config: *RESOURCE_YAML

@@ -5,6 +5,8 @@ resources:
   resource: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/app.py
 - &RESOURCE
   resource: &RESOURCE_PATH ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/casts/resource.py
+- &GLOBAL_RESOURCE
+  resource: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/resources/app.py
 
 
 tests:
@@ -130,7 +132,7 @@ tests:
         object: null
   - cast_arguments:
     - method: wrapper_get_module
-      << : *RESOURCE
+      << : *GLOBAL_RESOURCE
       field: module
     tests:
     - description: Cast string as integer
@@ -171,22 +173,24 @@ tests:
         << : *CHECKS
         expected:
           object: abc
-- function: do_nothing
-  description: Returns a null object
+- function: method_does_not_exist
+  description: Return a method that does nothing when called
   arguments:
-    a: a
+    method: method
   checks:
   - << : *CHECKS
-    method: check_equals
-    expected: null
+    method: check_function
+    expected:
+      name: method_does_not_exist_inner
+      location: *MODULE
 - function: get_method
   description: >
     Returns a casting method and name if the method exists in a module.
     Otherwise, returns the name and a log
   cast_arguments:
   - field: module
-    << : *RESOURCE
-    method: module_resource
+    << : *GLOBAL_RESOURCE
+    method: wrapper_get_module
   tests:
   - description: Undefined data
     arguments: {}
@@ -195,7 +199,7 @@ tests:
       << : *CHECKS
       field: method
       expected:
-        name: do_nothing
+        name: method_does_not_exist_inner
         location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/casts/app.py
   - description: Return the str class from builtins
     arguments:
@@ -237,10 +241,10 @@ tests:
       << : *CHECKS
       field: method
       expected:
-        name: do_nothing
+        name: method_does_not_exist_inner
         location: *MODULE
 - function: get_object
-  description: Handles casting an object
+  description: Handles retrieving and casting an object
   cast_arguments:
   - method: get_resource
     << : *RESOURCE
@@ -249,9 +253,10 @@ tests:
   - description: Undefined arguments
     arguments: {}
     checks:
-    - method: check_exception
+    - method: check_sns
       << : *CHECKS
-      expected: TypeError
+      expected:
+        temp: null
   - description: Object is defined
     arguments:
       object: '1111'

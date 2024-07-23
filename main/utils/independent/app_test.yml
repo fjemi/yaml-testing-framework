@@ -1,10 +1,3 @@
-TODO:
-- Add test for decorated function and awaitable to ./main/app_test.yaml
-- Finalize logging and tests
-- Think of moving format_exception_and_trace to logger
-- Finish test for the main function. May require a spy.
-
-
 help:
 - https://stackoverflow.com/questions/5218895/python-nested-functions-variable-scoping
 
@@ -106,12 +99,6 @@ tests:
     arguments:
       location: null
     checks:
-    - method: check_sns
-      << : *CHECKS
-      field: log
-      expected:
-        level: warning
-        message: No YAML file at None
     - method: check_equals
       << : *CHECKS
       field: content
@@ -120,12 +107,6 @@ tests:
     arguments:
       location: location_does_not_exist
     checks:
-    - method: check_sns
-      << : *CHECKS
-      field: log
-      expected:
-        level: warning
-        message: No YAML file at location_does_not_exist
     - method: check_equals
       << : *CHECKS
       field: content
@@ -295,7 +276,7 @@ tests:
   - description: Returns the parameters for a method
     arguments: {}
     checks:
-    - method: check_exception
+    - method: check_error
       << : *CHECKS
       expected: AttributeError
   - description: Returns the parameters for a method
@@ -361,9 +342,9 @@ tests:
     tests:
     - arguments: {}
       checks:
-      - method: check_exception
+      - method: check_error
         << : *CHECKS
-        expected: TypeError
+        expected: AttributeError
   - cast_arguments:
     - field: function
       << : *RESOURCE
@@ -390,7 +371,7 @@ tests:
           << : *CHECKS
           expected:
             parameter_a: null
-- function: format_output
+- function: format_output_as_dict
   description: Formats output from performing an operation as a dictionary
   tests:
   - description: Output is undefined
@@ -423,43 +404,6 @@ tests:
       << : *CHECKS
       expected:
         field: value
-- function: format_exception_and_trace
-  description: Formats an exception and its trace
-  cast_arguments:
-  - method: get_exception
-    << : *RESOURCE
-    field: exception
-  tests:
-  - description: Undefined arguments
-    arguments:
-      exception: null
-    checks:
-    - method: check_exception
-      << : *CHECKS
-      expected: AttributeError
-  - description: Runtime error
-    arguments:
-      exception: runtime_error
-    checks:
-    - method: check_equals
-      << : *CHECKS
-      expected:
-        description: runtime_error
-        trace: []
-        name: RuntimeError
-  - description: Type error
-    arguments:
-      exception: type_error
-    checks:
-    - method: check_equals
-      << : *CHECKS
-      expected:
-        description: 'unsupported operand type(s) for +: ''int'' and ''str'''
-        trace:
-        - file: *RESOURCE_PATH
-          line: 68
-          name: add
-        name: TypeError
 - function: get_timestamp
   description: Returns a timestamp; seconds past epoch
   tests:
@@ -489,7 +433,7 @@ tests:
     arguments:
       timestamps: {}
     checks:
-    - method: check_exception
+    - method: check_error
       << : *CHECKS
       expected: AttributeError
   - description: End and run times should be integers
@@ -521,269 +465,49 @@ tests:
         start: 0
         end: 2
         runtime_ms: 2000
-
-
-
-  # # TODO: Need a spy on the logger.main to test this function
-  # - description: Log is an exception
-  #   arguments:
-  #   checks:
-  #   - method:
-  #     expected:
-  # - description: Log is a message
-  #   arguments:
-  #   checks:
-  #   - method:
-  #     expected:
-- function: get_function_output
-  description: >
-    Returns the output from calling a function with an unpacked dictionary
-  cast_arguments:
-  - field: data
-    method: sns
-    << : *RESOURCE
-    unpack: true
-  - field: data.function
-    method: get_function
-    << : *RESOURCE
-  tests:
-  - description: Return expected output from adding two integers
-    arguments:
-      data:
-        function: add
-        arguments:
-          a: 1
-          b: 2
-    checks:
-    - method: check_sns
-      << : *CHECKS
-      field: output
-      expected:
-        c: 3
-    - method: check_type
-      << : *CHECKS
-      field: timestamps
-      expected: SimpleNamespace
-- function: update_data_fields
+- function: update_data
   description: >
     Updates fields in a data object with values from a dictionary type
   cast_arguments:
-  - method: sns
-    unpack: True
+  - field: data
     << : *RESOURCE
-    field: data
+    method: sns
+    unpack: true
   tests:
   - description: Output and data are empty dictionaries
     arguments:
-      data:
-        output: {}
-        data: {}
-    checks:
-    - method: check_sns
-      << : *CHECKS
-      expected:
-        output: {}
-        data: {}
-  - description: Output is a non-empty dictionary
-    arguments:
-      data:
-        output:
-          a: A
-          b: B
-        data: {}
-    checks:
-    - method: check_sns
-      << : *CHECKS
-      expected:
-        data:
-          a: A
-          b: B
-  - description: Output is a non-empty dictionary and data is a simplenamespace
-    cast_arguments:
-    - field: data.data
-      << : *RESOURCE
-      method: sns
-      unpack: true
-    arguments:
-      data:
-        output:
-          c: C
-          d: D
-        data: {}
+      output: {}
+      data: {}
     checks:
     - method: check_equals
       << : *CHECKS
-      field: data.__dict__
+      field: __dict__
+      expected: {}
+  - description: Output is a non-empty dictionary
+    arguments:
+      output:
+        a: A
+        b: B
+      data: {}
+    checks:
+    - method: check_sns
+      << : *CHECKS
+      expected:
+        a: A
+        b: B
+  - description: Output is a non-empty dictionary and data is a simplenamespace
+    arguments:
+      output:
+        c: C
+        d: D
+      data: {}
+    checks:
+    - method: check_equals
+      << : *CHECKS
+      field: __dict__
       expected:
         c: C
         d: D
-
-
-# - function: get_log
-#   d
-# - function: format_log
-#   description: >
-#     Handles calling the logger where there are log messages, exceptions, or
-#     debugging is enabled
-#   tests:
-#   - description: Undefined arguments
-#     arguments: {}
-#     checks:
-#     - method: check_exception
-#       << : *CHECKS
-#       expected: AttributeError
-#   - description: >
-#       Output does not contain log and is not an exception. Debug flag is not
-#       true.
-#     arguments:
-#       operation: operation
-#       arguments:
-#         a: a
-#         b: b
-#       timestamps: timestamps
-#       output: {}
-#     checks:
-#     - method: check_equals
-#       << : *CHECKS
-#       expected:
-#         enabled: False
-#   - description: >
-#       Output contains a log and is not an exception. Debug flag is not true.
-#     arguments:
-#       operation: operation
-#       arguments:
-#         a: a
-#         b: b
-#       timestamps: timestamps
-#       output:
-#         log: log
-#     checks:
-#     - method: check_equals
-#        << : *CHECKS
-#       expected:
-#         debug: False
-#         standard_output: False
-#         format: yaml
-#         level: info
-#         log:
-#           message: log
-#           operation: operation
-#           timestamps: timestamps
-#   - description: Log arguments and output when debug is true
-#     cast_arguments:
-#     - method: sns
-#       << : *RESOURCE
-#       unpack: True
-#       field: output.log
-#     arguments:
-#       operation: operation
-#       arguments:
-#         a: a
-#         b: b
-#       timestamps:
-#         start: 1
-#         end: 2
-#         runtime_ms: 1
-#       output:
-#         c: c
-#         d: d
-#         log:
-#           message: message
-#           level: warning
-#       debug_flag: true
-#     checks:
-#     - method: check_equals
-#       << : *CHECKS
-#       expected:
-#         debug: true
-#         standard_output: true
-#         format: yaml
-#         level: warning
-#         log:
-#           arguments:
-#             a: a
-#             b: b
-#           message: message
-#           operation: operation
-#           output:
-#             c: c
-#             d: d
-#           timestamps:
-#             start: 1
-#             end: 2
-#             runtime_ms: 1
-#   - description: Log arguments and output when debug is true
-#     cast_arguments:
-#     - method: sns
-#       unpack: True
-#       field: output.log
-#       << : *RESOURCE
-#     arguments:
-#       operation: operation
-#       arguments:
-#         a: a
-#         b: b
-#       timestamps: timestamps
-#       output:
-#         c: c
-#         d: d
-#         log:
-#           message: message
-#           level: warning
-#       debug_flag: true
-#     checks:
-#     - method: check_equals
-#       << : *CHECKS
-#       expected:
-#         debug: true
-#         standard_output: true
-#         format: yaml
-#         level: warning
-#         log:
-#           arguments:
-#             a: a
-#             b: b
-#           message: message
-#           operation: operation
-#           output:
-#             c: c
-#             d: d
-#           timestamps: timestamps
-#   - cast_arguments:
-#     - field: output.exception
-#       method: get_exception
-#       << : *RESOURCE
-#     description: >
-#       Output contains an exception. Debug flag is not true.
-#     arguments:
-#       operation: operation
-#       arguments:
-#         a: a
-#         b: b
-#       timestamps: timestamps
-#       output:
-#         exception: exception
-#       exception_flag: true
-#     checks:
-#     - method: check_equals
-#       << : *CHECKS
-#       expected:
-#         debug: False
-#         standard_output: true
-#         format: yaml
-#         level: error
-#         log:
-#           arguments:
-#             a: a
-#             b: b
-#           exception:
-#             description: ''
-#             name: Exception
-#             trace: []
-#           operation: operation
-#           timestamps: timestamps
-
-
 - function: process_operations
   description: >
     Performs a list of operations on data that can be represented as a
@@ -799,7 +523,7 @@ tests:
       data: null
       functions: null
     checks:
-    - method: check_exception
+    - method: check_error
       << : *CHECKS
       expected: TypeError
   - description: Perform operations on a dictionary
@@ -860,12 +584,11 @@ tests:
       cast_output:
       - method: get_exception_name
         << : *RESOURCE
-        field: exception
+        field: c
       expected:
-        a: '2'
+        a: '0'
         b: 1
-        c: '2'
-        exception: TypeError
+        c: TypeError
   - description: Operations do not exist in dictionary of functions
     arguments:
       operations:
@@ -952,7 +675,7 @@ tests:
   - description: Undefined arguments
     arguments: {}
     checks:
-    - method: check_exception
+    - method: check_error
       << : *CHECKS
       expected: TypeError
   - cast_arguments:
@@ -1053,7 +776,7 @@ tests:
   - description: Undefined arguments
     arguments: {}
     checks:
-    - method: check_exception
+    - method: check_error
       << : *CHECKS
       expected: TypeError
   - description: Scheme with defined fields
@@ -1087,12 +810,10 @@ tests:
       content: {}
       location: location
     checks:
-    - method: check_sns
+    - method: check_equals
       << : *CHECKS
-      field: log
-      expected:
-        message: No schema defined in YAML at location location
-        level: warning
+      field: models.__dict__
+      expected: {}
   - description: Defined schema as dictionary
     arguments:
       content:

@@ -6,6 +6,7 @@ from types import SimpleNamespace as sns
 from typing import Any, Iterable
 
 from main.utils.objects.get import main as objects_get_main
+from main.utils import logger
 
 
 def main(
@@ -105,8 +106,8 @@ def set_child_in_parent(
   elif parent.value is not None:
     try:
       setattr(parent.value, child.name, child.value)
-    except Exception as e:
-      _ = e
+    except Exception as error:
+      logger.main(error=error)
       parent.value = sns()
       setattr(parent.value, child.name, child.value)
 

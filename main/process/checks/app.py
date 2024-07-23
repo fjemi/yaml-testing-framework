@@ -9,7 +9,13 @@ from typing import Any, Callable, List
 import yaml
 
 from main.process import casts, spies, setup as SETUP
-from main.utils import get_config, independent, objects, schema, get_module
+from main.utils import (
+  get_config,
+  independent,
+  logger,
+  objects,
+  schema,
+  get_module, )
 
 
 CONFIG = get_config.main()
@@ -111,18 +117,16 @@ def convert_to_yaml(
   object: Any | None = None,
   field: str | None = None,
 ) -> sns:
-  data = sns(object=object)
-
   try:
-    if isinstance(data.object, str):
-      data.object = yaml.safe_load(data.object)
-    data.object = yaml.dump(data.object).strip()
-  except Exception as exception:
-    exception = type(exception).__name__
-    message = f'{exception} occurred trying to convert {field} to YAML'
-    data.log = sns(message=message, level='error')
+    temp = object
+    if isinstance(temp, str):
+      temp = yaml.safe_load(temp)
+    return yaml.dump(temp).strip()
+  except Exception as error:
+    logger.main(error=error, arguments=locals())
+    return str(object)
 
-  return data
+  return temp
 
 
 def handle_failed_check(
@@ -137,15 +141,14 @@ def handle_failed_check(
 
   data.output = output
   data.expected = expected
-  data.log = []
 
   for key in data.__dict__:
-    value = getattr(data, key, None)
+    value = objects.get(parent=data, route=key)
     value = convert_to_yaml(object=value, field=key)
-    if not getattr(value, 'log', None):
-      setattr(data, key, value.object)
-    if getattr(value, 'log', None):
-      data.log.append(value.log)
+    data = objects.update(
+      parent=data,
+      route=key,
+      value=value, )
 
   return data
 

@@ -7,6 +7,8 @@ import inspect
 from types import SimpleNamespace as sns
 from typing import Any, Callable, Mapping
 
+from main.utils import logger
+
 
 def main(
   arguments: Any | None = None,
@@ -43,16 +45,17 @@ def get_task_from_event_loop(task: Any | None = None) -> Any:
   return task
 
 
-def wrapper(method: Callable) -> Callable:
+def caller_wrapper(method: Callable) -> Callable:
 
-  def inner(*args, **kwargs) -> sns:
+  def caller_wrapper_inner(*args, **kwargs) -> sns:
     output = None
     exception = None
 
     try:
       output = method(*args, **kwargs)
-    except Exception as e:
-      output = e
+    except Exception as error:
+      logger.main(error=error, arguments=locals())
+      output = error
 
     output = get_task_from_event_loop(task=output)
     if isinstance(output, Exception):
@@ -60,11 +63,11 @@ def wrapper(method: Callable) -> Callable:
 
     return sns(output=output, exception=exception)
 
-  inner.__wrapped__ = method
-  return inner
+  caller_wrapper_inner.__wrapped__ = method
+  return caller_wrapper_inner
 
 
-@wrapper
+@caller_wrapper
 def unpack_mapping(
   arguments: Any,
   method: Callable,
@@ -72,7 +75,7 @@ def unpack_mapping(
   return method(**arguments)
 
 
-@wrapper
+@caller_wrapper
 def unpack_list(
   arguments: Any,
   method: Callable,
@@ -80,7 +83,7 @@ def unpack_list(
   return method(*arguments)
 
 
-@wrapper
+@caller_wrapper
 def pack_any(
   arguments: Any,
   method: Callable,
@@ -96,16 +99,16 @@ def get_handlers(arguments: Any) -> list:
   calls = []
   if isinstance(arguments, Mapping):
     calls.append(unpack_mapping)
-  elif isinstance(arguments, list | tuple):
+  elif isinstance(arguments, list | tuple) or arguments is None:
     calls.append(unpack_list)
   calls.append(pack_any)
   return calls
 
 
 def call_handlers(
-  arguments: Any,
-  handlers: list,
-  method: Callable,
+  arguments: dict = {},
+  handlers: list = [],
+  method: Callable | None = None,
 ) -> sns:
   results = []
 

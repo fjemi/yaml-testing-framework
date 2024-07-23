@@ -6,16 +6,9 @@ import time
 from types import ModuleType
 from typing import Callable
 
-from main.utils import get_module
-
 
 MODULE = __file__
 LOCALS = locals()
-
-
-def wrapper_get_module(module: str | None) -> ModuleType | None:
-  if isinstance(module, str):
-    return get_module.main(location=module)
 
 
 def get_setup_object(*args, **kwargs) -> str:

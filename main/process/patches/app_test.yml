@@ -11,6 +11,8 @@ resources:
   resource: &RESOURCE_PATH ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/patches/resources/app.py
 - &CHECKS
   resource: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/app.py
+- &GLOBAL_RESOURCE
+  resource: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/resources/app.py
 
 
 tests:
@@ -20,7 +22,7 @@ tests:
     during testing
   cast_arguments:
   - method: wrapper_get_module
-    << : *RESOURCE
+    << : *GLOBAL_RESOURCE
     field: module
   tests:
   - description: No defined patches
@@ -107,7 +109,7 @@ tests:
       expected: *RESOURCE_PATH
   - description: Defined arguments. Resource is not a module
     cast_arguments:
-    - << : *RESOURCE
+    - << : *GLOBAL_RESOURCE
       field: module
       method: wrapper_get_module
     arguments:
@@ -154,7 +156,7 @@ tests:
   - description: Callable method
     cast_arguments:
     - method: wrapper_get_module
-      << : *RESOURCE
+      << : *GLOBAL_RESOURCE
       field: resource
     arguments:
       resource: *RESOURCE_PATH
@@ -425,7 +427,7 @@ tests:
   description: Returns a module with a patched object
   cast_arguments:
   - method: wrapper_get_module
-    << : *RESOURCE
+    << : *GLOBAL_RESOURCE
     field: module
   tests:
   - description: Undefined arguments
