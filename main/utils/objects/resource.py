@@ -5,6 +5,9 @@
 from types import SimpleNamespace as sns
 
 
+PARENT = 'PARENT'
+
+
 def list_sns_to_list_dict(data: list | None = None) -> list | None:
   if not isinstance(data, list):
     return data
@@ -23,13 +26,6 @@ def list_dict_to_list_sns(data: list | None = None) -> list | None:
     return data
 
   data = [sns(**item) for item in data]
-  return data
-
-
-def dict_to_sns(data: dict | None = None) -> sns | None:
-  if not isinstance(data, dict):
-    data = sns(**data)
-
   return data
 
 

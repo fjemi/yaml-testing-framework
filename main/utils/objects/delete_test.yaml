@@ -2,7 +2,7 @@ resources:
 - &CHECKS
   resource: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/app.py
 - &RESOURCE
-  resource: &RESOURCE_PATH ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/objects/delete_resource.py
+  resource: &RESOURCE_PATH ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/objects/resource.py
 
 
 tests:
