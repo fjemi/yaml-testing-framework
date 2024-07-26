@@ -1,8 +1,12 @@
+TODO:
+- Add logic for deleting from iterable objects
+
+
 resources:
 - &CHECKS
   resource: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/app.py
 - &RESOURCE
-  resource: &RESOURCE_PATH ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/objects/delete_resource.py
+  resource: &RESOURCE_PATH ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/objects/resource.py
 
 
 tests:
@@ -17,12 +21,12 @@ tests:
       expected: null
   - description: Remove an attribute from a simple name space
     cast_arguments:
-    - field: parent
+    - field: object
       method: sns
       << : *RESOURCE
       unpack: true
     arguments:
-      parent:
+      object:
         field_a: value_a
         field_b: value_b
       route: field_b
@@ -34,7 +38,7 @@ tests:
         field_b: null
   - description: Remove a key from a dictionary
     arguments:
-      parent:
+      object:
         key_a: value_a
         key_b: value_b
       route: key_b
@@ -43,3 +47,119 @@ tests:
       << : *CHECKS
       expected:
         key_a: value_a
+- function: get_type
+  description: Returns the type of an object; mapping, iterable, none, or any
+  tests:
+  - description: Object is null
+    arguments: {}
+    checks:
+    - method: check_equals
+      << : *CHECKS
+      expected: none
+  - description: Object is a mapping
+    arguments:
+      object: {}
+    checks:
+    - method: check_equals
+      << : *CHECKS
+      expected: mapping
+  - description: Object is a iterable that is not a dict
+    arguments:
+      object_: []
+    checks:
+    - method: check_equals
+      << : *CHECKS
+      expected: iterable
+  - description: Object is a SimpleNamespace
+    cast_arguments:
+    - method: sns
+      unpack: true
+      << : *RESOURCE
+      field: object_
+    arguments:
+      object_: {}
+    checks:
+    - method: check_equals
+      << : *CHECKS
+      expected: any
+- function: delete_from_none
+  description: Returns null
+  tests:
+  - description: Undefined arguments
+    arguments: {}
+    checks:
+    - method: check_equals
+      << : *CHECKS
+      expected: null
+  - description: Defined arguments
+    arguments:
+      object_: object_
+    checks:
+    - method: check_equals
+      << : *CHECKS
+      expected: null
+- function: delete_from_mapping
+  description: Returns a mapping object without a specified key
+  tests:
+  - description: Undefined arguments
+    arguments: {}
+    checks:
+    - method: check_equals
+      << : *CHECKS
+      expected: {}
+  - description: Route exists in object
+    arguments:
+      object_:
+        key: value
+      route: key
+    checks:
+    - method: check_equals
+      << : *CHECKS
+      expected: {}
+  - description: Route does not exists in object
+    arguments:
+      object_:
+        key: value
+      route: route
+    checks:
+    - method: check_equals
+      << : *CHECKS
+      expected:
+        key: value
+- function: delete_from_any
+  description: Returns an object without a specified attribute
+  cast_arguments:
+  - method: sns
+    << : *RESOURCE
+    unpack: true
+    field: object_
+  tests:
+  - description: Object is empty dict and route is undefined
+    arguments:
+      object_: {}
+      route: null
+    checks:
+    - method: check_error
+      << : *CHECKS
+      expected: TypeError
+  - description: Route exists in object
+    arguments:
+      object_:
+        attribute: value
+      route: attribute
+    checks:
+    - method: check_equals
+      << : *CHECKS
+      field: __dict__
+      expected: {}
+  - description: Route does not exists in object
+    arguments:
+      object_:
+        attribute: value
+      route: route
+    checks:
+    - method: check_equals
+      << : *CHECKS
+      field: __dict__
+      expected:
+        attribute: value

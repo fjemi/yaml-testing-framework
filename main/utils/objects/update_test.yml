@@ -2,7 +2,7 @@ resources:
 - &CHECKS
   resource: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/app.py
 - &RESOURCE
-  resource: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/objects/update_resource.py
+  resource: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/objects/resource.py
 
 
 tests:
@@ -365,7 +365,8 @@ tests:
   - description: Set child when parent is a simple name space
     cast_arguments:
     - field: parent.value
-      method: dict_to_sns
+      method: sns
+      unpack: true
       << : *RESOURCE
     arguments:
       parent:
@@ -379,7 +380,7 @@ tests:
       << : *CHECKS
       expected:
         name: null
-    - method: check_equals
+    - method: check_sns
       << : *CHECKS
       field: value
       expected:
