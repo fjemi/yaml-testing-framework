@@ -2,26 +2,58 @@
 # -*- coding: utf-8 -*-
 
 
-from typing import Any
+from types import SimpleNamespace as sns
+from typing import Any, Iterable, Mapping
+
+
+LOCALS = locals()
 
 
 def main(
-  parent: Any | None = None,
+  object: Any | None = None,
   route: str | None = None,
 ) -> Any | None:
-  if parent is None:
-    return parent
+  object_ = object
+  type_ = get_type(object_=object_)
+  handler = f'delete_from_{type_}'
+  handler = LOCALS[handler]
+  return handler(object_=object_, route=route)
 
-  route = str(route)
 
-  if isinstance(parent, dict):
-    parent[route] = None
-    del parent[route]
-    return parent
+def get_type(object_: Any | None = None) -> str:
+  types = dict(
+    none=object_ is None,
+    mapping=isinstance(object_, Mapping),
+    iterable=isinstance(object_, Iterable),
+    any=True, )
+  for type_, value in types.items():
+    if value:
+      return type_
 
-  setattr(parent, route, None)
-  delattr(parent, route)
-  return parent
+
+def delete_from_none(
+  object_: None = None,
+  route: str | None = None,
+) -> dict:
+  _ = object_, route
+
+
+def delete_from_mapping(
+  object_: dict | None = None,
+  route: str | None = None,
+) -> dict:
+  object_.update({route: None})
+  del object_[route]
+  return object_
+
+
+def delete_from_any(
+  object_: Any | None = None,
+  route: str | None = None,
+) -> Any:
+  setattr(object_, route, None)
+  delattr(object_, route)
+  return object_
 
 
 def examples() -> None:
