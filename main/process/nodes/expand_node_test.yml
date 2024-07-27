@@ -1,7 +1,3 @@
-todo:
-- rename from collating to branching
-
-
 resources:
 - &RESOURCE
   resource: &RESOURCE_PATH ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/nodes/resources/expand_node.py

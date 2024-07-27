@@ -1,17 +1,3 @@
-schema:
-  Kinds: &KINDS
-    description: Paths to a python and associated resources for testing
-    fields:
-    - name: parent
-      type: str
-      default: None
-      description: Parent object
-    - name: child
-      type: str
-      default: ''
-      description: Child of the parent object
-
-
 empty_values:
 - ''
 - None
