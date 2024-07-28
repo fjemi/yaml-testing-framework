@@ -24,10 +24,21 @@ yaml_extensions:
 - .yml
 
 
-module_extension: .py
+module_extensions:
+- .py
 
 
-root_locations:
+primary_secondary_map:
+  module: yaml
+  yaml: module
+
+
+primary_secondary_types:
+- module
+- yaml
+
+
+roots:
 - .
 - ./
 - /
@@ -50,8 +61,11 @@ empty_values:
 
 operations:
   main:
-  - format_paths
+  - format_path
   - format_yaml_suffix
-  - format_exclude_files
-  - get_module_and_yaml_location_when_path_kind_is_file
-  - get_module_and_yaml_location_when_path_kind_is_directory
+  - format_inclusion_and_exclusion_patterns
+  - get_paths
+  handle_directory:
+  - get_yaml_paths
+  - get_module_paths
+  - post_processing

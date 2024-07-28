@@ -6,7 +6,7 @@ import os
 from types import SimpleNamespace as sns
 from typing import Any, List
 
-from main.utils import get_config, independent, logger
+from main.utils import get_config, independent, logger, objects
 
 
 ROOT_DIR = os.path.abspath(os.curdir)
@@ -18,45 +18,32 @@ LOCALS = locals()
 
 def main(
   project_path: Any | None = None,
-  include_files: str | List[str] | None = None,
-  exclude_files: str | List[str] | None = None,
+  include_files: list| None = None,
+  exclude_files: list | None = None,
   yaml_suffix: str | None = None,
   logging_flag: bool | None = None,
   timestamp: int | float | None = None,
 ) -> sns:
-  path = project_path
   data = sns(**locals())
   data = independent.process_operations(
     functions=LOCALS,
     operations=CONFIG.operations.main,
     data=data, )
-  data.locations = data.locations or []
-  logger.do_nothing() if data.locations else logger.main(
-    message=f'No modules at location {path}',
-    level='warning', )
-  return sns(locations=data.locations)
+  locations = objects.get(
+    parent=data,
+    route='paths',
+    default=[], )
+  return sns(locations=locations)
 
 
-def format_paths(path: str | None = None) -> sns:
-  root = ROOT_DIR
-
-  if not path:
-    path = '.'
-  if path[0] == '.':
-    path = f'{root}/{path[1:]}'
-
-  path = os.path.normpath(path)
-  directory = path
-  kind = ''
-
-  if os.path.isfile(directory):
-    kind = 'file'
-    directory = os.path.dirname(directory)
-  elif os.path.isdir(directory):
-    kind = 'directory'
-
-  paths = sns(**locals())
-  return sns(paths=paths)
+def format_path(project_path: str = '') -> sns:
+  path = str(project_path)
+  add_root = {
+    True: path,
+    path in CONFIG.roots: ROOT_DIR,
+    path[0] == '.': os.path.join(ROOT_DIR, path[1:]), }
+  path = add_root[True]
+  return sns(path=path)
 
 
 def format_yaml_suffix(yaml_suffix: str | None = None) -> sns:
@@ -66,111 +53,216 @@ def format_yaml_suffix(yaml_suffix: str | None = None) -> sns:
   return sns(yaml_suffix=yaml_suffix)
 
 
-def format_exclude_files(exclude_files: str | list | None = None) -> sns:
-  if isinstance(exclude_files, list):
-    exclude_files = [*exclude_files, *CONFIG.exclude_files]
-  elif isinstance(exclude_files, str):
-    exclude_files = [exclude_files, *CONFIG.exclude_files]
-  elif exclude_files is None:
-    exclude_files = CONFIG.exclude_files
-
-  return sns(exclude_files=exclude_files)
+def convert_to_list(object_: str | list | None = None) -> list | None:
+  if isinstance(object_, list):
+    return object_
+  if isinstance(object_, str):
+    return [object_]
+  if object_ is None:
+    return []
 
 
-def flag_for_exclusion(
-  root: str | None = None,
+def format_inclusion_and_exclusion_patterns(
+  exclude_files: str | list | None = None,
+  include_files: str | list | None = None,
+) -> sns:
+  locals_ = sns(**locals())
+
+  for route, patterns in locals_.__dict__.items():
+    settings = objects.get(parent=CONFIG, route=route) or []
+    settings = convert_to_list(object_=settings)
+    patterns = convert_to_list(object_=patterns)
+    patterns = [*patterns, *settings]
+    locals_ = objects.update(parent=locals_, route=route, value=patterns, )
+
+  return sns(
+    exclude_files=locals_.exclude_files,
+    include_files=locals_.include_files, )
+
+
+def get_paths(
+  path: str = '',
+  yaml_suffix: str = '',
+  exclude_files: list | None = None,
+  include_files: list | None = None,
+) -> sns:
+  locals_ = sns(**locals())
+  handlers = {
+    True: 'handle_none',
+    os.path.isfile(path): 'handle_file',
+    os.path.isdir(path): 'handle_directory', }
+  handler = handlers[True]
+  handler = LOCALS[handler]
+  return handler(**locals_.__dict__)
+
+
+def handle_file(
+  path: str | None = None,
+  yaml_suffix: str = '',
+  exclude_files: list = [],
+  include_files: list | None = None,
+) -> sns:
+  directory = os.path.dirname(path)
+  base, extension = os.path.splitext(path)
+  include_files = include_files or []
+  locals_ = sns(**locals())
+
+  module_base = base.replace(yaml_suffix, '')
+  include_files.extend([
+    path,
+    base,
+    module_base, ])
+  return handle_directory(**locals_.__dict__)
+
+
+def handle_directory(
+  path: str | None = None,
+  directory: str | None = None,
+  base: str | None = None,
+  extension: str | None = None,
+  yaml_suffix: str = '',
+  exclude_files: list = [],
+  include_files: list = [],
+) -> sns:
+  directory = directory or path
+  data = sns(**locals())
+  data = independent.process_operations(
+    functions=LOCALS,
+    operations=CONFIG.operations.handle_directory,
+    data=data, )
+  if not data.paths:
+    logger.main(
+      message=f'No modules at location {path}',
+      arguments=data.__dict__,
+      level='warning', )
+  return sns(paths=data.paths)
+
+
+def set_exclusion_flag(
+  path: str | None = None,
+  base: str | None = None,
   exclude_files: list | None = None,
 ) -> bool:
-  exclude_files = exclude_files or []
+  if not exclude_files:
+    return False
+
   for pattern in exclude_files:
-    if root.find(pattern) > -1:
-      return True
+    for item in [base, path]:
+      if True in [
+        item == pattern,
+        item.find(pattern) > -1,
+        pattern.find(item) > -1,
+      ]:
+        return True
+
   return False
 
 
-def get_route_for_module(
-  root: str | None = None,
-  module: str | None = None,
-) -> str:
-  route = module.replace(root, '')
+def set_inclusion_flag(
+  path: str | None = None,
+  base: str | None = None,
+  include_files: list | None = None,
+) -> bool:
+  return True if not include_files else set_exclusion_flag(
+    path=path,
+    base=base,
+    exclude_files=include_files, )
+
+
+def set_module_route(path: str | None = None) -> str:
+  route = path.replace(ROOT_DIR, '')
   route = os.path.splitext(route)[0]
   route = os.path.normpath(route)
   route = route.split(os.path.sep)
   return '.'.join(route)
 
 
-def get_module_and_yaml_location_when_path_kind_is_file(
+def get_yaml_paths(
+  directory: str | None = None,
+  yaml_suffix: str | None = None,
+  include_files: list | None = None,
   exclude_files: list | None = None,
-  paths: sns | None = None,
+) -> sns:
+  paths = []
+  temp = sns()
+
+  for root, dirs, files in os.walk(directory):
+    for item in files:
+      temp.path = os.path.join(root, item)
+      base, extension = os.path.splitext(temp.path)
+      ending = f'{yaml_suffix}{extension}'
+
+      if False in [
+        extension in CONFIG.yaml_extensions,
+        base.find(yaml_suffix) != -1,
+        not set_exclusion_flag(
+          base=base,
+          path=temp.path,
+          exclude_files=exclude_files, ),
+        set_inclusion_flag(
+          base=base,
+          path=temp.path,
+          include_files=include_files, ),
+      ]:
+        continue
+
+      temp.path = os.path.normpath(temp.path)
+      temp.directory = os.path.dirname(temp.path)
+      yaml = sns(
+        directory=temp.directory,
+        path=temp.path,
+        base=base,
+        extension=extension, )
+      yaml = sns(yaml=yaml)
+      paths.append(yaml)
+
+  return sns(paths=paths)
+
+
+def get_module_paths(
+  paths: list | None = None,
   yaml_suffix: str | None = None,
 ) -> sns:
-  _ = exclude_files
 
-  data = sns(locations=[])
+  for i, item in enumerate(paths):
+    path = ''
+    extension = ''
+    base = item.yaml.base.replace(yaml_suffix, '')
 
-  if getattr(paths, 'kind', None) != 'file':
-    return data
+    for temp_extension in CONFIG.module_extensions:
+      temp_path = f'{base}{temp_extension}'
+      if not os.path.isfile(temp_path):
+        continue
 
-  location = sns(module=None, yaml=None)
-  file_extension = os.path.splitext(paths.path)[-1]
+      path = temp_path
+      extension = temp_extension
+      break
 
-  if file_extension == CONFIG.module_extension:
-    location.module = paths.path
-
-    for extension in CONFIG.yaml_extensions:
-      yaml_ending = f'{yaml_suffix}{extension}'
-      temp = paths.path.replace(CONFIG.module_extension, yaml_ending)
-      if os.path.isfile(temp):
-        location.yaml = temp
-        break
-
-  elif file_extension in CONFIG.yaml_extensions:
-    location.yaml = paths.path
-    yaml_extension = os.path.splitext(paths.path)[-1]
-    yaml_ending = f'{yaml_suffix}{yaml_extension}'
-    location.module = location.yaml.replace(
-      yaml_ending,
-      CONFIG.module_extension, )
-
-  location.module_route = get_route_for_module(
-    root=paths.root,
-    module=location.module, )
-  location.phase_ = 'module'
-  data.locations.append(location)
-  return data
+    route = set_module_route(path=path)
+    item.module = sns(
+      extension=extension,
+      base=base,
+      path=path,
+      route=route,
+      directory=item.yaml.directory, )
+    paths[i] = item
+  
+  return sns(paths=paths)
 
 
-def get_module_and_yaml_location_when_path_kind_is_directory(
-  exclude_files: list | None = None,
-  paths: sns | None = None,
-  yaml_suffix: str | None = None,
-) -> sns:
-  if paths.kind != 'directory':
-    return sns()
-
+def post_processing(paths: list | None = None) -> sns:
   store = []
 
-  for root, dirs, files in os.walk(paths.directory):
-    if flag_for_exclusion(root=root, exclude_files=exclude_files):
-      continue
+  for item in paths:
+    location = sns(
+      phase_='module',
+      module=item.module.path,
+      module_route=item.module.route,
+      yaml=item.yaml.path,
+      directory=item.module.directory, )
+    store.append(location)
 
-    for item in files:
-      for extension in CONFIG.yaml_extensions:
-        yaml_ending = f'{yaml_suffix}{extension}'
-        if not item.endswith(yaml_ending):
-          continue
-
-        yaml = os.path.join(root, item)
-        module = yaml.replace(yaml_ending, CONFIG.module_extension)
-        module_route = get_route_for_module(root=paths.root, module=module)
-        locations = sns(
-          phase_='module',
-          module=module,
-          yaml=yaml,
-          module_route=module_route, )
-        store.append(locations)
-
-  return sns(locations=store)
+  return sns(paths=store)
 
 
 def examples() -> None:
