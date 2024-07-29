@@ -77,7 +77,7 @@ options:
     action: store
     help: &HELP_S >
       List of object definitions for objects to setup or teardown during testing phases
-    default: true
+    default: []
     dest: setup
     required: false
   help: *HELP_S
