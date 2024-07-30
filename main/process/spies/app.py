@@ -55,7 +55,7 @@ def spy_on_method(
     default=do_nothing, )
 
   def spy(*args, **kwargs) -> Callable:
-    called_with = args or kwargs
+    called_with = kwargs or list(args)
     global STORE
     STORE[route] = sns(called=True, called_with=called_with)
     return original(*args, **kwargs)
