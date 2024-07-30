@@ -64,12 +64,9 @@ def handle_id(
   id_short = f'{module_route}.{function}'
   id_ = f' {id_short} - {key} '
 
-  description = description or []
-  if isinstance(description, list) and len(description) > 0:
-    description = description[-1]
+  description = locations.format_as_list(value=description)
   if len(description) > 0:
-    description = f'- {description} '
-    id_ = id_ + description
+    id_ = id_ + f'- {description[-1]} '
 
   logger.main(
     message=f'Generated test id for {id_short}',
@@ -82,12 +79,13 @@ def get_function(
   module: ModuleType | None = None,
 ) -> sns:
   function_ = objects.get(parent=module, route=function)
-  flag = isinstance(function_, Callable)
-  logger.do_nothing() if flag else logger.main(
-    message='Method `{}` does not exist in {}'.format(
+
+  if not isinstance(function_, Callable):
+    logger.main(
+      message='Method `{}` does not exist in {}'.format(
       function, module.__file__),
-    enabled=flag,
-    level='warning', )
+      level='warning', )
+
   return sns(function=function_, function_name=function)
 
 
