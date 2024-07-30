@@ -1273,7 +1273,7 @@ tests:
   description: >
     Verifies that spied on functions were called. Functions to check are listed
     as keys in dictionary under the `expected` key under checks. And the values
-    of keys in the dictionary should be `called` and/or `called_width`
+    of keys in the dictionary should be `called` and/or `called_with`
   cast_arguments:
   - method: sns
     field: module

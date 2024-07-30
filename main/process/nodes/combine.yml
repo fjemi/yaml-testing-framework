@@ -21,3 +21,4 @@ combination_map:
   key: low
   # Choose low level
   tests: low
+  phase_: low

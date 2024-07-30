@@ -5,6 +5,10 @@ resources:
   resource: &RESOURCE_PATH ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/examples/resource.py
 
 
+spies:
+- set_name
+
+
 tests:
 - function: main
   description: >
@@ -396,3 +400,59 @@ tests:
       expected:
         add:
           called: true
+- function: get_name
+  description: Returns the value of the global variable `NAME`
+  arguments: {}
+  checks:
+  - << : *CHECKS
+    method: check_equals
+    expected: World
+- function: set_name
+  description: Sets the global variable `NAME` in the module
+  tests:
+  - description: Undefined
+    arguments: {}
+    checks:
+    - << : *CHECKS
+      method: check_equals
+      expected: 1
+  - description: Defined
+    arguments:
+      name: name
+    checks:
+    - << : *CHECKS
+      method: check_equals
+      expected: 1
+  - description: Name is `name`
+    setup:
+    - name: set_name
+      phase: function
+      method: set_name
+    arguments:
+      name: name
+    cast_output:
+    - method: get_name
+    checks:
+    - << : *CHECKS
+      method: check_equals
+      expected: name
+  - description: Name is `Mars`
+    setup:
+    - name: set_name
+      phase: function
+      method: set_name
+    arguments:
+      name: Mars
+    cast_output:
+    - method: get_name
+    checks:
+    - << : *CHECKS
+      method: check_equals
+      expected: Mars
+    - << : *CHECKS
+      method: check_spies
+      expected:
+        set_name:
+          called: true
+          called_with:
+            name: Mars
