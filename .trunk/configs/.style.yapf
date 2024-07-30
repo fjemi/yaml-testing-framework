@@ -65,6 +65,4 @@ split_all_comma_separated_values = False
 split_arguments_when_comma_terminated = True
 SPLIT_BEFORE_CLOSING_BRACKET = False
 SPLIT_BEFORE_FIRST_ARGUMENT = True
-SPLIT_BEFORE_NAMED_ASSIGNS = True
-insert_final_newline = True
 split_before_named_assigns = True
