@@ -7,10 +7,14 @@ name = "pypi"
 pyyaml = "*"
 pytest = "*"
 nest-asyncio = "*"
+pebble = "*"
 
 [dev-packages]
 pre-commit = "*"
 pytest-cov = "*"
+build = "*"
+setuptools = "*"
+wheel = "*"
 
 [requires]
 python_version = "3.12"
