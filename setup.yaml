@@ -18,9 +18,25 @@ name: yaml_testing_framework
 packages:
 - main
 - main.process
-- main.utils
 - main.process.casts
+- main.process.checks
+- main.process.environment
+- main.process.locations
 - main.process.nodes
+- main.process.patches
+- main.process.setup
+- main.process.spies
+- main.utils
+- main.utils.get_config
+- main.utils.get_module
+- main.utils.independent
+- main.utils.invoke_testing_method
+- main.utils.logger
+- main.utils.objects
+- main.utils.methods
+- main.utils.schema
+- main.plugin
+- main.app
 package_data:
   '':
   - '*.yaml'
