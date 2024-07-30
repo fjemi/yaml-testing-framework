@@ -9,6 +9,7 @@ from typing import Any
 LOCALS = locals()
 
 CONSTANT = 0
+NAME = 'World'
 
 
 def main(
@@ -66,6 +67,17 @@ def factorial(data: sns | None = None) -> sns:
     data.result = data.result * (i + 1)
 
   return data
+
+
+def get_name(*args, **kwargs) -> str:
+  _ = args, kwargs
+  return NAME
+
+
+def set_name(name: str = '') -> int:
+  global NAME
+  NAME = name or NAME
+  return 1
 
 
 def examples() -> None:
