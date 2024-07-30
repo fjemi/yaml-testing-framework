@@ -102,222 +102,329 @@ tests:
           spies: []
           tests: null
           yaml: *RESOURCE_TEST_YAML
-- function: get_configurations_and_tests
-  description: >
-    Returns the contents of a YAML file or an empty dictionary if the file
-    does not exist
+- function: get_content
+  description: Returns content from a YAML file. Expands settings to the content
   tests:
-  - description: Undefined arguments
-    arguments: {}
-    checks:
-    - method: check_sns
-      << : *CHECKS
-      expected:
-        configurations: {}
-        tests: []
-  - description: YAML location does not exist
+  - description: YAML does not exist
     arguments:
-      yaml: location/does/not/exist.yaml
-    checks:
-    - method: check_sns
-      << : *CHECKS
-      expected:
-        configurations: {}
-        tests: []
-  - description: YAML location does exist
-    arguments:
-      yaml: *RESOURCE_TEST_YAML
-    checks:
-    - method: check_sns
-      << : *CHECKS
-      expected:
-        configurations: {}
-        tests:
-        - description: description_a
-        - description: description_b
-          tests:
-          - description: description_b0
-          - description: description_b1
-- function: format_locations
-  description: Formats locations as a simple name space
-  tests:
-  - description: Undefined arguments
-    arguments: {}
-    checks:
-    - method: check_sns
-      << : *CHECKS
-      expected:
-        module: null
-        module_route: null
-        yaml: null
-    - method: check_sns
-      << : *CHECKS
-      field: locations
-      expected:
-        module: null
-        module_route: null
-        yaml: null
-  - description: Defined arguments
-    arguments:
+      yaml: does_not_exist
       module: module
       module_route: module_route
-      yaml: yaml
     checks:
-    - method: check_sns
-      << : *CHECKS
+    - << : *CHECKS
+      method: check_sns
       expected:
-        module: null
-        module_route: null
-        yaml: null
-    - method: check_sns
-      << : *CHECKS
-      field: locations
-      expected:
-        module: module
-        module_route: module_route
-        yaml: yaml
-- function: add_locations_to_configurations
-  description: >
-    Adds module, yaml, and other location data to global config data
-  cast_arguments:
-  - field: locations
-    method: sns
-    unpack: true
-  tests:
-  - description: Empty arguments
-    arguments:
-      configurations: {}
-      locations: {}
-    checks:
-    - method: check_sns
-      << : *CHECKS
-      expected:
-        locations: null
-        configurations: {}
-  - description: Defined arguments
-    arguments:
-      configurations: {}
-      locations:
-        module: module
-        module_route: module_route
-        yaml: yaml
-    checks:
-    - method: check_sns
-      << : *CHECKS
-      expected:
-        locations: null
-        configurations:
+        content:
+          yaml: does_not_exist
           module: module
           module_route: module_route
-          yaml: yaml
-- function: get_expanded_nodes
+  - description: YAML exists
+    arguments:
+      yaml: *RESOURCE_TEST_YAML
+      module: module
+      module_route: module_route
+    checks:
+    - << : *CHECKS
+      method: check_sns
+      expected:
+        content:
+          yaml: *RESOURCE_TEST_YAML
+          module: module
+          module_route: module_route
+          tests:
+          - description: description_a
+            tests:
+            - description: description_a1
+          - description: description_b
+            tests:
+            - description: description_b0
+- function: get_roots
   description: >
-    Adds configurations to root nodes and expands data in roots to nested nodes
-  cast_output:
-  - method: sns_to_dict
+    Returns root nodes or tests defined in YAML files. Returns the nodes
+    in a dictionary with keys being the index of the node in the list.
+    Content settings are expanded out to the nodes.
+  tests:
+  - description: No roots
+    arguments:
+      content:
+        a: a
+    checks:
+    - << : *CHECKS
+      method: check_sns
+      expected:
+        roots: {}
+  - description: Cast output
+    cast_output:
+    - field: roots
+      method: sns_to_dict
+      << : *RESOURCE
+    tests:
+    - description: One root
+      arguments:
+        content:
+          tests:
+          - description: root_0
+      checks:
+      - << : *CHECKS
+        method: check_sns
+        expected:
+          roots:
+            '0':
+              arguments: {}
+              cast_arguments: null
+              cast_output: null
+              checks: []
+              description:
+              - root_0
+              environment: {}
+              exclude_methods: []
+              function: ''
+              function_name: ''
+              id: null
+              id_long: ''
+              id_short: ''
+              include_methods: []
+              key: '0'
+              module: null
+              module_route: ''
+              output: null
+              patches: null
+              phase_: function
+              spies: null
+              tests: null
+              yaml: null
+    - description: Two roots
+      arguments:
+        content:
+          tests:
+          - description: root_0
+          - description: root_1
+      checks:
+      - << : *CHECKS
+        method: check_sns
+        expected:
+          roots:
+            '0':
+              arguments: {}
+              cast_arguments: null
+              cast_output: null
+              checks: []
+              description:
+              - root_0
+              environment: {}
+              exclude_methods: []
+              function: ''
+              function_name: ''
+              id: null
+              id_long: ''
+              id_short: ''
+              include_methods: []
+              key: '0'
+              module: null
+              module_route: ''
+              output: null
+              patches: null
+              phase_: function
+              spies: null
+              tests: null
+              yaml: null
+            '1':
+              arguments: {}
+              cast_arguments: null
+              cast_output: null
+              checks: []
+              description:
+              - root_1
+              environment: {}
+              exclude_methods: []
+              function: ''
+              function_name: ''
+              id: null
+              id_long: ''
+              id_short: ''
+              include_methods: []
+              key: '1'
+              module: null
+              module_route: ''
+              output: null
+              patches: null
+              phase_: function
+              spies: null
+              tests: null
+              yaml: null
+- function: expand_nodes
+  description: >
+    Expands nodes and there settings out to nested nodes.
+    Returns the nodes without those that were expanded, and a list
+    of nodes that were expanded
+  tests:
+  - description: No roots
+    arguments:
+      roots: {}
+    checks:
+    - method: check_equals
+      << : *CHECKS
+      field: __dict__
+      expected:
+        nodes: {}
+        expanded: {}
+  - description: Roots without nested tests
+    cast_arguments:
+    - method: dict_dict_to_dict_sns
+      << : *RESOURCE
+      field: roots
+    cast_output:
+    - method: sns_to_dict
+      << : *RESOURCE
+      field: nodes
+    arguments:
+      roots:
+        '1':
+          description: description_1
+          key: '1'
+          tests:
+          - description: description_1a
+    checks:
+    - method: check_equals
+      << : *CHECKS
+      field: __dict__
+      expected:
+        expanded:
+          '1': 1
+        nodes:
+          '1':
+            description: description_1
+            key: '1'
+            tests:
+            - description: &id001
+              - description_1a
+              - description_1
+              key: null
+              tests: null
+          1|0:
+            arguments: {}
+            cast_arguments: null
+            cast_output: null
+            checks: []
+            description: *id001
+            environment: {}
+            exclude_methods: []
+            function: ''
+            function_name: ''
+            id: null
+            id_long: ''
+            id_short: ''
+            include_methods: []
+            key: 1|0
+            module: null
+            module_route: ''
+            output: null
+            patches: null
+            phase_: function
+            spies: null
+            tests: null
+            yaml: null
+- function: get_nested_nodes
+  description: Returns a nodes nested nodes
+  cast_arguments:
+  - field: node
+    method: sns
+    unpack: true
     << : *RESOURCE
-    field: tests
+  tests:
+  - description: No nested nodes
+    arguments:
+      node: {}
+    checks:
+    - << : *CHECKS
+      method: check_equals
+      expected: {}
+  - description: One nested node
+    arguments:
+      node:
+        key: key
+        tests:
+        - {}
+    checks:
+    - &ONE_NODE_CHECK
+      << : *CHECKS
+      method: check_equals
+      field: key|0.__dict__
+      expected:
+        arguments: {}
+        cast_arguments: null
+        cast_output: null
+        checks: []
+        description: ''
+        environment: {}
+        exclude_methods: []
+        function: ''
+        function_name: ''
+        id: null
+        id_long: ''
+        id_short: ''
+        include_methods: []
+        key: key|0
+        module: null
+        module_route: ''
+        output: null
+        patches: null
+        phase_: function
+        spies: null
+        tests: null
+        yaml: null
+  - description: two nested node
+    arguments:
+      node:
+        key: key
+        tests:
+        - description: description
+        - description: description
+    checks:
+    - << : *CHECKS
+      method: check_equals
+      field: key|1.key
+      expected: key|1
+    - << : *CHECKS
+      method: check_equals
+      field: key|0.key
+      expected: key|0
+- function: remove_expanded
+  description: Removes nodes that have been expanded from the store
   tests:
   - description: Empty arguments
     arguments:
-      configurations: {}
-      tests: []
+      nodes: {}
+      expanded: []
     checks:
     - method: check_sns
       << : *CHECKS
       expected:
-        tests: []
-  - description: One node with no nested nodes
+        nodes: []
+  - description: Two expanded nodes
     arguments:
-      configurations: {}
-      tests:
-      - description: description_a
+      nodes:
+        0: node_0
+        1: node_1
+        2: node_2
+      expanded: [0]
     checks:
     - method: check_sns
       << : *CHECKS
       expected:
-        tests:
-        - arguments: {}
-          checks: []
-          cast_arguments: []
-          cast_output: []
-          description:
-          - description_a
-          environment: {}
-          exclude_methods: []
-          include_methods: []
-          function: null
-          function_name: null
-          id: null
-          id_long: null
-          id_short: null
-          key: null
-          module: null
-          module_route: null
-          output: null
-          patches: []
-          phase_: function
-          spies: []
-          tests: null
-          yaml: null
-  - description: Single node with nested nodes
+        nodes:
+        - node_1
+        - node_2
+  - description: One expanded node
     arguments:
-      configurations: {}
-      tests:
-      - description: root
-        tests:
-        - description: nested_0
-        - description: nested_1
+      nodes:
+        a: a
+        b: b
+      expanded:
+      - b
     checks:
     - method: check_sns
       << : *CHECKS
       expected:
-        tests:
-        - arguments: {}
-          checks: []
-          cast_arguments: []
-          cast_output: []
-          description:
-          - root
-          - nested_0
-          environment: {}
-          exclude_methods: []
-          include_methods: []
-          function: null
-          function_name: null
-          id: null
-          id_long: null
-          id_short: null
-          key: '0.0'
-          module: null
-          module_route: null
-          output: null
-          patches: []
-          phase_: function
-          spies: []
-          tests: null
-          yaml: null
-        - arguments: {}
-          checks: []
-          cast_arguments: []
-          cast_output: []
-          description:
-          - root
-          - nested_1
-          environment: {}
-          exclude_methods: []
-          include_methods: []
-          function: null
-          function_name: null
-          id: null
-          id_long: null
-          id_short: null
-          key: '0.1'
-          module: null
-          module_route: null
-          output: null
-          patches: []
-          phase_: function
-          spies: []
-          tests: null
-          yaml: null
+        nodes:
+        - a

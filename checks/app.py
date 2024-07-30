@@ -216,8 +216,8 @@ def check_module(
 
 @type_checks
 def check_equals(
-  output: Any,
-  expected: Any,
+  output: Any | None,
+  expected: Any | None,
 ) -> sns:
   passed = output == expected
   return sns(
@@ -265,13 +265,14 @@ def check_class(
 
 @type_checks
 def check_length(
-  output: Iterable,
+  output: Any | None,
   expected: int | float,
 ) -> sns:
-  passed = len(output) == expected
+  output = len(output)
+  passed = output == expected
   return sns(
     passed=passed,
-    output=len(output),
+    output=output,
     expected=expected, )
 
 
