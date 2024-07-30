@@ -188,7 +188,6 @@ tests:
     checks:
     - method: check_sns
       << : *CHECKS
-      << : *CHECKS
       expected:
         a: -1
         b: -2
