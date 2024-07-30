@@ -547,18 +547,19 @@ tests:
     checks:
     - method: check_sns
       expected:
-        output: null
-        passed: false
         expected:
           method: check_length
           parameters:
             failed:
-            - name: output
-              hints:
-              - iterable
+            - hints:
+              - int
+              - float
               kind: nonetype
+              name: expected
             passed:
-            - expected
+            - output
+        output: null
+        passed: false
   - description: Output is an empty string
     arguments:
       expected: 0
