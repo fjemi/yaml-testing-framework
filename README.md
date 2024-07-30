@@ -186,12 +186,11 @@ and nested tests; and the expanded results are three individual tests
 containing various values for each configuration.
 
 ```yaml
-configurations:
-  config_a:
-  - A
-  config_b:
-    b: B
-  config_c: C
+config_a:
+- A
+config_b:
+  b: B
+config_c: C
 
 
 tests:
@@ -209,8 +208,11 @@ tests:
       - B
       config_b:
         b: B0
+```
 
-expanded:
+
+```yaml
+tests:  # Expanded
 - config_a: # test 1
   - A
   - B  # Appended item
@@ -423,10 +425,9 @@ For modules containing a global variable `CONFIG`, we can perform tests using di
 ### Example
 
 ```yaml
-configurations:
-  environment:
-    NAME_A: a
-    NAME_C: c
+environment:
+  NAME_A: a
+  NAME_C: c
   
 
 tests:
@@ -451,9 +452,8 @@ resources:
   resource: ./checks.py
 
 
-configurations:
-  spies:
-  - method_a
+spies:
+- method_a
 
 
 tests:
@@ -548,16 +548,15 @@ resources:
   url: localhost:1234/hello_world
 
 
-configurations:
-  setup:
-  - name: api
-    phase: module
-    << : *RESOURCE
-    method: run_server
-    arguments:
-      << : *URL
-    unpack: true
-    timeout: -1
+setup:
+- name: api
+  phase: module
+  << : *RESOURCE
+  method: run_server
+  arguments:
+    << : *URL
+  unpack: true
+  timeout: -1
 
 
 tests:
