@@ -110,6 +110,7 @@ tests:
       yaml: does_not_exist
       module: module
       module_route: module_route
+      setup: setup
     checks:
     - << : *CHECKS
       method: check_sns
@@ -118,16 +119,19 @@ tests:
           yaml: does_not_exist
           module: module
           module_route: module_route
+          setup: setup
   - description: YAML exists
     arguments:
       yaml: *RESOURCE_TEST_YAML
       module: module
       module_route: module_route
+      setup: []
     checks:
     - << : *CHECKS
       method: check_sns
       expected:
         content:
+          setup: []
           yaml: *RESOURCE_TEST_YAML
           module: module
           module_route: module_route

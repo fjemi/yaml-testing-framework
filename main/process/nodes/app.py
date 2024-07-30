@@ -16,6 +16,7 @@ def main(
   yaml: str | None = None,
   module: str | None = None,
   module_route: str | None = None,
+  setup: list = [],
 ) -> sns:
   data = sns(**locals())
   data = independent.process_operations(
@@ -29,6 +30,7 @@ def get_content(
   yaml: str | None = None,
   module: str | None = None,
   module_route: str | None = None,
+  setup: list = [],
 ) -> sns:
   locals_ = sns(**locals())
   content = independent.get_yaml_content(location=yaml).content or {}

@@ -56,6 +56,7 @@ tests:
           module_route: .main.process.locations.resources.app
           yaml: *YAML_PATH
           phase_: module
+          setup: []
 
 
 - function: format_project_path
@@ -260,6 +261,7 @@ tests:
           module: *RESOURCE
           module_route: .main.process.locations.resources.app
           phase_: module
+          setup: []
           yaml: *YAML_PATH
 - function: post_processing
   description: Handles logging if no files are collect. Returns None
@@ -328,6 +330,7 @@ tests:
           module: *RESOURCE_PATH
           module_route: .main.process.locations.resources.app
           phase_: module
+          setup: []
           yaml: *YAML_PATH
 - function: handle_directory
   description: Returns test files with in a directory
@@ -369,6 +372,7 @@ tests:
           module: *RESOURCE_PATH
           module_route: .main.process.locations.resources.app
           phase_: module
+          setup: []
           yaml: *YAML_PATH
 - function: get_files
   description: Returns the files in a directory
@@ -628,4 +632,5 @@ tests:
           module: *RESOURCE_PATH
           module_route: .main.process.locations.resources.app
           phase_: module
+          setup: []
           yaml: *YAML_PATH

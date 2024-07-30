@@ -23,6 +23,7 @@ def main(
   yaml_suffix: str | None = None,
   logging_flag: bool | None = None,
   timestamp: int | float | None = None,
+  setup: list = [],
 ) -> sns:
   path = project_path
   data = sns(**locals())
@@ -98,6 +99,7 @@ def handle_path(
   path: str = '',
   directory: str = '',
   kind: str = '',
+  setup: list = [],
 ) -> sns:
   arguments = sns(**locals())
   route = f'handle_{kind}'
@@ -131,6 +133,7 @@ def handle_file(
   yaml_suffix: str = '',
   path: str = '',
   directory: str = '',
+  setup: list = [],
 ) -> sns:
   locals_ = sns(**locals())
   base, extension = os.path.splitext(path)
@@ -144,6 +147,7 @@ def handle_directory(
   yaml_suffix: str = '',
   path: str = '',
   directory: str = '',
+  setup: list = [],
 ) -> sns:
   data = sns(**locals())
   data = independent.process_operations(
@@ -230,6 +234,7 @@ def set_modules(
   files: list = [],
   yaml_suffix: str = '',
   directory: str = '',
+  setup: list = [],
 ) -> sns:
   store = []
 
@@ -245,6 +250,7 @@ def set_modules(
       extensions = sns(yaml=yaml_extension, module=module_extension)
       paths = sns(
         phase_='module',
+        setup=setup,
         module=path,
         module_route=set_module_route(module=path),
         yaml=file_,
