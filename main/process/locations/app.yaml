@@ -24,7 +24,8 @@ yaml_extensions:
 - .yml
 
 
-module_extension: .py
+module_extensions:
+- .py
 
 
 root_locations:
@@ -50,8 +51,13 @@ empty_values:
 
 operations:
   main:
-  - format_paths
+  - format_project_path
+  - set_path_metadata
   - format_yaml_suffix
-  - format_exclude_files
-  - get_module_and_yaml_location_when_path_kind_is_file
-  - get_module_and_yaml_location_when_path_kind_is_directory
+  - format_inclusion_and_exclusion_patterns
+  - handle_path
+  - post_processing
+  handle_directory:
+  - get_files
+  - filter_files
+  - set_modules

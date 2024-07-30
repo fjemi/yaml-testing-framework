@@ -6,7 +6,6 @@ from types import SimpleNamespace as sns
 
 
 def paths_cast_arguments(paths: dict | None = None) -> sns:
-  paths = paths or {}
   return sns(**paths)
 
 
@@ -19,11 +18,15 @@ def list_dict_to_list_sns(locations: list | None = None) -> list | None:
 
 
 def list_sns_to_list_dict(locations: list | None = None) -> list | None:
-  if not isinstance(locations, list):
-    return locations
 
-  locations = [item.__dict__ for item in locations]
-  return locations
+  def cast(item: sns) -> dict:
+    item = item.__dict__
+    key = 'extensions'
+    if key in item:
+      item[key] = item[key].__dict__
+    return item
+
+  return [cast(item=item) for item in locations]
 
 
 def examples() -> None:

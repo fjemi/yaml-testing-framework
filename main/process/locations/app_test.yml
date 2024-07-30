@@ -11,8 +11,10 @@ resources:
   resource: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/app.py
 - &RESOURCE
   resource: &RESOURCE_PATH ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/locations/resources/app.py
-- &RESOURCES_DIR
+- &RESOURCE_DIRECTORY
   ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/locations/resources
+- &YAML_PATH
+  ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/locations/resources/app_test.yml
 
 
 tests:
@@ -38,48 +40,85 @@ tests:
   - description: Project path is a directory
     arguments:
       project_path: *RESOURCE_PATH
-      exclude_files: exclusion_pattern
+      include_files:
+      - app
       yaml_suffix: _test
     checks:
     - method: check_sns
       << : *CHECKS
       expected:
         locations:
-        - module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/locations/resources/app.py
+        - directory: *RESOURCE_DIRECTORY
+          module: *RESOURCE_PATH
+          extensions:
+            module: .py
+            yaml: .yml
           module_route: .main.process.locations.resources.app
-          yaml: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/locations/resources/app_test.yml
+          yaml: *YAML_PATH
           phase_: module
-- function: format_paths
+
+
+- function: format_project_path
+  description: >
+    Formats the project path. If the first character is a
+    dot, replaces the dot with the root path
+  tests:
+  - description: Undefined
+    arguments: {}
+    checks:
+    - << : *CHECKS
+      method: check_sns
+      expected:
+        path: *ROOT
+  - description: Path is a dot
+    arguments:
+      project_path: .
+    checks:
+    - << : *CHECKS
+      method: check_sns
+      expected:
+        path: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/
+  - description: Path starts with a dot
+    arguments:
+      project_path: .main
+    checks:
+    - << : *CHECKS
+      method: check_sns
+      expected:
+        path: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main
+  - description: Defined
+    arguments:
+      project_path: defined
+    checks:
+    - << : *CHECKS
+      method: check_sns
+      expected:
+        path: defined
+- function: set_path_metadata
   description: >
     Returns a project's directory based on the location defined in a dictionary
   tests:
-  - description: >
-      Use path to current project's root directory when path argument is undefined
-    arguments:
-      path: null
+  - description: Undefined
+    arguments: {}
     checks:
     - method: check_type
       << : *CHECKS
       expected: SimpleNamespace
     - method: check_sns
       << : *CHECKS
-      field: paths
       expected:
-        directory: *ROOT
-        kind: directory
-        path: *ROOT
-        root: *ROOT
+        directory: ''
+        kind: none
+        path: ''
   - description: Path does not exist
     arguments:
       path: does_not_exist
     checks:
     - method: check_sns
       << : *CHECKS
-      field: paths
       expected:
-        root: *ROOT
         path: does_not_exist
-        kind: ''
+        kind: none
         directory: does_not_exist
   - description: Path is an existing directory
     arguments:
@@ -87,11 +126,9 @@ tests:
     checks:
     - method: check_sns
       << : *CHECKS
-      field: paths
       expected:
-        root: *ROOT
         path: *RESOURCE_PATH
-        directory: *RESOURCES_DIR
+        directory: *RESOURCE_DIRECTORY
         kind: file
   - description: Path is an existing file
     arguments:
@@ -99,10 +136,8 @@ tests:
     checks:
     - method: check_sns
       << : *CHECKS
-      field: paths
       expected:
-        root: *ROOT
-        directory: *RESOURCES_DIR
+        directory: *RESOURCE_DIRECTORY
         kind: file
         path: *RESOURCE_PATH
 - function: format_yaml_suffix
@@ -124,235 +159,473 @@ tests:
       << : *CHECKS
       expected:
         yaml_suffix: _yaml_suffix
-- function: format_exclude_files
-  description: >
-    Returns a list strings that are patterns used to
-    exclude files from testing
+- function: format_as_list
+  description: Formats a value as a list
   tests:
-  - description: Argument is undefined
-    arguments:
-      exclude_files: null
-    checks:
-    - method: check_sns
-      << : *CHECKS
-      expected:
-        exclude_files:
-        - .venv
-        - .eggs
-        - build
-        - .ignore
-        - __pycache__
-        - .pyc
-        - .trunk
-  - description: Argument is a string
-    arguments:
-      exclude_files: exclude_files
-    checks:
-    - method: check_sns
-      << : *CHECKS
-      expected:
-        exclude_files:
-        - exclude_files
-        - .venv
-        - .eggs
-        - build
-        - .ignore
-        - __pycache__
-        - .pyc
-        - .trunk
-  - description: Argument is a list of strings
-    arguments:
-      exclude_files:
-      - exclude_files_a
-      - exclude_files_b
-    checks:
-    - method: check_sns
-      << : *CHECKS
-      expected:
-        exclude_files:
-        - exclude_files_a
-        - exclude_files_b
-        - .venv
-        - .eggs
-        - build
-        - .ignore
-        - __pycache__
-        - .pyc
-        - .trunk
-- function: flag_for_exclusion
-  description: Flags a path for exclusion if it contains an exclusion pattern
-  tests:
-  - description: Undefined arguments
-    arguments:
-      root: null
-      exclude_files: null
+  - description: Value is undefined
+    arguments: {}
     checks:
     - method: check_equals
+      expected: []
       << : *CHECKS
+  - description: Value is a list
+    arguments:
+      value: []
+    checks:
+    - method: check_equals
+      expected: []
+      << : *CHECKS
+  - description: Value is not a list and is defined
+    arguments:
+      value: value
+    checks:
+    - method: check_equals
+      expected: [value]
+      << : *CHECKS
+- function: format_inclusion_and_exclusion_patterns
+  description: Formats lists of patterns to match for for in/excluding files
+  tests:
+  - description: Undefined
+    arguments: {}
+    checks:
+    - method: check_sns
+      << : *CHECKS
+      expected:
+        exclude_files:
+        - .venv
+        - .eggs
+        - build
+        - .ignore
+        - __pycache__
+        - .pyc
+        - .trunk
+        include_files: []
+  - description: Defined
+    arguments:
+      exclude_files:
+      - a
+      - b
+      include_files:
+      - c
+    checks:
+    - method: check_sns
+      << : *CHECKS
+      expected:
+        exclude_files:
+        - .venv
+        - .eggs
+        - build
+        - .ignore
+        - __pycache__
+        - .pyc
+        - .trunk
+        - a
+        - b
+        include_files:
+        - c
+- function: handle_path
+  description: Path to a file
+  cast_output:
+  - method: list_sns_to_list_dict
+    << : *RESOURCE
+    field: files
+  - description: Path to non-existing file or directory
+    arguments:
+      kind: none
+    checks:
+    - method: check_sns
+      << : *CHECKS
+      expected:
+        files: []
+  - description: Path to a file
+    arguments:
+      kind: file
+      path: *RESOURCE_PATH
+      directory: *RESOURCE_DIRECTORY
+      yaml_suffix: _test
+      include_files:
+      - app
+      exclude_files: []
+    checks:
+    - << : *CHECKS
+      method: check_equals
+      field: __dict__
+      expected:
+        files:
+        - directory: *RESOURCE_DIRECTORY
+          extensions:
+            state:
+              module: .py
+              yaml: .yml
+          module: *RESOURCE
+          module_route: .main.process.locations.resources.app
+          phase_: module
+          yaml: *YAML_PATH
+- function: post_processing
+  description: Handles logging if no files are collect. Returns None
+  arguments: {}
+  spies:
+  - logger.main
+  checks:
+  - method: check_equals
+    expected: null
+    << : *CHECKS
+  # # TODO: Resolve tests. Should work with spies.
+  # - method: check_spies
+  #   << : *CHECKS
+  #   expected:
+  #     logger.main:
+  #       called: true
+  #       called_with:
+  #         message: 'No files collected from path '
+  #         level: warning
+- function: handle_none
+  description: Returns an empty list of file paths
+  arguments: {}
+  checks:
+  - << : *CHECKS
+    method: check_sns
+    expected:
+      files: []
+- function: handle_file
+  description: Returns paths of files associated with a given file path
+  tests:
+  - description: Undefined
+    arguments: {}
+    checks:
+    - << : *CHECKS
+      method: check_sns
+      expected:
+        files: []
+  - description: Directory does not exist
+    arguments:
+      directory: directory
+      path: path
+      yaml_suffix: _test
+    checks:
+    - << : *CHECKS
+      method: check_sns
+      expected:
+        files: []
+  - description: Directory exists
+    arguments:
+      directory: *RESOURCE_DIRECTORY
+      path: *RESOURCE_PATH
+      yaml_suffix: _test
+    cast_output:
+    - field: files
+      method: list_sns_to_list_dict
+      << : *RESOURCE
+    checks:
+    - << : *CHECKS
+      method: check_sns
+      expected:
+        files:
+        - directory: *RESOURCE_DIRECTORY
+          extensions:
+            module: .py
+            yaml: .yml
+          module: *RESOURCE_PATH
+          module_route: .main.process.locations.resources.app
+          phase_: module
+          yaml: *YAML_PATH
+- function: handle_directory
+  description: Returns test files with in a directory
+  tests:
+  - description: Undefined
+    arguments: {}
+    checks:
+    - << : *CHECKS
+      method: check_sns
+      expected:
+        files: []
+  - description: Directory does not exist
+    arguments:
+      directory: directory
+    checks:
+    - << : *CHECKS
+      method: check_sns
+      expected:
+        files: []
+  - description: Directory exists
+    arguments:
+      directory: *RESOURCE_DIRECTORY
+      yaml_suffix: _test
+      include_files:
+      - app
+    cast_output:
+    - field: files
+      method: list_sns_to_list_dict
+      << : *RESOURCE
+    checks:
+    - << : *CHECKS
+      method: check_sns
+      expected:
+        files:
+        - directory: *RESOURCE_DIRECTORY
+          extensions:
+            module: .py
+            yaml: .yml
+          module: *RESOURCE_PATH
+          module_route: .main.process.locations.resources.app
+          phase_: module
+          yaml: *YAML_PATH
+- function: get_files
+  description: Returns the files in a directory
+  tests:
+  - description: Directory does not exist
+    arguments:
+      directory: directory
+    checks:
+    - << : *CHECKS
+      method: check_sns
+      expected:
+        files: []
+  - description: Directory exists
+    arguments:
+      directory: *RESOURCE_DIRECTORY
+    checks:
+    - << : *CHECKS
+      method: check_sns
+      expected:
+        files:
+        - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/locations/resources/exclusion_pattern_test.yml
+        - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/locations/resources/exclusion_pattern.py
+        - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/locations/resources/app.py
+        - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/locations/resources/no_module_test.yml
+        - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/locations/resources/app_test.yml
+        - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/locations/resources/resources_folder_name/resource_b.py
+        - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/locations/resources/resources_folder_name/resource_a.py
+- function: filter_files
+  description: Filter out files that d not meet criteria
+  tests:
+  - description: No files
+    arguments:
+      files: []
+      yaml_suffix: _test
+      exclude_files: []
+      include_files: []
+    checks:
+    - << : *CHECKS
+      method: check_sns
+      expected:
+        files: []
+  - description: Defined files
+    arguments:
+      files:
+      - app.yaml
+      - app.py
+      - app_test.yml
+      yaml_suffix: _test
+      exclude_files: []
+      include_files: []
+    checks:
+    - << : *CHECKS
+      method: check_sns
+      expected:
+        files:
+        - app_test.yml
+  - description: No files meet criteria
+    arguments:
+      files:
+      - app.yaml
+      - app.py
+      - app_test.yml
+      yaml_suffix: _test
+      exclude_files:
+      - app
+      include_files: []
+    checks:
+    - << : *CHECKS
+      method: check_sns
+      expected:
+        files: []
+  - description: Single files meet criteria
+    arguments:
+      files:
+      - module_test.yml
+      - app_test.yml
+      yaml_suffix: _test
+      exclude_files: []
+      include_files:
+      - module
+    checks:
+    - << : *CHECKS
+      method: check_sns
+      expected:
+        files:
+        - module_test.yml
+- function: flag_yaml
+  description: Returns true if path is a YAML test file
+  tests:
+  - description: Undefined
+    arguments: {}
+    checks:
+    - << : *CHECKS
+      method: check_equals
+      expected: false
+  - description: Invalid extension
+    arguments:
+      base: base_test
+      extension: extension
+      yaml_suffix: _test
+    checks:
+    - << : *CHECKS
+      method: check_equals
       expected: False
-  - description: Path flagged for exclusion
+  - description: Invalid base
     arguments:
-      root: pattern_a/resources_folder_name
-      exclude_files:
-      - pattern_a
+      base: base
+      extension: .yml
+      yaml_suffix: _test
     checks:
-    - method: check_equals
-      << : *CHECKS
+    - << : *CHECKS
+      method: check_equals
+      expected: False
+  - description: Valid base and extension
+    arguments:
+      base: base_test
+      extension: .yml
+      yaml_suffix: _test
+    checks:
+    - << : *CHECKS
+      method: check_equals
       expected: True
-  - description: Path is not flagged for exclusion
+- function: flag_include
+  description: Flag a path for inclusion
+  tests:
+  - description: Empty patterns
     arguments:
-      root: pattern_c/folder_name
-      exclude_files:
-      - pattern_a
-      - pattern_b
+      base: base
+      include_files: []
     checks:
-    - method: check_equals
-      << : *CHECKS
+    - << : *CHECKS
+      method: check_equals
+      expected: True
+  - description: Matches patterns
+    arguments:
+      base: base
+      include_files:
+      - base
+    checks:
+    - << : *CHECKS
+      method: check_equals
+      expected: True
+  - description: Does not match patterns
+    arguments:
+      base: base
+      include_files:
+      - base_0
+      - base_1
+    checks:
+    - << : *CHECKS
+      method: check_equals
       expected: False
-- function: get_route_for_module
+- function: flag_exclude
+  description: Flag a path for inclusion
+  tests:
+  - description: Empty patterns
+    arguments:
+      base: base
+      exclude_files: []
+    checks:
+    - << : *CHECKS
+      method: check_equals
+      expected: True
+  - description: Matches patterns
+    arguments:
+      base: base
+      exclude_files:
+      - base
+    checks:
+    - << : *CHECKS
+      method: check_equals
+      expected: False
+  - description: Does not match patterns
+    arguments:
+      base: base
+      exclude_files:
+      - base_0
+      - base_1
+    checks:
+    - << : *CHECKS
+      method: check_equals
+      expected: True
+- function: set_module_route
   description: Format's the module location for use in a test id
   tests:
   - description: Undefined arguments
     arguments:
-      root: null
       module: null
     checks:
-    - method: check_error
+    - method: check_equals
       << : *CHECKS
-      expected: AttributeError
+      expected: None
   - description: Root is an empty string
     arguments:
       module: location/module.py
-      root: ''
     checks:
     - method: check_equals
       << : *CHECKS
       expected: location.module
   - description: Defined module location
     arguments:
-      module: location_a/location_b/module.py
-      root: location_a
+      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/location/module.py
     checks:
     - method: check_equals
       << : *CHECKS
-      expected: .location_b.module
+      expected: .location.module
   - description: Location is a string 1
     arguments:
-      module: /project_path/module_route.py
-      root: /project_path
+      module: module_route.py
     checks:
     - method: check_equals
       << : *CHECKS
-      expected: .module_route
-- function: get_module_and_yaml_location_when_path_kind_is_file
+      expected: module_route
+- function: set_modules
   description: >
-    Returns a list containing a single SimpleNamespace objects that has the
-    location of module and its associated YAML file
-  cast_arguments:
-  - method: paths_cast_arguments
-    << : *RESOURCE
-    field: paths
-  cast_output:
-  - method: list_sns_to_list_dict
-    << : *RESOURCE
-    field: locations
+    Returns a list of objects containing YAML, module, and other path data,
+    given a list of YAML paths
   tests:
-  - description: Undefined arguments
-    arguments: {}
-    checks:
-    - method: check_sns
-      << : *CHECKS
-      expected:
-        locations: []
-  - description: Path is not a file
+  - description: Files is empty list
     arguments:
-      paths:
-        kind: directory
+      files: []
     checks:
-    - method: check_sns
-      << : *CHECKS
+    - << : *CHECKS
+      method: check_sns
       expected:
-        locations: []
-  - description: Path is the location of a module file
+        files: []
+  - description: Files contains non-existing YAML
     arguments:
-      exclude_files: []
+      files:
+      - does_not_exist.yml
       yaml_suffix: _test
-      paths:
-        kind: file
-        root: *ROOT
-        path: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/locations/resources/exclusion_pattern.py
+      directory: *RESOURCE_DIRECTORY
     checks:
-    - method: check_sns
-      << : *CHECKS
+    - << : *CHECKS
+      method: check_sns
       expected:
-        locations:
-        - module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/locations/resources/exclusion_pattern.py
-          module_route: .main.process.locations.resources.exclusion_pattern
-          phase_: module
-          yaml: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/locations/resources/exclusion_pattern_test.yml
-  - description: Path is the location of a YAML file
+        files: []
+  - cast_output:
+    - << : *RESOURCE
+      method: list_sns_to_list_dict
+      field: files
+    description: Files existing YAML
     arguments:
-      exclude_files: []
+      files:
+      - *YAML_PATH
       yaml_suffix: _test
-      paths:
-        kind: file
-        root: *ROOT
-        path: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/locations/resources/exclusion_pattern_test.yml
+      directory: *RESOURCE_DIRECTORY
     checks:
-    - method: check_sns
-      << : *CHECKS
+    - << : *CHECKS
+      method: check_sns
       expected:
-        locations:
-        - module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/locations/resources/exclusion_pattern.py
-          module_route: .main.process.locations.resources.exclusion_pattern
-          phase_: module
-          yaml: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/locations/resources/exclusion_pattern_test.yml
-- function: get_module_and_yaml_location_when_path_kind_is_directory
-  description: >
-    Returns a list of SimpleNamespace objects containing the location of module
-    and YAML files
-  cast_arguments:
-  - method: paths_cast_arguments
-    << : *RESOURCE
-    field: paths
-  cast_output:
-  - method: list_sns_to_list_dict
-    << : *RESOURCE
-    field: locations
-  tests:
-  - description: Undefined arguments
-    arguments: {}
-    checks:
-    - method: check_error
-      << : *CHECKS
-      expected: AttributeError
-  - description: Path is a file
-    arguments:
-      paths:
-        kind: file
-    checks:
-    - method: check_sns
-      << : *CHECKS
-      expected: {}
-  - description: Path is a directory
-    arguments:
-      exclude_files:
-      - exclusion_pattern
-      paths:
-        root: *ROOT
-        directory: *RESOURCES_DIR
-        kind: directory
-      yaml_suffix: _test
-    checks:
-    - method: check_sns
-      << : *CHECKS
-      expected:
-        locations:
-        - module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/locations/resources/exclusion_pattern.py
-          module_route: .main.process.locations.resources.exclusion_pattern
-          phase_: module
-          yaml: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/locations/resources/exclusion_pattern_test.yml
-        - module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/locations/resources/app.py
+        files:
+        - directory: *RESOURCE_DIRECTORY
+          extensions:
+            module: .py
+            yaml: .yml
+          module: *RESOURCE_PATH
           module_route: .main.process.locations.resources.app
           phase_: module
-          yaml: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/locations/resources/app_test.yml
+          yaml: *YAML_PATH

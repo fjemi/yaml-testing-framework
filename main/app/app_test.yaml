@@ -42,19 +42,19 @@ tests:
       << : *CHECKS
       expected:
       - expected: 0
-        id: ' .main.app.resources.add.add - 0.2 - Return the result of adding two integers '
+        id: ' .main.app.resources.add.add - 0|2 - Return the result of adding two integers '
         id_short: .main.app.resources.add.add
         method: check_equals
         output: 0
         passed: true
       - expected: 0
-        id: ' .main.app.resources.add.add - 0.1 - Return the result of adding two integers '
+        id: ' .main.app.resources.add.add - 0|1 - Return the result of adding two integers '
         id_short: .main.app.resources.add.add
         method: check_equals
         output: 0
         passed: true
       - expected: 3
-        id: ' .main.app.resources.add.add - 0.0 - Return the result of adding two integers '
+        id: ' .main.app.resources.add.add - 0|0 - Return the result of adding two integers '
         id_short: .main.app.resources.add.add
         method: check_equals
         output: 3
@@ -241,19 +241,19 @@ tests:
       expected:
         tests:
         - expected: 0
-          id: ' add.app.app.add - 0.2 - Return the result of adding two integers '
+          id: ' add.app.app.add - 0|2 - Return the result of adding two integers '
           id_short: add.app.app.add
           method: check_equals
           output: 0
           passed: true
         - expected: 0
-          id: ' add.app.app.add - 0.1 - Return the result of adding two integers '
+          id: ' add.app.app.add - 0|1 - Return the result of adding two integers '
           id_short: add.app.app.add
           method: check_equals
           output: 0
           passed: true
         - expected: 3
-          id: ' add.app.app.add - 0.0 - Return the result of adding two integers '
+          id: ' add.app.app.add - 0|0 - Return the result of adding two integers '
           id_short: add.app.app.add
           method: check_equals
           output: 3
