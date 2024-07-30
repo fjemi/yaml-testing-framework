@@ -1,6 +1,5 @@
 TODO:
 - automate pushing to pypi; github hooks?
-- Process resources if a directory is specified
 
 
 help:
