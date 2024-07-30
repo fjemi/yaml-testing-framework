@@ -1,9 +1,7 @@
-configurations: {}
-
-
 tests:
 - description: description_a
+  tests:
+  - description: description_a1
 - description: description_b
   tests:
   - description: description_b0
-  - description: description_b1

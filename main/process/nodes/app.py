@@ -4,8 +4,8 @@
 
 from types import SimpleNamespace as sns
 
-from main.process.nodes import combine_fields, expand_node
-from main.utils import get_config, independent
+from main.process.nodes import combine
+from main.utils import get_config, independent, objects
 
 
 CONFIG = get_config.main()
@@ -22,59 +22,84 @@ def main(
     operations=CONFIG.operations.main,
     functions=LOCALS,
     data=data, )
-  return data
+  return sns(tests=data.nodes)
 
 
-def get_configurations_and_tests(yaml: str | None = None) -> sns:
-  content = independent.get_yaml_content(location=yaml).content or {}
-  data = sns()
-  for key, default in CONFIG.content_keys_and_defaults.items():
-    value = content.get(key, None) or default
-    setattr(data, key, value)
-  return data
-
-
-def format_locations(
+def get_content(
   yaml: str | None = None,
   module: str | None = None,
   module_route: str | None = None,
 ) -> sns:
-  locations = sns(**locals())
-  data = sns(locations=locations)
-  for key in locations.__dict__:
-    setattr(data, key, None)
-  return data
+  locals_ = sns(**locals())
+  content = independent.get_yaml_content(location=yaml).content or {}
+  content.update(locals_.__dict__)
+  return sns(content=content)
 
 
-def add_locations_to_configurations(
-  locations: sns | None = None,
-  configurations: dict | None = None,
+def get_roots(content: dict | None = None) -> sns:
+  roots = objects.get(parent=content, route='tests') or []
+  store = {}
+
+  for i, item in enumerate(roots):
+    node = combine.main(parent=content, child=item)
+    node = independent.get_model(schema=CONFIG.schema.Test, data=node)
+    node.key = str(i)
+    store.update({node.key: node})
+
+  return sns(roots=store)
+
+
+def expand_nodes(roots: dict | None = None) -> sns:
+  keys = sns(visited={}, expanded={})
+  flags = sns(exit_=False, expanded=False)
+
+  while flags.exit_ is False:
+    flags.expanded = False
+    store = {}
+
+    for key, node in roots.items():
+      if key in keys.visited:
+        continue
+
+      nested = get_nested_nodes(node=node)
+      store.update(nested)
+
+      keys.visited[node.key] = 1
+      if not nested:
+        continue
+
+      keys.expanded[node.key] = 1
+      flags.expanded = True
+      break
+
+    flags.exit_ = not store
+    roots.update(store)
+
+  return sns(nodes=roots, expanded=keys.expanded)
+
+
+def get_nested_nodes(node: sns | None = None) -> dict:
+  nodes = objects.get(parent=node, route='tests') or []
+  store = {}
+
+  for i, item in enumerate(nodes):
+    nested = combine.main(parent=node, child=item)
+    nested = independent.get_model(schema=CONFIG.schema.Test, data=nested)
+    nested.key = f'{node.key}|{i}'
+    store.update({nested.key: nested})
+
+  return store
+
+
+def remove_expanded(
+  nodes: dict | None = None,
+  expanded: list | None = None,
 ) -> sns:
-  configurations = configurations or {}
-  data = sns(configurations=configurations, locations=None)
-
-  for field, location in locations.__dict__.items():
-    configuration = data.configurations.get(field, None)
-    combination = combine_fields.main(
-      high=location,
-      low=configuration,
-      field=field, )
-    data.configurations[field] = combination.output
-
-  return data
-
-
-def get_expanded_nodes(
-  tests: list | None = None,
-  configurations: dict | None = None,
-) -> sns:
-  data = sns(tests=[])
-  for root_node in tests:
-    expanded_nodes = expand_node.main(
-      root_node=root_node,
-      configurations=configurations, )
-    data.tests.extend(expanded_nodes.nodes)
-  return data
+  store = []
+  for key, value in nodes.items():
+    if key not in expanded:
+      store.append(value)
+  return sns(nodes=store)
 
 
 def examples() -> None:

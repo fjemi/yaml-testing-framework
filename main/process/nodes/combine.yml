@@ -1,33 +1,4 @@
-schema:
-  Kinds: &KINDS
-    description: Paths to a python and associated resources for testing
-    fields:
-    - name: parent
-      type: str
-      default: None
-      description: Parent object
-    - name: child
-      type: str
-      default: ''
-      description: Child of the parent object
-
-
-empty_values:
-- ''
-- None
-- '[]'
-- '{}'
-- null
-- []
-- {}
-
-
-levels:
-- high
-- low
-
-
-combine_fields_as:
+combination_map:
   description: list
   cast_output: list
   cast_arguments: list
@@ -47,6 +18,6 @@ combine_fields_as:
   module: high
   module_route: high
   yaml: high
-  key: high
+  key: low
   # Choose low level
   tests: low

@@ -3,6 +3,7 @@
 
 
 from types import SimpleNamespace as sns
+from typing import Any
 
 
 def sns_to_dict(data: sns | list | None = None) -> dict | list | None:
@@ -17,6 +18,12 @@ def sns_to_dict(data: sns | list | None = None) -> dict | list | None:
     for key, value in data.items():
       data[key] = value.__dict__
     return data
+
+
+def dict_dict_to_dict_sns(data: Any | None = None) -> Any:
+  for key, value in data.items():
+    data[key] = sns(**value)
+  return data
 
 
 def examples() -> None:

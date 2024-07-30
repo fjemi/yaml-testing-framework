@@ -1,0 +1,321 @@
+resources:
+- &RESOURCE_RESOURCE
+  ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/nodes/resources/resource.py
+- &RESOURCE_TEST_YAML
+  ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/nodes/resources/app_test.yml
+- &RESOURCE
+  resource: &RESOURCE_PATH ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/nodes/resources/app.py
+- &CHECKS
+  resource: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/app.py
+
+
+tests:
+- function: main
+  description: Returns the child expanded with settings from the parent
+  tests:
+  - description: Empty dicts
+    arguments:
+      parent: {}
+      child: {}
+    checks:
+    - << : *CHECKS
+      method: check_equals
+      field: __dict__
+      expected: {}
+  - description: Non-empty dicts
+    arguments:
+      parent:
+        description: parent
+        cast_output:
+        - parent
+      child:
+        description: child
+        cast_arguments:
+        - child
+    checks:
+    - << : *CHECKS
+      method: check_equals
+      field: __dict__
+      expected:
+        description:
+        - child
+        - parent
+        cast_output:
+        - parent
+        cast_arguments:
+        - child
+- function: get_settings_fields
+  description: >
+    Returns a list of fields or keys from the parent and child dict arguments
+  tests:
+  - description: Empty dicts
+    arguments:
+      parent: {}
+      child: {}
+    checks:
+    - << : *CHECKS
+      method: check_equals
+      expected: []
+  - description: Non-empty dicts
+    arguments:
+      parent:
+        a: a
+      child:
+        a: a
+        b: b
+    checks:
+    - << : *CHECKS
+      method: check_equals
+      expected:
+      - a
+      - b
+- function: combination_handler
+  description: >
+    Handles combining high and low values for a field.
+    Field and handler mapping defined in settings YAML
+  tests:
+  - description: Undefined
+    arguments: {}
+    spies:
+    - low_or_high
+    checks:
+    - << : *CHECKS
+      method: check_equals
+      expected: null
+  - description: Defined
+    arguments:
+      low: low
+      high: high
+      field: description
+    spies:
+    - low_or_high
+    checks:
+    - << : *CHECKS
+      method: check_equals
+      expected:
+      - low
+      - high
+- function: format_as_list
+  description: Formats a value as list
+  tests:
+  - description: Undefined
+    arguments:
+      value: null
+    checks:
+    - << : *CHECKS
+      method: check_equals
+      expected: []
+  - description: Non-empty list
+    arguments:
+      value:
+      - a
+      - b
+    checks:
+    - << : *CHECKS
+      method: check_equals
+      expected:
+      - a
+      - b
+  - description: Not a list
+    arguments:
+      value: string
+    checks:
+    - << : *CHECKS
+      method: check_equals
+      expected:
+      - string
+- function: combine_list
+  description: Returns high and low values combined as a list containing unique elements
+  tests:
+  - description: Undefined
+    arguments: {}
+    checks:
+    - << : *CHECKS
+      method: check_equals
+      expected: []
+  - description: Empty and non-empty lists
+    arguments:
+      low: []
+      high:
+      - high
+    checks:
+    - << : *CHECKS
+      method: check_equals
+      expected:
+      - high
+  - description: Undefined and non-empty lists
+    arguments:
+      low: null
+      high:
+      - high
+    checks:
+    - << : *CHECKS
+      method: check_equals
+      expected:
+      - high
+  - description: Non-empty lists
+    arguments:
+      low:
+      - low
+      high:
+      - high
+    checks:
+    - << : *CHECKS
+      method: check_equals
+      expected:
+      - low
+      - high
+- function: combine_dict
+  description: Returns high and low value combined as a dict
+  tests:
+  - description: Undefined
+    arguments: {}
+    checks:
+    - << : *CHECKS
+      method: check_equals
+      expected: {}
+  - description: Low defined
+    arguments:
+      low:
+        a: a
+      high: null
+    checks:
+    - << : *CHECKS
+      method: check_equals
+      expected:
+        a: a
+  - description: High non-empty and low empty
+    arguments:
+      low: {}
+      high:
+        b: b
+    checks:
+    - << : *CHECKS
+      method: check_equals
+      expected:
+        b: b
+  - description: High and low non-empty
+    arguments:
+      low:
+        a: a
+      high:
+        b: b
+        a: high
+    checks:
+    - << : *CHECKS
+      method: check_equals
+      expected:
+        b: b
+        a: high
+  - description: High non-empty and low is not a dict
+    arguments:
+      low: low
+      high:
+        b: b
+        a: high
+    checks:
+    - << : *CHECKS
+      method: check_equals
+      expected:
+        b: b
+        a: high
+- function: combine_low_or_high
+  description: Returns the `high` or `low` value if defined; in that order
+  tests:
+  - description: Undefined
+    arguments: {}
+    checks:
+    - << : *CHECKS
+      method: check_equals
+      expected: null
+  - description: High and low defined
+    arguments:
+      low: low
+      high: high
+    checks:
+    - << : *CHECKS
+      method: check_equals
+      expected: low
+  - description: Low Defined
+    arguments:
+      low: low
+      high: null
+    checks:
+    - << : *CHECKS
+      method: check_equals
+      expected: low
+  - description: High Defined
+    arguments:
+      low: null
+      high: high
+    checks:
+    - << : *CHECKS
+      method: check_equals
+      expected: high
+- function: combine_high_or_low
+  description: Returns the `high` or `low` value if defined; in that order
+  tests:
+  - description: Undefined
+    arguments: {}
+    checks:
+    - << : *CHECKS
+      method: check_equals
+      expected: null
+  - description: High and low defined
+    arguments:
+      low: low
+      high: high
+    checks:
+    - << : *CHECKS
+      method: check_equals
+      expected: high
+  - description: Low Defined
+    arguments:
+      low: low
+      high: null
+    checks:
+    - << : *CHECKS
+      method: check_equals
+      expected: low
+  - description: High Defined
+    arguments:
+      low: null
+      high: high
+    checks:
+    - << : *CHECKS
+      method: check_equals
+      expected: high
+- function: combine_high
+  description: Returns the `high` value passed in
+  tests:
+  - description: Undefined
+    arguments: {}
+    checks:
+    - << : *CHECKS
+      method: check_equals
+      expected: null
+  - description: Defined
+    arguments:
+      low: low
+      high: high
+    checks:
+    - << : *CHECKS
+      method: check_equals
+      expected: high
+- function: combine_low
+  description: Returns the `low` value passed in
+  tests:
+  - description: Undefined
+    arguments: {}
+    checks:
+    - << : *CHECKS
+      method: check_equals
+      expected: null
+  - description: Defined
+    arguments:
+      low: low
+      high: high
+    checks:
+    - << : *CHECKS
+      method: check_equals
+      expected: low

@@ -15,12 +15,7 @@ empty_values:
 
 operations:
   main:
-  - get_configurations_and_tests
-  - format_locations
-  - add_locations_to_configurations
-  - get_expanded_nodes
-
-
-content_keys_and_defaults:
-  configurations: {}
-  tests: []
+  - get_content
+  - get_roots
+  - expand_nodes
+  - remove_expanded
