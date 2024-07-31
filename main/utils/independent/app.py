@@ -212,9 +212,12 @@ def process_operations(
     arguments = get_function_arguments(
       function=method,
       data=data, )
-    result = methods.call.main(arguments=arguments, method=method)
-    errors.append(result.exception)
-    output = format_output_as_dict(output=result.output)
+    output = methods.call.main(
+      arguments=arguments,
+      method=method,
+      unpack=True,
+    ).output
+    output = format_output_as_dict(output=output)
     data = update_data(data=data, output=output)
 
   timestamps = get_runtime_in_ms(timestamps=timestamps).__dict__

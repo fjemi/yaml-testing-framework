@@ -140,6 +140,7 @@ tests:
         function_name: add
         module_route: .main.resources.add.app
         key: 0.0
+        unpack: true
         arguments:
           a: 0
           b: 11
@@ -163,6 +164,7 @@ tests:
   - method: list_dict_to_list_sns
     << : *RESOURCE
     field: tests
+    unpack: false
   tests:
   - description: Tests is undefined
     arguments:
@@ -178,6 +180,7 @@ tests:
       - module: *ADD_PATH
         function: add
         description: Return the result of adding two integers
+        unpack: True
         arguments:
           a: 1
           b: 1

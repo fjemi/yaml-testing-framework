@@ -545,21 +545,8 @@ tests:
       output: null
       expected: 0
     checks:
-    - method: check_sns
-      expected:
-        expected:
-          method: check_length
-          parameters:
-            failed:
-            - hints:
-              - int
-              - float
-              kind: nonetype
-              name: expected
-            passed:
-            - output
-        output: null
-        passed: false
+    - method: check_error
+      expected: TypeError
   - description: Output is an empty string
     arguments:
       expected: 0

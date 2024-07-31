@@ -196,6 +196,7 @@ tests:
               phase_: function
               spies: null
               tests: null
+              unpack: true
               yaml: null
     - description: Two roots
       arguments:
@@ -231,6 +232,7 @@ tests:
               phase_: function
               spies: null
               tests: null
+              unpack: true
               yaml: null
             '1':
               arguments: {}
@@ -255,6 +257,7 @@ tests:
               phase_: function
               spies: null
               tests: null
+              unpack: true
               yaml: null
 - function: expand_nodes
   description: >
@@ -327,6 +330,7 @@ tests:
             phase_: function
             spies: null
             tests: null
+            unpack: true
             yaml: null
 - function: get_nested_nodes
   description: Returns a nodes nested nodes
@@ -376,6 +380,7 @@ tests:
         phase_: function
         spies: null
         tests: null
+        unpack: true
         yaml: null
   - description: two nested node
     arguments:

@@ -50,6 +50,11 @@ CONFIG = '''
         default: ''
         description: Location of a module
         type: str
+      - name: unpack
+        default: True
+        description: >
+          Indicates whether to unpack arguments when passing them to a method
+        type: bool
 
   union_types:
   - _UnionGenericAlias
@@ -410,6 +415,7 @@ def call_function(
   cast_arguments: list = [],
   cast_output: list = [],
   module: ModuleType | str = '',
+  unpack: bool = True,
 ) -> Any:
   store = []
   module = get_module.main(module=module, default=module).module
@@ -420,7 +426,11 @@ def call_function(
       module=module,
       casts=cast_arguments,
       object=item, ).object
-    data = methods.call.main(arguments=data, method=method).output
+    data = methods.call.main(
+      arguments=data,
+      method=method,
+      unpack=unpack,
+    ).output
     data = casts.main(
       module=module,
       casts=cast_output,
