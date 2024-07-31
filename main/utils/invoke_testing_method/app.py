@@ -120,6 +120,7 @@ def set_location(
   resource_suffix: str | None = None,
   resources_folder_name: str | None = None,
 ) -> sns:
+  location = str(location)
   if location.find('.') == 0:
     location = os.path.join(ROOT_DIR, location[1:])
 
