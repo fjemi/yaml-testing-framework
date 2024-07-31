@@ -273,7 +273,7 @@ def get_timestamp() -> float:
 
 def get_log_file_location(project_path: str = '') -> str:
   path = project_path.replace(ROOT_DIR, '')
-  base, extension = os.path.splitext(path)
+  base, _ = os.path.splitext(path)
   base = base.split(os.path.sep)
   filename = '.'.join(base)
   filename = f'{filename}.log' if filename != '.' else '.log'

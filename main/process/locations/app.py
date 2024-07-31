@@ -222,7 +222,7 @@ def flag_exclude(
 
 def set_module_route(module: str = '') -> str:
   module = str(module)
-  base, exception = os.path.splitext(module)
+  base, _ = os.path.splitext(module)
   route = base.replace(ROOT_DIR, '')
   route = os.path.normpath(route)
   route = route.split(os.path.sep)

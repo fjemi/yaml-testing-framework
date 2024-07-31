@@ -40,14 +40,14 @@ def get_child_from_iterable(
     item: Any | None = None,
     i: int | None = None,
   ) -> int | None:
+    _ = i
     if item.isdigit():
       return int(item)
-    if i == TWO and item is None:
-      return 1
 
   parameters = str(route).split('|')
   parameters = [get_index(item=item, i=i) for i, item in enumerate(parameters)]
-  return parent[slice(*parameters)] or default
+  temp = slice(*parameters)
+  return parent[temp] or default
 
 
 def get_parent_kind(parent: Any | None = None) -> str:

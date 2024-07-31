@@ -118,7 +118,7 @@ def get_value_patch_method(
   resource: ModuleType | None = None,
   original: Any | None = None,
 ) -> Any:
-  _ = timestamp, callable_route, resource
+  _ = timestamp, callable_route, resource, original
 
   def patch() -> Any:
     return value

@@ -21,6 +21,7 @@ tests:
     Returns of the result of calling a method with or without arguments
   tests:
   - description: Undefined arguments
+    unpack: true
     arguments: {}
     checks:
     - method: check_error
@@ -37,6 +38,7 @@ tests:
       << : *RESOURCE
       field: method
     arguments:
+      unpack: true
       arguments: [1, 1]
       method: add
     checks:
@@ -54,6 +56,7 @@ tests:
       << : *RESOURCE
       field: method
     arguments:
+      unpack: true
       method: sum_
       arguments: 
         values: [2, 2]
@@ -72,6 +75,7 @@ tests:
       << : *RESOURCE
       field: method
     arguments:
+      unpack: true
       arguments:
         a: 0
         b: 0
@@ -87,6 +91,7 @@ tests:
       << : *RESOURCE
       field: method
     arguments:
+      unpack: true
       arguments:
         a: 0
         b: '0'
