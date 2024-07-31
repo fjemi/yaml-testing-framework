@@ -15,10 +15,9 @@ TODO:
 - add logic to call setup/teardown for specific functions
 
 
-configurations:
-  exclude_methods:
-  - process_setup  # wrapper method
-  - process_teardown  # wrapper method
+exclude_methods:
+- process_setup  # wrapper method
+- process_teardown  # wrapper method
 
 
 resources:

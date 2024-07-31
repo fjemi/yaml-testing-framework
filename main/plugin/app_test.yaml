@@ -12,11 +12,11 @@ TODO:
 - make sure globally defined configs are pulled into app
 
 
-configurations:
-  exclude_methods:
-  - pytest_runtest_logreport
-  - pytest_addoption
-  # - pytest_configure
+exclude_methods:
+- pytest_runtest_logreport
+- pytest_addoption
+# - pytest_configure
+
 
 resources:
 - &RESOURCE

@@ -1,6 +1,6 @@
-configurations:
-  exclude_methods:
-  - run_pytest
+exclude_methods:
+- run_pytest
+
 
 resources:
 - &RESOURCE
