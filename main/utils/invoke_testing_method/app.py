@@ -45,7 +45,6 @@ CONFIG = independent.format_module_defined_config(
   config=CONFIG)
 
 
-# trunk-ignore(ruff/PLR0913)
 def main(
   location: str | None = None,
   module: str | None = None,
@@ -67,7 +66,6 @@ def main(
   return getattr(data, 'result', [])
 
 
-# trunk-ignore(ruff/PLR0913)
 def set_default_values_for_arguments(
   location: str | None = None,
   module: str | None = None,

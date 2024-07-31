@@ -10,10 +10,9 @@ from main.process.casts import handle_casting
 from main.utils import (
   get_config,
   get_module,
-  objects,
   independent,
   logger,
-)
+  objects, )
 
 
 LOCALS = locals()
@@ -52,7 +51,7 @@ def main(
 ) -> sns:
   casts = casts or []
   locals_ = sns(module=module, object=object)
-  
+
   for item in casts:
     item.update(locals_.__dict__)
     data = independent.get_model(schema=CONFIG.schema.Main, data=item)
@@ -83,7 +82,9 @@ def get_method(
   module = get_module.main(module=module, default=module).module
   route = str(method)
   method = objects.get(parent=module, route=route)
-  method = method if isinstance(method, Callable) else method_does_not_exist(method=route)
+  method = method
+  if not isinstance(method, Callable):
+    method_does_not_exist(method=route)
   return sns(method=method)
 
 
