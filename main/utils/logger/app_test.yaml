@@ -374,7 +374,6 @@ tests:
       method: value
       value: null
     arguments:
-      root_directory: root
       project_path: root/project
     checks:
     - method: check_equals
@@ -386,12 +385,11 @@ tests:
       method: value
       value: .logs
     arguments:
-      root_directory: root
-      project_path: root/project
+      project_path: .root
     checks:
     - method: check_equals
       << : *CHECKS
-      expected: .logs/root.project.log
+      expected: .logs/.root.log
 - function: get_logger
   description: Returns an instance of a Logger tied to the location of a log file
   tests:
