@@ -273,21 +273,15 @@ def get_timestamp() -> float:
   return time.time()
 
 
-def get_log_file_location(
-  project_path: str,
-  root_directory: str,
-) -> str:
-  filename = project_path.replace(root_directory, '')
-  filename = os.path.splitext(filename)[0]
-  filename = filename.replace(os.path.sep, '.')
-  filename = f'root{filename}'
-  if filename.find('.') == len(filename) - 1:
-    filename = filename[:-1]
-
+def get_log_file_location(project_path: str = '') -> str:
+  path = project_path.replace(ROOT_DIR, '')
+  base, extension = os.path.splitext(path)
+  base = base.split(os.path.sep)
+  filename = '.'.join(base)
+  filename = f'{filename}.log' if filename != '.' else '.log'
   directory = CONFIG.environment.LOG_DIR or f'{ROOT_DIR}/.logs'
   os.makedirs(name=directory, exist_ok=True)
-  location = f'{directory}/{filename}.log'
-  location = os.path.normpath(location)
+  location = os.path.join(directory, filename)
   return location
 
 
@@ -308,9 +302,7 @@ def create_logger(
   data = sns(status=1)
   if logging_flag:
     global LOGGER
-    location = get_log_file_location(
-      project_path=project_path,
-      root_directory=ROOT_DIR, )
+    location = get_log_file_location(project_path=project_path)
     LOGGER = get_logger(location=location)
     return data
 
