@@ -5,8 +5,7 @@
 from types import SimpleNamespace as sns
 from typing import Any, Iterable
 
-from main.utils.objects.get import main as objects_get_main
-from main.utils import logger
+from main.utils import logger, objects
 
 
 def main(
@@ -38,7 +37,7 @@ def get_route_values(
     last = data.objects[-1]
     current = sns(name=data.route[i])
     current_route = '.'.join(data.route[:i + 1])
-    current.value = objects_get_main(parent=last.value, route=current_route)
+    current.value = objects.get(parent=last.value, route=current_route)
     if current.value is None and i != len(data.route) - 1:
       current.value = sns()
     data.objects.append(current)
@@ -49,7 +48,7 @@ def get_route_values(
   return data
 
 
-def get_slice_start_and_end_indices(name: str | None = None) -> sns:
+def get_slice_start_and_end_indices(name: str = '') -> sns:
   data = sns(start=0, end=None)
   name =  str(name).strip()
   name = f'{name}|' if name.find('|') == -1 else name
@@ -68,7 +67,8 @@ def replace_slice_with_value(
 
   if indices.start == indices.end and indices.start is not None:
     value = parent_value
-    value[indices.start] = child_value
+    start = objects.get(parent=indices, route='start')
+    value[start] = child_value
   elif indices.start == indices.end and indices.start is None:
     value = child_value
   elif False not in [

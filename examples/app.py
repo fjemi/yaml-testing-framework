@@ -47,7 +47,7 @@ def subtract(data: sns | None = None) -> sns:
 
 def multiply(data: sns) -> sns:
   data.result = 0
-  for i in range(data.a):
+  for _ in range(data.a):
     temp = sns(a=data.result, b=data.b)
     data.result = add(temp).result
   return data

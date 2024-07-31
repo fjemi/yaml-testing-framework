@@ -14,7 +14,7 @@ def main(
   arguments: Any | None = None,
   method: Callable | None = None,
   function: Callable | None = None,
-  unpack: bool = True,
+  unpack: bool | None = None,
 ) -> sns:
   method = method or function
   handler = get_handler(arguments=arguments, unpack=unpack)
@@ -93,8 +93,8 @@ def do_nothing(*args, **kwargs) -> None:
 
 def get_handler(
   arguments: Any | None = None,
-  unpack: bool = True,
-) -> list:
+  unpack: bool | None = None,
+) -> Callable:
   if isinstance(arguments, Mapping) and unpack:
     return unpack_mapping if unpack else pack_any
   if isinstance(arguments, list | tuple) and unpack:

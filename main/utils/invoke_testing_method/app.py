@@ -16,6 +16,8 @@ from main import app
 from main.utils import independent
 
 
+ROOT_DIR = os.getcwd()
+
 LOCATION = __file__
 LOCALS = locals()
 
@@ -114,7 +116,7 @@ def get_parent_module_location(
 
 
 def set_location(
-  location: str | None = None,
+  location: str = '',
   module: str | None = None,
   module_filename: str | None = None,
   resource_flag: str | None = None,
@@ -122,6 +124,12 @@ def set_location(
   root_flag: bool | None = None,
   resources_folder_name: str | None = None,
 ) -> sns:
+  if location.find('.') == 0:
+    location = os.path.join(ROOT_DIR, location[1:])
+
+  if os.path.exists(location):
+    return sns(location=location)
+
   if resource_flag:
     location = get_parent_module_location(
       resource_module=module,
@@ -129,15 +137,7 @@ def set_location(
       resources_folder_name=resources_folder_name,
       parent_filename=module_filename, )
 
-  elif root_flag:
-    location = '.'
-
-  elif not resource_flag and not root_flag and not location:
-    location = module
-
-  return sns(
-    location=location,
-    _cleanup=['module', 'root_flag', 'resource_flag'], )
+  return sns(location=location)
 
 
 def run_tests_using_invocation_method(
@@ -200,7 +200,7 @@ def invoke_pytest(
 
 
 def examples() -> None:
-  main(location=location)
+  main(location='.main/utils/invoke_testing_framework')
 
 
 if __name__ == '__main__':

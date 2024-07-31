@@ -226,6 +226,7 @@ def process_operations(
     errors.count(None) != len(errors),
     CONFIG.environment.DEBUG, ]
   logger.do_nothing() if not flags  else logger.main(
+    debug=debug,
     message=dict(operations=operations),
     timestamps=timestamps, )
   return data
@@ -313,6 +314,7 @@ def format_config_schema(
   location: str | None = None,
   module_defined: bool | None = None,
 ) -> sns:
+  _ = location
   models = {}
 
   content = content or {}

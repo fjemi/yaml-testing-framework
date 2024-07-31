@@ -180,6 +180,7 @@ def teardown_object(
   name: str | None = None,
   method: Callable | None = None,
 ) -> sns:
+  _ = method
   value = objects.get(parent=STORE, route=name)
   kind = type(value).__name__
 
