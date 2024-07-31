@@ -66,7 +66,7 @@ def main(
 
 
 def method_does_not_exist(method: str) -> None:
-  logger.main(level='warning', message='Method {method} does not exist')
+  logger.main(level='warning', message=f'Method {method} does not exist')
 
   def method_does_not_exist_inner(*args, **kwargs) -> None:
     _ = args, kwargs

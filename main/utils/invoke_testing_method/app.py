@@ -31,7 +31,6 @@ CONFIG = '''
     - resource
     # module: null
     resource_flag: False
-    root_flag: False
     # module_filename: app
     method: plugin
     # location: .
@@ -52,7 +51,6 @@ def main(
   module: str | None = None,
   module_filename: str | None = None,
   resource_flag: bool | None = None,
-  root_flag: bool | None = None,
   exclude_files: str | None = None,
   resources_folder_name: str | None = None,
   resource_suffix: str | None = None,
@@ -80,7 +78,6 @@ def set_default_values_for_arguments(
   resource_suffix: str | None = None,
   method: str | None = None,
   resource_flag: bool | None= None,
-  root_flag: bool | None= None,
   logging_flag: bool | None = None,
 ) -> sns:
   data = sns(**locals())
@@ -121,7 +118,6 @@ def set_location(
   module_filename: str | None = None,
   resource_flag: str | None = None,
   resource_suffix: str | None = None,
-  root_flag: bool | None = None,
   resources_folder_name: str | None = None,
 ) -> sns:
   if location.find('.') == 0:
