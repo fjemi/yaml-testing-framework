@@ -39,12 +39,13 @@ def delete_from_none(
 
 
 def delete_from_mapping(
-  object_: dict | None = None,
-  route: str | None = None,
+  object_: dict = {},
+  route: str = '',
 ) -> dict:
-  object_.update({route: None})
-  del object_[route]
-  return object_
+  temp = object_
+  temp.update({route: None})
+  del temp[route]
+  return temp
 
 
 def delete_from_any(

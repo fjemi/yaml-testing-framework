@@ -58,7 +58,7 @@ tests:
       expected: none
   - description: Object is a mapping
     arguments:
-      object: {}
+      object_: {}
     checks:
     - method: check_equals
       << : *CHECKS

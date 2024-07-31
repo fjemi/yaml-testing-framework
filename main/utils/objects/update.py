@@ -50,7 +50,7 @@ def get_route_values(
 
 
 def get_slice_start_and_end_indices(name: str | None = None) -> sns:
-  data = sns()
+  data = sns(start=0, end=None)
   name =  str(name).strip()
   name = f'{name}|' if name.find('|') == -1 else name
   indices = name.split('|')[:2]

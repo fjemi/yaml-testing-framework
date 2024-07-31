@@ -236,27 +236,29 @@ def exit_loop() -> None:
 
 
 def format_module_defined_config(
-  config: str | dict,
+  config: str | None = None,
   sns_fields: list | None = None,
   location: str | None = None,
 ) -> sns:
+  temp = {}
   if isinstance(config, str):
     config = os.path.expandvars(config)
     config = pyyaml.safe_load(config)
+    temp = config if isinstance(config, dict) else {}
 
   sns_fields = sns_fields or []
   fields = [*FORMAT_CONFIG_FIELDS, *sns_fields]
 
   for field in fields:
-    value = objects.get(parent=config, route=field)
+    value = objects.get(parent=temp, route=field)
     handler = f'format_config_{field}'
     handler = LOCALS.get(handler, pass_through)
     value = handler(
       location=location,
       content=value,
       module_defined=True, )
-    config[field] = value if not isinstance(value, dict) else sns(**value)
-  return sns(**config)
+    temp[field] = value if not isinstance(value, dict) else sns(**value)
+  return sns(**temp)
 
 
 def get_path_of_yaml_associated_with_module(
