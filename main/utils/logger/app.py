@@ -17,13 +17,11 @@ import yaml as pyyaml
 
 LOCALS = locals()
 
-ROOT_DIR = os.path.abspath(os.curdir)
-ROOT_DIR = os.path.normpath(ROOT_DIR)
+ROOT_DIR = os.getcwd()
 
 
 CONFIG = '''
   environment:
-    ROOT_DIR: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}
     LOG_DIR: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/.logs
     DEBUG: ${YAML_TESTING_FRAMEWORK_DEBUG}
     LOGGING_DISABLED: ${YAML_TESTING_FRAMEWORK_LOGGING_DISABLED}
@@ -313,7 +311,7 @@ def create_logger(
 def examples() -> None:
   from main.utils import invoke_testing_method
 
-  invoke_testing_method.main('.')
+  invoke_testing_method.main()
 
 
 if __name__ == '__main__':

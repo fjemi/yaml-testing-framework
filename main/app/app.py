@@ -27,6 +27,7 @@ from main.utils import (
 )
 
 
+ROOT_DIR = os.getcwd()
 LOCALS = locals()
 
 CONFIG = get_config.main()

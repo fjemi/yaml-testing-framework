@@ -9,8 +9,7 @@ from typing import Any, List
 from main.utils import get_config, independent, logger, objects
 
 
-ROOT_DIR = os.path.abspath(os.curdir)
-ROOT_DIR = os.path.normpath(ROOT_DIR)
+ROOT_DIR = os.getcwd()
 
 SETTINGS = get_config.main()
 LOCALS = locals()
