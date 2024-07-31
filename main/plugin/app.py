@@ -13,7 +13,7 @@ from main.app import app
 from main.utils import get_config, objects
 
 
-ROOT_DIR = os.path.abspath(os.path.curdir)
+ROOT_DIR = os.getcwd()
 
 CONFIG = get_config.main()
 CONFIG.root_paths = [

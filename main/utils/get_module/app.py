@@ -12,7 +12,7 @@ from typing import Any
 from main.utils import independent, objects, logger
 
 
-ROOT_DIR = os.path.normpath(os.path.abspath(os.path.curdir))
+ROOT_DIR = os.getcwd()
 LOCALS = locals()
 
 CONFIG = '''

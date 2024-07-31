@@ -45,6 +45,11 @@ Test: &TEST
     type: dict
     default: {}
     description: Keyword arguments to pass to functions
+  - name: unpack
+    type: bool
+    default: true
+    description: >
+      Indicates whether to unpack arguments when pass them to function to test
   - name: checks
     type: List[dict]
     default: []

@@ -30,8 +30,6 @@ def list_dict_to_list_sns(data: list) -> list:
 
 
 def list_sns_to_list_dict(output: list) -> list:
-  if not isinstance(output, list):
-    return output
 
   def caster(item: sns) -> dict:
     if isinstance(item.output, Exception):
@@ -48,10 +46,7 @@ async def subtract(data: dict) -> int:
 def examples() -> None:
   from main.utils import invoke_testing_method
 
-  invoke_testing_method.main(
-    resources_folder_name='resources',
-    module_filename='app',
-    resource_flag=True, )
+  invoke_testing_method.main(location='.main.app')
 
 
 if __name__ == '__main__':

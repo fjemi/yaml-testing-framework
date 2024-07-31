@@ -12,7 +12,8 @@ resources:
   resource: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/app.py
 - &RESOURCE
   resource: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/methods/resource.py
-
+- &MODULE
+  location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/methods/call.py
 
 tests:
 - function: main
@@ -24,12 +25,12 @@ tests:
     checks:
     - method: check_error
       << : *CHECKS
-      field: exception
-      expected: TypeError
-    - method: check_error
-      << : *CHECKS
       field: output
       expected: TypeError
+    - method: check_equals
+      << : *CHECKS
+      field: flags.error
+      expected: True
   - description: Call method and unpack list arguments.
     cast_arguments:
     - method: get_function
@@ -42,8 +43,11 @@ tests:
     - method: check_sns
       << : *CHECKS
       expected:
-        exception: null
         output: 2
+    - method: check_equals
+      << : *CHECKS
+      field: flags.error
+      expected:  False
   - description: Call method, no unpacking
     cast_arguments:
     - method: get_function
@@ -58,7 +62,10 @@ tests:
       << : *CHECKS
       expected:
         output: 4
-        exception: null
+    - method: check_equals
+      << : *CHECKS
+      field: flags.error
+      expected: False
   - description: Call method and unpack mapping arguments.
     cast_arguments:
     - method: get_function
@@ -73,8 +80,26 @@ tests:
     - method: check_sns
       << : *CHECKS
       expected:
-        exception: null
         output: 0
+  - description: Error
+    cast_arguments:
+    - method: get_function
+      << : *RESOURCE
+      field: method
+    arguments:
+      arguments:
+        a: 0
+        b: '0'
+      method: add
+    checks:
+    - method: check_equals
+      << : *CHECKS
+      field: flags.error
+      expected: True
+    - method: check_error
+      << : *CHECKS
+      field: output
+      expected: TypeError
 - function: is_coroutine
   description: Returns True if an object is a coroutine and False otherwise
   cast_arguments:
@@ -152,7 +177,6 @@ tests:
         << : *RESOURCE
       expected:
         output: Hello World
-        exception: null
 - function: unpack_mapping
   description: Returns output from passing an unpacked mapping to a method
   cast_arguments:
@@ -171,7 +195,6 @@ tests:
       << : *CHECKS
       expected:
         output: 0
-        exception: null
   - description: Argument is a list
     arguments:
       arguments: [0, 0]
@@ -183,7 +206,7 @@ tests:
       expected: TypeError
     - method: check_error
       << : *CHECKS
-      field: exception
+      field: output
       expected: TypeError
 - function: unpack_list
   description: Returns output from passing an unpacked list or tuple to a method
@@ -203,7 +226,6 @@ tests:
       << : *CHECKS
       expected:
         output: 0
-        exception: null
   - description: Argument is a mapping
     arguments:
       arguments:
@@ -215,7 +237,6 @@ tests:
       << : *CHECKS
       expected:
         output: ab
-        exception: null
   - description: Argument has too many values
     arguments:
       arguments:
@@ -227,10 +248,6 @@ tests:
     - method: check_error
       << : *CHECKS
       field: output
-      expected: TypeError
-    - method: check_error
-      << : *CHECKS
-      field: exception
       expected: TypeError
 - function: pack_any
   description: Returns output from calling function with packed arguments
@@ -250,10 +267,10 @@ tests:
       << : *CHECKS
       field: output
       expected: TypeError
-    - method: check_error
+    - method: check_equals
       << : *CHECKS
-      field: exception
-      expected: TypeError
+      field: flags.error
+      expected: True
   - description: Argument is a list
     arguments:
       arguments:
@@ -265,7 +282,6 @@ tests:
       << : *CHECKS
       expected:
         output: 0
-        exception: null
 - function: do_nothing
   description: Does nothing
   tests:
@@ -280,134 +296,48 @@ tests:
     - method: check_equals
       << : *CHECKS
       expected: null
-- function: get_handlers
+- function: get_handler
   description: >
     Returns handlers or methods used to call a function with packed or unpacked
     arguments
   tests:
-  - description: Arguments is not a mapping or list
+  - description: Default
     arguments:
       arguments: null
+      unpack: True
     checks:
-    - method: check_length
+    - method: check_function
       << : *CHECKS
-      expected: 2
-    - method: check_type
-      << : *CHECKS
-      expected: list
-    - method: check_equals
-      << : *CHECKS
-      cast_output:
-      - method: list_methods_to_list_strings
-        << : *RESOURCE
       expected:
-      - unpack_list
-      - pack_any
-  - description: Arguments is a mapping
+        name: pack_any
+        << : *MODULE
+  - description: Unpack mapping
     arguments:
       arguments: {}
+      unpack: True
     checks:
-    - method: check_length
+    - method: check_function
       << : *CHECKS
-      expected: 2
-    - method: check_equals
-      << : *CHECKS
-      cast_output:
-      - method: list_methods_to_list_strings
-        << : *RESOURCE
       expected:
-      - unpack_mapping
-      - pack_any
-  - description: Arguments is a list
+        name: unpack_mapping
+        << : *MODULE
+  - description: Unpack list
     arguments:
       arguments: []
+      unpack: True
     checks:
-    - method: check_length
-      << : *CHECKS
-      expected: 2
-    - method: check_equals
-      << : *CHECKS
-      cast_output:
-      - method: list_methods_to_list_strings
-        << : *RESOURCE
-      expected:
-      - unpack_list
-      - pack_any
-- function: call_handlers
-  description: >
-    Returns the first result from the calling the method using a handler where
-    the result does not produce an exception. If all handlers produce errors return the
-    first error produced.
-  cast_arguments:
-  - method: get_method
-    << : *RESOURCE
-    field: method
-  - method: get_handlers
-    << : *RESOURCE
-    field: handlers
-  tests:
-  - description: Handlers is empty list
-    arguments:
-      arguments: {}
-      method: add
-      handlers: []
-    checks:
-    - method: check_error
-      << : *CHECKS
-      expected: IndexError
-  - description: Single handler
-    arguments:
-      arguments:
-      - 1
-      - 1
-      method: sum_
-      handlers:
-      - pack_any
-    checks:
-    - method: check_sns
+    - method: check_function
       << : *CHECKS
       expected:
-        output: 2
-        exception: null
-  - description: Mapping and any handlers
+        name: unpack_list
+        << : *MODULE
+  - description: Pack list
     arguments:
-      arguments:
-        a: 1
-        b: 1
-      method: add
-      handlers:
-      - unpack_mapping
-      - pack_any
+      arguments: []
+      unpack: False
     checks:
-    - method: check_sns
+    - method: check_function
       << : *CHECKS
       expected:
-        output: 2
-        exception: null
-  - description: list and any handlers
-    arguments:
-      arguments: 1
-      method: sum_
-      handlers:
-      - unpack_list
-      - pack_any
-    checks:
-    - method: check_error
-      << : *CHECKS
-      field: output
-      expected: TypeError
-  - description: list and any handlers
-    arguments:
-      arguments:
-      - 1
-      - 1
-      method: sum_
-      handlers:
-      - unpack_list
-      - pack_any
-    checks:
-    - method: check_sns
-      << : *CHECKS
-      expected:
-        output: 2
-        exception: null
+        name: pack_any
+        << : *MODULE

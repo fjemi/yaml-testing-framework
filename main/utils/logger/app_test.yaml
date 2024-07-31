@@ -43,7 +43,7 @@ tests:
   - description: Log info
     arguments:
       level: info
-      log: log
+      message: message
       debug: True
       enabled: True
       standard_output: true

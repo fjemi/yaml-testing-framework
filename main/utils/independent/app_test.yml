@@ -604,9 +604,8 @@ tests:
   description: >
     Returns SimpleNamespace containing configurations defined in a module
   tests:
-  - description: Config is undefined
-    arguments:
-      config: null
+  - description: Undefined
+    arguments: {}
     checks:
     - method: check_sns
       << : *CHECKS
@@ -652,21 +651,13 @@ tests:
     checks:
     - method: check_sns
       << : *CHECKS
-      field: environment
       expected:
-        A: A
-        B: B
+        operations: null
+        environment: null
     - method: check_equals
       << : *CHECKS
-      field: operations.__dict__
-      expected:
-        main:
-        - a
-        - b
-    - method: check_equals
-      << : *CHECKS
-      field: other
-      expected: other
+      field: schema.__dict__
+      expected: {}
 - function: get_path_of_yaml_associated_with_module
   description: >
     Returns the path to a YAML file associated with a module or null if no YAML

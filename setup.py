@@ -10,8 +10,7 @@ import setuptools
 import yaml as pyyaml
 
 
-ROOT_DIR = os.path.abspath(os.curdir)
-ROOT_DIR = os.path.normpath(ROOT_DIR)
+ROOT_DIR = os.getcwd()
 
 CONFIG = '''
   schema:
