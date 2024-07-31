@@ -51,6 +51,7 @@ install_requires:
 - pytest
 - pyyaml>=6.0.0
 - nest-asyncio
+- pebble
 extras_require: {}
 python_requires: null
 entry_points:
