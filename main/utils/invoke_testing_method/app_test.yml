@@ -1,6 +1,6 @@
-configurations:
-  exclude_methods:
-  - run_pytest
+exclude_methods:
+- run_pytest
+
 
 resources:
 - &RESOURCE
@@ -20,6 +20,9 @@ arguments:
     exclude_files: []
     yaml_suffix: _test
     logging_flag: True
+
+
+TODO: Resolve tests not running for this module from the CLI
 
 
 tests:
@@ -83,7 +86,6 @@ tests:
         module_filename: null
         resource_flag: false
         resource_suffix: _resource
-        root_flag: false
         yaml_suffix: _test
         logging_flag: true
   - description: Defined arguments
@@ -96,7 +98,6 @@ tests:
       method: method
       resource_flag: resource_flag
       resource_suffix: resource_suffix
-      root_flag: root_flag
       logging_flag: logging_flag
     checks:
     - method: check_sns
@@ -109,7 +110,6 @@ tests:
         module_filename: module_filename
         resource_flag: resource_flag
         resource_suffix: resource_suffix
-        root_flag: root_flag
         yaml_suffix: yaml_suffix
         logging_flag: logging_flag
 - function: get_parent_module_location
@@ -176,7 +176,6 @@ tests:
       expected:
         location: null
         module: null
-        root_flag: null
         resource_flag: null
   - description: Location is defined
     arguments:
@@ -187,7 +186,6 @@ tests:
       expected:
         location: location
         module: null
-        root_flag: null
         resource_flag: null
   - description: Root flag is true
     arguments:
@@ -198,14 +196,12 @@ tests:
       expected:
         location: .
         module: null
-        root_flag: null
         resource_flag: null
   - description: >
       Resource flag is false, module is defined, and location is undefined
     arguments:
       module: module
       resource_flag: false
-      root_flag: false
       location: null
     checks:
     - method: check_sns
@@ -213,7 +209,6 @@ tests:
       expected:
         location: module
         module: null
-        root_flag: null
         resource_flag: null
   - description: Resource flag is true and associated fields are defined
     arguments:
@@ -226,7 +221,6 @@ tests:
       expected:
         location: _resource/module.py
         module: null
-        root_flag: null
         resource_flag: null
 - function: run_tests_using_invocation_method
   description: Runs tests using one of the defined invocation methods

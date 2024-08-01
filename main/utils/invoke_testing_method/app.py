@@ -31,7 +31,6 @@ CONFIG = '''
     - resource
     # module: null
     resource_flag: False
-    root_flag: False
     # module_filename: app
     method: plugin
     # location: .
@@ -46,13 +45,11 @@ CONFIG = independent.format_module_defined_config(
   config=CONFIG)
 
 
-# trunk-ignore(ruff/PLR0913)
 def main(
   location: str | None = None,
   module: str | None = None,
   module_filename: str | None = None,
   resource_flag: bool | None = None,
-  root_flag: bool | None = None,
   exclude_files: str | None = None,
   resources_folder_name: str | None = None,
   resource_suffix: str | None = None,
@@ -69,7 +66,6 @@ def main(
   return getattr(data, 'result', [])
 
 
-# trunk-ignore(ruff/PLR0913)
 def set_default_values_for_arguments(
   location: str | None = None,
   module: str | None = None,
@@ -80,7 +76,6 @@ def set_default_values_for_arguments(
   resource_suffix: str | None = None,
   method: str | None = None,
   resource_flag: bool | None= None,
-  root_flag: bool | None= None,
   logging_flag: bool | None = None,
 ) -> sns:
   data = sns(**locals())
@@ -121,9 +116,9 @@ def set_location(
   module_filename: str | None = None,
   resource_flag: str | None = None,
   resource_suffix: str | None = None,
-  root_flag: bool | None = None,
   resources_folder_name: str | None = None,
 ) -> sns:
+  location = str(location)
   if location.find('.') == 0:
     location = os.path.join(ROOT_DIR, location[1:])
 
