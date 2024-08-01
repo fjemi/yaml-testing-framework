@@ -24,6 +24,7 @@ CONFIG = '''
 FORMAT_CONFIG_FIELDS = ['environment', 'schema', 'operations']
 
 LOCALS = locals()
+MODULE = __file__
 
 LOADER = None
 
@@ -336,6 +337,13 @@ def pass_through(
 ) -> Any:
   _ = location, module_defined
   return content
+
+
+def get_packages_directory() -> str:
+  path = MODULE
+  index = path.find('main')
+  path = path[:index]
+  return os.path.dirname(path)
 
 
 CONFIG = format_module_defined_config(config=CONFIG)
