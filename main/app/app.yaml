@@ -70,6 +70,7 @@ operations:
   - run_test_handler
   - setup.process_teardown
   main:
+  - add_entrypoint
   - setup.process_setup
   - locations.main
   - run_tests
@@ -135,3 +136,34 @@ schema:
       description: Current phase of the testing process
       default: global
       type: str
+
+
+entrypoint: test_entrypoint.py
+
+
+entrypoint_source_code: |
+  # -*- coding: utf-8 -*-
+
+
+  from types import ModuleType
+  from types import SimpleNamespace as sns
+
+  import pytest
+
+
+  def get_test_id(val) -> str:
+    if hasattr(val, 'id'):
+      return val.id
+
+
+  def get_yaml_tests(pytest: ModuleType) -> list:
+    return getattr(pytest, 'yaml_tests', None) or []
+
+
+  @pytest.mark.parametrize(
+    argnames='test',
+    ids=get_test_id,
+    argvalues=get_yaml_tests(pytest=pytest), )
+  def test_(test: sns) -> None:
+    # trunk-ignore(bandit/B101)
+    assert test.expected == test.output

@@ -21,6 +21,10 @@ resources:
   ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/app/resources/add_test.yaml
 - &GLOBAL_RESOURCE
   resource: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/resources/app.py
+- &ROOT
+  ${YAML_TESTING_FRAMEWORK_ROOT_DIR}
+- &ENTRYPOINT
+  ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/test_entrypoint.py
 
 
 tests:
@@ -57,6 +61,56 @@ tests:
         method: check_equals
         output: 3
         passed: true
+- function: add_entrypoint
+  description: >
+    Adds `test_entrypoint.py` file to a project's root directory if it doesn't already exist
+  cast_output:
+  # Tear down temp directory after each test
+  - method: remove_temp_directory
+    << : *RESOURCE
+  tests:
+  - description: Undefined. Check root directory for this project
+    arguments: {}
+    checks:
+    - << : *CHECKS
+      method: check_sns
+      expected:
+        _: entrypoint exists
+        entrypoint: *ENTRYPOINT
+  - description: Entrypoint exists
+    arguments:
+      root: *ROOT
+      entrypoint: .entrypoint
+    cast_arguments:
+    - method: temp_directory_with_entrypoint
+      << : *RESOURCE
+      unpack: true
+    checks:
+    - << : *CHECKS
+      method: check_sns
+      expected:
+        _: entrypoint exists
+    - << : *CHECKS
+      method: check_type
+      field: entrypoint
+      expected: str
+  - description: Entrypoint does not exist
+    arguments:
+      root: *ROOT
+      entrypoint: test_entrypoint.py
+    cast_arguments:
+    - method: temp_directory_without_entrypoint
+      << : *RESOURCE
+      unpack: true
+    checks:
+    - << : *CHECKS
+      method: check_sns
+      expected:
+        _: entrypoint added
+    - << : *CHECKS
+      method: check_type
+      field: entrypoint
+      expected: str
 - function: handle_id
   description: Returns the ID of a test
   tests:
@@ -259,3 +313,47 @@ tests:
           method: check_equals
           output: 3
           passed: true
+- function: remove_added_entrypoint
+  description: >
+    Removes the entrypoint file added to root directory of the project
+  cast_arguments:
+  - method: remove_temp_directory
+    << : *RESOURCE
+  tests:
+  - description: Undefined
+    arguments:
+      flags:
+        entrypoint: 0
+    checks:
+    - method: check_sns
+      << : *CHECKS
+      expected:
+        _: nothing to do
+        entrypoint: ''
+  - description: Entrypoint was added
+    cast_arguments:
+    - method: temp_directory_with_entrypoint_wrapper
+      << : *RESOURCE
+      unpack: true
+    arguments:
+      entrypoint: test_entrypoint.py
+      flags:
+        entrypoint: 1
+    checks:
+    - method: check_sns
+      << : *CHECKS
+      expected:
+        _: entrypoint removed
+    - method: check_type
+      << : *CHECKS
+      field: entrypoint
+      expected: str
+  - description: Entrypoint was not added
+    arguments:
+      flags:
+        entrypoint_added: 0
+    checks:
+    - method: check_sns
+      << : *CHECKS
+      expected:
+        _: nothing to do

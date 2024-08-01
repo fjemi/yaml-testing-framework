@@ -3,6 +3,7 @@
 
 
 import os
+import shutil
 from types import ModuleType
 from types import SimpleNamespace as sns
 from typing import Callable, List
@@ -15,16 +16,14 @@ from main.process import (
   environment,
   locations,
   nodes,
-  setup,
-)
+  setup, )
 from main.utils import (
   get_config,
   get_module,
   independent,
   logger,
   objects,
-  methods,
-)
+  methods, )
 
 
 ROOT_DIR = os.getcwd()
@@ -33,6 +32,7 @@ LOCALS = locals()
 CONFIG = get_config.main()
 LOGGING_ENABLED = True
 TEST_IDS = {}
+FLAGS = {}
 
 
 def main(
@@ -53,7 +53,50 @@ def main(
     operations=CONFIG.operations.main,
     functions=LOCALS,
     data=data, )
-  return getattr(data, 'tests', None) or []
+  return objects.get(
+    parent=data,
+    route='tests', ) or []
+
+
+def add_entrypoint(
+  entrypoint: str = '',
+  root: str = '',
+) -> sns:
+  entrypoint = entrypoint or CONFIG.entrypoint
+  root = root or ROOT_DIR
+  path = os.path.join(root, entrypoint)
+  message = 'entrypoint exists'
+
+  if not os.path.isfile(path):
+    FLAGS.update(dict(entrypoint=1))
+    message ='entrypoint added'
+    with open(
+      file=path,
+      mode='w',
+      encoding='utf-8',
+    ) as file:
+      file.write(CONFIG.entrypoint_source_code)
+
+  logger.main(message=message, level='info')
+  return sns(entrypoint=path, _=message)
+
+
+def remove_added_entrypoint(
+  entrypoint: str = '',
+  flags: dict = {},
+) -> sns:
+  flags = flags or FLAGS
+  message='nothing to do'
+
+  flag = False not in [
+    os.path.isfile(str(entrypoint)),
+    objects.get(parent=flags, route='entrypoint', ) == 1, ]
+  if flag and os.path.isfile(entrypoint):
+    os.remove(path=entrypoint)
+    message = 'entrypoint removed'
+
+  logger.main(level='info', message=message)
+  return sns(entrypoint=entrypoint, _=message)
 
 
 def handle_id(
@@ -136,7 +179,7 @@ def run_tests(locations: List[sns] | None = None) -> sns:
 def examples() -> None:
   from main.utils import invoke_testing_method
 
-  invoke_testing_method.main()
+  invoke_testing_method.main('.main/app')
 
 
 if __name__ == '__main__':
