@@ -192,15 +192,16 @@ tests:
     << : *GLOBAL_RESOURCE
     method: wrapper_get_module
   tests:
-  - description: Undefined data
-    arguments: {}
+  - description: Default
+    arguments:
+      module: null
+      resource: ''
+      method: ''
     checks:
-    - method: check_function
+    - method: check_sns
       << : *CHECKS
-      field: method
       expected:
-        name: method_does_not_exist_inner
-        location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/casts/app.py
+        method: null
   - description: Return the str class from builtins
     arguments:
       method: __builtins__.str
@@ -237,12 +238,10 @@ tests:
       method: does_not_exist
       << : *RESOURCE
     checks:
-    - method: check_function
+    - method: check_sns
       << : *CHECKS
-      field: method
       expected:
-        name: method_does_not_exist_inner
-        location: *MODULE
+        method: null
 - function: get_object
   description: Handles retrieving and casting an object
   cast_arguments:

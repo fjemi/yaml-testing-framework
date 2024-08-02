@@ -4,7 +4,6 @@ TODO:
 - expose set_default and other functions for dumping/loading json
 
 
-
 help:
 - https://stackoverflow.com/questions/11232230/logging-to-two-files-with-different-settings
 

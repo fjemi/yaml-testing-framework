@@ -3,27 +3,26 @@
 
 
 import os
-import shutil
 from types import ModuleType
 from types import SimpleNamespace as sns
 from typing import Callable, List
 
 from main.process import (
-  spies,
   casts,
   checks,
-  patches,
   environment,
   locations,
   nodes,
-  setup, )
+  patches,
+  setup as SETUP,
+  spies, )
 from main.utils import (
   get_config,
   get_module,
   independent,
   logger,
-  objects,
-  methods, )
+  methods,
+  objects, )
 
 
 ROOT_DIR = os.getcwd()

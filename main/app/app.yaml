@@ -55,7 +55,7 @@ test_kinds:
 # required to run functions
 operations:
   run_test_for_functions:
-  - setup.process_setup
+  - SETUP.process_setup
   - handle_id
   - get_module.main
   - environment.main
@@ -66,19 +66,20 @@ operations:
   - methods.call.main
   - casts.process_cast_output
   - checks.main
-  - setup.process_teardown
+  - SETUP.process_teardown
   run_tests:
-  - setup.process_setup
+  - SETUP.process_setup
   - nodes.main
   - run_test_handler
-  - setup.process_teardown
+  - SETUP.process_teardown
   main:
-  - add_entrypoint
-  - setup.process_setup
+  - SETUP.process_setup
   - locations.main
+  - add_entrypoint
   - run_tests
-  - setup.process_teardown
-  - setup.teardown_all
+  - remove_added_entrypoint
+  - SETUP.process_teardown
+  - SETUP.teardown_all
 
 
 unpack_kinds:
