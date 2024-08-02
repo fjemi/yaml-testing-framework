@@ -4,7 +4,7 @@
 
 from types import ModuleType
 from types import SimpleNamespace as sns
-from typing import Any, Callable, List
+from typing import Any, Callable
 
 from main.process.casts import handle_casting
 from main.utils import (

@@ -9,7 +9,7 @@ from types import ModuleType
 from types import SimpleNamespace as sns
 from typing import Any
 
-from main.utils import independent, objects, logger
+from main.utils import independent, logger, objects
 
 
 ROOT_DIR = os.getcwd()

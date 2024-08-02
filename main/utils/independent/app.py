@@ -11,7 +11,7 @@ from typing import Any, Callable
 
 import yaml as pyyaml
 
-from main.utils import logger, objects, methods
+from main.utils import logger, methods, objects
 
 
 CONFIG = '''

@@ -4,7 +4,6 @@
 import os
 import shutil
 import tempfile
-from types import ModuleType
 from types import SimpleNamespace as sns
 from typing import Any
 
