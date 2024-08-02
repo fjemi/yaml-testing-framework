@@ -28,7 +28,8 @@ def process_cast_arguments(
   temp = main(
     casts=cast_arguments,
     module=module,
-    object=arguments, ).object
+    object=arguments,
+  ).object if cast_arguments else arguments
   return sns(arguments=temp)
 
 
@@ -40,8 +41,22 @@ def process_cast_output(
   temp = main(
     casts=cast_output,
     module=module,
-    object=output, ).object
+    object=output,
+  ).object if cast_output else output
   return sns(output=temp)
+
+
+def process_cast_expected(
+  cast_expected: list = [],
+  module: ModuleType | None = None,
+  expected: Any | None = None,
+) -> sns:
+  temp = main(
+    casts=cast_expected,
+    module=module,
+    object=expected,
+  ).object if cast_expected else expected
+  return sns(expected=temp)
 
 
 def main(

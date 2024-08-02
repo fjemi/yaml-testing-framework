@@ -39,11 +39,11 @@ CONFIG = '''
         description: Arguments to pass to the method
         type: list
       - name: cast_output
-        default: null
+        default: []
         description: List of casts to perform on output
         type: list
       - name: cast_arguments
-        default: null
+        default: []
         description: List of casts to perform on arguments
         type: list
       - name: module
