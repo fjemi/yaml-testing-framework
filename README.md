@@ -21,17 +21,6 @@ pip install yaml-testing-framework
 
 
 Create the files
-- `test_entrypoint.py` - uses pytest to collect and run tests
-```python
-from types import SimpleNamespace as sns
-
-import pytest
-
-
-@pytest.mark.parametrize(argnames='test', argvalues=pytest.yaml_tests)
-def test_(test: sns) -> None:
-  assert test.expected == test.output
-```
 
 - `checks.py` - contains logic for verifying the output from a function
 ```python
