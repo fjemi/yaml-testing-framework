@@ -9,9 +9,9 @@ import sys
 from types import ModuleType
 from typing import Any, Callable, List
 
-from main.utils import get_config, invoke_testing_method
-
 import yaml
+
+from main.utils import get_config, invoke_testing_method
 
 
 MODULE = __file__

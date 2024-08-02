@@ -6,7 +6,8 @@ import inspect
 import os
 from types import SimpleNamespace as sns
 
-from main.utils import independent, objects, schema as _schema, logger
+from main.utils import independent, logger, objects
+from main.utils import schema as _schema
 
 
 CONFIG = '''

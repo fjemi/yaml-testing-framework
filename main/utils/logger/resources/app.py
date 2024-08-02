@@ -3,8 +3,8 @@
 
 
 import logging
-from typing import Any, Callable
 from types import SimpleNamespace as sns
+from typing import Any, Callable
 
 from main.utils import invoke_testing_method
 from main.utils import logger as logger_resource

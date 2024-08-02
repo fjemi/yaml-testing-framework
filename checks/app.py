@@ -18,7 +18,7 @@ from typing import (
 )
 
 from main.process import casts
-from main.utils import independent, objects, methods, get_module
+from main.utils import get_module, independent, methods, objects
 
 
 CONFIG = '''
