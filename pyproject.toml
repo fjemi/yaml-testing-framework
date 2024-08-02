@@ -7,12 +7,18 @@ build-backend = 'setuptools.build_meta'
 omit = [
   '*/*ignore*.py',
   '*/*ignore*/*.py',
-  '*_test.py',
+  '**/.ignore/**',
+  '*/*artifacts*.py',
+  '*/*artifacts*/*.py',
+  '**/.artifacts/**',
+  '*/*resources*.py',
+  '*/*resources*/*.py',
+  '**/.resources/**',
   '*/*resource*/**',
   '*/*resource*/*.py',
   '*/*resource*.py',
   '**/__init__.py',
-  '**/.ignore/**',
+  '*_test.py',
 ]
 branch = true
 source = ['/']

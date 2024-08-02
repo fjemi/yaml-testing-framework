@@ -26,6 +26,9 @@ exclude_files:
 - build
 - __pycache__
 - resource
+- resources
+- .ignore
+- .artifacts
 
 
 locations:
