@@ -1,6 +1,6 @@
-TODO:
-- Finish test for the main function. May require a spy.
-- Add flag for silent logging in cases where an exception is the expected output
+todos:
+- TODO: Finish test for the main function. May require a spy.
+- TODO: Add flag for silent logging in cases where an exception is the expected output
 
 
 help:

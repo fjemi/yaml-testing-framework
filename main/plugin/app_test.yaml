@@ -5,11 +5,11 @@ help:
 - https://stackoverflow.com/questions/49824248/allow-argparse-nargs-to-accept-comma-separated-input-with-choices
 
 
-TODO:
-- complete test for add_args_and_ini_options_to_parser
-- complete test for get_options_or_inis
-- complete test for pytest_configure
-- make sure globally defined configs are pulled into app
+todos:
+- TODO: complete test for add_args_and_ini_options_to_parser
+- TODO: complete test for get_options_or_inis
+- TODO: complete test for pytest_configure
+- TODO: make sure globally defined configs are pulled into app
 
 
 exclude_methods:

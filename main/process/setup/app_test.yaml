@@ -4,15 +4,15 @@ help:
 - https://pypi.org/project/Pebble/
 
 
-TODO:
-- centralized module where the module to test, resource, and other test objects are imported to
-- Think about adding patch, cast, and other operations to to setup/teardown
-- If app exits (error, crtl+c, etc.) setup objects should be torn down
-- Add module to casts similar to how it is done here with formatting data and preferred fields
-- independent.process_operations add do_nothing if operation not in LOCALS
-- Add logic to teardown all objects in the case of the program exit
-- Add `readme` section to test files and pull this into project's main readme.md
-- add logic to call setup/teardown for specific functions
+todos:
+- TODO: centralized module where the module to test, resource, and other test objects are imported to
+- TODO: Think about adding patch, cast, and other operations to to setup/teardown
+- TODO: If app exits (error, crtl+c, etc.) setup objects should be torn down
+- TODO: Add module to casts similar to how it is done here with formatting data and preferred fields
+- TODO: independent.process_operations add do_nothing if operation not in LOCALS
+- TODO: Add logic to teardown all objects in the case of the program exit
+- TODO: Add `readme` section to test files and pull this into project's main readme.md
+- TODO: add logic to call setup/teardown for specific functions
 
 
 exclude_methods:

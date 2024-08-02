@@ -1,9 +1,9 @@
-TODO:
-- Add support for user defined logic (example, run_test_for_*) following the example for checks
-- Add logic for testing APIs
-- Make timestamps a list and append timestamp at each logical operation
-- Add wrapper logic back in for external libraries
-- add logic to run tests for specified functions only
+todos:
+- TODO: Add support for user defined logic (example, run_test_for_*) following the example for checks
+- TODO: Add logic for testing APIs
+- TODO: Make timestamps a list and append timestamp at each logical operation
+- TODO: Add wrapper logic back in for external libraries
+- TODO: add logic to run tests for specified functions only
 
 
 help:

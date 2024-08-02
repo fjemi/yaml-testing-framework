@@ -1,7 +1,7 @@
-TODO:
-- each run should be a separate log file -> timestamp.count.exception or timestamp as the folder
-- Add log level -> system.normal, system.warning, system.exception. For testing user defined function or user.
-- expose set_default and other functions for dumping/loading json
+todos:
+- TODO: each run should be a separate log file -> timestamp.count.exception or timestamp as the folder
+- TODO: Add log level -> system.normal, system.warning, system.exception. For testing user defined function or user.
+- TODO: expose set_default and other functions for dumping/loading json
 
 
 help:

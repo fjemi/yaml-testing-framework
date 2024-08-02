@@ -1,7 +1,6 @@
-TODO:
-- Check if the "contains" checks can be combined to reduce duplication of code
-- Need check for string/regex
-- Add ability to cast expected in checks
+todos:
+- TODO: Check if the "contains" checks can be combined to reduce duplication of code
+- TODO: Need check for string/regex
 
 
 help:
