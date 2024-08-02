@@ -26,6 +26,9 @@ exclude_files:
 - build
 - __pycache__
 - resource
+- resources
+- .ignore
+- .artifacts
 
 
 locations:
@@ -52,7 +55,7 @@ test_kinds:
 # required to run functions
 operations:
   run_test_for_functions:
-  - setup.process_setup
+  - SETUP.process_setup
   - handle_id
   - get_module.main
   - environment.main
@@ -63,18 +66,20 @@ operations:
   - methods.call.main
   - casts.process_cast_output
   - checks.main
-  - setup.process_teardown
+  - SETUP.process_teardown
   run_tests:
-  - setup.process_setup
+  - SETUP.process_setup
   - nodes.main
   - run_test_handler
-  - setup.process_teardown
+  - SETUP.process_teardown
   main:
-  - setup.process_setup
+  - SETUP.process_setup
   - locations.main
+  - add_entrypoint
   - run_tests
-  - setup.process_teardown
-  - setup.teardown_all
+  - remove_added_entrypoint
+  - SETUP.process_teardown
+  - SETUP.teardown_all
 
 
 unpack_kinds:
@@ -135,3 +140,34 @@ schema:
       description: Current phase of the testing process
       default: global
       type: str
+
+
+entrypoint: test_entrypoint.py
+
+
+entrypoint_source_code: |
+  # -*- coding: utf-8 -*-
+
+
+  from types import ModuleType
+  from types import SimpleNamespace as sns
+
+  import pytest
+
+
+  def get_test_id(val) -> str:
+    if hasattr(val, 'id'):
+      return val.id
+
+
+  def get_yaml_tests(pytest: ModuleType) -> list:
+    return getattr(pytest, 'yaml_tests', None) or []
+
+
+  @pytest.mark.parametrize(
+    argnames='test',
+    ids=get_test_id,
+    argvalues=get_yaml_tests(pytest=pytest), )
+  def test_(test: sns) -> None:
+    # trunk-ignore(bandit/B101)
+    assert test.expected == test.output

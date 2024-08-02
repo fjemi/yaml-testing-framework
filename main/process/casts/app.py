@@ -64,7 +64,7 @@ def main(
   return sns(object=locals_.object)
 
 
-def method_does_not_exist(method: str) -> None:
+def method_does_not_exist(method: str = '') -> None:
   logger.main(level='warning', message=f'Method {method} does not exist')
 
   def method_does_not_exist_inner(*args, **kwargs) -> None:
@@ -82,7 +82,6 @@ def get_method(
   module = get_module.main(module=module, default=module).module
   route = str(method)
   method = objects.get(parent=module, route=route)
-  method = method
   if not isinstance(method, Callable):
     method_does_not_exist(method=route)
   return sns(method=method)

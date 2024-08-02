@@ -37,7 +37,7 @@ lint:
     - "**/.git/**"
     - "**/.logs/**"
     - "**/.ignore/**"
-    - "**/ignore/**"
+    - "**/.artifacts/**"
     - "**/.htmlcov/**"
     - "**/.data/**"
 runtimes:

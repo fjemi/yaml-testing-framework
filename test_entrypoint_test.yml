@@ -45,7 +45,7 @@ tests:
 - function: get_yaml_tests
   description: >
     Returns a list of tests processed by the plugin or an empty list if no
-    tests exists or were processed
+    tests exist or were processed
   cast_arguments:
   - method: sns
     field: pytest

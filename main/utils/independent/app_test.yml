@@ -870,3 +870,12 @@ tests:
       expected:
       - a
       - b
+- function: get_packages_directory
+  description: Returns the directory this package is installed
+  tests:
+  - description: Undefined
+    arguments: {}
+    checks:
+    - << : *CHECKS
+      method: check_type
+      expected: str
