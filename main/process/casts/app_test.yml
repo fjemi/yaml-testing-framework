@@ -13,8 +13,8 @@ tests:
 - function: process_cast_arguments
   description: Handles casting arguments used to call test function
   cast_arguments:
-  - method: get_module
-    << : *RESOURCE
+  - method: wrapper_get_module
+    << : *GLOBAL_RESOURCE
     field: module
   tests:
   - description: Undefined arguments
@@ -66,8 +66,8 @@ tests:
 - function: process_cast_output
   description: Handles casting the output from calling the function to test
   cast_arguments:
-  - method: resource.get_module
-    << : *RESOURCE
+  - method: wrapper_get_module
+    << : *GLOBAL_RESOURCE
     field: module
   tests:
   - description: Undefined arguments
@@ -118,6 +118,63 @@ tests:
     - method: check_sns
       << : *CHECKS
       field: output
+      expected:
+        key: 0
+- function: process_cast_expected
+  description: Handles casting `expected` value during a check
+  cast_arguments:
+  - method: wrapper_get_module
+    << : *GLOBAL_RESOURCE
+    field: module
+  tests:
+  - description: Undefined arguments
+    arguments:
+      cast_expected: null
+      module: null
+      expected: null
+    checks:
+    - method: check_sns
+      << : *CHECKS
+      expected:
+        expected: null
+  - description: Cast expected is an empty list
+    arguments:
+      cast_expected: []
+      module: *RESOURCE_PATH
+      expected: expected
+    checks:
+    - method: check_sns
+      << : *CHECKS
+      expected:
+        expected: expected
+  - description: Cast expected as a string
+    arguments:
+      cast_expected:
+      - method: __builtins__.str
+        << : *RESOURCE
+      expected: 1
+    checks:
+    - method: check_sns
+      << : *CHECKS
+      expected:
+        expected: '1'
+  - description: Cast specific field in expected of type simple name space
+    cast_arguments:
+    - method: sns
+      unpack: true
+      field: expected
+    arguments:
+      cast_expected:
+      - method: __builtins__.int
+        << : *RESOURCE
+        field: key
+      module: *RESOURCE_PATH
+      expected:
+        key: '0000'
+    checks:
+    - method: check_sns
+      << : *CHECKS
+      field: expected
       expected:
         key: 0
 - function: main

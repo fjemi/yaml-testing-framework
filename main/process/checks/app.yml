@@ -97,6 +97,7 @@ operations:
   - SETUP.process_setup
   - get_check_method
   - reset_output_value
+  - casts.process_cast_expected
   - get_check_result
   - handle_failed_check
   - post_processing

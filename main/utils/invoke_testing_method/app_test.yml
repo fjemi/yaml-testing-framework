@@ -22,7 +22,8 @@ arguments:
     logging_flag: True
 
 
-TODO: Resolve tests not running for this module from the CLI
+todos:
+- TODO: Resolve tests not running for this module from the CLI
 
 
 tests:

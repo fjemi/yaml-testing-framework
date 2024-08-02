@@ -270,7 +270,9 @@ the fields in the table below as parameters.
 | Parameter | Type | Description |
 | - | - | - |
 | output | Any | Output from a method to check |
+| cast_output | Definitions for casting output value |  |
 | expected | Any | Value to verify the output against |
+| cast_expected | list | Definitions for casting expected value  |
 | setup_ | dict | Access objects created or setup to facilitate testing |
 | spies_ | dict | Access spies placed on methods |
 | module | ModuleType | Module of the method being tested |
@@ -310,7 +312,8 @@ single check has the following fields:
 | method | str | Function or method used to verify the result of test | pass_through |
 | expected | Any | The expected output of the function | null |
 | field | str | Sets the output to a dot-delimited route to an attribute or key within the output. | null |
-| cast_output | dict or list | Converts output or an attribute or key in the output before processing an check method | null |
+| cast_output | dict or list | Converts output or an attribute or key in the output before processing an check method | [] |
+| cast_expected | dict or list | Converts expected or an attribute or key in the output before processing an check method | [] |
 | resource | str | Location of a module containing a resource to use during testing | '' |
 
 
@@ -318,8 +321,11 @@ And single test can have multiple checks
 
 ```yaml
 checks:
-- method: check_type
-  expected: str
+- method: check_equals
+  expected: 1
+  cast_expected:
+  - method: __builtins__.str
+    resource: ./resource.py
   field: null
   resource: ./checks.py
   cast_output:
@@ -345,19 +351,24 @@ The following fields make up a cast object:
 ```yaml
 
 cast_arguments:
-- method: __builtins__.str  # Cast arguments as a string
+# Cast arguments as a string
+- method: __builtins__.str
   field: null
   unpack: false
-  resource: ./resource.py
-- method: SimpleNamespace  # Cast an output field as a SimpleNamespace
-  field: field.key
-  unpack: true
   resource: ./resource.py
 
 cast_output:
-- method: do_nothing  # Call a casting method
+# Cast output as nothing
+- method: do_nothing
   field: null
   unpack: false
+  resource: ./resource.py
+
+cast_expected:
+# Cast field of expected to a SimpleNamespace
+- method: SimpleNamespace
+  field: field.key
+  unpack: true
   resource: ./resource.py
 ```
 
