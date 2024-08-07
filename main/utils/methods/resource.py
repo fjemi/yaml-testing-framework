@@ -4,7 +4,7 @@
 
 from typing import Any, Awaitable, Callable
 
-from main.utils.methods.call import pack_any, unpack_list, unpack_mapping
+from main.utils.methods import pack_any, unpack_list, unpack_mapping
 
 
 LOCALS = locals()

@@ -213,7 +213,7 @@ def process_operations(
     arguments = get_function_arguments(
       function=method,
       data=data, )
-    output = methods.call.main(
+    output = methods.main(
       arguments=arguments,
       method=method,
       unpack=True,

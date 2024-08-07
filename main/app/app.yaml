@@ -63,7 +63,7 @@ operations:
   - casts.process_cast_arguments
   - spies.main
   - get_function
-  - methods.call.main
+  - methods.main
   - casts.process_cast_output
   - checks.main
   - SETUP.process_teardown

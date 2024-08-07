@@ -11,7 +11,6 @@ from types import SimpleNamespace as sns
 from typing import (
   Any,
   Callable,
-  Iterable,
   Protocol,
   Type,
   runtime_checkable,
@@ -98,7 +97,8 @@ def type_checks_inner(
   setup_: dict | None = None,
 ) -> sns:
   arguments = locals()
-  arguments = independent.get_function_arguments(function=method, data=arguments)
+  arguments = independent.get_function_arguments(
+    function=method, data=arguments)
 
   hints = sns()
   values = sns()
@@ -426,7 +426,7 @@ def call_function(
       module=module,
       casts=cast_arguments,
       object=item, ).object
-    data = methods.call.main(
+    data = methods.main(
       arguments=data,
       method=method,
       unpack=unpack,

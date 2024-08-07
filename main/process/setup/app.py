@@ -6,7 +6,7 @@ import threading
 import time
 from types import ModuleType
 from types import SimpleNamespace as sns
-from typing import Any, Callable, Iterable
+from typing import Any, Callable
 
 from pebble import concurrent
 
@@ -137,7 +137,7 @@ def get_future(
     logger.main(arguments=arguments, error=error)
     task = error
 
-  return methods.call.get_task_from_event_loop(task=task)
+  return methods.get_task_from_event_loop(task=task)
 
 
 def run_process_in_separate_thread(
@@ -160,7 +160,7 @@ def run_process_in_separate_thread(
       time.sleep(3)
       if seconds > timeout:
         break
-  
+
   return future.result()
 
 

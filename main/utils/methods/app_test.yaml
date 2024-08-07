@@ -13,7 +13,8 @@ resources:
 - &RESOURCE
   resource: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/methods/resource.py
 - &MODULE
-  location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/methods/call.py
+  location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/methods/app.py
+
 
 tests:
 - function: main
