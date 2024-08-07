@@ -6,7 +6,7 @@ todos:
 
 resources:
 - &RESOURCE
-  resource: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/resources/test_entrypoint/app.py
+  resource: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/.resources/test_entrypoint/app.py
 - &CHECKS
   resource: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/app.py
 

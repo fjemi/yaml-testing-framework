@@ -4,19 +4,19 @@ exclude_methods:
 
 resources:
 - &RESOURCE
-  resource: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/invoke_testing_method/resources/app.py
+  resource: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/invoke_testing_method/.resources/app.py
 - &CHECKS
   resource: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/app.py
 
 
 arguments:
   module_with_tests: &MODULE_WITH_TESTS_ARGUMENTS
-    location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/invoke_testing_method/resources/module_with_tests.py
+    location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/invoke_testing_method/.resources/module_with_tests.py
     exclude_files: []
     yaml_suffix: _test
     logging_flag: True
   module_without_tests: &MODULE_WITHOUT_TESTS_ARGUMENTS
-    location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/invoke_testing_method/resources/module_without_tests.py
+    location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/invoke_testing_method/.resources/module_without_tests.py
     exclude_files: []
     yaml_suffix: _test
     logging_flag: True
@@ -42,7 +42,7 @@ tests:
       expected: SimpleNamespace
   - description: Run tests on modules in a directory using plugin invocation method
     arguments:
-      location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/invoke_testing_method/resources
+      location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/invoke_testing_method/.resources
       method: plugin
       yaml_suffix: _test
       logging_flag: True

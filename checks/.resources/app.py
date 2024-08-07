@@ -8,8 +8,6 @@ from types import ModuleType
 from types import SimpleNamespace as sns
 from typing import Any, Awaitable, Callable
 
-from checks import module_resource
-
 
 LOCALS = locals()
 

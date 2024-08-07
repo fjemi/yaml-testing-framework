@@ -11,7 +11,7 @@ resources:
 - &CHECKS
   resource: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/app.py
 - &RESOURCE
-  resource: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/methods/resource.py
+  resource: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/methods/.resource.py
 - &MODULE
   location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/methods/app.py
 

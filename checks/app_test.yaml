@@ -9,11 +9,13 @@ help:
 
 resources:
 - &RESOURCE
-  resource: &RESOURCE_PATH ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/resource.py
+  resource: &RESOURCE_PATH ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/.resources/app.py
+- &RESOURCE_MODULE
+  ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/.resources/module.py
 - &CHECKS
   resource: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/app.py
 - &GLOBAL_RESOURCE
-  resource: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/resources/app.py
+  resource: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/.resources/app.py
 
 
 tests:
@@ -268,56 +270,61 @@ tests:
         expected: RuntimeError
 - function: check_module
   description: Verify that the output is a module
-  cast_arguments:
-  - method: get_output_resource
-    << : *RESOURCE
-    field: output
   tests:
-  - description: Undefined arguments
-    arguments: {}
-    checks:
-    - method: check_sns
-      expected:
+  - cast_arguments:
+    - method: get_output_resource
+      << : *RESOURCE
+      field: output
+    tests:
+    - description: Undefined arguments
+      arguments: {}
+      checks:
+      - method: check_sns
         expected:
-          method: check_module
-          parameters:
-            failed:
-            - hints:
-              - module
-              name: output
-              kind: nonetype
-            - hints:
-              - dict
-              name: expected
-              kind: nonetype
-            passed: []
-        output: null
-        passed: false
+          expected:
+            method: check_module
+            parameters:
+              failed:
+              - hints:
+                - module
+                name: output
+                kind: nonetype
+              - hints:
+                - dict
+                name: expected
+                kind: nonetype
+              passed: []
+          output: null
+          passed: false
+    - description: Output is the builtins module
+      arguments:
+        output: builtins
+        expected:
+          location: null
+      checks:
+      - method: check_sns
+        expected:
+          output:
+            location: null
+          expected:
+            location: null
+          passed: true
   - description: Output is a module
+    cast_arguments:
+    - field: output
+      method: wrapper_get_module
+      << : *GLOBAL_RESOURCE
     arguments:
-      output: module_resource
+      output: *RESOURCE_MODULE
       expected:
-        location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/module_resource.py
+        location: *RESOURCE_MODULE
     checks:
     - method: check_sns
       expected:
         output:
-          location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/module_resource.py
+          location: *RESOURCE_MODULE
         expected:
-          location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/module_resource.py
-        passed: true
-  - description: Output is the builtins module
-    arguments:
-      output: builtins
-      expected:
-        location: null
-    checks:
-    - method: check_sns
-      expected:
-        output:
-          location: null
-        expected:
-          location: null
+          location: *RESOURCE_MODULE
         passed: true
 - function: check_equals
   description: Verifies that the output and expected out are equal
@@ -406,7 +413,7 @@ tests:
       output: callable_method
       expected:
         name: callable_method
-        location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/resource.py
+        location: *RESOURCE_PATH
     checks:
     - method: check_sns
       << : *CHECKS
@@ -414,16 +421,16 @@ tests:
         passed: true
         output:
           name: callable_method
-          location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/resource.py
+          location: *RESOURCE_PATH
         expected:
           name: callable_method
-          location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/resource.py
+          location: *RESOURCE_PATH
   - description: Awaitable function
     arguments:
       output: awaitable_method
       expected:
         name: awaitable_method
-        location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/resource.py
+        location: *RESOURCE_PATH
     checks:
     - method: check_sns
       << : *CHECKS
@@ -431,16 +438,16 @@ tests:
         passed: true
         output:
           name: awaitable_method
-          location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/resource.py
+          location: *RESOURCE_PATH
         expected:
           name: awaitable_method
-          location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/resource.py
+          location: *RESOURCE_PATH
   - description: Decorated function
     arguments:
       output: wrapped_awaitable_method
       expected:
         name: wrapped_awaitable_method
-        location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/resource.py
+        location: *RESOURCE_PATH
     checks:
     - method: check_sns
       << : *CHECKS
@@ -448,16 +455,16 @@ tests:
         passed: true
         output:
           name: wrapped_awaitable_method
-          location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/resource.py
+          location: *RESOURCE_PATH
         expected:
           name: wrapped_awaitable_method
-          location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/resource.py
+          location: *RESOURCE_PATH
   - description: Decorated awaitable function
     arguments:
       output: wrapped_awaitable_method
       expected:
         name: wrapped_awaitable_method
-        location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/resource.py
+        location: *RESOURCE_PATH
     checks:
     - method: check_sns
       << : *CHECKS
@@ -465,10 +472,10 @@ tests:
         passed: true
         output:
           name: wrapped_awaitable_method
-          location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/resource.py
+          location: *RESOURCE_PATH
         expected:
           name: wrapped_awaitable_method
-          location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/resource.py
+          location: *RESOURCE_PATH
 - function: check_class
   description: >
     Verify that the output is a class. Check the name of the class and specified
@@ -1241,7 +1248,7 @@ tests:
         output:
         - '1'
         - '3'
-        module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/resource.py
+        module: *RESOURCE_PATH
         cast_output:
         - method: __builtins__.str
           << : *RESOURCE

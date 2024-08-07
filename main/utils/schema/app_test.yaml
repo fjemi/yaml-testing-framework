@@ -2,7 +2,7 @@ resources:
 - &CHECKS
   resource: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/app.py
 - &RESOURCE
-  ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/schema/resources/app.py
+  ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/schema/.resources/app.py
 - &YAML
   ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/schema/app.yaml
   
@@ -24,7 +24,7 @@ tests:
   - description: YAML is defined
     arguments:
       module: null
-      yaml: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/schema/resources/app.yaml
+      yaml: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/schema/.resources/app.yaml
     checks:
     - method: check_sns
       << : *CHECKS

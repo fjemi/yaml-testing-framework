@@ -4,9 +4,9 @@ resources:
 - &CHECKS
   resource: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/app.py
 - &RESOURCE
-  resource: &RESOURCE_PATH ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/casts/resource.py
+  resource: &RESOURCE_PATH ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/casts/.resource.py
 - &GLOBAL_RESOURCE
-  resource: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/resources/app.py
+  resource: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/.resources/app.py
 
 
 tests:
@@ -289,7 +289,7 @@ tests:
       field: method
       expected:
         name: pass_through
-        location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/casts/resource.py
+        location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/casts/.resource.py
   - description: Method not in module
     arguments:
       method: does_not_exist

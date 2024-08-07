@@ -10,11 +10,11 @@ resources:
 - &CHECKS
   resource: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/app.py
 - &RESOURCE
-  resource: &RESOURCE_PATH ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/locations/resources/app.py
+  resource: &RESOURCE_PATH ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/locations/.resources/app.py
 - &RESOURCE_DIRECTORY
-  ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/locations/resources
+  ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/locations/.resources
 - &YAML_PATH
-  ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/locations/resources/app_test.yml
+  ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/locations/.resources/app_test.yml
 
 
 tests:
@@ -53,7 +53,7 @@ tests:
           extensions:
             module: .py
             yaml: .yml
-          module_route: .main.process.locations.resources.app
+          module_route: .main.process.locations..resources.app
           yaml: *YAML_PATH
           phase_: module
           setup: []
@@ -259,7 +259,7 @@ tests:
               module: .py
               yaml: .yml
           module: *RESOURCE
-          module_route: .main.process.locations.resources.app
+          module_route: .main.process.locations..resources.app
           phase_: module
           setup: []
           yaml: *YAML_PATH
@@ -328,7 +328,7 @@ tests:
             module: .py
             yaml: .yml
           module: *RESOURCE_PATH
-          module_route: .main.process.locations.resources.app
+          module_route: .main.process.locations..resources.app
           phase_: module
           setup: []
           yaml: *YAML_PATH
@@ -370,7 +370,7 @@ tests:
             module: .py
             yaml: .yml
           module: *RESOURCE_PATH
-          module_route: .main.process.locations.resources.app
+          module_route: .main.process.locations..resources.app
           phase_: module
           setup: []
           yaml: *YAML_PATH
@@ -393,13 +393,13 @@ tests:
       method: check_sns
       expected:
         files:
-        - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/locations/resources/exclusion_pattern_test.yml
-        - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/locations/resources/exclusion_pattern.py
-        - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/locations/resources/app.py
-        - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/locations/resources/no_module_test.yml
-        - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/locations/resources/app_test.yml
-        - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/locations/resources/resources_folder_name/resource_b.py
-        - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/locations/resources/resources_folder_name/resource_a.py
+        - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/locations/.resources/exclusion_pattern_test.yml
+        - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/locations/.resources/exclusion_pattern.py
+        - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/locations/.resources/app.py
+        - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/locations/.resources/no_module_test.yml
+        - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/locations/.resources/app_test.yml
+        - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/locations/.resources/folder_name/app_a.py
+        - ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/locations/.resources/folder_name/app_b.py
 - function: filter_files
   description: Filter out files that d not meet criteria
   tests:
@@ -630,7 +630,7 @@ tests:
             module: .py
             yaml: .yml
           module: *RESOURCE_PATH
-          module_route: .main.process.locations.resources.app
+          module_route: .main.process.locations..resources.app
           phase_: module
           setup: []
           yaml: *YAML_PATH

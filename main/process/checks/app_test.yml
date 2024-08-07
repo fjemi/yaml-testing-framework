@@ -4,11 +4,11 @@ resources:
 - &APP_PATH
   ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/checks/app.py
 - &RESOURCE
-  resource: &RESOURCE_PATH ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/checks/resource.py
+  resource: &RESOURCE_PATH ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/checks/.resource.py
 - &MODULE
   module: &MODULE_PATH ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/checks/app.py
 - &GLOBAL_RESOURCE
-  resource: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/resources/app.py
+  resource: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/.resources/app.py
 
 
 tests:

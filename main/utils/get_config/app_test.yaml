@@ -2,9 +2,9 @@ resources:
 - &CHECKS
   resource: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/app.py
 - &RESOURCE
-  resource: &RESOURCE_PATH ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/get_config/resources/app.py
+  resource: &RESOURCE_PATH ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/get_config/.resources/app.py
 - &RESOURCE_YAML
-  ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/get_config/resources/app.yaml
+  ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/get_config/.resources/app.yaml
 
 
 tests:
@@ -118,8 +118,8 @@ tests:
         environment: {}
   - description: Defined environment and config locations
     arguments:
-      environment: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/get_config/resources/environment.yml
-      config: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/get_config/resources/config.yml
+      environment: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/get_config/.resources/environment.yml
+      config: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/get_config/.resources/config.yml
     checks:
     - method: check_sns
       << : *CHECKS
@@ -131,8 +131,8 @@ tests:
           environment: environment
   - description: Defined operations and config locations
     arguments:
-      operations: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/get_config/resources/operations.yml
-      config: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/get_config/resources/config.yml
+      operations: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/get_config/.resources/operations.yml
+      config: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/get_config/.resources/config.yml
     checks:
     - method: check_sns
       << : *CHECKS

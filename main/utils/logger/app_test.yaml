@@ -10,11 +10,11 @@ help:
 
 resources:
 - &RESOURCE
-  resource: &RESOURCE_PATH ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/logger/resources/app.py
+  resource: &RESOURCE_PATH ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/logger/.resources/app.py
 - &CHECKS
   resource: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/app.py
 - &LOG_DIR
-  ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/logger/resources/data
+  ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/logger/.resources/data
 
 
 tests:
@@ -401,7 +401,7 @@ tests:
   #     expected: TypeError
   - description: Location is defined
     arguments:
-      location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/logger/resources/data/log_file.log
+      location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/logger/.resources/data/log_file.log
     checks:
     - method: check_type
       << : *CHECKS
@@ -409,7 +409,7 @@ tests:
     - method: check_equals
       << : *CHECKS
       field: name
-      expected: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/logger/resources/data/log_file.log
+      expected: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/logger/.resources/data/log_file.log
 - function: create_logger
   description: >
     Creates the directory to store logs for each run of the app. The

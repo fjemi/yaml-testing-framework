@@ -4,11 +4,11 @@ help:
 
 resources:
 - &RESOURCE
-  resource: &RESOURCE_PATH ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/get_module/resource.py
+  resource: &RESOURCE_PATH ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/get_module/.resources/app.py
 - &CHECKS
   resource: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/app.py
 - &GLOBAL_RESOURCE
-  resource: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/resources/app.py
+  resource: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/.resources/app.py
 
 
 tests:
@@ -76,13 +76,13 @@ tests:
   tests:
   - description: Location is defined
     arguments:
-      location: /main/utils/get_module/resource.py
+      location: /main/utils/get_module/.resource.py
       name: null
     checks:
     - method: check_sns
       << : *CHECKS
       expected:
-        name: .main.utils.get_module.resource
+        name: .main.utils.get_module..resource
   - description: Name is defined
     arguments:
       name: name
@@ -100,7 +100,7 @@ tests:
     - method: check_substring_in_string
       << : *CHECKS
       field: name
-      expected: yaml-testing-framework.main.utils.get_module.resource
+      expected: yaml-testing-framework.main.utils.get_module..resource
   - description: Name and location are undefined
     arguments:
       name: null
@@ -144,13 +144,13 @@ tests:
   - description: Location is defined
     arguments:
       name: app
-      location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/get_module/resource.py
+      location: *RESOURCE_PATH
     checks:
     - method: check_module
       << : *CHECKS
       field: module
       expected:
-        location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/get_module/resource.py
+        location: *RESOURCE_PATH
 - function: post_processing
   description: Returns a module or default value in a simple name space
   tests:
