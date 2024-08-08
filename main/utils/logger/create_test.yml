@@ -1,0 +1,113 @@
+resources:
+- &RESOURCE
+  resource: &RESOURCE_PATH ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/logger/.resources/app.py
+- &RESOURCE_DIRECTORY
+  ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/logger/.resources
+- &CHECKS
+  resource: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/app.py
+- &LOG_DIR
+  ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/logger/.resources/data
+- &ROOT
+  ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/
+- &ROOT_LOG_DIRECTORY
+  ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/.yaml-testing-framework/logs
+- &RESOURCE_LOG_DIRECTORY
+  ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/logger/.resources/
+
+
+tests:
+
+- function: get_timestamp
+  description: Returns a timestamp as an integer
+  arguments: {}
+  checks:
+  - method: check_type
+    << : *CHECKS
+    expected: int
+- function: get_directory
+  description: >
+    Returns directory to save logs to. Creates the directory if it does not exist
+  tests:
+  - description: Path does not exist
+    arguments:
+      path: does/not/exist
+    checks:
+    - << : *CHECKS
+      method: check_equals
+      expected: *ROOT
+  - description: Path is a directory
+    arguments:
+      path: *RESOURCE_DIRECTORY
+    checks:
+    - << : *CHECKS
+      method: check_equals
+      expected: *RESOURCE_LOG_DIRECTORY
+  - description: Path is a file
+    arguments:
+      path: *RESOURCE_PATH
+      suffix: ''
+    checks:
+    - << : *CHECKS
+      method: check_equals
+      expected: *RESOURCE_LOG_DIRECTORY
+  - description: Path is a file and suffix is defined
+    arguments:
+      path: *RESOURCE_DIRECTORY
+      suffix: suffix
+    checks:
+    - << : *CHECKS
+      method: check_equals
+      expected: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/logger/.resources/suffix
+  - description: Environment variable is set
+    # patches:
+    # - method: value
+    #   value: *RESOURCE_DIRECTORY
+    #   route: CONFIG.environment.LOG_DIR
+    # TODO: Should environment logic be kept
+    environment:
+      LOG_DIR: *RESOURCE_DIRECTORY
+    arguments: {}
+    checks:
+    - method: check_equals
+      << : *CHECKS
+      expected: *RESOURCE_DIRECTORY
+- function: get_location
+  description: Creates a log file and returns its location
+  patches:
+  - method: callable
+    value: timestamp
+    route: get_timestamp
+  tests:
+  - arguments:
+      directory: directory_a
+    checks:
+    - method: check_equals
+      << : *CHECKS
+      expected: directory_a/timestamp.log
+  - arguments:
+      directory: directory_b
+    checks:
+    - method: check_equals
+      << : *CHECKS
+      expected: directory_b/timestamp.log
+- function: get_logger
+  description: Returns an instance of a Logger tied to the location of a log file
+  tests:
+  - description: Location is undefined
+    arguments:
+      location: null
+    checks:
+    - method: check_error
+      << : *CHECKS
+      expected: TypeError
+  - description: Location is defined
+    arguments:
+      location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/logger/.resources/log.log
+    checks:
+    - method: check_type
+      << : *CHECKS
+      expected: Logger
+    - method: check_equals
+      << : *CHECKS
+      field: name
+      expected: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/logger/.resources/log.log

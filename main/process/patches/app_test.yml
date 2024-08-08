@@ -8,11 +8,11 @@ help:
 
 resources:
 - &RESOURCE
-  resource: &RESOURCE_PATH ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/patches/resources/app.py
+  resource: &RESOURCE_PATH ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/patches/.resources/app.py
 - &CHECKS
   resource: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/app.py
 - &GLOBAL_RESOURCE
-  resource: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/resources/app.py
+  resource: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/.resources/app.py
 
 
 tests:
@@ -21,7 +21,7 @@ tests:
     Patches an object within the module to test or modules used as resources
     during testing
   cast_arguments:
-  - method: wrapper_get_module
+  - method: wrapper_modules
     << : *GLOBAL_RESOURCE
     field: module
   tests:
@@ -111,7 +111,7 @@ tests:
     cast_arguments:
     - << : *GLOBAL_RESOURCE
       field: module
-      method: wrapper_get_module
+      method: wrapper_modules
     arguments:
       route: add
       resource: null
@@ -155,7 +155,7 @@ tests:
         value: value
   - description: Callable method
     cast_arguments:
-    - method: wrapper_get_module
+    - method: wrapper_modules
       << : *GLOBAL_RESOURCE
       field: resource
     arguments:
@@ -426,7 +426,7 @@ tests:
 - function: patch_module
   description: Returns a module with a patched object
   cast_arguments:
-  - method: wrapper_get_module
+  - method: wrapper_modules
     << : *GLOBAL_RESOURCE
     field: module
   tests:

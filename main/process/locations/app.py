@@ -6,12 +6,12 @@ import os
 from types import SimpleNamespace as sns
 from typing import Any, List
 
-from main.utils import get_config, independent, logger, objects
+from main.utils import configs, independent, logger, objects
 
 
 ROOT_DIR = os.getcwd()
 
-SETTINGS = get_config.main()
+SETTINGS = configs.main()
 LOCALS = locals()
 
 
@@ -262,9 +262,9 @@ def set_modules(
 
 
 def examples() -> None:
-  from main.utils import invoke_testing_method
+  from main.utils import invoke
 
-  invoke_testing_method.main()
+  invoke.main()
 
 
 if __name__ == '__main__':

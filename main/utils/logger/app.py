@@ -14,6 +14,9 @@ from typing import Any, Callable
 
 import yaml as pyyaml
 
+from main.utils.logger import create
+from main.utils import environment_variables
+
 
 LOCALS = locals()
 
@@ -22,7 +25,7 @@ ROOT_DIR = os.getcwd()
 
 CONFIG = '''
   environment:
-    LOG_DIR: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/.logs
+    LOG_DIR: ${YAML_TESTING_FRAMEWORK_LOG_DIR}
     DEBUG: ${YAML_TESTING_FRAMEWORK_DEBUG}
     LOGGING_DISABLED: ${YAML_TESTING_FRAMEWORK_LOGGING_DISABLED}
   
@@ -51,12 +54,17 @@ CONFIG = '''
     standard_output: False
     enabled: True
 '''
-CONFIG = os.path.expandvars(CONFIG)
 CONFIG = pyyaml.safe_load(CONFIG)
 CONFIG = sns(**CONFIG)
-CONFIG.environment = sns(**CONFIG.environment)
+CONFIG.environment = environment_variables.evaluate(
+  values=CONFIG.environment, return_='sns')
 
-LOGGER = None
+LOGGER = create.main()
+LOGGERS = dict(
+  warning=LOGGER.warning,
+  error=LOGGER.error,
+  debug=LOGGER.debug,
+  info=LOGGER.info, )
 
 
 def main(
@@ -65,7 +73,7 @@ def main(
   debug: bool | None = None,
   enabled: bool | None = None,
   standard_output: bool = False,
-  message: str | None = None,
+  message: Any | None = None,
   arguments: Any | None = None,
   output: Any | None = None,
   timestamps: dict | None = None,
@@ -81,14 +89,13 @@ def main(
   error = format_error(error=error)
   level = 'error' if error else level
   level = level if level in CONFIG.levels else 'debug'
-  standard_output = False if not standard_output else standard_output
+  level = str(level).lower()
 
   log = get_log(locals_=locals())
   log = format_log(log=log, format=format)
   handle_log(
     log=log,
     level=level,
-    error=error,
     debug=debug,
     standard_output=standard_output, )
   return 1
@@ -169,66 +176,52 @@ def format_log(
   return log
 
 
-def do_nothing(*args, **kwargs) -> None:
-  _ = args, kwargs
+def do_nothing(
+  level: str = '',
+  log: str = '',
+  *args, **kwargs,
+) -> None:
+  if CONFIG.environment.DEBUG is True:
+    print(locals(), CONFIG.environment.DEBUG)
+  return lambda *_, **__: None
 
 
 def handle_log(
-    log: dict = {},
+    log: str = '',
     level: str = '',
-    error: Exception | None = None,
     debug: bool = False,
     standard_output: bool = False,
 ) -> int:
-  flags = True in [
-    isinstance(error,Exception),
-    level == 'error', ]
-
   debug = debug or CONFIG.environment.DEBUG
+  standard_output = True in [
+    level != 'info',
+    debug,
+    standard_output, ]
 
-  flags = True in [flags, debug, standard_output, ]
-  standard_output = True if flags else standard_output
-
-  a = write_to_log(level=level, log=log)
+  a = write_to_file(level=level, log=log) if log else 0
   b = write_to_cli(
-    debug=debug,
     standard_output=standard_output,
-    log=log, )
+    log=log, ) if log else 0
   return a + b
 
 
-def write_to_log(
+def write_to_file(
   level: str = '',
-  log: Any | None = None,
+  log: str = '',
 ) -> int:
-  method = getattr(
-    LOGGER,
-    str(level).lower(),
-    LOGGER.debug if LOGGER else do_nothing, )
-  method(f'{log}\n')
-  return 1
+  method = LOGGERS.get(level, LOGGERS['info'])
+  method(log)
+  return 2
 
 
 def write_to_cli(
   standard_output: bool = False,
-  debug: bool = False,
-  error: dict | None = None,
-  level: str = '',
   log: Any | None = None,
 ) -> int:
-  flags = sum([
-    standard_output is True,
-    debug is True,
-    error is not None,
-    level in ['error', 'exception'],
-  ]) > 0
-  status = 0
-  if flags:
-    status = 1
+  if standard_output:
     print(log)
-  return status
-
-
+    return 1
+  return 0
 
 
 # trunk-ignore(ruff/PLR0911)
@@ -267,51 +260,10 @@ def set_default(object: Any) -> Any:
   return str(object)
 
 
-def get_timestamp() -> float:
-  return time.time()
-
-
-def get_log_file_location(project_path: str = '') -> str:
-  path = project_path.replace(ROOT_DIR, '')
-  base, _ = os.path.splitext(path)
-  base = base.split(os.path.sep)
-  filename = '.'.join(base)
-  filename = f'{filename}.log' if filename != '.' else '.log'
-  directory = CONFIG.environment.LOG_DIR or f'{ROOT_DIR}/.logs'
-  os.makedirs(name=directory, exist_ok=True)
-  location = os.path.join(directory, filename)
-  return location
-
-
-def get_logger(location: str) -> logging.Logger:
-  logger = logging.getLogger(location)
-  logger.setLevel(logging.DEBUG)
-  handler = logging.FileHandler(location, mode='w')
-  formatter = logging.Formatter('%(message)s')
-  handler.setFormatter(formatter)
-  logger.addHandler(handler)
-  return logger
-
-
-def create_logger(
-  logging_flag: bool,
-  project_path: str,
-) -> sns:
-  data = sns(status=1)
-  if logging_flag:
-    global LOGGER
-    location = get_log_file_location(project_path=project_path)
-    LOGGER = get_logger(location=location)
-    return data
-
-  data.status = 0
-  return data
-
-
 def examples() -> None:
-  from main.utils import invoke_testing_method
+  from main.utils import invoke
 
-  invoke_testing_method.main()
+  invoke.main()
 
 
 if __name__ == '__main__':

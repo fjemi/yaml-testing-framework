@@ -13,7 +13,7 @@ resources:
 - &CHECKS
   resource: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/app.py
 - &RESOURCE
-  resource: &RESOURCE_PATH ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/resources/setup
+  resource: &RESOURCE_PATH ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/.resources/setup
 
 
 tests:
@@ -27,7 +27,7 @@ tests:
       << : *CHECKS
       expected: null
   - arguments:
-      location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/resources/setup/hello_world.yml
+      location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/.resources/setup/hello_world.yml
     checks:
     - method: check_equals
       << : *CHECKS
@@ -44,12 +44,12 @@ tests:
       expected:
         directory: null
   - arguments:
-      directory: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/resources/setup
+      directory: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/.resources/setup
     checks:
     - method: check_equals
       << : *CHECKS
       expected:
-        directory: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/resources/setup
+        directory: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/.resources/setup
         long_description: '# README.md'
         pipfile_lock:
           _meta:
@@ -232,7 +232,7 @@ tests:
   tests:
   - description: Test 0
     arguments:
-      directory: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/resources/setup
+      directory: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/.resources/setup
     checks:
     - method: check_equals
       << : *CHECKS

@@ -11,14 +11,13 @@ from types import SimpleNamespace as sns
 from typing import (
   Any,
   Callable,
-  Iterable,
   Protocol,
   Type,
   runtime_checkable,
 )
 
 from main.process import casts
-from main.utils import get_module, independent, methods, objects
+from main.utils import modules, independent, methods, objects
 
 
 CONFIG = '''
@@ -98,7 +97,8 @@ def type_checks_inner(
   setup_: dict | None = None,
 ) -> sns:
   arguments = locals()
-  arguments = independent.get_function_arguments(function=method, data=arguments)
+  arguments = independent.get_function_arguments(
+    function=method, data=arguments)
 
   hints = sns()
   values = sns()
@@ -418,7 +418,7 @@ def call_function(
   unpack: bool = True,
 ) -> Any:
   store = []
-  module = get_module.main(module=module, default=module).module
+  module = modules.main(module=module, default=module).module
   passed = True
 
   for i, item in enumerate(arguments):
@@ -426,7 +426,7 @@ def call_function(
       module=module,
       casts=cast_arguments,
       object=item, ).object
-    data = methods.call.main(
+    data = methods.main(
       arguments=data,
       method=method,
       unpack=unpack,
@@ -491,9 +491,9 @@ def check_spies(
 
 
 def examples() -> None:
-  from main.utils import invoke_testing_method
+  from main.utils import invoke
 
-  invoke_testing_method.main('.examples')
+  invoke.main('.examples')
 
 
 if __name__ == '__main__':

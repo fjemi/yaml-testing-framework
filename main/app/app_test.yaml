@@ -14,13 +14,13 @@ resources:
 - &CHECKS
   resource: &CHECKS_PATH ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/app.py
 - &RESOURCE
-  resource: &RESOURCE_PATH ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/app/resources/app.py
+  resource: &RESOURCE_PATH ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/app/.resources/app.py
 - &ADD_PATH
-  ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/app/resources/add.py
+  ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/app/.resources/add.py
 - &ADD_TEST_PATH
-  ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/app/resources/add_test.yaml
+  ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/app/.resources/add_test.yaml
 - &GLOBAL_RESOURCE
-  resource: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/resources/app.py
+  resource: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/.resources/app.py
 - &ROOT
   ${YAML_TESTING_FRAMEWORK_ROOT_DIR}
 - &ENTRYPOINT
@@ -44,20 +44,20 @@ tests:
       << : *CHECKS
       expected:
       - expected: 0
-        id: ' .main.app.resources.add.add - 0|2 - Return the result of adding two integers '
-        id_short: .main.app.resources.add.add
+        id: ' .main.app..resources.add.add - 0|2 - Return the result of adding two integers '
+        id_short: .main.app..resources.add.add
         method: check_equals
         output: 0
         passed: true
       - expected: 0
-        id: ' .main.app.resources.add.add - 0|1 - Return the result of adding two integers '
-        id_short: .main.app.resources.add.add
+        id: ' .main.app..resources.add.add - 0|1 - Return the result of adding two integers '
+        id_short: .main.app..resources.add.add
         method: check_equals
         output: 0
         passed: true
       - expected: 3
-        id: ' .main.app.resources.add.add - 0|0 - Return the result of adding two integers '
-        id_short: .main.app.resources.add.add
+        id: ' .main.app..resources.add.add - 0|0 - Return the result of adding two integers '
+        id_short: .main.app..resources.add.add
         method: check_equals
         output: 3
         passed: true
@@ -142,7 +142,7 @@ tests:
 - function: get_function
   description: Returns an existing function to test
   cast_arguments:
-  - method: wrapper_get_module
+  - method: wrapper_modules
     << : *GLOBAL_RESOURCE
     field: module
   tests:
@@ -285,7 +285,7 @@ tests:
       - module: *ADD_PATH
         module_route: add.app.app
         yaml: *ADD_TEST_PATH
-        project_path: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/app/resources/add/resources_folder_name/app.py
+        project_path: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/app/.resources/add/.resources_folder_name/app.py
     checks:
     - method: check_sns
       << : *CHECKS

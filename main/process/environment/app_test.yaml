@@ -2,9 +2,9 @@ resources:
 - &CHECKS
   resource: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/app.py
 - &RESOURCE
-  resource: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/environment/resources/app.py
+  resource: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/environment/.resources/app.py
 - &GLOBAL_RESOURCE
-  resource: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/resources/app.py
+  resource: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/.resources/app.py
 
 
 tests:
@@ -13,7 +13,7 @@ tests:
     Sets environment variables in a global CONFIG variable within a module
   cast_arguments:
   - field: module
-    method: wrapper_get_module
+    method: wrapper_modules
     << : *GLOBAL_RESOURCE
   tests:
   - description: Undefined arguments
@@ -30,7 +30,7 @@ tests:
       environment:
         VAR_A: A
         VAR_B: B
-      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/environment/resources/no_config.py
+      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/environment/.resources/no_config.py
     checks:
     - method: check_sns
       << : *CHECKS
@@ -44,7 +44,7 @@ tests:
         VAR_A: 1
         VAR_B: 2
         VAR_C: 3
-      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/environment/resources/no_config.py
+      module: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/environment/.resources/no_config.py
     checks:
     - method: check_sns
       << : *CHECKS
@@ -59,7 +59,7 @@ tests:
         VAR_1: 1
         VAR_2: 2
         VAR_3: 3
-      module:  ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/environment/resources/config_with_environment.py
+      module:  ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/environment/.resources/config_with_environment.py
     checks:
     - method: check_sns
       << : *CHECKS

@@ -57,13 +57,13 @@ operations:
   run_test_for_functions:
   - SETUP.process_setup
   - handle_id
-  - get_module.main
+  - modules.main
   - environment.main
   - patches.main
   - casts.process_cast_arguments
   - spies.main
   - get_function
-  - methods.call.main
+  - methods.main
   - casts.process_cast_output
   - checks.main
   - SETUP.process_teardown

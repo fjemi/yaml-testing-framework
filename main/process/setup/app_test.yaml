@@ -24,11 +24,11 @@ resources:
 - &MODULE_PATH
   ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/setup/app.py
 - &RESOURCE
-  resource: &RESOURCE_PATH ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/setup/resource.py
+  resource: &RESOURCE_PATH ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/process/setup/.resource.py
 - &CHECKS
   resource: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/app.py
 - &GLOBAL_RESOURCE
-  resource: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/resources/app.py
+  resource: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/.resources/app.py
 
 
 tests:
@@ -181,7 +181,7 @@ tests:
   description: Returns a method from a module
   cast_arguments:
   - field: module
-    method: wrapper_get_module
+    method: wrapper_modules
     << : *GLOBAL_RESOURCE
   tests:
   - description: Undefined arguments or method does not exist

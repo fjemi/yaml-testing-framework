@@ -8,8 +8,8 @@ from typing import Any, Callable
 
 from main.process.casts import handle_casting
 from main.utils import (
-  get_config,
-  get_module,
+  configs,
+  modules,
   independent,
   logger,
   objects, )
@@ -17,7 +17,7 @@ from main.utils import (
 
 LOCALS = locals()
 
-CONFIG = get_config.main()
+CONFIG = configs.main()
 
 
 def process_cast_arguments(
@@ -94,7 +94,7 @@ def get_method(
   method: str = '',
 ) -> sns:
   module = resource or module
-  module = get_module.main(module=module, default=module).module
+  module = modules.main(module=module, default=module).module
   route = str(method)
   method = objects.get(parent=module, route=route)
   if not isinstance(method, Callable):
@@ -131,9 +131,9 @@ def reset_object(
 
 
 def examples() -> None:
-  from main.utils import invoke_testing_method
+  from main.utils import invoke
 
-  invoke_testing_method.main('.')
+  invoke.main('.')
 
 
 if __name__ == '__main__':

@@ -1,0 +1,299 @@
+resources:
+- &CHECKS
+  resource: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/app.py
+- &RESOURCE
+  resource: &RESOURCE_PATH ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/configs/.resources/app.py
+- &RESOURCE_YAML
+  ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/configs/.resources/app.yaml
+
+
+tests:
+- function: main
+  description: Returns configurations for a module
+  tests:
+  - description: Module location is set
+    arguments:
+      module: *RESOURCE_PATH
+      config: null
+      environment: null
+    checks:
+    - method: check_sns
+      << : *CHECKS
+      expected:
+        a: a
+        b:
+        - b0
+        - b1
+        c:
+          d: e
+    - method: check_sns
+      << : *CHECKS
+      field: environment
+      expected:
+        A: A
+        B: B
+        C: C
+        D: D
+    - method: check_sns
+      << : *CHECKS
+      field: schema
+      expected: {}
+    - method: check_sns
+      << : *CHECKS
+      field: schema.Example
+      expected:
+        str: ''
+        int: 0
+        list:
+        - a
+        - b
+        dict:
+          key: value
+  - description: YAML location is set
+    arguments:
+      module: null
+      config: *RESOURCE_YAML
+      environment: null
+    checks:
+    - method: check_sns
+      << : *CHECKS
+      expected:
+        a: a
+        b:
+        - b0
+        - b1
+        c:
+          d: e
+    - method: check_sns
+      << : *CHECKS
+      field: environment
+      expected:
+        A: A
+        B: B
+        C: C
+        D: D
+- function: format_config_location
+  description: >
+    Returns the location of a config YAML file associated with a module or
+    a defined YAML file
+  tests:
+  - description: Undefined arguments
+    arguments:
+      module: null
+      config: null
+    checks:
+    - method: check_sns
+      << : *CHECKS
+      expected:
+        config: None
+  - description: Config location is set
+    arguments:
+      config: *RESOURCE_YAML
+    checks:
+    - method: check_sns
+      << : *CHECKS
+      expected:
+        config: *RESOURCE_YAML
+  - description: Module locations is set
+    arguments:
+      module: *RESOURCE_PATH
+    checks:
+    - method: check_sns
+      << : *CHECKS
+      expected:
+        config: *RESOURCE_YAML
+- function: get_content_from_files
+  description: Returns config and environment content from YAML locations
+  tests:
+  - description: Undefined arguments
+    arguments:
+      environment: null
+      config: null
+    checks:
+    - method: check_sns
+      << : *CHECKS
+      field: content
+      expected:
+        config: {}
+        environment: {}
+  - description: Defined environment and config locations
+    arguments:
+      environment: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/configs/.resources/environment.yml
+      config: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/configs/.resources/config.yml
+    checks:
+    - method: check_sns
+      << : *CHECKS
+      field: content
+      expected:
+        config:
+          config: config
+        environment:
+          environment: environment
+  - description: Defined operations and config locations
+    arguments:
+      operations: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/configs/.resources/operations.yml
+      config: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/configs/.resources/config.yml
+    checks:
+    - method: check_sns
+      << : *CHECKS
+      field: content
+      expected:
+        config:
+          config: config
+        operations:
+          one:
+          - 1
+          three:
+          - 1
+          - 2
+          - 3
+          two:
+          - 1
+          - 2
+- function: format_content_keys
+  description: Formats specified keys in config content
+  cast_arguments:
+  - method: format_environment_content_cast_arguments
+    << : *RESOURCE
+    field: content
+  tests:
+  - description: Undefined arguments
+    arguments:
+      content: null
+    checks:
+    - method: check_type
+      << : *CHECKS
+      expected: SimpleNamespace
+    - method: check_type
+      << : *CHECKS
+      field: content.config.schema
+      expected: SimpleNamespace
+    - method: check_equals
+      << : *CHECKS
+      field: content.config.environment
+      expected: {}
+    - method: check_equals
+      << : *CHECKS
+      field: content.config.operations.__dict__
+      expected: {}
+  - description: Empty values for specified keys
+    arguments:
+      content:
+        config:
+          environment: {}
+          schema: {}
+    checks:
+    - method: check_type
+      << : *CHECKS
+      field: content.config.environment
+      expected: dict
+    - method: check_type
+      << : *CHECKS
+      field: content.config.schema
+      expected: SimpleNamespace
+  - description: Non-empty values for specified keys
+    arguments:
+      content:
+        config:
+          environment:
+            a: a
+            b: b
+          schema:
+            A:
+              fields:
+              - name: a0
+                default: a0
+            B:
+              fields:
+              - name: b0
+                default: b0
+              - name: b1
+                default: b1
+    checks:
+    - method: check_sns
+      << : *CHECKS
+      field: content.config.environment
+      expected:
+        a: a
+        b: b
+    - method: check_type
+      << : *CHECKS
+      field: content.config.schema
+      expected: SimpleNamespace
+    - method: check_sns
+      << : *CHECKS
+      field: content.config.schema.A
+      expected:
+        a0: a0
+    - method: check_sns
+      << : *CHECKS
+      field: content.config.schema.B
+      expected:
+        b0: b0
+        b1: b1
+- function: format_environment_content
+  description: >
+    Formats the environment configuration. Sets variables not previously
+    expand to null.
+  tests:
+  - description: Undefined arguments
+    arguments: {}
+    checks:
+    - method: check_equals
+      << : *CHECKS
+      expected: {}
+  - description: Defined arguments
+    arguments:
+      value:
+        a: A
+        b: $B
+        c: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}
+    checks:
+    - method: check_sns
+      << : *CHECKS
+      expected:
+        a: A
+        b: null
+        c: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}
+- function: format_schema_content
+  description: >
+    Formats the environment configuration. Sets variables not previously
+    expand to null.
+  tests:
+  - description: Undefined arguments
+    arguments: {}
+    checks:
+    - method: check_type
+      << : *CHECKS
+      expected: SimpleNamespace
+    - method: check_type
+      << : *CHECKS
+      expected: SimpleNamespace
+  - description: Defined arguments
+    arguments:
+      value:
+        a:
+          fields:
+          - name: b
+            default: b
+          - name: c
+            default: c
+        b:
+          fields:
+          - name: a
+            default: 1
+          - name: b
+            default: 2
+    checks:
+    - method: check_sns
+      << : *CHECKS
+      field: a
+      expected:
+        b: b
+        c: c
+    - method: check_sns
+      << : *CHECKS
+      field: b
+      expected:
+        a: 1
+        b: 2

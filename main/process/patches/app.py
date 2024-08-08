@@ -7,14 +7,14 @@ from types import SimpleNamespace as sns
 from typing import Any, Callable
 
 from main.utils import (
-  get_config,
-  get_module,
+  configs,
+  modules,
   independent,
   objects,
 )
 
 
-CONFIG = get_config.main()
+CONFIG = configs.main()
 LOCALS = locals()
 
 SIDE_EFFECTS = {}
@@ -57,7 +57,7 @@ def pre_processing(
   route: str | None = None,
 ) -> sns:
   resource = resource or module
-  resource = get_module.main(
+  resource = modules.main(
     module=resource,
     default=module, ).module
 
@@ -216,9 +216,9 @@ def patch_module(
 
 
 def examples() -> None:
-  from main.utils import invoke_testing_method
+  from main.utils import invoke
 
-  invoke_testing_method.main()
+  invoke.main()
 
 
 if __name__ == '__main__':

@@ -10,11 +10,11 @@ help:
 
 resources:
 - &RESOURCE
-  resource: &RESOURCE_PATH ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/logger/resources/app.py
+  resource: &RESOURCE_PATH ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/logger/.resources/app.py
 - &CHECKS
   resource: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/app.py
 - &LOG_DIR
-  ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/logger/resources/data
+  ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/logger/.resources/data
 
 
 tests:
@@ -24,17 +24,6 @@ tests:
   - description: Logging is not enabled
     arguments:
       enabled: false
-    checks:
-    - method: check_equals
-      << : *CHECKS
-      expected: 0
-  - description: Logger has not been created
-    patch:
-    - method: value
-      value: null
-      route: LOGGER
-    arguments:
-      enabled: true
     checks:
     - method: check_equals
       << : *CHECKS
@@ -49,7 +38,7 @@ tests:
     checks:
     - method: check_equals
       << : *CHECKS
-      expected: 0
+      expected: 1
   - description: Only logging enabled
     arguments:
       data_:
@@ -268,7 +257,7 @@ tests:
     - << : *CHECKS
       method: check_equals
       expected: "message: message\n"
-- function: write_to_log
+- function: write_to_file
   description: >
     Calls the method to write to log file if the method exists, otherwise
     does nothing
@@ -280,7 +269,7 @@ tests:
     checks:
     - method: check_equals
       << : *CHECKS
-      expected: 1
+      expected: 2
   - description: Data is non-empty
     arguments:
       level: level
@@ -288,7 +277,7 @@ tests:
     checks:
     - method: check_equals
       << : *CHECKS
-      expected: 1
+      expected: 2
 - function: write_to_cli
   description: Prints log in terminal and returns 1, otherwise returns 0
   tests:
@@ -305,140 +294,40 @@ tests:
     - << : *CHECKS
       method: check_equals
       expected: 1
-  - description: Level is an error
+  - description: Standard output is not True
     arguments:
-      level: error
+      standard_output: false
     checks:
     - << : *CHECKS
       method: check_equals
-      expected: 1
-  - description: Error is not None
-    arguments:
-      error: error
-    checks:
-    - << : *CHECKS
-      method: check_equals
-      expected: 1
-  - description: Debug is true
-    arguments:
-      debug: true
-    checks:
-    - << : *CHECKS
-      method: check_equals
-      expected: 1
+      expected: 0
 - function: handle_log
   description: Handles writing a log to a file or the terminal
   tests:
   - description: >
-      Undefined arguments. Will always write log to file or return `1`
+      Log undefined
     arguments: {}
     checks:
     - method: check_equals
       << : *CHECKS
-      expected: 1
-  - description: Write log to file. Returns 1
+      expected: 0
+  - description: Write log to file
     arguments:
       standard_output: false
       debug: false
-      level: level
-      log: log
-    checks:
-    - method: check_equals
-      << : *CHECKS
-      expected: 1
-  - description: Write log to file and the terminal. Returns 2
-    arguments:
-      standard_output: True
-      debug: debug
-      level: level
+      level: info
       log: log
     checks:
     - method: check_equals
       << : *CHECKS
       expected: 2
-- function: get_timestamp
-  description: Returns a timestamp that is seconds since epoch
-  tests:
-  - arguments: {}
-    checks:
-    - method: check_type
-      << : *CHECKS
-      expected: float
-- function: get_log_file_location
-  description: Creates a log file and returns its location
-  tests:
-  - description: Log directory environment variable is not set
-    patches:
-    - route: CONFIG.environment.LOG_DIR
-      method: value
-      value: null
+  - description: Write log to file and the terminal.
     arguments:
-      project_path: root/project
+      standard_output: True
+      debug: debug
+      level: debug
+      log: log
     checks:
     - method: check_equals
-      << : *CHECKS
-      expected: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/.logs/root.project.log
-  - description: Log directory environment variable is set
-    patches:
-    - route: CONFIG.environment.LOG_DIR
-      method: value
-      value: .logs
-    arguments:
-      project_path: .root
-    checks:
-    - method: check_equals
-      << : *CHECKS
-      expected: .logs/.root.log
-- function: get_logger
-  description: Returns an instance of a Logger tied to the location of a log file
-  tests:
-  # - description: Location is undefined
-  #   arguments:
-  #     location: null
-  #   checks:
-  #   - method: check_error
-  #     << : *CHECKS
-  #     expected: TypeError
-  - description: Location is defined
-    arguments:
-      location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/logger/resources/data/log_file.log
-    checks:
-    - method: check_type
-      << : *CHECKS
-      expected: Logger
-    - method: check_equals
-      << : *CHECKS
-      field: name
-      expected: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/logger/resources/data/log_file.log
-- function: create_logger
-  description: >
-    Creates the directory to store logs for each run of the app. The
-    format of the directory's path is in this format: directory/.logs/timestamp
-  tests:
-  - description: Undefined arguments
-    arguments:
-      logging_flag: null
-      project_path: null
-    checks:
-    - method: check_sns
-      << : *CHECKS
-      expected:
-        status: 0
-  - description: Logging is not enabled
-    arguments:
-      logging_flag: False
-      project_path: null
-    checks:
-    - method: check_sns
-      << : *CHECKS
-      expected:
-        status: 0
-  - description: Logging is enabled
-    arguments:
-      logging_flag: true
-      project_path: project_path
-    checks:
-    - method: check_sns
-      << : *CHECKS
-      expected:
-        status: 1
+    << : *CHECKS
+      expected: 3

@@ -6,23 +6,23 @@ import threading
 import time
 from types import ModuleType
 from types import SimpleNamespace as sns
-from typing import Any, Callable, Iterable
+from typing import Any, Callable
 
 from pebble import concurrent
 
 from main.utils import (
   logger,
-  get_config,
+  configs,
   objects,
   independent,
   methods,
-  get_module, )
+  modules, )
 
 
 MODULE = __file__
 LOCALS = locals()
 
-CONFIG = get_config.main()
+CONFIG = configs.main()
 
 STORE = {}
 
@@ -114,7 +114,7 @@ def get_method(
   module: ModuleType | None = None,
 ) -> sns:
   resource = resource or module
-  resource = get_module.main(module=resource).module
+  resource = modules.main(module=resource).module
   method = objects.get(
     parent=resource,
     route=method,
@@ -137,7 +137,7 @@ def get_future(
     logger.main(arguments=arguments, error=error)
     task = error
 
-  return methods.call.get_task_from_event_loop(task=task)
+  return methods.get_task_from_event_loop(task=task)
 
 
 def run_process_in_separate_thread(
@@ -160,7 +160,7 @@ def run_process_in_separate_thread(
       time.sleep(3)
       if seconds > timeout:
         break
-  
+
   return future.result()
 
 
@@ -211,9 +211,9 @@ def teardown_all() -> dict:
 
 
 def examples() -> None:
-  from main.utils import invoke_testing_method
+  from main.utils import invoke
 
-  invoke_testing_method.main()
+  invoke.main()
 
 
 if __name__ == '__main__':

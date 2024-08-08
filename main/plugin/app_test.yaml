@@ -20,7 +20,7 @@ exclude_methods:
 
 resources:
 - &RESOURCE
-  resource: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/plugin/resources/app.py
+  resource: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/plugin/.resources/app.py
 - &CHECKS
   resource: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/app.py
 

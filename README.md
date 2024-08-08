@@ -325,12 +325,12 @@ checks:
   expected: 1
   cast_expected:
   - method: __builtins__.str
-    resource: ./resource.py
+    resource: ./.resource.py
   field: null
   resource: ./checks.py
   cast_output:
   - method: __builtins__.str
-    resource: ./resource.py
+    resource: ./.resource.py
 ```
 
 ## Cast arguments and output
@@ -355,21 +355,21 @@ cast_arguments:
 - method: __builtins__.str
   field: null
   unpack: false
-  resource: ./resource.py
+  resource: ./.resource.py
 
 cast_output:
 # Cast output as nothing
 - method: do_nothing
   field: null
   unpack: false
-  resource: ./resource.py
+  resource: ./.resource.py
 
 cast_expected:
 # Cast field of expected to a SimpleNamespace
 - method: SimpleNamespace
   field: field.key
   unpack: true
-  resource: ./resource.py
+  resource: ./.resource.py
 ```
 
 ## Patches
@@ -410,11 +410,11 @@ patches:
 - method: value
   value: 1
   route: num_a
-  resource: ./resource.py
+  resource: ./.resource.py
 # Callable patch
 - method: callable
   callable_route: hello_world
-  resource: ./resource.py
+  resource: ./.resource.py
 ```
 
 
@@ -543,7 +543,7 @@ resources:
 - &CHECKS
   resource: ./checks.py
 - &RESOURCE
-  resource: ./resource.py
+  resource: ./.resource.py
 - &URL
   url: localhost:1234/hello_world
 

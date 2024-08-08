@@ -10,15 +10,15 @@ import yaml
 
 from main.process import casts, spies, setup as SETUP
 from main.utils import (
-  get_config,
+  configs,
   independent,
   logger,
   objects,
   schema,
-  get_module, )
+  modules, )
 
 
-CONFIG = get_config.main()
+CONFIG = configs.main()
 
 LOCALS = locals()
 
@@ -71,7 +71,7 @@ def get_check_method(
   resource: str | None = '',
 ) -> sns:
   module = resource or module
-  module = get_module.main(module=module, default=module).module
+  module = modules.main(module=module, default=module).module
   route = str(method)
   method = objects.get(
     parent=module,
@@ -171,9 +171,9 @@ def post_processing(
 
 
 def examples() -> None:
-  from main.utils import invoke_testing_method
+  from main.utils import invoke
 
-  invoke_testing_method.main()
+  invoke.main()
 
 
 if __name__ == '__main__':

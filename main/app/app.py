@@ -17,8 +17,8 @@ from main.process import (
   spies,
 )
 from main.utils import (
-  get_config,
-  get_module,
+  configs,
+  modules,
   independent,
   logger,
   methods,
@@ -29,7 +29,7 @@ from main.utils import (
 ROOT_DIR = os.getcwd()
 LOCALS = locals()
 
-CONFIG = get_config.main()
+CONFIG = configs.main()
 LOGGING_ENABLED = True
 TEST_IDS = {}
 FLAGS = {}
@@ -45,10 +45,6 @@ def main(
   logging_flag: bool | None = None,
   setup: list = [],
 ) -> list:
-  logger.create_logger(
-    logging_flag=logging_flag,
-    project_path=project_path,
-  )
   data = independent.get_model(schema=CONFIG.schema.App, data=locals())
   data = independent.process_operations(
     operations=CONFIG.operations.main,
@@ -190,9 +186,9 @@ def run_tests(locations: List[sns] | None = None) -> sns:
 
 
 def examples() -> None:
-  from main.utils import invoke_testing_method
+  from main.utils import invoke
 
-  invoke_testing_method.main('.main/app')
+  invoke.main('.main/app')
 
 
 if __name__ == '__main__':

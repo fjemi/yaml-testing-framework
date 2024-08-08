@@ -10,12 +10,12 @@ from typing import Any, List
 import pytest as py_test
 
 from main.app import app
-from main.utils import get_config, objects
+from main.utils import configs, objects
 
 
 ROOT_DIR = os.getcwd()
 
-CONFIG = get_config.main()
+CONFIG = configs.main()
 CONFIG.root_paths = [
   f'.{os.sep}',
   f'{os.sep}{os.sep}',
@@ -155,9 +155,9 @@ def format_report_nodeid(nodeid: str) -> str:
 
 
 def examples() -> None:
-  from main.utils import invoke_testing_method
+  from main.utils import invoke
 
-  invoke_testing_method.main()
+  invoke.main()
 
 
 if __name__ == '__main__':

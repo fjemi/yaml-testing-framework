@@ -5,10 +5,10 @@
 from types import SimpleNamespace as sns
 from typing import Any
 
-from main.utils import get_config, independent, objects
+from main.utils import configs, independent, objects
 
 
-CONFIG = get_config.main()
+CONFIG = configs.main()
 
 LOCALS = locals()
 TEST_FIELDS = list(CONFIG.schema.Test.__dict__.keys())
@@ -135,9 +135,9 @@ def combine_low(
 
 
 def examples() -> None:
-  from main.utils import invoke_testing_method
+  from main.utils import invoke
 
-  invoke_testing_method.main()
+  invoke.main()
 
 
 if __name__ == '__main__':

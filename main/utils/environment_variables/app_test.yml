@@ -1,0 +1,121 @@
+help:
+- https://stackoverflow.com/questions/63116419/evaluate-boolean-environment-variable-in-python
+
+
+resources:
+- &RESOURCE
+  resource: &RESOURCE_PATH ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/environment_variables/.resources.py
+- &CHECKS
+  resource: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/app.py
+
+
+tests:
+- function: evaluate
+  description: >
+    Substitutes values for names for the `environment` key in module
+    configurations
+  tests:
+  - description: Undefined
+    arguments: {}
+    checks:
+    - method: check_equals
+      << : *CHECKS
+      expected: {}
+  - description: Value defined
+    arguments:
+      value: value
+    checks:
+    - method: check_equals
+      << : *CHECKS
+      expected: value
+  - description: Values is defined
+    arguments:
+      values:
+        a: a
+        b: b
+    checks:
+    - method: check_equals
+      << : *CHECKS
+      expected:
+        a: a
+        b: b
+- function: handle_value
+  description: >
+    Returns `true` if an environment variable can be evaluated
+    as a true boolean (true, t, or 1), otherwise the value
+  tests:
+  - description: Value is undefined
+    arguments: {}
+    checks:
+    - method: check_equals
+      << : *CHECKS
+      expected: None
+  - description: Value is `1`
+    arguments:
+      value: '1'
+    checks:
+    - method: check_equals
+      << : *CHECKS
+      expected: true
+  - description: Value is `TRUE`
+    arguments:
+      value: 'TRUE'
+    checks:
+    - method: check_equals
+      << : *CHECKS
+      expected: true
+  - description: Value is `T`
+    arguments:
+      value: T
+    checks:
+    - method: check_equals
+      << : *CHECKS
+      expected: true
+  - description: Value is a string
+    arguments:
+      value: string
+    checks:
+    - method: check_equals
+      << : *CHECKS
+      expected: string
+  - description: Value is a `False`
+    arguments:
+      value: False
+    checks:
+    - method: check_equals
+      << : *CHECKS
+      expected: 'False'
+- function: handle_values
+  description: >
+    Returns a simple name space object containing evaluated environment
+    variables (names, values).
+  tests:
+  - description: Undefined arguments
+    arguments: {}
+    checks:
+    - method: check_equals
+      << : *CHECKS
+      expected: {}
+  - description: Environment is empty. Return simple name space
+    arguments:
+      values: {}
+      return_: sns
+    checks:
+    - method: check_equals
+      << : *CHECKS
+      field: __dict__
+      expected: {}
+  - description: Environment is empty
+    arguments:
+      values:
+        PWD: '$PWD'  # yamllint disable-line rule:quoted-strings
+        DOES_NOT_EXIST: '$DOES_NOT_EXIST'  # yamllint disable-line rule:quoted-strings
+        VARIABLE: VARIABLE
+    checks:
+    - method: check_equals
+      << : *CHECKS
+      expected:
+        PWD: ${PWD}
+        DOES_NOT_EXIST: null
+        VARIABLE: VARIABLE
+
