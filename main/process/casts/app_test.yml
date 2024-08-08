@@ -13,7 +13,7 @@ tests:
 - function: process_cast_arguments
   description: Handles casting arguments used to call test function
   cast_arguments:
-  - method: wrapper_get_module
+  - method: wrapper_modules
     << : *GLOBAL_RESOURCE
     field: module
   tests:
@@ -66,7 +66,7 @@ tests:
 - function: process_cast_output
   description: Handles casting the output from calling the function to test
   cast_arguments:
-  - method: wrapper_get_module
+  - method: wrapper_modules
     << : *GLOBAL_RESOURCE
     field: module
   tests:
@@ -123,7 +123,7 @@ tests:
 - function: process_cast_expected
   description: Handles casting `expected` value during a check
   cast_arguments:
-  - method: wrapper_get_module
+  - method: wrapper_modules
     << : *GLOBAL_RESOURCE
     field: module
   tests:
@@ -188,7 +188,7 @@ tests:
       expected:
         object: null
   - cast_arguments:
-    - method: wrapper_get_module
+    - method: wrapper_modules
       << : *GLOBAL_RESOURCE
       field: module
     tests:
@@ -247,7 +247,7 @@ tests:
   cast_arguments:
   - field: module
     << : *GLOBAL_RESOURCE
-    method: wrapper_get_module
+    method: wrapper_modules
   tests:
   - description: Default
     arguments:

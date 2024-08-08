@@ -17,7 +17,7 @@ from typing import (
 )
 
 from main.process import casts
-from main.utils import get_module, independent, methods, objects
+from main.utils import modules, independent, methods, objects
 
 
 CONFIG = '''
@@ -418,7 +418,7 @@ def call_function(
   unpack: bool = True,
 ) -> Any:
   store = []
-  module = get_module.main(module=module, default=module).module
+  module = modules.main(module=module, default=module).module
   passed = True
 
   for i, item in enumerate(arguments):

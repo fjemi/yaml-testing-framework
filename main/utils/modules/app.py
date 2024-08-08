@@ -51,7 +51,7 @@ CONFIG = '''
     main:
     - pre_processing
     - format_module_name
-    - get_module_from_location
+    - modules_from_location
     - post_processing
 
   module_extensions:
@@ -113,7 +113,7 @@ def format_module_name(
   return sns(name=name)
 
 
-def get_module_from_location(
+def modules_from_location(
   location: str | None = None,
   name: str | None = None,
   flag: bool | None = None,

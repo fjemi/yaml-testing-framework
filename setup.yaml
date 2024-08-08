@@ -28,7 +28,7 @@ packages:
 - main.process.spies
 - main.utils
 - main.utils.configs
-- main.utils.get_module
+- main.utils.modules
 - main.utils.independent
 - main.utils.invoke
 - main.utils.logger

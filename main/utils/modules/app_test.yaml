@@ -4,7 +4,7 @@ help:
 
 resources:
 - &RESOURCE
-  resource: &RESOURCE_PATH ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/get_module/.resources/app.py
+  resource: &RESOURCE_PATH ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/modules/.resources/app.py
 - &CHECKS
   resource: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/app.py
 - &GLOBAL_RESOURCE
@@ -26,7 +26,7 @@ tests:
       expected: *RESOURCE_PATH
   - description: Return the module value when the argument is not a string
     cast_arguments:
-    - method: wrapper_get_module
+    - method: wrapper_modules
       << : *GLOBAL_RESOURCE
       field: module
     arguments:
@@ -58,7 +58,7 @@ tests:
         flag: False
   - description: Module is a module
     cast_arguments:
-    - method: wrapper_get_module
+    - method: wrapper_modules
       << : *GLOBAL_RESOURCE
       field: location
     arguments:
@@ -76,13 +76,13 @@ tests:
   tests:
   - description: Location is defined
     arguments:
-      location: /main/utils/get_module/.resource.py
+      location: /main/utils/modules/.resource.py
       name: null
     checks:
     - method: check_sns
       << : *CHECKS
       expected:
-        name: .main.utils.get_module..resource
+        name: .main.utils.modules..resource
   - description: Name is defined
     arguments:
       name: name
@@ -100,7 +100,7 @@ tests:
     - method: check_substring_in_string
       << : *CHECKS
       field: name
-      expected: yaml-testing-framework.main.utils.get_module..resource
+      expected: yaml-testing-framework.main.utils.modules..resource
   - description: Name and location are undefined
     arguments:
       name: null
@@ -119,7 +119,7 @@ tests:
       << : *CHECKS
       expected:
         name: app
-- function: get_module_from_location
+- function: modules_from_location
   description: Get the module at a given file path
   tests:
   - description: Location doesn't exist
@@ -173,7 +173,7 @@ tests:
     cast_arguments:
       << : *GLOBAL_RESOURCE
       field: default
-      method: wrapper_get_module
+      method: wrapper_modules
     arguments:
       module: module
       default : *RESOURCE_PATH

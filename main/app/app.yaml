@@ -57,7 +57,7 @@ operations:
   run_test_for_functions:
   - SETUP.process_setup
   - handle_id
-  - get_module.main
+  - modules.main
   - environment.main
   - patches.main
   - casts.process_cast_arguments

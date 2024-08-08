@@ -15,7 +15,7 @@ from main.utils import (
   logger,
   objects,
   schema,
-  get_module, )
+  modules, )
 
 
 CONFIG = configs.main()
@@ -71,7 +71,7 @@ def get_check_method(
   resource: str | None = '',
 ) -> sns:
   module = resource or module
-  module = get_module.main(module=module, default=module).module
+  module = modules.main(module=module, default=module).module
   route = str(method)
   method = objects.get(
     parent=module,

@@ -8,7 +8,7 @@ from typing import Any, Callable
 
 from main.utils import (
   configs,
-  get_module,
+  modules,
   independent,
   objects,
 )
@@ -57,7 +57,7 @@ def pre_processing(
   route: str | None = None,
 ) -> sns:
   resource = resource or module
-  resource = get_module.main(
+  resource = modules.main(
     module=resource,
     default=module, ).module
 

@@ -9,7 +9,7 @@ from typing import Any, Callable
 from main.utils import (
   logger,
   configs,
-  get_module,
+  modules,
   invoke,
   schema, )
 
@@ -77,7 +77,7 @@ def main_cast_arguments(output: dict | None = None) -> sns:
   output = sns(**output)
 
   module = getattr(output, 'module', None)
-  output.module = get_module.main(location=module).module
+  output.module = modules.main(location=module).module
 
   output.checks = getattr(output, 'checks', [])
 
@@ -117,7 +117,7 @@ def compare_expected_and_output_cast_arguments(
   check = sns(**check)
 
   check.method = check_equals
-  check.module = get_module.main(location=MODULE).module
+  check.module = modules.main(location=MODULE).module
   return check
 
 

@@ -142,7 +142,7 @@ tests:
 - function: get_function
   description: Returns an existing function to test
   cast_arguments:
-  - method: wrapper_get_module
+  - method: wrapper_modules
     << : *GLOBAL_RESOURCE
     field: module
   tests:

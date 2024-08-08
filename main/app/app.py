@@ -18,7 +18,7 @@ from main.process import (
 )
 from main.utils import (
   configs,
-  get_module,
+  modules,
   independent,
   logger,
   methods,

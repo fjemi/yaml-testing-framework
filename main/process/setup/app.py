@@ -16,7 +16,7 @@ from main.utils import (
   objects,
   independent,
   methods,
-  get_module, )
+  modules, )
 
 
 MODULE = __file__
@@ -114,7 +114,7 @@ def get_method(
   module: ModuleType | None = None,
 ) -> sns:
   resource = resource or module
-  resource = get_module.main(module=resource).module
+  resource = modules.main(module=resource).module
   method = objects.get(
     parent=resource,
     route=method,

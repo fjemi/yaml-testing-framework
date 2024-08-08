@@ -28,7 +28,7 @@ tests:
   - method: get_method
     << : *RESOURCE
     field: method
-  - method: wrapper_get_module
+  - method: wrapper_modules
     << : *GLOBAL_RESOURCE
     field: module
   tests:
@@ -312,7 +312,7 @@ tests:
   - description: Output is a module
     cast_arguments:
     - field: output
-      method: wrapper_get_module
+      method: wrapper_modules
       << : *GLOBAL_RESOURCE
     arguments:
       output: *RESOURCE_MODULE

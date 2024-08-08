@@ -181,7 +181,7 @@ tests:
   description: Returns a method from a module
   cast_arguments:
   - field: module
-    method: wrapper_get_module
+    method: wrapper_modules
     << : *GLOBAL_RESOURCE
   tests:
   - description: Undefined arguments or method does not exist

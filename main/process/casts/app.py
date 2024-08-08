@@ -9,7 +9,7 @@ from typing import Any, Callable
 from main.process.casts import handle_casting
 from main.utils import (
   configs,
-  get_module,
+  modules,
   independent,
   logger,
   objects, )
@@ -94,7 +94,7 @@ def get_method(
   method: str = '',
 ) -> sns:
   module = resource or module
-  module = get_module.main(module=module, default=module).module
+  module = modules.main(module=module, default=module).module
   route = str(method)
   method = objects.get(parent=module, route=route)
   if not isinstance(method, Callable):

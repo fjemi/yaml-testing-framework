@@ -14,7 +14,7 @@ tests:
     in the module, and the key for spy on a method is the route to the method
     from the module of the function being tested.
   cast_arguments:
-  - method: wrapper_get_module
+  - method: wrapper_modules
     << : *GLOBAL_RESOURCE
     field: module
   tests:
@@ -72,7 +72,7 @@ tests:
       expected: null
   - cast_arguments:
       field: module
-      method: wrapper_get_module
+      method: wrapper_modules
       << : *GLOBAL_RESOURCE
     tests:
     - description: Method does not exist in module
