@@ -5,10 +5,10 @@
 from types import SimpleNamespace as sns
 from typing import Any, Callable
 
-from main.utils import get_config, logger
+from main.utils import configs, logger
 
 
-CONFIG = get_config.main()
+CONFIG = configs.main()
 LOCALS = locals()
 
 

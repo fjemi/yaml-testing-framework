@@ -10,7 +10,7 @@ import yaml
 
 from main.process import casts, spies, setup as SETUP
 from main.utils import (
-  get_config,
+  configs,
   independent,
   logger,
   objects,
@@ -18,7 +18,7 @@ from main.utils import (
   get_module, )
 
 
-CONFIG = get_config.main()
+CONFIG = configs.main()
 
 LOCALS = locals()
 

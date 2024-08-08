@@ -12,7 +12,7 @@ from pebble import concurrent
 
 from main.utils import (
   logger,
-  get_config,
+  configs,
   objects,
   independent,
   methods,
@@ -22,7 +22,7 @@ from main.utils import (
 MODULE = __file__
 LOCALS = locals()
 
-CONFIG = get_config.main()
+CONFIG = configs.main()
 
 STORE = {}
 

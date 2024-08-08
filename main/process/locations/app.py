@@ -6,12 +6,12 @@ import os
 from types import SimpleNamespace as sns
 from typing import Any, List
 
-from main.utils import get_config, independent, logger, objects
+from main.utils import configs, independent, logger, objects
 
 
 ROOT_DIR = os.getcwd()
 
-SETTINGS = get_config.main()
+SETTINGS = configs.main()
 LOCALS = locals()
 
 

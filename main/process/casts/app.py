@@ -8,7 +8,7 @@ from typing import Any, Callable
 
 from main.process.casts import handle_casting
 from main.utils import (
-  get_config,
+  configs,
   get_module,
   independent,
   logger,
@@ -17,7 +17,7 @@ from main.utils import (
 
 LOCALS = locals()
 
-CONFIG = get_config.main()
+CONFIG = configs.main()
 
 
 def process_cast_arguments(

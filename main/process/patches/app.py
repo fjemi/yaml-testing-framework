@@ -7,14 +7,14 @@ from types import SimpleNamespace as sns
 from typing import Any, Callable
 
 from main.utils import (
-  get_config,
+  configs,
   get_module,
   independent,
   objects,
 )
 
 
-CONFIG = get_config.main()
+CONFIG = configs.main()
 LOCALS = locals()
 
 SIDE_EFFECTS = {}

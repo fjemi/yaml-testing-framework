@@ -17,7 +17,7 @@ from main.process import (
   spies,
 )
 from main.utils import (
-  get_config,
+  configs,
   get_module,
   independent,
   logger,
@@ -29,7 +29,7 @@ from main.utils import (
 ROOT_DIR = os.getcwd()
 LOCALS = locals()
 
-CONFIG = get_config.main()
+CONFIG = configs.main()
 LOGGING_ENABLED = True
 TEST_IDS = {}
 FLAGS = {}

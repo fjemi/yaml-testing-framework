@@ -27,7 +27,7 @@ packages:
 - main.process.setup
 - main.process.spies
 - main.utils
-- main.utils.get_config
+- main.utils.configs
 - main.utils.get_module
 - main.utils.independent
 - main.utils.invoke_testing_method

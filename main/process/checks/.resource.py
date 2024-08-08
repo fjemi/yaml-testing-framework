@@ -8,7 +8,7 @@ from typing import Any, Callable
 
 from main.utils import (
   logger,
-  get_config,
+  configs,
   get_module,
   invoke_testing_method,
   schema, )
@@ -19,7 +19,7 @@ PARENT_MODULE = invoke_testing_method.get_parent_module_location(
   resource_suffix='_resource',
   resource_module=MODULE, )
 
-CONFIG = get_config.main(module=PARENT_MODULE)
+CONFIG = configs.main(module=PARENT_MODULE)
 LOCALS = locals()
 
 

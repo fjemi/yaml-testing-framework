@@ -5,10 +5,10 @@
 from types import SimpleNamespace as sns
 
 from main.process.nodes import combine
-from main.utils import get_config, independent, objects
+from main.utils import configs, independent, objects
 
 
-CONFIG = get_config.main()
+CONFIG = configs.main()
 LOCALS = locals()
 
 

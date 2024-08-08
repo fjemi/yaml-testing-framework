@@ -8,7 +8,7 @@ from unittest import mock
 
 import pytest
 
-from main.utils import get_config, invoke_testing_method
+from main.utils import configs, invoke_testing_method
 
 
 MODULE = __file__
@@ -16,7 +16,7 @@ PARENT_MODULE = invoke_testing_method.get_parent_module_location(
   resource_module=MODULE,
   resources_folder_name='_resources', )
 
-CONFIG = get_config.main(module=PARENT_MODULE)
+CONFIG = configs.main(module=PARENT_MODULE)
 
 
 def pytest_resource(*args, **kwargs) -> types.ModuleType:
