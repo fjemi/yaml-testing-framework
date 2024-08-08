@@ -36,7 +36,20 @@ options:
     - .venv
     - .eggs
     - build
+    - dist
     - __pycache__
+    - .eggs
+    - .github
+    - .gitignore
+    - .pytest_cache
+    - .ruff_cache
+    - .vscode
+    - .htmlcov
+    - .artifacts
+    - .data
+    - .ignore
+    - .yaml-testing-framework
+    - .trunk
     nargs: +
     dest: exclude_files
     required: false

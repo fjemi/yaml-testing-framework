@@ -6,7 +6,7 @@ import inspect
 import os
 from types import SimpleNamespace as sns
 
-from main.utils import independent, logger, objects
+from main.utils import environment_variables, independent, logger, objects
 from main.utils import schema as _schema
 
 
@@ -49,7 +49,7 @@ def main(
     parent=data,
     route='content.config',
     default={}, )
-  return sns(**data)
+  return sns(**data) if isinstance(data, dict) else data
 
 
 def format_config_location(
@@ -83,12 +83,15 @@ def get_content_from_files(
   operations: str | None = None,
 ) -> sns:
   locals_ = locals()
-  content = {}
+  store = {}
 
   for name, location in locals_.items():
-    content[name] = independent.get_yaml_content(location=location).content
+    value = independent.get_yaml_content(location=location).content
+    value = value if name != 'environment' else independent.get_yaml_content(
+      location=location, expand_vars=False).content
+    store[name] = value
 
-  content = sns(**content)
+  content = sns(**store)
   return sns(content=content)
 
 
@@ -111,13 +114,7 @@ def format_content_keys(content: sns | None = None) -> sns:
 
 
 def format_environment_content(value: dict | None = None) -> sns:
-  value = objects.get(
-    parent=value,
-    route='__dict__',
-    default=value, ) or {}
-  for name, variable in value.items():
-    value[name] = None if str(variable).find('$') == 0 else variable
-  return sns(**value)
+  return environment_variables.evaluate(values=value, return_='sns')
 
 
 def format_schema_content(value: dict | None = None) -> sns:

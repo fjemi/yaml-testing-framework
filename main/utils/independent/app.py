@@ -53,19 +53,19 @@ def get_yaml_loader() -> ModuleType:
 def get_yaml_content(
   location: str | None = None,
   content: dict | None = None,
+  expand_vars: bool = True,
 ) -> sns:
   if content:
     return sns()
 
-  content = {}
   location = str(location)
-
   if not os.path.isfile(location):
     logger.main(
       message=f'No YAML file at {location}',
-      level='warning', )
-    return sns(content=content)
+      level='info', )
+    return sns(content={})
 
+  content = {}
   with open(
       file=location,
       encoding='utf-8',
@@ -73,7 +73,7 @@ def get_yaml_content(
   ) as file:
     content = file.read()
 
-  content = os.path.expandvars(content)
+  content = os.path.expandvars(content) if expand_vars else content
   loader = get_yaml_loader()
   # trunk-ignore(bandit/B506)
   content = pyyaml.load(content, Loader=loader)

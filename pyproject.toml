@@ -8,6 +8,7 @@ omit = [
   '*/*ignore*.py',
   '*/*ignore*/*.py',
   '**/.ignore/**',
+  '**/.data/**',
   '*/*artifacts*.py',
   '*/*artifacts*/*.py',
   '**/.artifacts/**',

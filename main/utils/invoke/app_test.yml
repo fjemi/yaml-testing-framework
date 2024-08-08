@@ -223,7 +223,7 @@ tests:
       <<: *MODULE_WITH_TESTS_ARGUMENTS
       method: plugin
     checks:
-    - method: check_sns
+    - method: check_equals
       << : *CHECKS
       expected:
         result:
@@ -294,5 +294,5 @@ tests:
       expected: SimpleNamespace
     - method: check_equals
       << : *CHECKS
-      field: process.returncode
+      field: result.process.returncode
       expected: 0

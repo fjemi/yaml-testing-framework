@@ -190,7 +190,8 @@ def invoke_pytest(
     args=args,
     shell=True,
     check=True,  )
-  return sns(process=process)
+  result = sns(process=process)
+  return sns(result=result)
 
 
 def examples() -> None:

@@ -7,7 +7,8 @@ include LICENSE
 global-exclude __pycache__ *.py[cod]
 global-exclude *.so *.dylib
 global-exclude *_test.yml
-global-exclude *resource*
-global-exclude *resources*
+global-exclude *.resource*
+global-exclude *.data*
 global-exclude *.ignore*
 global-exclude *.artifacts*
+global-exclude *.yaml-testing-framework*

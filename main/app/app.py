@@ -45,10 +45,6 @@ def main(
   logging_flag: bool | None = None,
   setup: list = [],
 ) -> list:
-  logger.create_logger(
-    logging_flag=logging_flag,
-    project_path=project_path,
-  )
   data = independent.get_model(schema=CONFIG.schema.App, data=locals())
   data = independent.process_operations(
     operations=CONFIG.operations.main,

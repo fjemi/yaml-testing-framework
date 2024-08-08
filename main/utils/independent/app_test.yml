@@ -9,6 +9,8 @@ resources:
   ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/independent/.resources/app.yaml
 - &RESOURCE
   resource: &RESOURCE_PATH ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/independent/.resources/app.py
+- &ROOT
+  ${YAML_TESTING_FRAMEWORK_ROOT_DIR}
 
 
 tests:
@@ -111,7 +113,7 @@ tests:
       << : *CHECKS
       field: content
       expected: {}
-  - description: Location is an existing YAML file
+  - description: Location exists
     arguments:
       location: *RESOURCE_YAML
     checks:
@@ -119,7 +121,27 @@ tests:
       << : *CHECKS
       field: content
       expected:
-        hello: world
+        PWD: *ROOT
+  - description: Location exists. Expand environment variables
+    arguments:
+      location: *RESOURCE_YAML
+      expand_vars: True
+    checks:
+    - method: check_equals
+      << : *CHECKS
+      field: content
+      expected:
+        PWD: *ROOT
+  - description: Location exists. Do not expand environment variables
+    arguments:
+      location: *RESOURCE_YAML
+      expand_vars: True
+    checks:
+    - method: check_equals
+      << : *CHECKS
+      field: content
+      expected:
+        PWD: ${PWD}
   - description: Content is defined
     arguments:
       content: content

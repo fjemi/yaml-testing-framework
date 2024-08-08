@@ -164,9 +164,17 @@ tests:
     - method: check_type
       << : *CHECKS
       expected: SimpleNamespace
+    - method: check_type
+      << : *CHECKS
+      field: content.config.schema
+      expected: SimpleNamespace
     - method: check_equals
       << : *CHECKS
-      field: content.config.environment.__dict__
+      field: content.config.environment
+      expected: {}
+    - method: check_equals
+      << : *CHECKS
+      field: content.config.operations.__dict__
       expected: {}
   - description: Empty values for specified keys
     arguments:
@@ -178,7 +186,7 @@ tests:
     - method: check_type
       << : *CHECKS
       field: content.config.environment
-      expected: SimpleNamespace
+      expected: dict
     - method: check_type
       << : *CHECKS
       field: content.config.schema
@@ -233,7 +241,6 @@ tests:
     checks:
     - method: check_equals
       << : *CHECKS
-      field: __dict__
       expected: {}
   - description: Defined arguments
     arguments:
