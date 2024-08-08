@@ -171,9 +171,9 @@ def get_resource(
 
 
 def examples() -> None:
-  from main.utils import invoke_testing_method
+  from main.utils import invoke
 
-  invoke_testing_method.main(
+  invoke.main(
     module_filename='app',
     resource_flag=True, )
 

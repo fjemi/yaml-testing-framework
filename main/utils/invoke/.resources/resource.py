@@ -19,9 +19,9 @@ def list_sns_to_list_dict(result: list | None = None) -> list | None:
 
 
 def examples() -> None:
-  from main.utils import invoke_testing_method
+  from main.utils import invoke
 
-  invoke_testing_method.main(
+  invoke.main(
     resources_folder_name='resources',
     module_filename='app', )
 

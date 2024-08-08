@@ -11,11 +11,11 @@ from typing import Any, Callable, List
 
 import yaml
 
-from main.utils import configs, invoke_testing_method
+from main.utils import configs, invoke
 
 
 MODULE = __file__
-PARENT_MODULE = invoke_testing_method.get_parent_module_location(
+PARENT_MODULE = invoke.get_parent_module_location(
   resource_module=MODULE,
   resources_folder_name='_resources', )
 
@@ -354,7 +354,7 @@ def callable_method(*args, **kwargs) -> Callable:
 
 
 def examples() -> None:
-  invoke_testing_method.main(
+  invoke.main(
     resources_folder_name='_patches_resources',
     module_filename='patches',
     resource_flag=True)

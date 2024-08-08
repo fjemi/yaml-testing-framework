@@ -4,22 +4,20 @@ exclude_methods:
 
 resources:
 - &RESOURCE
-  resource: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/invoke_testing_method/.resources/app.py
+  resource: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/invoke/.resources/app.py
 - &CHECKS
   resource: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/checks/app.py
-
-
-arguments:
-  module_with_tests: &MODULE_WITH_TESTS_ARGUMENTS
-    location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/invoke_testing_method/.resources/module_with_tests.py
-    exclude_files: []
-    yaml_suffix: _test
-    logging_flag: True
-  module_without_tests: &MODULE_WITHOUT_TESTS_ARGUMENTS
-    location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/invoke_testing_method/.resources/module_without_tests.py
-    exclude_files: []
-    yaml_suffix: _test
-    logging_flag: True
+- arguments:
+    module_with_tests: &MODULE_WITH_TESTS_ARGUMENTS
+      location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/invoke/.resources/module_with_tests.py
+      exclude_files: []
+      yaml_suffix: _test
+      logging_flag: True
+    module_without_tests: &MODULE_WITHOUT_TESTS_ARGUMENTS
+      location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/invoke/.resources/module_without_tests.py
+      exclude_files: []
+      yaml_suffix: _test
+      logging_flag: True
 
 
 todos:
@@ -42,7 +40,7 @@ tests:
       expected: SimpleNamespace
   - description: Run tests on modules in a directory using plugin invocation method
     arguments:
-      location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/invoke_testing_method/.resources
+      location: ${YAML_TESTING_FRAMEWORK_ROOT_DIR}/main/utils/invoke/.resources
       method: plugin
       yaml_suffix: _test
       logging_flag: True
@@ -56,16 +54,16 @@ tests:
       expected:
         result:
         - expected: Hello World
-          id: ' .main.utils.invoke_testing_method.resources.module_with_tests.hello_world
+          id: ' .main.utils.invoke.resources.module_with_tests.hello_world
             - 0.0 - Returns a greeting '
-          id_short: .main.utils.invoke_testing_method.resources.module_with_tests.hello_world
+          id_short: .main.utils.invoke.resources.module_with_tests.hello_world
           method: check_equals
           output: Hello World
           passed: true
         - expected: Hello Earth
-          id: ' .main.utils.invoke_testing_method.resources.module_with_tests.hello_world
+          id: ' .main.utils.invoke.resources.module_with_tests.hello_world
             - 0.1 - Returns a greeting '
-          id_short: .main.utils.invoke_testing_method.resources.module_with_tests.hello_world
+          id_short: .main.utils.invoke.resources.module_with_tests.hello_world
           method: check_equals
           output: Hello Earth
           passed: true
@@ -83,8 +81,8 @@ tests:
         - resource
         location: null
         method: plugin
-        module: null
-        module_filename: null
+        module: ''
+        module_filename: ''
         resource_flag: false
         resource_suffix: _resource
         yaml_suffix: _test
@@ -175,7 +173,7 @@ tests:
     - method: check_sns
       << : *CHECKS
       expected:
-        location: null
+        location: ''
         module: null
         resource_flag: null
   - description: Location is defined
@@ -186,16 +184,6 @@ tests:
       << : *CHECKS
       expected:
         location: location
-        module: null
-        resource_flag: null
-  - description: Root flag is true
-    arguments:
-      root_flag: true
-    checks:
-    - method: check_sns
-      << : *CHECKS
-      expected:
-        location: .
         module: null
         resource_flag: null
   - description: >
@@ -240,16 +228,16 @@ tests:
       expected:
         result:
         - expected: Hello Earth
-          id: ' .main.utils.invoke_testing_method.resources.module_with_tests.hello_world - 0.1 - Returns
+          id: ' .main.utils.invoke.resources.module_with_tests.hello_world - 0.1 - Returns
             a greeting '
-          id_short: .main.utils.invoke_testing_method.resources.module_with_tests.hello_world
+          id_short: .main.utils.invoke.resources.module_with_tests.hello_world
           method: check_equals
           output: Hello Earth
           passed: true
         - expected: Hello World
-          id: ' .main.utils.invoke_testing_method.resources.module_with_tests.hello_world - 0.0 - Returns
+          id: ' .main.utils.invoke.resources.module_with_tests.hello_world - 0.0 - Returns
             a greeting '
-          id_short: .main.utils.invoke_testing_method.resources.module_with_tests.hello_world
+          id_short: .main.utils.invoke.resources.module_with_tests.hello_world
           method: check_equals
           output: Hello World
           passed: true
@@ -273,16 +261,16 @@ tests:
       expected: &MODULE_WITH_TESTS_ASSERTION_EXPECTED
         result:
         - expected: Hello Earth
-          id: ' .main.utils.invoke_testing_method.resources.module_with_tests.hello_world - 0.1 - Returns
+          id: ' .main.utils.invoke.resources.module_with_tests.hello_world - 0.1 - Returns
             a greeting '
-          id_short: .main.utils.invoke_testing_method.resources.module_with_tests.hello_world
+          id_short: .main.utils.invoke.resources.module_with_tests.hello_world
           method: check_equals
           output: Hello Earth
           passed: true
         - expected: Hello World
-          id: ' .main.utils.invoke_testing_method.resources.module_with_tests.hello_world - 0.0 - Returns
+          id: ' .main.utils.invoke.resources.module_with_tests.hello_world - 0.0 - Returns
             a greeting '
-          id_short: .main.utils.invoke_testing_method.resources.module_with_tests.hello_world
+          id_short: .main.utils.invoke.resources.module_with_tests.hello_world
           method: check_equals
           output: Hello World
           passed: true

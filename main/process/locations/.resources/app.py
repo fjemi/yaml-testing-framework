@@ -30,9 +30,9 @@ def list_sns_to_list_dict(locations: list | None = None) -> list | None:
 
 
 def examples() -> None:
-  from main.utils import invoke_testing_method
+  from main.utils import invoke
 
-  invoke_testing_method.main(resource_flag=True)
+  invoke.main(resource_flag=True)
 
 
 if __name__ == '__main__':

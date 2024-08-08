@@ -8,11 +8,11 @@ from unittest import mock
 
 import pytest
 
-from main.utils import configs, invoke_testing_method
+from main.utils import configs, invoke
 
 
 MODULE = __file__
-PARENT_MODULE = invoke_testing_method.get_parent_module_location(
+PARENT_MODULE = invoke.get_parent_module_location(
   resource_module=MODULE,
   resources_folder_name='_resources', )
 
@@ -107,9 +107,9 @@ def set_node_ids_resource(item: str | None = None) -> sns:
 
 
 def examples() -> None:
-  from main.utils import invoke_testing_method
+  from main.utils import invoke
 
-  invoke_testing_method.main(project_path=PARENT_MODULE)
+  invoke.main(project_path=PARENT_MODULE)
 
 
 if __name__ == '__main__':

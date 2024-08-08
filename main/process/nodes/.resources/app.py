@@ -27,9 +27,9 @@ def dict_dict_to_dict_sns(data: Any | None = None) -> Any:
 
 
 def examples() -> None:
-  from main.utils import invoke_testing_method
+  from main.utils import invoke
 
-  invoke_testing_method.main(
+  invoke.main(
     resources_folder_name='resources',
     resource_flag=True, )
 

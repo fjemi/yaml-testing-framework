@@ -10,12 +10,12 @@ from main.utils import (
   logger,
   configs,
   get_module,
-  invoke_testing_method,
+  invoke,
   schema, )
 
 
 MODULE = __file__
-PARENT_MODULE = invoke_testing_method.get_parent_module_location(
+PARENT_MODULE = invoke.get_parent_module_location(
   resource_suffix='_resource',
   resource_module=MODULE, )
 
@@ -126,7 +126,7 @@ def sns_to_dict(output: sns) -> dict:
 
 
 def examples() -> None:
-  invoke_testing_method.main(resource_flag=True, module_filename='app')
+  invoke.main(resource_flag=True, module_filename='app')
 
 
 if __name__ == '__main__':

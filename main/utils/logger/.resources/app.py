@@ -6,7 +6,7 @@ import logging
 from types import SimpleNamespace as sns
 from typing import Any, Callable
 
-from main.utils import invoke_testing_method
+from main.utils import invoke
 from main.utils import logger as logger_resource
 
 
@@ -39,7 +39,7 @@ def get_error(exception: str | None = None) -> Exception | None:
 
 
 def examples() -> None:
-  invoke_testing_method.main(
+  invoke.main(
     resource_flag=True,
     module_filename='app',
     resources_folder_name='resources', )

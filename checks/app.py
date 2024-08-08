@@ -491,9 +491,9 @@ def check_spies(
 
 
 def examples() -> None:
-  from main.utils import invoke_testing_method
+  from main.utils import invoke
 
-  invoke_testing_method.main('.examples')
+  invoke.main('.examples')
 
 
 if __name__ == '__main__':

@@ -49,9 +49,9 @@ def reset_route_values_cast_arguments(
 
 
 def examples() -> None:
-  from main.utils import invoke_testing_method
+  from main.utils import invoke
 
-  invoke_testing_method.main(
+  invoke.main(
     module_filename='app',
     resource_flag=True, )
 

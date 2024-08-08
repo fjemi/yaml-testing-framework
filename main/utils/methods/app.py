@@ -103,9 +103,9 @@ def get_handler(
 
 
 def examples() -> None:
-  from main.utils import invoke_testing_method
+  from main.utils import invoke
 
-  invoke_testing_method.main(location='.main/utils/methods')
+  invoke.main(location='.main/utils/methods')
 
 
 if __name__ == '__main__':

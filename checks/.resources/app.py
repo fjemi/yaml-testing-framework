@@ -159,9 +159,9 @@ async def wrapped_awaitable_method(*args, **kwargs) -> str:
 
 
 def examples() -> None:
-  from main.utils import invoke_testing_method
+  from main.utils import invoke
 
-  invoke_testing_method.main(
+  invoke.main(
     module_filename='app',
     resource_flag=True, )
 

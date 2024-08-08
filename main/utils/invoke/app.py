@@ -16,7 +16,7 @@ from main import app
 from main.utils import independent
 
 
-ROOT_DIR = os.getcwd()
+ROOT = os.getcwd()
 
 LOCATION = __file__
 LOCALS = locals()
@@ -29,11 +29,11 @@ CONFIG = '''
     exclude_files:
     - ignore
     - resource
-    # module: null
+    module: ''
     resource_flag: False
-    # module_filename: app
+    module_filename: ''
     method: plugin
-    # location: .
+    location: null
     logging_flag: true
   operations:
     main:
@@ -80,9 +80,8 @@ def set_default_values_for_arguments(
 ) -> sns:
   data = sns(**locals())
   for key, default in CONFIG.default_arguments.items():
-    value = getattr(data, key, None)
-    if value is None:
-      setattr(data, key, default)
+    value = getattr(data, key, None) or default
+    setattr(data, key, value)
   return data
 
 
@@ -120,7 +119,7 @@ def set_location(
 ) -> sns:
   location = str(location)
   if location.find('.') == 0:
-    location = os.path.join(ROOT_DIR, location[1:])
+    location = os.path.join(ROOT, location[1:])
 
   if os.path.exists(location):
     return sns(location=location)

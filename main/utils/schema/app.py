@@ -68,6 +68,6 @@ MODELS = main()
 
 
 if __name__ == '__main__':
-  from main.utils import invoke_testing_method
+  from main.utils import invoke
 
-  invoke_testing_method.main()
+  invoke.main()

@@ -41,9 +41,9 @@ def main(
 
 
 def examples() -> None:
-  from main.utils import invoke_testing_method
+  from main.utils import invoke
 
-  invoke_testing_method.main(location='.')
+  invoke.main(location='.')
 
 
 if __name__ == '__main__':

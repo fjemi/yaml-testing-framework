@@ -10,9 +10,9 @@ def list_sns_to_list_dict(result: list | None) -> list:
 
 
 def examples() -> None:
-  from main.utils import invoke_testing_method
+  from main.utils import invoke
 
-  invoke_testing_method.main(
+  invoke.main(
     resources_folder_name='resources',
     resource_flag=True, )
 

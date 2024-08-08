@@ -4,7 +4,7 @@
 
 from types import SimpleNamespace as sns
 
-from main.utils import invoke_testing_method
+from main.utils import invoke
 
 
 def get_ids_resource(val: dict | None = None) -> sns:
@@ -13,7 +13,7 @@ def get_ids_resource(val: dict | None = None) -> sns:
 
 
 def examples() -> None:
-  invoke_testing_method.main(
+  invoke.main(
     resource_flag=True,
     resources_folder_name='resources',
     module_filename='test_entrypoint', )

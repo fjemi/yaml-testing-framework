@@ -103,9 +103,9 @@ def temp_directory_without_entrypoint(
 
 
 def examples() -> None:
-  from main.utils import invoke_testing_method
+  from main.utils import invoke
 
-  invoke_testing_method.main(location='.main/app')
+  invoke.main(location='.main/app')
 
 
 if __name__ == '__main__':

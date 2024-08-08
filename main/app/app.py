@@ -190,9 +190,9 @@ def run_tests(locations: List[sns] | None = None) -> sns:
 
 
 def examples() -> None:
-  from main.utils import invoke_testing_method
+  from main.utils import invoke
 
-  invoke_testing_method.main('.main/app')
+  invoke.main('.main/app')
 
 
 if __name__ == '__main__':

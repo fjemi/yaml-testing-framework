@@ -47,9 +47,9 @@ def nodes_as_sns(nodes: dict | None = None) -> dict:
 
 
 def examples() -> None:
-  from main.utils import invoke_testing_method
+  from main.utils import invoke
 
-  invoke_testing_method.main(resource_flag=True)
+  invoke.main(resource_flag=True)
 
 
 if __name__ == '__main__':
